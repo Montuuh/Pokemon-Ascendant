@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.91 — Moves that grow · 2026-11-03
+
+Each stage learns its own moves, and a move grows like the Pokémon.
+
+- **Richer learnsets.** Every stage learns by level, from the series' Gen IV lists.
+- **Tracks.** A new move takes an old one's slot: Scratch → Fire Fang.
+- **No filler at the end.** No final form keeps Tackle, Scratch or Growl.
+- **Move Reminder.** Free in the Move Manager; 76 new Gen II–IV moves.
+
 ### v0.9.90 — Real evolution levels · 2026-11-03
 
 Pokémon evolve at the series' levels and by the series' methods.

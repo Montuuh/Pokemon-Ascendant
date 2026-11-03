@@ -35,6 +35,14 @@ const PLACES: Place[] = ['lead', 'b1', 'b2'];
 
 const STAT_KEYS = ['hp', 'attack', 'defense', 'speed'] as const;
 
+/** §6.7.2 / §6.9.1 — what a fight's levels brought, as the level tag's door names it: moves learned, and tracks' steps. */
+export function levelNews(up: LevelUp, content: Content): { learned: { name: string; pooled: boolean }[]; grew: { from: string; to: string }[] } {
+  return {
+    learned: up.learned.map((id) => ({ name: content.move(id).name, pooled: !up.activated.includes(id) })),
+    grew: (up.upgraded ?? []).map((u) => ({ from: content.move(u.from).name, to: content.move(u.to).name })),
+  };
+}
+
 /**
  * v0.9.80 — a LevelUp cut into its levels: each step is the news of one level (its own gains, its totals, the moves that
  * level teaches), so a Pokémon that grew three levels shows three panels. The sim reports one LevelUp for the fight; the
@@ -48,12 +56,14 @@ export function levelSteps(mon: PartyMon, up: LevelUp, content: Content): LevelU
   const steps: LevelUp[] = [];
   for (let level = up.from + 1; level <= up.to; level++) {
     const learned = up.learned.filter((id) => levelOf(id) === level);
+    const upgraded = (up.upgraded ?? []).filter((u) => levelOf(u.to) === level);
     steps.push({
       uid: up.uid,
       from: level - 1,
       to: level,
       learned,
       activated: up.activated.filter((id) => learned.includes(id)),
+      ...(upgraded.length ? { upgraded } : {}),
       gains: Object.fromEntries(STAT_KEYS.map((k) => [k, at(k, level) - at(k, level - 1)])) as NonNullable<LevelUp['gains']>,
       statsAt: Object.fromEntries(STAT_KEYS.map((k) => [k, at(k, level)])) as NonNullable<LevelUp['statsAt']>,
     });
@@ -225,7 +235,7 @@ export function revealPlan(mons: readonly ResultMon[], spoils: number, opts: { b
       // v0.9.80 — every level the bar tops out gets its own panel (the user), before the bar goes on into the next.
       const step = i < segs.length - 1 ? m.steps[i] : undefined;
       if (step) {
-        const hold = step.learned.length > 0;
+        const hold = step.learned.length > 0 || (step.upgraded?.length ?? 0) > 0;
         const dur = i === 0 || hold ? RESULT_MS.level : RESULT_MS.levelNext;
         beats.push({ kind: 'level', at: t, dur, uid: m.mon.uid, step: i, hold });
         if (hold) holds.push(t + dur * HOLD_AT);

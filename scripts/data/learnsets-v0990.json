@@ -1,0 +1,2741 @@
+{
+ "_note": "The learnsets as v0.9.90 shipped them (real levels, before the progressive learnsets): the authored base scripts/v0991-learnsets.mjs merges the Gen IV rows into, so the script can run again and write the same thing.",
+ "species": {
+  "bulbasaur": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "vine-whip"
+   },
+   {
+    "level": 11,
+    "move": "leech-seed"
+   }
+  ],
+  "ivysaur": [
+   {
+    "level": 28,
+    "move": "sludge"
+   }
+  ],
+  "venusaur": [
+   {
+    "level": 42,
+    "move": "razor-leaf"
+   },
+   {
+    "level": 47,
+    "move": "petal-dance"
+   },
+   {
+    "level": 53,
+    "move": "body-slam"
+   }
+  ],
+  "charmander": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "ember"
+   },
+   {
+    "level": 11,
+    "move": "leer"
+   }
+  ],
+  "charmeleon": [
+   {
+    "level": 22,
+    "move": "fire-spin"
+   },
+   {
+    "level": 30,
+    "move": "slash"
+   }
+  ],
+  "charizard": [
+   {
+    "level": 39,
+    "move": "wing-attack"
+   },
+   {
+    "level": 46,
+    "move": "flamethrower"
+   },
+   {
+    "level": 53,
+    "move": "fly"
+   }
+  ],
+  "squirtle": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "bubble"
+   },
+   {
+    "level": 11,
+    "move": "water-gun"
+   }
+  ],
+  "wartortle": [
+   {
+    "level": 25,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 30,
+    "move": "bite"
+   }
+  ],
+  "blastoise": [
+   {
+    "level": 39,
+    "move": "surf"
+   },
+   {
+    "level": 44,
+    "move": "skull-bash"
+   },
+   {
+    "level": 50,
+    "move": "hydro-pump"
+   }
+  ],
+  "caterpie": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "string-shot"
+   },
+   {
+    "level": 4,
+    "move": "harden"
+   },
+   {
+    "level": 6,
+    "move": "leech-life"
+   }
+  ],
+  "metapod": [],
+  "butterfree": [
+   {
+    "level": 19,
+    "move": "confusion"
+   },
+   {
+    "level": 33,
+    "move": "wing-attack"
+   },
+   {
+    "level": 42,
+    "move": "pin-missile"
+   }
+  ],
+  "weedle": [
+   {
+    "level": 1,
+    "move": "poison-sting"
+   },
+   {
+    "level": 1,
+    "move": "string-shot"
+   },
+   {
+    "level": 4,
+    "move": "harden"
+   },
+   {
+    "level": 6,
+    "move": "leech-life"
+   }
+  ],
+  "kakuna": [],
+  "beedrill": [
+   {
+    "level": 25,
+    "move": "twineedle"
+   },
+   {
+    "level": 42,
+    "move": "pin-missile"
+   },
+   {
+    "level": 47,
+    "move": "sludge"
+   }
+  ],
+  "pidgey": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "sand-attack"
+   },
+   {
+    "level": 5,
+    "move": "gust"
+   },
+   {
+    "level": 11,
+    "move": "quick-attack"
+   }
+  ],
+  "pidgeotto": [
+   {
+    "level": 22,
+    "move": "wing-attack"
+   },
+   {
+    "level": 28,
+    "move": "swift"
+   }
+  ],
+  "pidgeot": [
+   {
+    "level": 42,
+    "move": "fly"
+   },
+   {
+    "level": 50,
+    "move": "drill-peck"
+   }
+  ],
+  "rattata": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "quick-attack"
+   },
+   {
+    "level": 11,
+    "move": "bite"
+   },
+   {
+    "level": 14,
+    "move": "hyper-fang"
+   }
+  ],
+  "raticate": [
+   {
+    "level": 25,
+    "move": "crunch"
+   },
+   {
+    "level": 42,
+    "move": "swift"
+   },
+   {
+    "level": 50,
+    "move": "double-edge"
+   }
+  ],
+  "spearow": [
+   {
+    "level": 1,
+    "move": "peck"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "leer"
+   },
+   {
+    "level": 11,
+    "move": "fury-attack"
+   }
+  ],
+  "fearow": [
+   {
+    "level": 25,
+    "move": "drill-peck"
+   },
+   {
+    "level": 33,
+    "move": "swift"
+   },
+   {
+    "level": 50,
+    "move": "double-edge"
+   }
+  ],
+  "ekans": [
+   {
+    "level": 1,
+    "move": "wrap"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 5,
+    "move": "poison-sting"
+   },
+   {
+    "level": 11,
+    "move": "bite"
+   }
+  ],
+  "arbok": [
+   {
+    "level": 28,
+    "move": "sludge"
+   },
+   {
+    "level": 36,
+    "move": "dig"
+   },
+   {
+    "level": 44,
+    "move": "body-slam"
+   }
+  ],
+  "pikachu": [
+   {
+    "level": 1,
+    "move": "thunder-shock"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "quick-attack"
+   },
+   {
+    "level": 11,
+    "move": "thunder-wave"
+   }
+  ],
+  "raichu": [
+   {
+    "level": 26,
+    "move": "thunder-punch"
+   },
+   {
+    "level": 28,
+    "move": "thunderbolt"
+   },
+   {
+    "level": 42,
+    "move": "swift"
+   }
+  ],
+  "sandshrew": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "defense-curl"
+   },
+   {
+    "level": 5,
+    "move": "sand-attack"
+   },
+   {
+    "level": 11,
+    "move": "poison-sting"
+   },
+   {
+    "level": 14,
+    "move": "dig"
+   }
+  ],
+  "sandslash": [
+   {
+    "level": 22,
+    "move": "dig"
+   },
+   {
+    "level": 30,
+    "move": "slash"
+   },
+   {
+    "level": 39,
+    "move": "swift"
+   }
+  ],
+  "nidoran-f": [
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 5,
+    "move": "tail-whip"
+   },
+   {
+    "level": 11,
+    "move": "poison-sting"
+   }
+  ],
+  "nidorina": [
+   {
+    "level": 22,
+    "move": "bite"
+   },
+   {
+    "level": 28,
+    "move": "sludge"
+   }
+  ],
+  "nidoqueen": [
+   {
+    "level": 39,
+    "move": "body-slam"
+   },
+   {
+    "level": 44,
+    "move": "earthquake"
+   },
+   {
+    "level": 50,
+    "move": "sludge"
+   }
+  ],
+  "nidoran-m": [
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 5,
+    "move": "horn-attack"
+   },
+   {
+    "level": 11,
+    "move": "poison-sting"
+   }
+  ],
+  "nidorino": [
+   {
+    "level": 22,
+    "move": "horn-attack"
+   },
+   {
+    "level": 28,
+    "move": "sludge"
+   },
+   {
+    "level": 33,
+    "move": "double-kick"
+   }
+  ],
+  "nidoking": [
+   {
+    "level": 39,
+    "move": "thrash"
+   },
+   {
+    "level": 44,
+    "move": "earthquake"
+   },
+   {
+    "level": 50,
+    "move": "sludge"
+   }
+  ],
+  "clefairy": [
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "sing"
+   },
+   {
+    "level": 11,
+    "move": "double-slap"
+   }
+  ],
+  "clefable": [
+   {
+    "level": 36,
+    "move": "swift"
+   },
+   {
+    "level": 36,
+    "move": "body-slam"
+   },
+   {
+    "level": 42,
+    "move": "psychic"
+   },
+   {
+    "level": 50,
+    "move": "double-edge"
+   }
+  ],
+  "vulpix": [
+   {
+    "level": 1,
+    "move": "ember"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "quick-attack"
+   },
+   {
+    "level": 11,
+    "move": "roar"
+   }
+  ],
+  "ninetales": [
+   {
+    "level": 32,
+    "move": "fire-spin"
+   },
+   {
+    "level": 32,
+    "move": "flamethrower"
+   }
+  ],
+  "jigglypuff": [
+   {
+    "level": 1,
+    "move": "sing"
+   },
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 5,
+    "move": "defense-curl"
+   },
+   {
+    "level": 11,
+    "move": "double-slap"
+   }
+  ],
+  "wigglytuff": [
+   {
+    "level": 36,
+    "move": "swift"
+   },
+   {
+    "level": 36,
+    "move": "body-slam"
+   },
+   {
+    "level": 42,
+    "move": "double-edge"
+   }
+  ],
+  "zubat": [
+   {
+    "level": 1,
+    "move": "leech-life"
+   },
+   {
+    "level": 1,
+    "move": "supersonic"
+   },
+   {
+    "level": 5,
+    "move": "bite"
+   },
+   {
+    "level": 11,
+    "move": "wing-attack"
+   }
+  ],
+  "golbat": [
+   {
+    "level": 22,
+    "move": "wing-attack"
+   },
+   {
+    "level": 28,
+    "move": "swift"
+   },
+   {
+    "level": 33,
+    "move": "sludge"
+   },
+   {
+    "level": 42,
+    "move": "fly"
+   }
+  ],
+  "oddish": [
+   {
+    "level": 1,
+    "move": "absorb"
+   },
+   {
+    "level": 1,
+    "move": "poison-powder"
+   },
+   {
+    "level": 5,
+    "move": "stun-spore"
+   },
+   {
+    "level": 11,
+    "move": "acid"
+   }
+  ],
+  "gloom": [
+   {
+    "level": 22,
+    "move": "mega-drain"
+   },
+   {
+    "level": 30,
+    "move": "sludge"
+   }
+  ],
+  "vileplume": [
+   {
+    "level": 39,
+    "move": "petal-dance"
+   },
+   {
+    "level": 44,
+    "move": "razor-leaf"
+   },
+   {
+    "level": 50,
+    "move": "sludge"
+   }
+  ],
+  "paras": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "stun-spore"
+   },
+   {
+    "level": 5,
+    "move": "leech-life"
+   },
+   {
+    "level": 11,
+    "move": "absorb"
+   }
+  ],
+  "parasect": [
+   {
+    "level": 25,
+    "move": "mega-drain"
+   },
+   {
+    "level": 33,
+    "move": "pin-missile"
+   },
+   {
+    "level": 42,
+    "move": "razor-leaf"
+   },
+   {
+    "level": 50,
+    "move": "solar-beam"
+   }
+  ],
+  "venonat": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "disable"
+   },
+   {
+    "level": 5,
+    "move": "supersonic"
+   },
+   {
+    "level": 8,
+    "move": "poison-sting"
+   },
+   {
+    "level": 11,
+    "move": "confusion"
+   }
+  ],
+  "venomoth": [
+   {
+    "level": 31,
+    "move": "psybeam"
+   },
+   {
+    "level": 31,
+    "move": "leech-life"
+   },
+   {
+    "level": 36,
+    "move": "sludge"
+   },
+   {
+    "level": 44,
+    "move": "pin-missile"
+   },
+   {
+    "level": 53,
+    "move": "psychic"
+   }
+  ],
+  "diglett": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "sand-attack"
+   },
+   {
+    "level": 5,
+    "move": "growl"
+   },
+   {
+    "level": 11,
+    "move": "dig"
+   }
+  ],
+  "dugtrio": [
+   {
+    "level": 26,
+    "move": "dig"
+   },
+   {
+    "level": 30,
+    "move": "slash"
+   },
+   {
+    "level": 39,
+    "move": "earthquake"
+   },
+   {
+    "level": 44,
+    "move": "rock-slide"
+   }
+  ],
+  "meowth": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "bite"
+   },
+   {
+    "level": 11,
+    "move": "pay-day"
+   }
+  ],
+  "persian": [
+   {
+    "level": 28,
+    "move": "fury-swipes"
+   },
+   {
+    "level": 28,
+    "move": "slash"
+   },
+   {
+    "level": 36,
+    "move": "swift"
+   },
+   {
+    "level": 44,
+    "move": "body-slam"
+   }
+  ],
+  "psyduck": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "water-gun"
+   },
+   {
+    "level": 11,
+    "move": "disable"
+   }
+  ],
+  "golduck": [
+   {
+    "level": 33,
+    "move": "confusion"
+   },
+   {
+    "level": 33,
+    "move": "surf"
+   },
+   {
+    "level": 42,
+    "move": "hydro-pump"
+   }
+  ],
+  "mankey": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 5,
+    "move": "low-kick"
+   },
+   {
+    "level": 11,
+    "move": "karate-chop"
+   }
+  ],
+  "primeape": [
+   {
+    "level": 28,
+    "move": "seismic-toss"
+   },
+   {
+    "level": 30,
+    "move": "rock-slide"
+   },
+   {
+    "level": 39,
+    "move": "submission"
+   },
+   {
+    "level": 47,
+    "move": "thrash"
+   }
+  ],
+  "growlithe": [
+   {
+    "level": 1,
+    "move": "bite"
+   },
+   {
+    "level": 1,
+    "move": "roar"
+   },
+   {
+    "level": 5,
+    "move": "ember"
+   },
+   {
+    "level": 11,
+    "move": "leer"
+   }
+  ],
+  "arcanine": [
+   {
+    "level": 32,
+    "move": "take-down"
+   },
+   {
+    "level": 32,
+    "move": "fire-spin"
+   },
+   {
+    "level": 42,
+    "move": "flamethrower"
+   }
+  ],
+  "poliwag": [
+   {
+    "level": 1,
+    "move": "bubble"
+   },
+   {
+    "level": 1,
+    "move": "hypnosis"
+   },
+   {
+    "level": 5,
+    "move": "water-gun"
+   },
+   {
+    "level": 11,
+    "move": "double-slap"
+   }
+  ],
+  "poliwhirl": [
+   {
+    "level": 25,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 30,
+    "move": "body-slam"
+   }
+  ],
+  "poliwrath": [
+   {
+    "level": 39,
+    "move": "submission"
+   },
+   {
+    "level": 44,
+    "move": "surf"
+   },
+   {
+    "level": 50,
+    "move": "hydro-pump"
+   }
+  ],
+  "abra": [
+   {
+    "level": 1,
+    "move": "teleport"
+   },
+   {
+    "level": 1,
+    "move": "confusion"
+   },
+   {
+    "level": 5,
+    "move": "disable"
+   },
+   {
+    "level": 11,
+    "move": "kinesis"
+   }
+  ],
+  "kadabra": [
+   {
+    "level": 22,
+    "move": "psybeam"
+   },
+   {
+    "level": 28,
+    "move": "recover"
+   },
+   {
+    "level": 30,
+    "move": "swift"
+   },
+   {
+    "level": 33,
+    "move": "psychic"
+   }
+  ],
+  "alakazam": [
+   {
+    "level": 39,
+    "move": "psybeam"
+   },
+   {
+    "level": 44,
+    "move": "psychic"
+   },
+   {
+    "level": 50,
+    "move": "seismic-toss"
+   }
+  ],
+  "machop": [
+   {
+    "level": 1,
+    "move": "low-kick"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 5,
+    "move": "karate-chop"
+   },
+   {
+    "level": 11,
+    "move": "focus-energy"
+   }
+  ],
+  "machoke": [
+   {
+    "level": 28,
+    "move": "rock-throw"
+   },
+   {
+    "level": 33,
+    "move": "submission"
+   }
+  ],
+  "machamp": [
+   {
+    "level": 40,
+    "move": "submission"
+   },
+   {
+    "level": 44,
+    "move": "rock-slide"
+   },
+   {
+    "level": 50,
+    "move": "earthquake"
+   }
+  ],
+  "bellsprout": [
+   {
+    "level": 1,
+    "move": "vine-whip"
+   },
+   {
+    "level": 1,
+    "move": "growth"
+   },
+   {
+    "level": 5,
+    "move": "wrap"
+   },
+   {
+    "level": 11,
+    "move": "poison-powder"
+   }
+  ],
+  "weepinbell": [],
+  "victreebel": [
+   {
+    "level": 39,
+    "move": "razor-leaf"
+   },
+   {
+    "level": 44,
+    "move": "sludge"
+   },
+   {
+    "level": 50,
+    "move": "petal-dance"
+   }
+  ],
+  "tentacool": [
+   {
+    "level": 1,
+    "move": "acid"
+   },
+   {
+    "level": 1,
+    "move": "supersonic"
+   },
+   {
+    "level": 5,
+    "move": "wrap"
+   },
+   {
+    "level": 11,
+    "move": "poison-sting"
+   }
+  ],
+  "tentacruel": [
+   {
+    "level": 30,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 30,
+    "move": "sludge"
+   },
+   {
+    "level": 47,
+    "move": "hydro-pump"
+   }
+  ],
+  "geodude": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "defense-curl"
+   },
+   {
+    "level": 5,
+    "move": "rock-throw"
+   },
+   {
+    "level": 11,
+    "move": "self-destruct"
+   }
+  ],
+  "graveler": [],
+  "golem": [
+   {
+    "level": 40,
+    "move": "earthquake"
+   },
+   {
+    "level": 44,
+    "move": "rock-slide"
+   }
+  ],
+  "ponyta": [
+   {
+    "level": 1,
+    "move": "ember"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "stomp"
+   },
+   {
+    "level": 11,
+    "move": "growl"
+   }
+  ],
+  "rapidash": [
+   {
+    "level": 40,
+    "move": "stomp"
+   },
+   {
+    "level": 40,
+    "move": "fire-spin"
+   },
+   {
+    "level": 40,
+    "move": "flamethrower"
+   }
+  ],
+  "slowpoke": [
+   {
+    "level": 1,
+    "move": "confusion"
+   },
+   {
+    "level": 1,
+    "move": "disable"
+   },
+   {
+    "level": 5,
+    "move": "headbutt"
+   },
+   {
+    "level": 11,
+    "move": "growl"
+   }
+  ],
+  "slowbro": [
+   {
+    "level": 37,
+    "move": "water-gun"
+   },
+   {
+    "level": 37,
+    "move": "surf"
+   },
+   {
+    "level": 37,
+    "move": "psychic"
+   },
+   {
+    "level": 44,
+    "move": "hydro-pump"
+   }
+  ],
+  "magnemite": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "sonic-boom"
+   },
+   {
+    "level": 5,
+    "move": "thunder-shock"
+   },
+   {
+    "level": 11,
+    "move": "supersonic"
+   }
+  ],
+  "magneton": [
+   {
+    "level": 30,
+    "move": "thunderbolt"
+   },
+   {
+    "level": 30,
+    "move": "swift"
+   }
+  ],
+  "farfetchd": [
+   {
+    "level": 1,
+    "move": "peck"
+   },
+   {
+    "level": 1,
+    "move": "sand-attack"
+   },
+   {
+    "level": 11,
+    "move": "leer"
+   },
+   {
+    "level": 14,
+    "move": "gust"
+   },
+   {
+    "level": 22,
+    "move": "fury-attack"
+   },
+   {
+    "level": 30,
+    "move": "wing-attack"
+   },
+   {
+    "level": 33,
+    "move": "swords-dance"
+   },
+   {
+    "level": 39,
+    "move": "slash"
+   },
+   {
+    "level": 47,
+    "move": "drill-peck"
+   }
+  ],
+  "doduo": [
+   {
+    "level": 1,
+    "move": "peck"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "fury-attack"
+   },
+   {
+    "level": 11,
+    "move": "quick-attack"
+   }
+  ],
+  "dodrio": [
+   {
+    "level": 31,
+    "move": "swift"
+   },
+   {
+    "level": 36,
+    "move": "drill-peck"
+   },
+   {
+    "level": 44,
+    "move": "tri-attack"
+   }
+  ],
+  "seel": [
+   {
+    "level": 1,
+    "move": "headbutt"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "aurora-beam"
+   },
+   {
+    "level": 11,
+    "move": "water-gun"
+   }
+  ],
+  "dewgong": [
+   {
+    "level": 34,
+    "move": "aurora-beam"
+   },
+   {
+    "level": 34,
+    "move": "surf"
+   },
+   {
+    "level": 42,
+    "move": "blizzard"
+   }
+  ],
+  "grimer": [
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 1,
+    "move": "poison-gas"
+   },
+   {
+    "level": 5,
+    "move": "disable"
+   },
+   {
+    "level": 11,
+    "move": "sludge"
+   }
+  ],
+  "muk": [
+   {
+    "level": 38,
+    "move": "sludge"
+   },
+   {
+    "level": 47,
+    "move": "thunderbolt"
+   }
+  ],
+  "shellder": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "withdraw"
+   },
+   {
+    "level": 5,
+    "move": "supersonic"
+   },
+   {
+    "level": 11,
+    "move": "clamp"
+   },
+   {
+    "level": 14,
+    "move": "water-gun"
+   }
+  ],
+  "cloyster": [
+   {
+    "level": 30,
+    "move": "aurora-beam"
+   },
+   {
+    "level": 30,
+    "move": "clamp"
+   },
+   {
+    "level": 39,
+    "move": "ice-beam"
+   },
+   {
+    "level": 47,
+    "move": "surf"
+   }
+  ],
+  "gastly": [
+   {
+    "level": 1,
+    "move": "lick"
+   },
+   {
+    "level": 1,
+    "move": "confuse-ray"
+   },
+   {
+    "level": 5,
+    "move": "night-shade"
+   },
+   {
+    "level": 11,
+    "move": "hypnosis"
+   }
+  ],
+  "haunter": [
+   {
+    "level": 25,
+    "move": "night-shade"
+   },
+   {
+    "level": 28,
+    "move": "sludge"
+   }
+  ],
+  "gengar": [
+   {
+    "level": 40,
+    "move": "night-shade"
+   },
+   {
+    "level": 44,
+    "move": "psychic"
+   }
+  ],
+  "onix": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "screech"
+   },
+   {
+    "level": 11,
+    "move": "bind"
+   },
+   {
+    "level": 22,
+    "move": "rock-throw"
+   },
+   {
+    "level": 28,
+    "move": "dig"
+   },
+   {
+    "level": 33,
+    "move": "harden"
+   }
+  ],
+  "drowzee": [
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 1,
+    "move": "hypnosis"
+   },
+   {
+    "level": 5,
+    "move": "disable"
+   },
+   {
+    "level": 11,
+    "move": "confusion"
+   }
+  ],
+  "hypno": [
+   {
+    "level": 26,
+    "move": "psybeam"
+   },
+   {
+    "level": 33,
+    "move": "psychic"
+   },
+   {
+    "level": 42,
+    "move": "headbutt"
+   }
+  ],
+  "krabby": [
+   {
+    "level": 1,
+    "move": "bubble"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 5,
+    "move": "vice-grip"
+   },
+   {
+    "level": 11,
+    "move": "harden"
+   }
+  ],
+  "kingler": [
+   {
+    "level": 28,
+    "move": "waterfall"
+   },
+   {
+    "level": 30,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 39,
+    "move": "stomp"
+   },
+   {
+    "level": 47,
+    "move": "surf"
+   }
+  ],
+  "voltorb": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "screech"
+   },
+   {
+    "level": 5,
+    "move": "sonic-boom"
+   },
+   {
+    "level": 11,
+    "move": "thunder-shock"
+   }
+  ],
+  "electrode": [
+   {
+    "level": 30,
+    "move": "thunderbolt"
+   },
+   {
+    "level": 33,
+    "move": "swift"
+   }
+  ],
+  "exeggcute": [
+   {
+    "level": 1,
+    "move": "barrage"
+   },
+   {
+    "level": 1,
+    "move": "hypnosis"
+   },
+   {
+    "level": 5,
+    "move": "reflect"
+   },
+   {
+    "level": 11,
+    "move": "leech-seed"
+   },
+   {
+    "level": 14,
+    "move": "confusion"
+   }
+  ],
+  "exeggutor": [
+   {
+    "level": 32,
+    "move": "confusion"
+   },
+   {
+    "level": 32,
+    "move": "razor-leaf"
+   },
+   {
+    "level": 36,
+    "move": "psychic"
+   },
+   {
+    "level": 44,
+    "move": "solar-beam"
+   }
+  ],
+  "cubone": [
+   {
+    "level": 1,
+    "move": "bone-club"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 5,
+    "move": "tail-whip"
+   },
+   {
+    "level": 11,
+    "move": "leer"
+   }
+  ],
+  "marowak": [
+   {
+    "level": 30,
+    "move": "headbutt"
+   },
+   {
+    "level": 39,
+    "move": "earthquake"
+   },
+   {
+    "level": 47,
+    "move": "rock-slide"
+   }
+  ],
+  "hitmonlee": [
+   {
+    "level": 1,
+    "move": "double-kick"
+   },
+   {
+    "level": 1,
+    "move": "meditate"
+   },
+   {
+    "level": 11,
+    "move": "swift"
+   },
+   {
+    "level": 22,
+    "move": "rolling-kick"
+   },
+   {
+    "level": 33,
+    "move": "high-jump-kick"
+   }
+  ],
+  "hitmonchan": [
+   {
+    "level": 1,
+    "move": "comet-punch"
+   },
+   {
+    "level": 1,
+    "move": "agility"
+   },
+   {
+    "level": 11,
+    "move": "swift"
+   },
+   {
+    "level": 16,
+    "move": "thunder-punch"
+   },
+   {
+    "level": 22,
+    "move": "fire-punch"
+   },
+   {
+    "level": 28,
+    "move": "mega-punch"
+   },
+   {
+    "level": 33,
+    "move": "ice-punch"
+   },
+   {
+    "level": 39,
+    "move": "submission"
+   }
+  ],
+  "lickitung": [
+   {
+    "level": 1,
+    "move": "wrap"
+   },
+   {
+    "level": 1,
+    "move": "supersonic"
+   },
+   {
+    "level": 11,
+    "move": "stomp"
+   },
+   {
+    "level": 16,
+    "move": "lick"
+   },
+   {
+    "level": 22,
+    "move": "disable"
+   },
+   {
+    "level": 28,
+    "move": "body-slam"
+   },
+   {
+    "level": 33,
+    "move": "slam"
+   },
+   {
+    "level": 39,
+    "move": "swift"
+   },
+   {
+    "level": 47,
+    "move": "earthquake"
+   }
+  ],
+  "koffing": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "smog"
+   },
+   {
+    "level": 5,
+    "move": "smokescreen"
+   },
+   {
+    "level": 11,
+    "move": "self-destruct"
+   }
+  ],
+  "weezing": [
+   {
+    "level": 35,
+    "move": "smog-plus"
+   },
+   {
+    "level": 39,
+    "move": "thunderbolt"
+   },
+   {
+    "level": 47,
+    "move": "fire-blast"
+   }
+  ],
+  "rhyhorn": [
+   {
+    "level": 1,
+    "move": "horn-attack"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "stomp"
+   },
+   {
+    "level": 11,
+    "move": "rock-throw"
+   }
+  ],
+  "rhydon": [
+   {
+    "level": 42,
+    "move": "rock-slide"
+   },
+   {
+    "level": 42,
+    "move": "stomp"
+   },
+   {
+    "level": 42,
+    "move": "dig"
+   }
+  ],
+  "chansey": [
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 1,
+    "move": "double-slap"
+   },
+   {
+    "level": 11,
+    "move": "sing"
+   },
+   {
+    "level": 16,
+    "move": "body-slam"
+   },
+   {
+    "level": 22,
+    "move": "growl"
+   },
+   {
+    "level": 28,
+    "move": "egg-bomb"
+   },
+   {
+    "level": 33,
+    "move": "soft-boiled"
+   },
+   {
+    "level": 39,
+    "move": "seismic-toss"
+   },
+   {
+    "level": 47,
+    "move": "psychic"
+   }
+  ],
+  "tangela": [
+   {
+    "level": 1,
+    "move": "constrict"
+   },
+   {
+    "level": 1,
+    "move": "bind"
+   },
+   {
+    "level": 11,
+    "move": "absorb"
+   },
+   {
+    "level": 16,
+    "move": "vine-whip"
+   },
+   {
+    "level": 22,
+    "move": "poison-powder"
+   },
+   {
+    "level": 28,
+    "move": "mega-drain"
+   },
+   {
+    "level": 33,
+    "move": "stun-spore"
+   },
+   {
+    "level": 39,
+    "move": "slam"
+   },
+   {
+    "level": 47,
+    "move": "solar-beam"
+   }
+  ],
+  "kangaskhan": [
+   {
+    "level": 1,
+    "move": "comet-punch"
+   },
+   {
+    "level": 1,
+    "move": "rage"
+   },
+   {
+    "level": 11,
+    "move": "bite"
+   },
+   {
+    "level": 16,
+    "move": "swift"
+   },
+   {
+    "level": 22,
+    "move": "tail-whip"
+   },
+   {
+    "level": 28,
+    "move": "body-slam"
+   },
+   {
+    "level": 33,
+    "move": "mega-punch"
+   },
+   {
+    "level": 39,
+    "move": "earthquake"
+   },
+   {
+    "level": 47,
+    "move": "dizzy-punch"
+   }
+  ],
+  "horsea": [
+   {
+    "level": 1,
+    "move": "bubble"
+   },
+   {
+    "level": 1,
+    "move": "smokescreen"
+   },
+   {
+    "level": 5,
+    "move": "leer"
+   },
+   {
+    "level": 11,
+    "move": "water-gun"
+   }
+  ],
+  "seadra": [
+   {
+    "level": 32,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 32,
+    "move": "surf"
+   },
+   {
+    "level": 42,
+    "move": "hydro-pump"
+   }
+  ],
+  "goldeen": [
+   {
+    "level": 1,
+    "move": "peck"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "supersonic"
+   },
+   {
+    "level": 8,
+    "move": "water-gun"
+   },
+   {
+    "level": 11,
+    "move": "horn-attack"
+   }
+  ],
+  "seaking": [
+   {
+    "level": 33,
+    "move": "waterfall"
+   },
+   {
+    "level": 33,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 39,
+    "move": "surf"
+   }
+  ],
+  "staryu": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "harden"
+   },
+   {
+    "level": 5,
+    "move": "water-gun"
+   },
+   {
+    "level": 11,
+    "move": "swift"
+   }
+  ],
+  "starmie": [
+   {
+    "level": 24,
+    "move": "swift"
+   },
+   {
+    "level": 28,
+    "move": "surf"
+   },
+   {
+    "level": 36,
+    "move": "psychic"
+   },
+   {
+    "level": 44,
+    "move": "bubble-beam-plus"
+   }
+  ],
+  "mr-mime": [
+   {
+    "level": 1,
+    "move": "confusion"
+   },
+   {
+    "level": 1,
+    "move": "barrier"
+   },
+   {
+    "level": 11,
+    "move": "light-screen"
+   },
+   {
+    "level": 16,
+    "move": "psywave"
+   },
+   {
+    "level": 22,
+    "move": "double-slap"
+   },
+   {
+    "level": 28,
+    "move": "psychic"
+   },
+   {
+    "level": 33,
+    "move": "reflect"
+   },
+   {
+    "level": 39,
+    "move": "seismic-toss"
+   }
+  ],
+  "scyther": [
+   {
+    "level": 1,
+    "move": "quick-attack"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 11,
+    "move": "focus-energy"
+   },
+   {
+    "level": 16,
+    "move": "cut"
+   },
+   {
+    "level": 22,
+    "move": "swift"
+   },
+   {
+    "level": 33,
+    "move": "wing-attack"
+   }
+  ],
+  "jynx": [
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 1,
+    "move": "lovely-kiss"
+   },
+   {
+    "level": 11,
+    "move": "lick"
+   },
+   {
+    "level": 16,
+    "move": "confusion"
+   },
+   {
+    "level": 22,
+    "move": "double-slap"
+   },
+   {
+    "level": 28,
+    "move": "ice-beam"
+   },
+   {
+    "level": 33,
+    "move": "ice-punch"
+   },
+   {
+    "level": 39,
+    "move": "psychic"
+   }
+  ],
+  "electabuzz": [
+   {
+    "level": 1,
+    "move": "quick-attack"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 11,
+    "move": "thunder-shock"
+   },
+   {
+    "level": 22,
+    "move": "screech"
+   },
+   {
+    "level": 28,
+    "move": "thunderbolt"
+   },
+   {
+    "level": 33,
+    "move": "thunder-punch"
+   }
+  ],
+  "magmar": [
+   {
+    "level": 1,
+    "move": "ember"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 11,
+    "move": "confuse-ray"
+   },
+   {
+    "level": 16,
+    "move": "fire-spin"
+   },
+   {
+    "level": 22,
+    "move": "fire-punch"
+   },
+   {
+    "level": 33,
+    "move": "smokescreen"
+   },
+   {
+    "level": 42,
+    "move": "fire-blast"
+   }
+  ],
+  "pinsir": [
+   {
+    "level": 1,
+    "move": "vice-grip"
+   },
+   {
+    "level": 1,
+    "move": "focus-energy"
+   },
+   {
+    "level": 11,
+    "move": "seismic-toss"
+   },
+   {
+    "level": 16,
+    "move": "slash"
+   },
+   {
+    "level": 22,
+    "move": "harden"
+   },
+   {
+    "level": 28,
+    "move": "pin-missile"
+   },
+   {
+    "level": 33,
+    "move": "guillotine"
+   },
+   {
+    "level": 39,
+    "move": "submission"
+   }
+  ],
+  "tauros": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 11,
+    "move": "stomp"
+   },
+   {
+    "level": 16,
+    "move": "horn-attack"
+   },
+   {
+    "level": 22,
+    "move": "leer"
+   },
+   {
+    "level": 25,
+    "move": "swift"
+   },
+   {
+    "level": 28,
+    "move": "body-slam"
+   },
+   {
+    "level": 33,
+    "move": "take-down"
+   },
+   {
+    "level": 39,
+    "move": "earthquake"
+   },
+   {
+    "level": 47,
+    "move": "thrash"
+   }
+  ],
+  "magikarp": [
+   {
+    "level": 1,
+    "move": "splash"
+   },
+   {
+    "level": 1,
+    "move": "tackle"
+   }
+  ],
+  "gyarados": [
+   {
+    "level": 28,
+    "move": "bite"
+   },
+   {
+    "level": 33,
+    "move": "dragon-rage"
+   },
+   {
+    "level": 39,
+    "move": "surf"
+   },
+   {
+    "level": 44,
+    "move": "hydro-pump"
+   }
+  ],
+  "lapras": [
+   {
+    "level": 1,
+    "move": "water-gun"
+   },
+   {
+    "level": 1,
+    "move": "growl"
+   },
+   {
+    "level": 11,
+    "move": "sing"
+   },
+   {
+    "level": 16,
+    "move": "aurora-beam"
+   },
+   {
+    "level": 22,
+    "move": "mist"
+   },
+   {
+    "level": 28,
+    "move": "surf"
+   },
+   {
+    "level": 33,
+    "move": "body-slam"
+   },
+   {
+    "level": 39,
+    "move": "blizzard"
+   },
+   {
+    "level": 47,
+    "move": "hydro-pump"
+   }
+  ],
+  "ditto": [
+   {
+    "level": 1,
+    "move": "transform"
+   },
+   {
+    "level": 1,
+    "move": "pound"
+   }
+  ],
+  "eevee": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "tail-whip"
+   },
+   {
+    "level": 5,
+    "move": "sand-attack"
+   },
+   {
+    "level": 11,
+    "move": "quick-attack"
+   },
+   {
+    "level": 14,
+    "move": "swift"
+   }
+  ],
+  "vaporeon": [
+   {
+    "level": 30,
+    "move": "bite"
+   },
+   {
+    "level": 30,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 36,
+    "move": "surf"
+   },
+   {
+    "level": 44,
+    "move": "hydro-pump"
+   }
+  ],
+  "jolteon": [],
+  "flareon": [],
+  "porygon": [
+   {
+    "level": 1,
+    "move": "tackle"
+   },
+   {
+    "level": 1,
+    "move": "conversion"
+   },
+   {
+    "level": 11,
+    "move": "psybeam"
+   },
+   {
+    "level": 19,
+    "move": "recover"
+   },
+   {
+    "level": 28,
+    "move": "tri-attack"
+   }
+  ],
+  "omanyte": [
+   {
+    "level": 1,
+    "move": "water-gun"
+   },
+   {
+    "level": 1,
+    "move": "withdraw"
+   },
+   {
+    "level": 5,
+    "move": "horn-attack"
+   },
+   {
+    "level": 11,
+    "move": "leer"
+   }
+  ],
+  "omastar": [
+   {
+    "level": 40,
+    "move": "bubble-beam"
+   },
+   {
+    "level": 40,
+    "move": "rock-slide"
+   },
+   {
+    "level": 40,
+    "move": "hydro-pump"
+   }
+  ],
+  "kabuto": [
+   {
+    "level": 1,
+    "move": "scratch"
+   },
+   {
+    "level": 1,
+    "move": "harden"
+   },
+   {
+    "level": 5,
+    "move": "absorb"
+   },
+   {
+    "level": 8,
+    "move": "water-gun"
+   },
+   {
+    "level": 11,
+    "move": "leer"
+   },
+   {
+    "level": 14,
+    "move": "rock-throw"
+   }
+  ],
+  "kabutops": [
+   {
+    "level": 40,
+    "move": "slash"
+   },
+   {
+    "level": 40,
+    "move": "rock-slide"
+   },
+   {
+    "level": 40,
+    "move": "surf"
+   },
+   {
+    "level": 47,
+    "move": "hydro-pump"
+   }
+  ],
+  "aerodactyl": [
+   {
+    "level": 1,
+    "move": "wing-attack"
+   },
+   {
+    "level": 1,
+    "move": "agility"
+   },
+   {
+    "level": 11,
+    "move": "supersonic"
+   },
+   {
+    "level": 16,
+    "move": "rock-throw"
+   },
+   {
+    "level": 22,
+    "move": "bite"
+   },
+   {
+    "level": 33,
+    "move": "take-down"
+   },
+   {
+    "level": 39,
+    "move": "fly"
+   },
+   {
+    "level": 47,
+    "move": "hyper-beam"
+   }
+  ],
+  "snorlax": [
+   {
+    "level": 1,
+    "move": "headbutt"
+   },
+   {
+    "level": 1,
+    "move": "amnesia"
+   },
+   {
+    "level": 11,
+    "move": "rest"
+   },
+   {
+    "level": 22,
+    "move": "body-slam"
+   },
+   {
+    "level": 28,
+    "move": "earthquake"
+   },
+   {
+    "level": 33,
+    "move": "harden"
+   },
+   {
+    "level": 33,
+    "move": "ice-beam"
+   },
+   {
+    "level": 42,
+    "move": "hyper-beam"
+   }
+  ],
+  "articuno": [
+   {
+    "level": 1,
+    "move": "peck"
+   },
+   {
+    "level": 1,
+    "move": "ice-beam"
+   },
+   {
+    "level": 14,
+    "move": "blizzard"
+   },
+   {
+    "level": 28,
+    "move": "agility"
+   },
+   {
+    "level": 56,
+    "move": "mist"
+   }
+  ],
+  "zapdos": [
+   {
+    "level": 1,
+    "move": "thunder-shock"
+   },
+   {
+    "level": 1,
+    "move": "drill-peck"
+   },
+   {
+    "level": 14,
+    "move": "thunder"
+   },
+   {
+    "level": 28,
+    "move": "agility"
+   },
+   {
+    "level": 56,
+    "move": "light-screen"
+   }
+  ],
+  "moltres": [
+   {
+    "level": 1,
+    "move": "peck"
+   },
+   {
+    "level": 1,
+    "move": "fire-spin"
+   },
+   {
+    "level": 14,
+    "move": "leer"
+   },
+   {
+    "level": 28,
+    "move": "agility"
+   },
+   {
+    "level": 56,
+    "move": "sky-attack"
+   }
+  ],
+  "dratini": [
+   {
+    "level": 1,
+    "move": "wrap"
+   },
+   {
+    "level": 1,
+    "move": "leer"
+   },
+   {
+    "level": 5,
+    "move": "thunder-wave"
+   },
+   {
+    "level": 8,
+    "move": "dragon-rage"
+   },
+   {
+    "level": 11,
+    "move": "agility"
+   }
+  ],
+  "dragonair": [
+   {
+    "level": 30,
+    "move": "dragon-rage"
+   },
+   {
+    "level": 30,
+    "move": "slam"
+   },
+   {
+    "level": 30,
+    "move": "bubble-beam"
+   }
+  ],
+  "dragonite": [
+   {
+    "level": 55,
+    "move": "dragon-rage"
+   },
+   {
+    "level": 55,
+    "move": "wing-attack"
+   },
+   {
+    "level": 55,
+    "move": "fly"
+   },
+   {
+    "level": 55,
+    "move": "hyper-beam"
+   }
+  ],
+  "mewtwo": [
+   {
+    "level": 1,
+    "move": "confusion"
+   },
+   {
+    "level": 1,
+    "move": "disable"
+   },
+   {
+    "level": 14,
+    "move": "swift"
+   },
+   {
+    "level": 28,
+    "move": "psychic"
+   },
+   {
+    "level": 56,
+    "move": "barrier"
+   }
+  ],
+  "mew": [
+   {
+    "level": 1,
+    "move": "pound"
+   },
+   {
+    "level": 1,
+    "move": "transform"
+   },
+   {
+    "level": 14,
+    "move": "mega-punch"
+   },
+   {
+    "level": 28,
+    "move": "metronome"
+   },
+   {
+    "level": 56,
+    "move": "psychic"
+   }
+  ],
+  "umbreon": [
+   {
+    "level": 30,
+    "move": "snarl"
+   },
+   {
+    "level": 30,
+    "move": "crunch"
+   },
+   {
+    "level": 39,
+    "move": "dark-pulse"
+   }
+  ],
+  "steelix": [
+   {
+    "level": 39,
+    "move": "meteor-mash"
+   },
+   {
+    "level": 47,
+    "move": "earthquake"
+   }
+  ],
+  "scizor": [
+   {
+    "level": 37,
+    "move": "pin-missile"
+   },
+   {
+    "level": 44,
+    "move": "iron-tail"
+   },
+   {
+    "level": 53,
+    "move": "meteor-mash"
+   }
+  ],
+  "magnezone": [
+   {
+    "level": 40,
+    "move": "magnet-bomb"
+   },
+   {
+    "level": 46,
+    "move": "iron-head"
+   },
+   {
+    "level": 54,
+    "move": "flash-cannon"
+   }
+  ]
+ }
+}

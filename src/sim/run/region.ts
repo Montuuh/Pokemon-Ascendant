@@ -1179,11 +1179,14 @@ export interface StatTier {
  * so the harness's Region 1 team evolved 2.7 times where it evolved 4.0 (R1 50 % · R2|R1 37 % · R3|R2 41 % · run 4 %). The
  * enemies come down to meet it, not the levels: ×0.55 / ×0.70 / ×0.76 — R1 61 % · R2|R1 49 % · R3|R2 56 % · League 60 %
  * · run 10 % (360 runs), v0.9.89's curve.
+ * v0.9.91 (§6.9.1) — the progressive learnsets: both sides hold their tracks' moves (a wild Charmeleon Fire Fang, not
+ * Scratch), and the enemies gained more by it (R1 53 % · R2|R1 39 % · R3|R2 44 % · run 5 %). ×0.50 / ×0.64 / ×0.67 — R1 63 %
+ * · R2|R1 48 % · R3|R2 47 % · League 59 % · run 8 % (360 runs).
  */
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { attack: 0.55 },
-  { attack: 0.7 },
-  { attack: 0.76 },
+  { attack: 0.5 },
+  { attack: 0.64 },
+  { attack: 0.67 },
 ];
 
 /**

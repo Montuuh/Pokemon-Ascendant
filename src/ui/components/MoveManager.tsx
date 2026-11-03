@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
-import { IconArrowsShuffle, IconLock, IconMinus, IconPlus, IconX } from '@tabler/icons-react';
+import { IconArrowsShuffle, IconHistory, IconLock, IconMinus, IconPlus, IconX } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { autoPickMoves, masteryMoveFor, stoneUse, type PartyMon } from '@/sim';
+import { autoPickMoves, masteryMoveFor, reminderOptions, stoneUse, type PartyMon } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
-import { ARCHETYPE_LABEL, RUN_REJECT_TEXT } from '@/ui/strings';
-import { masteryCardTip, moveDefTip } from '@/ui/tips';
-import { Tip, Tipped } from '@/ui/tooltip';
+import { ARCHETYPE_LABEL, MOVE_MANAGER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { masteryCardTip, moveDefTip, reminderTip } from '@/ui/tips';
+import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './MoveManager.module.css';
 
 // Per docs/design/ui/screens.md §4.4 and §6.7.2 — the Move Manager. Free, unlimited, out of combat.
@@ -54,6 +54,8 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
   // §5.13.2 — the fifth slot, read off the run's snapshot of the account. Shown, never editable.
   const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[content.lineBase(mon.speciesId)] ?? 0, content);
   const benched = mon.pool.filter((m) => !active.includes(m));
+  // §6.9.2 — the Move Reminder: what a track or an evolution took out of the pool, free to have back.
+  const forgotten = reminderOptions(mon.pool, mon.speciesId, mon.level, content);
 
   function say(reason: string | undefined) {
     setToast(RUN_REJECT_TEXT[reason ?? ''] ?? 'Not now.');
@@ -163,6 +165,47 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           <p className={styles.empty}>Everything it knows is in the deck. Level up, evolve, teach a TM or visit the Dojo.</p>
         )}
       </section>
+
+      {forgotten.length > 0 && (
+        <section className={styles.column} aria-label={MOVE_MANAGER_TEXT.reminder}>
+          <h4 className={styles.colTitle}>
+            {MOVE_MANAGER_TEXT.reminder} <span className={`${styles.count} tabular`}>{forgotten.length}</span> <InfoDot tip={reminderTip()} />
+          </h4>
+          <ul className={styles.list}>
+            {forgotten.map(({ move: moveId, by }) => {
+              const move = content.move(moveId);
+              return (
+                <li key={moveId}>
+                  <Tipped
+                    as="button"
+                    type="button"
+                    tip={moveDefTip(move, { footer: MOVE_MANAGER_TEXT.tookSlot(content.move(by).name) })}
+                    className={styles.move}
+                    onClick={() => {
+                      if (!dispatch({ type: 'remind-move', uid, moveId })) say(useRunStore.getState().lastRejected?.reason);
+                      // The remembered card is in the pool now: the focus goes with it, not to the page.
+                      else requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-testid="move-${moveId}"]`)?.focus());
+                    }}
+                    data-testid={`remind-${moveId}`}
+                    aria-label={MOVE_MANAGER_TEXT.remindLabel(move.name)}
+                  >
+                    <TypeBadge type={move.type} size={18} mode="attack" />
+                    <span className={styles.moveBody}>
+                      <span className={`${styles.moveName} display`}>{move.name}</span>
+                      <span className={styles.moveMeta}>{move.range} · {move.role}</span>
+                    </span>
+                    <span className={`${styles.stat} tabular`}>{move.power > 0 ? move.power : '—'}</span>
+                    <span className={`${styles.ap} tabular`}>{move.apCost} AP</span>
+                    <span className={styles.grab} aria-hidden="true">
+                      <IconHistory size={16} />
+                    </span>
+                  </Tipped>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       {tms.length > 0 && (
         <section className={styles.column} aria-label="TMs">

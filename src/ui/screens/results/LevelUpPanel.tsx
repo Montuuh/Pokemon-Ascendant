@@ -45,7 +45,7 @@ export function LevelUpPanel({
 }) {
   const content = getContent();
   const count = Math.max(0, Math.min(1, (p - COUNT_FROM) / (COUNT_TO - COUNT_FROM)));
-  const teaches = up.learned.length > 0;
+  const teaches = up.learned.length > 0 || (up.upgraded?.length ?? 0) > 0;
   // The ring drains over a panel that folds by itself; one that teaches a move never leaves on its own, so its ring stands full.
   const left = teaches ? 1 : Math.max(0, Math.min(1, 1 - p));
   return (
@@ -88,6 +88,21 @@ export function LevelUpPanel({
             <TypeLabel type={move.type} size={12} />
             <span className={`${styles.moveName} display`}>{move.name}</span>
             {pooled && <span className={styles.pool}>{REWARD_TEXT.inPool}</span>}
+          </span>
+        );
+      })}
+      {/* §6.9.1 — a track's step: the card it replaced, struck, and the one now in its slot (the Move Reminder keeps the old). */}
+      {(up.upgraded ?? []).map(({ from, to }) => {
+        const move = content.move(to);
+        return (
+          <span key={to} className={styles.move} data-testid={`upgraded-${to}`}>
+            {/* A live region reads the sentence, not the struck picture of it. */}
+            <span className="sr-only">{RESULT_TEXT.grewInto(content.move(from).name, move.name)}</span>
+            <span className={styles.new} aria-hidden="true">{RESULT_TEXT.upgraded}</span>
+            <s className={styles.old} aria-hidden="true">{content.move(from).name}</s>
+            <span aria-hidden="true">→</span>
+            <span aria-hidden="true"><TypeLabel type={move.type} size={12} /></span>
+            <span className={`${styles.moveName} display`} aria-hidden="true">{move.name}</span>
           </span>
         );
       })}

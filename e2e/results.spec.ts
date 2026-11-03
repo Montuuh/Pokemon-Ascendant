@@ -83,9 +83,9 @@ test.describe('The fight\'s end — §9.4.5', () => {
           const level = Number(/Lv (\d+)/.exec(head)?.[1]);
           if (level && seen.at(-1) !== level) seen.push(level);
           if ((await panel.getAttribute('data-held')) !== null) {
-            // It teaches a move: the ring is full, the move is on show, and nothing moves on its own.
+            // It teaches a move or grows one (§6.9.1): the ring is full, the move is on show, and nothing moves on its own.
             await expect(page.getByTestId('levelup-timer')).toHaveAttribute('data-held', 'true');
-            await expect(panel.locator('[data-testid^="learned-"]').first()).toBeVisible();
+            await expect(panel.locator('[data-testid^="learned-"], [data-testid^="upgraded-"]').first()).toBeVisible();
             await page.waitForTimeout(2_200);
             await expect(panel).toBeVisible();
             await expect(panel).toHaveAttribute('data-held', 'true');

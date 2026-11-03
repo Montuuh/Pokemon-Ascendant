@@ -374,6 +374,92 @@ with each move's generation. A new row here needs one there, and an illustration
 | `brave-bird` | Brave Bird | Flying | Off | Melee | — | 3 | 120 | — | recoil 33 % |
 | `outrage` | Outrage | Dragon | Off | Melee | — | 2 | 60 | — | Rampage 2 |
 
+## 1d. Later moves — the progressive learnsets' Gen II–IV moves (v0.9.91)
+
+The moves the stages' learnsets were cut from the series' Gen IV ones needed (§6.9, `scripts/v0991-moves.mjs`): the
+elemental fangs and punches, the Ghost, Dragon, Bug and Poison moves Gen I lacked, and the stage moves a track grows into
+(Charm, Scary Face, Dragon Dance, Rock Polish). Only what the sim already expresses; power is the series' cut into the
+§6.3.6.4 bands. Charm is Normal, its type in Gens II–V. Reference data: `later-moves.json`, with the generation.
+
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `dragon-claw` | Dragon Claw | Dragon | Off | Melee | — | 2 | 75 | — | — (Gen 3) |
+| `dragon-pulse` | Dragon Pulse | Dragon | Off | Ranged | — | 3 | 90 | — | — (Gen 4) |
+| `twister` | Twister | Dragon | Off | Ranged | — | 1 | 45 | — | — (Gen 2) |
+| `dragon-breath` | Dragon Breath | Dragon | Off | Ranged | — | 2 | 65 | — | Paralysis 30 % (Gen 3) |
+| `shadow-ball` | Shadow Ball | Ghost | Off | Ranged | — | 2 | 80 | — | — (Gen 2) |
+| `shadow-claw` | Shadow Claw | Ghost | Off | Melee | — | 2 | 70 | — | — (Gen 4) |
+| `shadow-punch` | Shadow Punch | Ghost | Off | Melee | — | 2 | 60 | — | — (Gen 3) |
+| `shadow-sneak` | Shadow Sneak | Ghost | Off | Melee | — | 1 | 40 | — | — (Gen 4) |
+| `astonish` | Astonish | Ghost | Off | Melee | — | 1 | 40 | — | — (Gen 3) |
+| `bullet-seed` | Bullet Seed | Grass | Off | Ranged | — | 2 | 75 | — | 3 hits (Gen 3) |
+| `seed-bomb` | Seed Bomb | Grass | Off | Ranged | — | 2 | 80 | — | — (Gen 4) |
+| `leaf-blade` | Leaf Blade | Grass | Off | Melee | — | 3 | 90 | — | — (Gen 3) |
+| `energy-ball` | Energy Ball | Grass | Off | Ranged | — | 2 | 80 | — | — (Gen 4) |
+| `giga-drain` | Giga Drain | Grass | Off | Ranged | — | 2 | 65 | — | drain 50 % (Gen 2) |
+| `power-whip` | Power Whip | Grass | Off | Melee | — | 3 | 100 | — | — (Gen 4) |
+| `mach-punch` | Mach Punch | Fighting | Off | Melee | — | 1 | 40 | — | — (Gen 2) |
+| `drain-punch` | Drain Punch | Fighting | Off | Melee | — | 2 | 65 | — | drain 50 % (Gen 4) |
+| `brick-break` | Brick Break | Fighting | Off | Melee | — | 2 | 75 | — | — (Gen 3) |
+| `cross-chop` | Cross Chop | Fighting | Off | Melee | — | 3 | 95 | — | — (Gen 2) |
+| `dynamic-punch` | Dynamic Punch | Fighting | Off | Melee | — | 3 | 90 | — | Confusion 50 % (Gen 2) |
+| `vital-throw` | Vital Throw | Fighting | Off | Melee | — | 2 | 70 | — | — (Gen 2) |
+| `vacuum-wave` | Vacuum Wave | Fighting | Off | Ranged | — | 1 | 45 | — | — (Gen 4) |
+| `aura-sphere` | Aura Sphere | Fighting | Off | Ranged | — | 3 | 90 | — | — (Gen 4) |
+| `reversal` | Reversal | Fighting | Off | Melee | — | 1 | 45 | — | ×2.5 below 34 % HP (Gen 2) |
+| `flail` | Flail | Normal | Off | Melee | — | 1 | 40 | — | ×2.5 below 34 % HP (Gen 2) |
+| `double-hit` | Double Hit | Normal | Off | Melee | — | 2 | 70 | — | 2 hits (Gen 4) |
+| `crush-claw` | Crush Claw | Normal | Off | Melee | — | 2 | 70 | — | foe Def -1 (Gen 3) |
+| `scary-face` | Scary Face | Normal | Util | Ranged | — | 1 | — | — | foe Spe -2 (Gen 2) |
+| `charm` | Charm | Normal | Util | Ranged | — | 1 | — | — | foe Att -2 (Gen 2) |
+| `tickle` | Tickle | Normal | Util | Ranged | — | 1 | — | — | foe Att -1 · foe Def -1 (Gen 3) |
+| `aqua-jet` | Aqua Jet | Water | Off | Melee | — | 1 | 40 | — | — (Gen 4) |
+| `aqua-tail` | Aqua Tail | Water | Off | Melee | — | 3 | 90 | — | — (Gen 4) |
+| `water-pulse` | Water Pulse | Water | Off | Ranged | — | 2 | 65 | — | Confusion 20 % (Gen 3) |
+| `ice-shard` | Ice Shard | Ice | Off | Ranged | — | 1 | 45 | — | — (Gen 4) |
+| `ice-fang` | Ice Fang | Ice | Off | Melee | — | 2 | 65 | — | Freeze 10 % (Gen 4) |
+| `powder-snow` | Powder Snow | Ice | Off | Ranged | — | 1 | 45 | — | Freeze 10 % (Gen 2) |
+| `fire-fang` | Fire Fang | Fire | Off | Melee | — | 2 | 65 | — | Burn 10 % (Gen 4) |
+| `flame-wheel` | Flame Wheel | Fire | Off | Melee | — | 2 | 60 | — | Burn 10 % (Gen 2) |
+| `lava-plume` | Lava Plume | Fire | Off | Ranged | — | 2 | 70 | Cleave | Burn 30 % (Gen 4) |
+| `heat-wave` | Heat Wave | Fire | Off | Ranged | — | 3 | 80 | Cleave | Burn 10 % (Gen 3) |
+| `will-o-wisp` | Will-O-Wisp | Fire | Util | Ranged | — | 1 | — | — | Burn 100 % (Gen 3) |
+| `thunder-fang` | Thunder Fang | Electric | Off | Melee | — | 2 | 65 | — | Paralysis 10 % (Gen 4) |
+| `spark` | Spark | Electric | Off | Melee | — | 2 | 65 | — | Paralysis 30 % (Gen 2) |
+| `discharge` | Discharge | Electric | Off | Ranged | — | 2 | 70 | Cleave | Paralysis 30 % (Gen 4) |
+| `zap-cannon` | Zap Cannon | Electric | Off | Ranged | — | 3 | 90 | — | Paralysis 50 % (Gen 2) |
+| `poison-jab` | Poison Jab | Poison | Off | Melee | — | 2 | 75 | — | Poison 30 % (Gen 4) |
+| `poison-fang` | Poison Fang | Poison | Off | Melee | — | 1 | 50 | — | Poison 30 % (Gen 3) |
+| `cross-poison` | Cross Poison | Poison | Off | Melee | — | 2 | 70 | — | Poison 10 % (Gen 4) |
+| `sludge-bomb` | Sludge Bomb | Poison | Off | Ranged | — | 3 | 90 | — | Poison 30 % (Gen 2) |
+| `gunk-shot` | Gunk Shot | Poison | Off | Ranged | — | 3 | 100 | — | Poison 30 % (Gen 4) |
+| `earth-power` | Earth Power | Ground | Off | Ranged | — | 3 | 90 | — | — (Gen 4) |
+| `mud-shot` | Mud Shot | Ground | Off | Ranged | — | 1 | 50 | — | foe Spe -1 (Gen 3) |
+| `mud-bomb` | Mud Bomb | Ground | Off | Ranged | — | 2 | 65 | — | — (Gen 4) |
+| `aerial-ace` | Aerial Ace | Flying | Off | Melee | — | 2 | 60 | — | — (Gen 3) |
+| `air-slash` | Air Slash | Flying | Off | Ranged | — | 2 | 75 | — | — (Gen 4) |
+| `air-cutter` | Air Cutter | Flying | Off | Ranged | — | 2 | 65 | Cleave | — (Gen 3) |
+| `feather-dance` | Feather Dance | Flying | Util | Ranged | — | 1 | — | — | foe Att -2 (Gen 3) |
+| `zen-headbutt` | Zen Headbutt | Psychic | Off | Melee | — | 2 | 75 | — | — (Gen 4) |
+| `psycho-cut` | Psycho Cut | Psychic | Off | Melee | — | 2 | 70 | — | — (Gen 4) |
+| `x-scissor` | X-Scissor | Bug | Off | Melee | — | 2 | 75 | — | — (Gen 4) |
+| `bug-buzz` | Bug Buzz | Bug | Off | Ranged | — | 3 | 90 | — | — (Gen 4) |
+| `signal-beam` | Signal Beam | Bug | Off | Ranged | — | 2 | 75 | — | Confusion 10 % (Gen 3) |
+| `megahorn` | Megahorn | Bug | Off | Melee | — | 3 | 100 | — | — (Gen 2) |
+| `silver-wind` | Silver Wind | Bug | Off | Ranged | — | 2 | 65 | — | — (Gen 3) |
+| `fury-cutter` | Fury Cutter | Bug | Off | Melee | — | 1 | 40 | — | — (Gen 2) |
+| `ancient-power` | Ancient Power | Rock | Off | Ranged | — | 2 | 65 | — | — (Gen 2) |
+| `stone-edge` | Stone Edge | Rock | Off | Ranged | — | 3 | 100 | — | — (Gen 4) |
+| `rock-blast` | Rock Blast | Rock | Off | Ranged | — | 2 | 75 | — | 3 hits (Gen 3) |
+| `power-gem` | Power Gem | Rock | Off | Ranged | — | 2 | 70 | — | — (Gen 4) |
+| `rock-tomb` | Rock Tomb | Rock | Off | Ranged | — | 1 | 50 | — | foe Spe -1 (Gen 3) |
+| `rock-polish` | Rock Polish | Rock | Util | Ranged | — | 0 | — | — | self Spe +2 (Gen 4) |
+| `metal-sound` | Metal Sound | Steel | Util | Ranged | — | 1 | — | — | foe Def -2 (Gen 3) |
+| `dragon-dance` | Dragon Dance | Dragon | Util | Ranged | — | 1 | — | — | self Att +1 · self Spe +1 (Gen 3) |
+| `nasty-plot` | Nasty Plot | Dark | Util | Ranged | — | 1 | — | — | self Att +2 (Gen 4) |
+| `payback` | Payback | Dark | Off | Melee | — | 1 | 50 | — | — (Gen 4) |
+| `sucker-punch` | Sucker Punch | Dark | Off | Melee | — | 2 | 70 | — | — (Gen 4) |
+
 ## 2. Made better (+)
 
 What a first or final evolution upgrades a card into, derived from its move: more power within its band, or a

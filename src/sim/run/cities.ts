@@ -79,8 +79,9 @@ export const RING = {
   /**
    * §2.9.4.1 — a Ring rival hits harder than the route, not higher (v0.8.6): its Attack is ×this on top of the
    * Region's tier, so the ladder stays hard while its levels stand a few over the team instead of a wall above it.
+   * v0.9.91: 1.7 → 2.05, as the Region tier came down ×0.62 → ×0.50 / ×0.78 → ×0.64 (§2.2.1): the rival's own Attack held.
    */
-  attackMultiplier: 1.7,
+  attackMultiplier: 2.05,
 };
 
 /**

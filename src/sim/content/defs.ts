@@ -148,6 +148,13 @@ export interface EvolutionBranch {
   by?: 'level' | EvolveMethod;
 }
 
+/** §6.9 / §6.9.1 — one learnset row: a move at a level, and the earlier move it replaces when it is a track's next step. */
+export interface LearnsetEntry {
+  level: number;
+  move: string;
+  replaces?: string;
+}
+
 /** §6.3.7 — the ways a Pokémon evolves besides its level. */
 export type EvolveMethod = 'stone' | 'held-item' | 'friendship';
 
@@ -159,7 +166,8 @@ export interface SpeciesDef {
   stage: EvolutionStage;
   baseStats: StatBlock;
   /** §6.9 — ordered (level, move). Known moves are every entry at or below the current level. */
-  learnset: { level: number; move: string }[];
+  /** §6.9 — the stage's own moves by level; §6.9.1 `replaces`: the earlier move whose slot this one takes (a track). */
+  learnset: LearnsetEntry[];
   /** §6.5.1 — the species' ability pool; the first entry is granted at the first evolution. */
   availableAbilities: string[];
   /**
@@ -652,7 +660,7 @@ export interface ContentRegistry {
    * §6.9 — the whole evolution line's learnset for a species, base form first, ordered by level.
    * Evolving never forgets: a Charmeleon still knows what it learned as a Charmander.
    */
-  lineLearnset(id: string): readonly { level: number; move: string }[];
+  lineLearnset(id: string): readonly LearnsetEntry[];
   /** §6.8 / §5.13 — the base species of a line, which is what Mastery and the Pokédex are keyed on. */
   lineBase(id: string): string;
   allSpecies(): readonly SpeciesDef[];

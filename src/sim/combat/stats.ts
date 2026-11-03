@@ -2,7 +2,7 @@ import type { ContentRegistry, SpeciesDef } from '../content/defs';
 import type { BranchArchetype, PokemonType, Stat } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { Combatant } from './state';
-import { applyPayload, autoPickMoves, holdsSlot, lineChain, upgradeParents } from './kit';
+import { applyPayload, autoPickMoves, learnInto, lineChain, upgradeParents } from './kit';
 import { stageMultiplier } from './statStages';
 
 /**
@@ -64,12 +64,14 @@ export function knownMoves(content: ContentRegistry, speciesId: string, level: n
   const lv = Math.max(1, Math.trunc(level));
   const chain = lineChain(content, speciesId);
   const parents = upgradeParents(content, speciesId);
+  const branchParents = upgradeParents(content, speciesId, false);
   let pool: string[] = [];
   chain.forEach((s, i) => {
-    for (const l of [...s.learnset].sort((a, b) => a.level - b.level)) if (l.level <= lv && !holdsSlot(pool, l.move, parents)) pool.push(l.move);
+    // §6.9.1 — a track's row takes its slot, as a level-up does: a met Charizard holds Flamethrower, not Fire Spin beside it.
+    for (const l of [...s.learnset].sort((a, b) => a.level - b.level)) if (l.level <= lv) learnInto(pool, l, parents);
     const next = chain[i + 1];
     const branch = next && s.branches.find((b) => b.to === next.id);
-    if (branch) pool = applyPayload(pool, branch, parents);
+    if (branch) pool = applyPayload(pool, branch, branchParents);
   });
   return pool;
 }

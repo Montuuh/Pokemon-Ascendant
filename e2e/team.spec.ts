@@ -15,6 +15,28 @@ async function newRun(page: Page, setup: () => void) {
 const state = (page: Page) => page.evaluate(() => (window as unknown as { __ascendant: Dev }).__ascendant.run.state!() as { activeUids: string[]; box: { uid: string; speciesId: string; heldItem: string | null }[]; bag: string[] });
 
 test.describe('The Team screen — §2.3, §9.12', () => {
+  test('§6.9.2 — the Move Reminder gives a grown-out move back to the pool, and the focus follows it', async ({ page }) => {
+    await newRun(page, (() => {
+      const a = (window as unknown as { __ascendant: Dev }).__ascendant;
+      a.run.new!('charmander', 7);
+      a.run.patch!((d: { box: { speciesId: string; level: number; pool: string[]; moveIds: string[] }[] }) => {
+        Object.assign(d.box[0]!, { speciesId: 'charmeleon', level: 30, pool: ['fire-fang', 'ember', 'slash', 'screech'], moveIds: ['fire-fang', 'ember', 'slash'] });
+      });
+      a.goTo('map');
+    }));
+    await page.getByTestId('btn-team').click();
+    await page.getByTestId('team-manage-moves').click();
+    // Fire Fang took Scratch's slot at 28: the Reminder has Scratch.
+    const remind = page.getByTestId('remind-scratch');
+    await expect(remind).toBeVisible();
+    await remind.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('remind-scratch')).toHaveCount(0);
+    await expect(page.getByTestId('move-scratch')).toBeFocused();
+    expect(((await state(page)).box[0] as unknown as { pool: string[] }).pool).toContain('scratch');
+    await page.screenshot({ path: 'playtest/team-move-reminder.png' });
+  });
+
   test('§6.3.8–§6.3.9 — a trade line holding its item says it evolves at its next level-up, and Friendship reads as hearts', async ({ page }) => {
     await newRun(page, (() => {
       const a = (window as unknown as { __ascendant: Dev }).__ascendant;

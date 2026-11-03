@@ -613,6 +613,7 @@ export const RUN_REJECT_TEXT: Record<string, string> = {
   'no-dojo-credit': 'The Dojo has nothing left to offer this visit.',
   'cannot-afford': 'Not enough money.',
   'already-groomed': 'Groomed already this visit.',
+  'not-forgotten': 'It has not forgotten that move.',
   'already-sold': 'That one is sold.',
   'not-in-city': 'Only in a town.',
   'building-closed': 'That door is not open yet.',
@@ -710,6 +711,13 @@ export const CENTER_TEXT = {
   fullLabel: (name: string) => `${name} is as fond of you as it gets`,
   noTrauma: 'Nobody is carrying Trauma. Your Box is in better shape than most that get this far.',
   cannotAfford: 'Not enough money',
+};
+
+/** §6.9.2 — the Move Manager's Move Reminder. */
+export const MOVE_MANAGER_TEXT = {
+  reminder: 'Move Reminder',
+  remindLabel: (move: string) => `Remember ${move}: back into the pool`,
+  tookSlot: (by: string) => `${by} took its slot. Remembering is free, and keeps both.`,
 };
 
 /** §2.3 / §9.12 — the Team screen (`TeamScreen`): the formation, the Box and the selected Pokémon's sheet. */
@@ -973,7 +981,12 @@ export const RESULT_TEXT = {
   wildFoe: (name: string) => `the wild ${name}`,
   /** The level-up panel's heading, as the series says it. */
   grew: (name: string, level: number) => `${name} grew to Lv ${level}!`,
+  /** §6.9.1 — a track's step, said in words (the level tag's door, Training's live region). */
+  grewInto: (from: string, to: string) => `${from} grew into ${to}`,
+  reminderKeeps: (from: string) => `the Move Reminder keeps ${from}`,
   learned: 'New move',
+  /** §6.9.1 — a track's step on the level-up panel: the old card struck, the new one in its slot. */
+  upgraded: 'Grew into',
   /** v0.9.80 — a level that teaches a move waits for the player; this is what the waiting panel asks for. */
   clickOn: 'Click to go on',
   fainted: 'Fainted',
@@ -1239,6 +1252,7 @@ export const DEX_EVO_TEXT = {
   from: (name: string, how: string | null) => (how ? `From ${name} · ${how}` : `From ${name}`),
   friendship: 'High Friendship',
   how: 'How it evolves',
+  replaces: (move: string) => `, in ${move}'s slot`,
   learnset: 'Learnset',
   kitByPath: 'Kit by path',
 };

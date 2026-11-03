@@ -17,7 +17,7 @@ import { RouteStop } from '@/ui/components/RouteStop';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { ownedMonTip } from '@/ui/ownedMonTip';
-import { SHOP_TEXT, STAT_LONG, TRAINING_TEXT } from '@/ui/strings';
+import { RESULT_TEXT, SHOP_TEXT, STAT_LONG, TRAINING_TEXT } from '@/ui/strings';
 import { moveDefTip, trainingTip, trainingUpgradeTip } from '@/ui/tips';
 import { InfoDot, Tipped } from '@/ui/tooltip';
 import { TrainingLevelUp, levelBeatMs } from './TrainingLevelUp';
@@ -343,7 +343,7 @@ export function TrainingScreen() {
 
       <p className="sr-only" role="status" aria-live="polite">
         {beat === 'result'
-          ? `${content.species(mon!.speciesId).name}: ${result}${levelUp?.learned.length ? `. New: ${levelUp.learned.map((id) => content.move(id).name).join(', ')}` : ''}`
+          ? `${content.species(mon!.speciesId).name}: ${result}${levelUp?.learned.length ? `. New: ${levelUp.learned.map((id) => content.move(id).name).join(', ')}` : ''}${levelUp?.upgraded?.length ? `. ${levelUp.upgraded.map((u) => RESULT_TEXT.grewInto(content.move(u.from).name, content.move(u.to).name)).join(', ')}` : ''}`
           : run.log.slice(-1).join(' ')}
       </p>
     </main>

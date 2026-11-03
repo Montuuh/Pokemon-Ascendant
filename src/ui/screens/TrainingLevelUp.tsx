@@ -7,7 +7,7 @@ import { RESULT_MS } from './results/results';
 import styles from './TrainingScreen.module.css';
 
 /** How long the stat window stands, in ms: as the fight's end shows it, and longer when a move is taught (it takes reading). */
-export const levelBeatMs = (up: LevelUp): number => (up.learned.length ? 2600 : RESULT_MS.level);
+export const levelBeatMs = (up: LevelUp): number => (up.learned.length || up.upgraded?.length ? 2600 : RESULT_MS.level);
 
 /**
  * §2.12.3 — a Level Push is a level-up, so it plays as one (series-beat rule): the fanfare, then the same stat window

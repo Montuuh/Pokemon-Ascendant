@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { DEFAULT_PROGRESSION, controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
-import { nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
+import { MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
@@ -216,8 +216,12 @@ export function moveTip(play: CardPlayability): ReactNode {
   return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
 }
 
-/** The same card, outside a fight (Move Manager, Dojo): no target, no cost changes. */
-export function moveDefTip(move: MoveDef): ReactNode {
+/**
+ * The same card, outside a fight (Move Manager, Dojo): no target, no cost changes. `replaces` (§6.9.1): the learnset row is
+ * a track's step, and its footer names the card whose slot it takes; `footer` replaces the footer outright (the Reminder's).
+ */
+export function moveDefTip(move: MoveDef, opts: { replaces?: string; footer?: string } = {}): ReactNode {
+  const { replaces } = opts;
   const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${move.apCost} AP`];
   if (move.power > 0) meta.push(`${move.power} power`);
   if (move.pp) meta.push(`PP ${move.pp}`);
@@ -225,7 +229,8 @@ export function moveDefTip(move: MoveDef): ReactNode {
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
   if (move.power > 0) lines.push(attackChart(move.type));
-  return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} />;
+  const footer = opts.footer ?? (replaces ? `Learned in ${getContent().move(replaces).name}'s slot. The Move Reminder gives ${getContent().move(replaces).name} back.` : undefined);
+  return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
 }
 
 // ── Intents ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -450,7 +455,7 @@ export function evoPathsTip(): ReactNode {
 /** §6.9 — a form's own learnset in the Pokédex: a base form's four, an evolved form's signature moves (v0.9.11). */
 export function learnsetTip(speciesId: string): ReactNode {
   const evolves = evolveSentence(speciesId, getContent());
-  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolves ? ', until it evolves' : ''}.`} footer={evolves ? `${evolves} Evolving rewrites part of the kit and teaches the new form its own moves: the line tab shows each path.` : undefined} />;
+  return <Tip title={DEX_EVO_TEXT.learnset} body={`Its own moves, by the level it learns them. A Pokémon knows every entry at or below its level${evolves ? ', until it evolves' : ''}. A row with the rising arrow grows out of an earlier move and takes its slot; the Move Reminder keeps the old one.`} footer={evolves ? `${evolves} Evolving rewrites part of the kit and teaches the new form its own moves: the line tab shows each path.` : undefined} />;
 }
 
 /** §6.3.5 — an evolved form's kit by path in the Pokédex: what each chain of branches leaves it with. */
@@ -922,6 +927,11 @@ export function teamPlaceTip(why: 'gap' | 'last' | 'locked'): ReactNode {
 /** §6.2 — a Pokémon's XP on its sheet: to the next level, and what the bench learns, as this run pays it. */
 export function teamXpTip(xp: number, next: number, benchShare: number): ReactNode {
   return <Tip title={`${xp} / ${next} XP`} body={`To the next level. The formation earns a fight's XP in full; the Box earns ${Math.round(benchShare * 100)} % of it.`} />;
+}
+
+/** §6.9.2 — the Move Reminder, beside its heading in the Move Manager. */
+export function reminderTip(): ReactNode {
+  return <Tip title={MOVE_MANAGER_TEXT.reminder} body="The moves a track or an evolution grew into something else. Remembering one is free, between nodes, and puts it back in the pool beside the move that took its slot." />;
 }
 
 /** §6.3.9 — what moves Friendship, in the one sentence every Friendship tip uses. */
@@ -1559,11 +1569,13 @@ export function evolveTip(label: string): ReactNode {
 // ── A fight's result (§9.4.5, v0.9.30) ────────────────────────────────────────────────────────────────────
 
 /** What a level-up added: each stat from its old value to its new one. */
-export function levelGainTip(name: string, from: number, to: number, gains: Record<string, number>, statsAt?: Record<string, number>, learned: readonly { name: string; pooled: boolean }[] = []): ReactNode {
+export function levelGainTip(name: string, from: number, to: number, gains: Record<string, number>, statsAt?: Record<string, number>, learned: readonly { name: string; pooled: boolean }[] = [], grew: readonly { from: string; to: string }[] = []): ReactNode {
   const stats = statsAt ? Object.entries(gains).map(([k, v]) => <div key={k}>{STAT_LONG[k] ?? k} {statsAt[k]! - v} → <b>{statsAt[k]}</b></div>) : [];
   // §6.7.2 — a move the levels brought: in the four, or waiting in the pool past them.
   const moves = learned.map((m) => <div key={m.name}>{m.pooled ? `${m.name} waits in the pool` : `Learned ${m.name}`}</div>);
-  return <Tip title={`${name} — Lv ${from} → ${to}`} body={[...stats, ...moves]} footer="Every level adds a share of each base stat: a bigger base grows more. Trauma still takes its share of HP." />;
+  // §6.9.1 — a track's step, and where the old card went.
+  const tracks = grew.map((g) => <div key={g.to}>{RESULT_TEXT.grewInto(g.from, g.to)} — {RESULT_TEXT.reminderKeeps(g.from)}</div>);
+  return <Tip title={`${name} — Lv ${from} → ${to}`} body={[...stats, ...moves, ...tracks]} footer="Every level adds a share of each base stat: a bigger base grows more. Trauma still takes its share of HP." />;
 }
 
 /** §6.2.1 — the XP a fight paid one Pokémon: the team on the field takes the whole share, the Box a smaller one. */

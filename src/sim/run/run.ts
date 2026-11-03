@@ -3,6 +3,7 @@ import type { ContentRegistry } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { fnv1a, RngStreams } from '../rng/rngStreams';
 import { knownMoves } from '../combat/stats';
+import { forgottenMoves } from '../combat/kit';
 import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion, WILD_RARE_CHANCE } from './map';
@@ -1552,6 +1553,14 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         break;
       }
 
+      // §6.9.2 — the Move Reminder: free, between nodes; the move comes back into the pool, and the active 4 is the player's.
+      case 'remind-move': {
+        const mon = draft.box.find((m) => m.uid === action.uid)!;
+        learnMove(mon, action.moveId);
+        say(draft, `${ctx.content.species(mon.speciesId).name} remembered ${ctx.content.move(action.moveId).name}.`);
+        break;
+      }
+
       // §6.4.1 — a TM is single use and permanent. It adds to the pool; the player re-picks the active 4.
       case 'use-tm': {
         const mon = draft.box.find((m) => m.uid === action.uid)!;
@@ -2284,6 +2293,13 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
       } else if (!pending.forced && !isEvolutionReady(mon, ctx.content, catalystLevels(state, ctx.content))) return 'wrong-phase';
       if (!pending.branchIds.includes(action.branchId) || !ctx.content.species(mon.speciesId).branches.some((b) => b.id === action.branchId)) return 'unknown-branch';
       return undefined;
+    }
+
+    case 'remind-move': {
+      if (outOfCombat(state)) return 'wrong-phase';
+      const mon = state.box.find((m) => m.uid === action.uid);
+      if (!mon) return 'unknown-pokemon';
+      return forgottenMoves(mon.pool, mon.speciesId, mon.level, ctx.content).includes(action.moveId) ? undefined : 'not-forgotten';
     }
 
     case 'set-moves': {

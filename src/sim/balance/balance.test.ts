@@ -78,8 +78,10 @@ describe('Balance envelope (auto-player)', () => {
     // read 0.33 / 0.69; the run-level curve (120 runs x 3 starters) did not move, which is where the pace is guarded.
     // v0.9.89: 0.72 from 0.7 — with the sacrifices weighed by HP (§5.3.1) the sample reads 0.42 faints and 0.70 HP left; the
     // twelve seeds swing ±0.03 on the weight's second decimal, so the rail sits a hair above the noise.
-    expect(b.avgFaints).toBeGreaterThanOrEqual(0.3);
-    expect(b.avgTeamHpLeft).toBeLessThanOrEqual(0.72);
+    // v0.9.91: 0.2 / 0.76 — the fixture's team learned its tracks (§6.9.1): the twelve seeds read 0.25 faints and 0.74 HP left;
+    // the run-level curve came back to its band with the Region tier (R1 63 · R2|R1 48 · R3|R2 47 · run 8 %).
+    expect(b.avgFaints).toBeGreaterThanOrEqual(0.2);
+    expect(b.avgTeamHpLeft).toBeLessThanOrEqual(0.76);
   });
 
   // §5.6 — a group is a harder read, not a wall: every group fixture is a real fight a decent player wins.

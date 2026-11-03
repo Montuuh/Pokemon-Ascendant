@@ -685,7 +685,11 @@ great, not an invented one, and a content test keeps it out of every path the ki
   not learn Razor Leaf), and **a late evolution catches up**: a form evolving past one of its own entries — a stone
   used at Lv 30 — learns it on the spot.
 - Each species has an ordered learnset of `(level, move)` entries; a Pokémon knows every entry at or below its
-  current level.
+  current level. **Every stage learns its own** (v0.9.91, the user's call: "more moves to learn, progressing like the
+  Pokémon's"): the series' Gen IV learnset of that species, cut to the stage's own level window and merged with the rows
+  it already had (`scripts/v0991-learnsets.mjs`; the source is `scripts/data/learnsets-gen4.json`) — about six a stage,
+  fourteen at most, so a Pokémon learns something every few levels all run. A move the line gets another way is never
+  added by level: its Mastery tiers, its branches' payloads, its tutor and egg lists.
 - **Deck contribution = `min(known, 4)`.** The active-4 cap never changes, and Mastery remains the 5th.
 - **One met already evolved** — a wild Ivysaur, a Gym's Venusaur, a recruit caught above its threshold — took its
   stage's first branch at every step, and its forms' learnsets up to its level, so it holds the kit a player's would.
@@ -705,8 +709,35 @@ great, not an invented one, and a content test keeps it out of every path the ki
 
 **What this produces.** A run opens with one Pokémon and a **two-card deck**. It thickens as you recruit — about
 six cards with a full base-form team — and reaches twelve by Gym 1 as those Pokémon level into their four-move
-kits. The deck growing *is* the early game's sense of progress, and it is why the natural learnset is
-deliberately lean — four by level, one more by evolution: scarcity is what makes the Dojo, TMs and evolution matter.
+kits. The deck growing *is* the early game's sense of progress. Past four, a Pokémon's moves **grow** rather than pile
+up (§6.9.1): the pool stays a choice, and the active four keep getting better.
+
+## §6.9.1 Tracks — a move grows like the Pokémon
+
+A learnset row can **replace** an earlier move (`replaces`): learned, it takes that move's slot in the pool and in the
+active four, in place (v0.9.91, the user's call: "final forms should not keep weak moves like Scratch"). A Charmeleon's
+Fire Fang takes Scratch's slot at 28, a Charizard's Flamethrower Fire Spin's at 42; a Mankey's Low Kick Scratch's at 5.
+
+- **The rule a track follows.** A hit replaces a hit of its range and of its type (or a Normal one), at least 10 power
+  stronger and at most one AP band dearer; a foe debuff or a self brace replaces a weaker one of the same stats. A hit
+  replaces a hit that is not a filler only once the line holds four attacks, so an evolved form keeps three (§6.3.5); a
+  base form keeps four by its evolution level (its own tracks spend only what it has past four).
+- **No final form keeps a level-1 filler** — Tackle, Scratch, Pound, Peck, Wrap, Growl, Leer, Tail Whip, Sand Attack,
+  String Shot, Harden, Defense Curl, Withdraw — on any path, learned or handed over by a branch: where the line's own
+  moves never grow one, its first evolution learns the filler's role's upgrade (a melee hit of its type or Headbutt,
+  Charm, Screech, Scary Face, Iron Defense). A content test walks every path.
+- **A branch follows its own slots.** An evolution's upgrade of a move a track has already grown arrives beside the
+  track's card, not over it (a Sandslash keeps the Dig its Scratch became, and takes Slash too).
+- The level-up window names each step — *Grew into* ~~Scratch~~ → Fire Fang — and holds for a click like a new move
+  (§9.4.5). A Pokémon met on the route, or a recruit, holds its tracks at its level, as a player's would.
+
+## §6.9.2 The Move Reminder
+
+What a track or an evolution took out of the pool is not lost: the **Move Reminder**, a section of the Move Manager
+(§6.7.2), gives any of it back — free, between nodes, as often as wanted — into the pool, beside the move that replaced
+it. It offers the moves the line learns by level at or below the Pokémon's level that an evolution or a track replaced
+(Ember at 1 AP is sometimes worth more than Flamethrower at 3). *(The plan placed it at the Center, as FRLG's Move
+Reminder; in the Move Manager it is where the choice it serves is made, and it needs no trip.)*
 
 > **Legacy field.** `PrimaryAbility` was the pre-pool auto-grant field, retained only for save compatibility.
 > New and updated species populate `availableAbilities` (§6.5.1).

@@ -30,7 +30,8 @@ function evolves(s) {
   return `${parts.join(', or ')} → ${to}${npc}`;
 }
 
-const learnset = (s) => (s.learnset.length ? s.learnset.map((l) => `${l.level} \`${l.move}\``).join(' · ') : '—');
+// v0.9.91 (§6.9.1) — a track's row names the move whose slot it takes.
+const learnset = (s) => (s.learnset.length ? s.learnset.map((l) => `${l.level} \`${l.move}\`${l.replaces ? ` (← \`${l.replaces}\`)` : ''}`).join(' · ') : '—');
 
 let changed = 0;
 for (const file of ['docs/design/catalogs/species-gen1.md', 'docs/design/catalogs/species-r1.md', 'docs/design/catalogs/species-r2.md']) {

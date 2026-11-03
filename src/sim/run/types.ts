@@ -309,6 +309,8 @@ export interface LevelUp {
   evolutionReady?: boolean;
   /** §6.3.9 — the Friendship the levels added (after any Soothe Bell). Optional: absent is none. */
   friendship?: number;
+  /** §6.9.1 — a track's step: the move learned in the slot of the one it replaced (Ember → Flamethrower). Absent is none. */
+  upgraded?: { from: string; to: string }[];
   /** §6.2.3 — what the levels added to each stat (growth × levels), for the fight's result (v0.9.6, §9.4.5). Optional: a save
    *  from before reads as none. */
   gains?: { hp: number; attack: number; defense: number; speed: number };
@@ -882,6 +884,8 @@ export type RunAction =
   | { type: 'use-therapy'; uid: string }
   /** §6.3.9 — the Center's grooming: Friendship for one Pokémon, once a visit. */
   | { type: 'groom'; uid: string }
+  /** §6.9.2 — the Move Reminder: a move a track or an evolution replaced, back in the pool. Free, between nodes. */
+  | { type: 'remind-move'; uid: string; moveId: string }
   /** §2.9.4.2 — the Dojo's scrolls: one of the line's egg moves. */
   | { type: 'teach-egg-move'; uid: string; moveId: string }
   /** §7.4.1 — equip a bagged held item, or take one off. `itemId` null unequips. */
@@ -943,6 +947,8 @@ export type RunRejectReason =
   | 'no-trauma'
   /** §6.3.9 — groomed already this visit, or as fond of you as it can be. */
   | 'already-groomed'
+  /** §6.9.2 — not a move this Pokémon has forgotten. */
+  | 'not-forgotten'
   | 'not-an-egg-move'
   | 'unknown-option'
   /** §2.11 — a City action outside a City, or a City shop action at the route's merchant. */

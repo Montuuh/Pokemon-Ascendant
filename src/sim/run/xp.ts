@@ -1,6 +1,6 @@
 import type { ContentRegistry, EvolutionBranch, EvolutionItemUse, EvolveMethod, SpeciesDef } from '../content/defs';
 import type { EnemyTier } from '../content/defs';
-import { holdsSlot, slotIndex, upgradeParents } from '../combat/kit';
+import { learnInto, slotIndex, upgradeParents } from '../combat/kit';
 import { statAtLevel } from '../combat/stats';
 import type { LevelUp, PartyMon } from './types';
 
@@ -124,6 +124,23 @@ export function levelXpFactor(enemyLevel: number, monLevel: number, config = DEF
   return Math.pow((2 * enemyLevel + 10) / (enemyLevel + monLevel + 10), config.xpLevelExponent);
 }
 
+/**
+ * §6.9 / §6.9.1 — one learnset row on a Pokémon: `learnInto` on its pool, and the active 4 to match — a replaced move's
+ * card becomes the new one where it stood; a move learned beside the rest fills a free slot.
+ */
+function learnRow(mon: PartyMon, entry: { move: string; replaces?: string }, parents: Map<string, Set<string>>): { move: string; replaced: string | null; activated: boolean } | null {
+  const done = learnInto(mon.pool, entry, parents);
+  if (!done) return null;
+  if (done.replaced) {
+    const at = mon.moveIds.indexOf(done.replaced);
+    if (at >= 0) mon.moveIds[at] = done.move;
+    return { ...done, activated: at >= 0 };
+  }
+  const activated = mon.moveIds.length < 4;
+  if (activated) mon.moveIds.push(done.move);
+  return { ...done, activated };
+}
+
 /** §6.7.1 — add a move to the pool if it is not already there. Returns whether it was new. */
 export function learnMove(mon: PartyMon, moveId: string): boolean {
   if (mon.pool.includes(moveId)) return false;
@@ -156,15 +173,18 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
 
   const learned: string[] = [];
   const activated: string[] = [];
-  // §6.9 — only what the new levels teach: a move an evolution has since rewritten is not learned again.
-  const reached = content.lineLearnset(mon.speciesId).filter((l) => l.level > from && l.level <= mon.level).map((l) => l.move);
+  const upgraded: { from: string; to: string }[] = [];
+  // §6.9 — only what the new levels teach: a move an evolution has since rewritten is not learned again. §6.9.1 — a
+  // track's row takes the slot of the move it replaces, in the pool and the active 4 (the Move Reminder keeps the old).
+  const reached = content.lineLearnset(mon.speciesId).filter((l) => l.level > from && l.level <= mon.level);
   const parents = upgradeParents(content, mon.speciesId);
-  for (const id of reached) {
-    if (holdsSlot(mon.pool, id, parents) || !learnMove(mon, id)) continue;
-    learned.push(id);
-    if (mon.moveIds.length < 4) {
-      mon.moveIds.push(id);
-      activated.push(id);
+  for (const entry of reached) {
+    const done = learnRow(mon, entry, parents);
+    if (!done) continue;
+    if (done.replaced) upgraded.push({ from: done.replaced, to: done.move });
+    else {
+      learned.push(done.move);
+      if (done.activated) activated.push(done.move);
     }
   }
 
@@ -180,6 +200,7 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
     gains: { hp: at('hp') - was('hp'), attack: at('attack') - was('attack'), defense: at('defense') - was('defense'), speed: at('speed') - was('speed') },
     statsAt: { hp: at('hp'), attack: at('attack'), defense: at('defense'), speed: at('speed') },
   };
+  if (upgraded.length) up.upgraded = upgraded;
   let befriended = 0;
   for (let l = from; l < mon.level; l++) befriended += befriend(mon, levelUpFriendship(mon.friendship, config) * friendshipScale, config);
   if (befriended) up.friendship = befriended;
@@ -273,7 +294,8 @@ export function previewBranch(mon: PartyMon, branchId: string, content: ContentR
 
   const upgrades: BranchPreview['upgrades'] = [];
   const adds = [...branch.adds];
-  const parents = upgradeParents(content, mon.speciesId);
+  // §6.9.1 — a branch follows its own slots, not the tracks' (`upgradeParents` without them).
+  const parents = upgradeParents(content, mon.speciesId, false);
   for (const u of branch.upgrades) {
     // A slot is named by the move that first held it; it shows as whatever that slot holds now.
     const i = slotIndex(mon.pool, u.from, parents);
@@ -318,9 +340,12 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   mon.speciesId = branch.to;
   mon.archetype = branch.archetype;
 
+  // §6.9.1 — a branch follows its own slots, not the tracks': a slot a track grew keeps its card, and the upgrade arrives
+  // beside it. The catch-up below learns along the tracks.
+  const branchParents = upgradeParents(content, mon.speciesId, false);
   const parents = upgradeParents(content, mon.speciesId);
   for (const u of branch.upgrades) {
-    const inPool = slotIndex(mon.pool, u.from, parents);
+    const inPool = slotIndex(mon.pool, u.from, branchParents);
     const held = inPool >= 0 ? mon.pool[inPool]! : null;
     if (held) mon.pool[inPool] = u.to;
     else if (!mon.pool.includes(u.to)) mon.pool.push(u.to);
@@ -332,8 +357,8 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   }
   // §6.9 — the new form's own learnset up to the level it evolved at (v0.9.11): a late evolution — a stone used at
   // Lv 30, an evolution put off — learns what that form would already know, rather than nothing until its next level.
-  for (const l of content.species(branch.to).learnset) {
-    if (l.level <= mon.level && !holdsSlot(mon.pool, l.move, parents) && learnMove(mon, l.move) && mon.moveIds.length < 4) mon.moveIds.push(l.move);
+  for (const l of [...content.species(branch.to).learnset].sort((a, b) => a.level - b.level)) {
+    if (l.level <= mon.level) learnRow(mon, l, parents);
   }
 
   // §6.7.1 — the pool deduplicates: an upgrade can land on a move a TM already gave you.

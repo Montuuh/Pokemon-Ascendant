@@ -173,6 +173,10 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+/* §6.9.1 — the card a track replaced: struck, in the panel's quiet ink. */
+.old {
+  color: color-mix(in srgb, var(--ink-on-accent) 80%, var(--brand-cream));
+}
 /* The panel is cream inside the dark stage, so its quiet ink is the dark ink softened, not the stage's secondary. */
 .pool {
   font-size: var(--type-micro);

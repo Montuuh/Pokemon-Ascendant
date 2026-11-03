@@ -288,6 +288,12 @@ button.heroChip:hover {
   color: var(--ink-secondary);
   white-space: nowrap;
 }
+/* §6.9.1 — a learnset row that grows out of an earlier move: a quiet rising arrow beside its name. */
+.moveReplaces {
+  margin-left: var(--sp-1);
+  vertical-align: -2px;
+  color: var(--ink-secondary);
+}
 .moveLocked {
   opacity: 0.55;
 }

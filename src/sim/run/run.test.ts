@@ -669,11 +669,14 @@ describe('Evolution — §6.2.4, §6.3', () => {
     // A Support Ivysaur becomes a Vanguard Venusaur: nothing about the first pick locks the second.
     expect(mon.archetype).toBe('vanguard');
     // §6.3.5 — the final evolution swaps slots for the archetype's signature, whatever the first branch made of them:
-    // Vine Whip's slot becomes Petal Dance: five slots, and what Ivysaur learned by level on the way (§6.9, v0.9.11).
+    // Vine Whip's slot becomes Petal Dance, and what Ivysaur learned by level on the way (§6.9, v0.9.11): Scary Face in Growl's
+    // slot (§6.9.1), Sludge and Double-Edge beside the rest.
     expect(mon.pool).toContain('petal-dance');
     expect(mon.pool).not.toContain('vine-whip');
     expect(mon.pool).toContain('sludge');
-    expect(mon.pool).toHaveLength(6);
+    expect(mon.pool).toContain('scary-face');
+    expect(mon.pool).not.toContain('growl');
+    expect(mon.pool).toHaveLength(8);
     expect(mon.abilityId).toBe('tough-claws');
   });
 

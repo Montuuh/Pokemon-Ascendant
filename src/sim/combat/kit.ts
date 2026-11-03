@@ -1,4 +1,4 @@
-import type { ContentRegistry, EvolutionBranch, SpeciesDef } from '../content/defs';
+import type { ContentRegistry, EvolutionBranch, LearnsetEntry, SpeciesDef } from '../content/defs';
 import type { PokemonType } from '../types';
 
 // §6.3.5 / §6.9 — a line's kit as slots (v0.9.5). A base form learns four moves; every evolution after that rewrites
@@ -16,23 +16,78 @@ import type { PokemonType } from '../types';
  * v0.9.11 with the evolved forms' learnsets (a final form's kit is now 8–11 cards): a guard against runaway lists, not a
  * budget — the deck is still each Pokémon's active four.
  */
-export const MOVE_CAP = { kit: 12, learnset: 10, tutor: 3, egg: 3, offered: 18 } as const;
+export const MOVE_CAP = { kit: 18, learnset: 14, tutor: 3, egg: 3, offered: 24 } as const;
 
-/** Every upgrade in the line, read backwards: an evolved card → the cards it can have come from. */
-export function upgradeParents(content: ContentRegistry, speciesId: string): Map<string, Set<string>> {
+/**
+ * Every upgrade in the line, read backwards: an evolved card → the cards it can have come from. A branch's upgrades and,
+ * since v0.9.91, the learnsets' tracks (§6.9.1): a move that replaces another holds that move's slot. `tracks: false`
+ * leaves the tracks out — what a branch's payload follows: a slot a track has grown is the track's, and a branch's
+ * upgrade of the move it grew from arrives beside it, not over it (a Sandslash keeps the Dig its Scratch became).
+ */
+export function upgradeParents(content: ContentRegistry, speciesId: string, tracks = true): Map<string, Set<string>> {
   const base = content.lineBase(speciesId);
   const parents = new Map<string, Set<string>>();
+  const edge = (to: string, from: string) => {
+    if (!parents.has(to)) parents.set(to, new Set());
+    parents.get(to)!.add(from);
+  };
   const visit = (id: string) => {
     const s = content.species(id);
-    for (const b of s.branches)
-      for (const u of b.upgrades) {
-        if (!parents.has(u.to)) parents.set(u.to, new Set());
-        parents.get(u.to)!.add(u.from);
-      }
+    for (const b of s.branches) for (const u of b.upgrades) edge(u.to, u.from);
+    if (tracks) for (const l of s.learnset) if (l.replaces) edge(l.move, l.replaces);
     for (const next of s.evolvesTo) visit(next);
   };
   visit(base);
   return parents;
+}
+
+/** The cards `move` can have come from, nearest first (its slot's history). */
+function ancestorsOf(move: string, parents: Map<string, Set<string>>): string[] {
+  const out: string[] = [];
+  const queue = [move];
+  while (queue.length) {
+    const x = queue.shift()!;
+    for (const y of parents.get(x) ?? []) if (!out.includes(y) && y !== move) { out.push(y); queue.push(y); }
+  }
+  return out;
+}
+
+/**
+ * §6.9 / §6.9.1 — one learnset row on a pool. A move the pool already holds (or the card a branch or a track made of it)
+ * is not learned again. A track's row takes the slot of the move it replaces — that move itself, or an earlier step of its
+ * track a late catch never learned — in place; a slot a branch has rewritten into something else is left to the branch,
+ * and the row is learned beside it. Mutates `pool`; returns what happened, or null when nothing did.
+ */
+export function learnInto(pool: string[], entry: Pick<LearnsetEntry, 'move' | 'replaces'>, parents: Map<string, Set<string>>): { move: string; replaced: string | null } | null {
+  if (holdsSlot(pool, entry.move, parents)) return null;
+  if (entry.replaces) {
+    const history = [entry.replaces, ...ancestorsOf(entry.replaces, parents)];
+    const i = pool.findIndex((m) => history.includes(m));
+    if (i >= 0) {
+      const replaced = pool[i]!;
+      pool[i] = entry.move;
+      return { move: entry.move, replaced };
+    }
+  }
+  pool.push(entry.move);
+  return { move: entry.move, replaced: null };
+}
+
+/**
+ * §6.9.2 — the Move Reminder: the moves a track or an evolution took out of this pool that its line learns by level at or
+ * below `level` — Ember after Flamethrower, Tackle after a branch's Headbutt. Remembering one puts it back in the pool.
+ */
+export function forgottenMoves(pool: readonly string[], speciesId: string, level: number, content: ContentRegistry): string[] {
+  return reminderOptions(pool, speciesId, level, content).map((o) => o.move);
+}
+
+/** §6.9.2 — the same, each with the card in the pool that took its slot (`by`), for the Move Manager to name. */
+export function reminderOptions(pool: readonly string[], speciesId: string, level: number, content: ContentRegistry): { move: string; by: string }[] {
+  const parents = upgradeParents(content, speciesId);
+  const learnt = new Set(content.lineLearnset(speciesId).filter((l) => l.level <= level).map((l) => l.move));
+  const out: { move: string; by: string }[] = [];
+  for (const m of pool) for (const a of ancestorsOf(m, parents)) if (learnt.has(a) && !pool.includes(a) && !out.some((o) => o.move === a)) out.push({ move: a, by: m });
+  return out;
 }
 
 /** Where `from` sits in the pool: the move itself, or the card that slot has become. −1 when the slot is empty. */
@@ -154,10 +209,11 @@ export function autoPickMoves(pool: readonly string[], content: ContentRegistry,
 export function kitPaths(content: ContentRegistry, speciesId: string): { branches: string[]; pool: string[] }[] {
   const base = content.species(content.lineBase(speciesId));
   const parents = upgradeParents(content, base.id);
+  const branchParents = upgradeParents(content, base.id, false);
   const learn = (s: SpeciesDef, pool: string[]) => {
     const out = [...pool];
     const top = s.evolveLevel ? s.evolveLevel - 1 : 100;
-    for (const e of [...s.learnset].sort((x, y) => x.level - y.level)) if (e.level <= top && !holdsSlot(out, e.move, parents)) out.push(e.move);
+    for (const e of [...s.learnset].sort((x, y) => x.level - y.level)) if (e.level <= top) learnInto(out, e, parents);
     return out;
   };
   const out: { branches: string[]; pool: string[] }[] = [];
@@ -167,7 +223,7 @@ export function kitPaths(content: ContentRegistry, speciesId: string): { branche
       out.push({ branches, pool });
       return;
     }
-    for (const b of s.branches) walk(content.species(b.to), [...branches, b.id], applyPayload(pool, b, parents));
+    for (const b of s.branches) walk(content.species(b.to), [...branches, b.id], applyPayload(pool, b, branchParents));
   };
   walk(base, [], []);
   return out;

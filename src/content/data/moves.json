@@ -5282,6 +5282,1094 @@
           "turns": 2
         }
       ]
+    },
+    {
+      "id": "dragon-claw",
+      "name": "Dragon Claw",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "dragon-pulse",
+      "name": "Dragon Pulse",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "twister",
+      "name": "Twister",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": []
+    },
+    {
+      "id": "dragon-breath",
+      "name": "Dragon Breath",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "shadow-ball",
+      "name": "Shadow Ball",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "shadow-claw",
+      "name": "Shadow Claw",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "shadow-punch",
+      "name": "Shadow Punch",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": []
+    },
+    {
+      "id": "shadow-sneak",
+      "name": "Shadow Sneak",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "astonish",
+      "name": "Astonish",
+      "type": "ghost",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "bullet-seed",
+      "name": "Bullet Seed",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "seed-bomb",
+      "name": "Seed Bomb",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "leaf-blade",
+      "name": "Leaf Blade",
+      "type": "grass",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "energy-ball",
+      "name": "Energy Ball",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 80,
+      "effects": []
+    },
+    {
+      "id": "giga-drain",
+      "name": "Giga Drain",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "drain",
+          "percentOfDamage": 0.5
+        }
+      ]
+    },
+    {
+      "id": "power-whip",
+      "name": "Power Whip",
+      "type": "grass",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "mach-punch",
+      "name": "Mach Punch",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "drain-punch",
+      "name": "Drain Punch",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "drain",
+          "percentOfDamage": 0.5
+        }
+      ]
+    },
+    {
+      "id": "brick-break",
+      "name": "Brick Break",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "cross-chop",
+      "name": "Cross Chop",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 95,
+      "effects": []
+    },
+    {
+      "id": "dynamic-punch",
+      "name": "Dynamic Punch",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "id": "vital-throw",
+      "name": "Vital Throw",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "vacuum-wave",
+      "name": "Vacuum Wave",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": []
+    },
+    {
+      "id": "aura-sphere",
+      "name": "Aura Sphere",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "reversal",
+      "name": "Reversal",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "self-below",
+          "below": 0.34,
+          "multiplier": 2.5
+        }
+      ]
+    },
+    {
+      "id": "flail",
+      "name": "Flail",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "self-below",
+          "below": 0.34,
+          "multiplier": 2.5
+        }
+      ]
+    },
+    {
+      "id": "double-hit",
+      "name": "Double Hit",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 2
+        }
+      ]
+    },
+    {
+      "id": "crush-claw",
+      "name": "Crush Claw",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "scary-face",
+      "name": "Scary Face",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "speed",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "tickle",
+      "name": "Tickle",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -1
+        },
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "aqua-jet",
+      "name": "Aqua Jet",
+      "type": "water",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "aqua-tail",
+      "name": "Aqua Tail",
+      "type": "water",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "water-pulse",
+      "name": "Water Pulse",
+      "type": "water",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.2
+        }
+      ]
+    },
+    {
+      "id": "ice-shard",
+      "name": "Ice Shard",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": []
+    },
+    {
+      "id": "ice-fang",
+      "name": "Ice Fang",
+      "type": "ice",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "powder-snow",
+      "name": "Powder Snow",
+      "type": "ice",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 45,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "freeze",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "fire-fang",
+      "name": "Fire Fang",
+      "type": "fire",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "flame-wheel",
+      "name": "Flame Wheel",
+      "type": "fire",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "lava-plume",
+      "name": "Lava Plume",
+      "type": "fire",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "targeting": "cleave",
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "heat-wave",
+      "name": "Heat Wave",
+      "type": "fire",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 80,
+      "targeting": "cleave",
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "will-o-wisp",
+      "name": "Will-O-Wisp",
+      "type": "fire",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 1
+        }
+      ]
+    },
+    {
+      "id": "thunder-fang",
+      "name": "Thunder Fang",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "spark",
+      "name": "Spark",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "discharge",
+      "name": "Discharge",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "targeting": "cleave",
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "zap-cannon",
+      "name": "Zap Cannon",
+      "type": "electric",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "id": "poison-jab",
+      "name": "Poison Jab",
+      "type": "poison",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "poison-fang",
+      "name": "Poison Fang",
+      "type": "poison",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "cross-poison",
+      "name": "Cross Poison",
+      "type": "poison",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "sludge-bomb",
+      "name": "Sludge Bomb",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "gunk-shot",
+      "name": "Gunk Shot",
+      "type": "poison",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "chance": 0.3
+        }
+      ]
+    },
+    {
+      "id": "earth-power",
+      "name": "Earth Power",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "mud-shot",
+      "name": "Mud Shot",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "speed",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "mud-bomb",
+      "name": "Mud Bomb",
+      "type": "ground",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": []
+    },
+    {
+      "id": "aerial-ace",
+      "name": "Aerial Ace",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": []
+    },
+    {
+      "id": "air-slash",
+      "name": "Air Slash",
+      "type": "flying",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "air-cutter",
+      "name": "Air Cutter",
+      "type": "flying",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "targeting": "cleave",
+      "effects": []
+    },
+    {
+      "id": "feather-dance",
+      "name": "Feather Dance",
+      "type": "flying",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "zen-headbutt",
+      "name": "Zen Headbutt",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "psycho-cut",
+      "name": "Psycho Cut",
+      "type": "psychic",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "x-scissor",
+      "name": "X-Scissor",
+      "type": "bug",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": []
+    },
+    {
+      "id": "bug-buzz",
+      "name": "Bug Buzz",
+      "type": "bug",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 90,
+      "effects": []
+    },
+    {
+      "id": "signal-beam",
+      "name": "Signal Beam",
+      "type": "bug",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "status",
+          "status": "confusion",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "megahorn",
+      "name": "Megahorn",
+      "type": "bug",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "silver-wind",
+      "name": "Silver Wind",
+      "type": "bug",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": []
+    },
+    {
+      "id": "fury-cutter",
+      "name": "Fury Cutter",
+      "type": "bug",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": []
+    },
+    {
+      "id": "ancient-power",
+      "name": "Ancient Power",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 65,
+      "effects": []
+    },
+    {
+      "id": "stone-edge",
+      "name": "Stone Edge",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 100,
+      "effects": []
+    },
+    {
+      "id": "rock-blast",
+      "name": "Rock Blast",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "multi-hit",
+          "hits": 3
+        }
+      ]
+    },
+    {
+      "id": "power-gem",
+      "name": "Power Gem",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "rock-tomb",
+      "name": "Rock Tomb",
+      "type": "rock",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "speed",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "rock-polish",
+      "name": "Rock Polish",
+      "type": "rock",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 0,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "speed",
+          "stages": 2
+        }
+      ]
+    },
+    {
+      "id": "metal-sound",
+      "name": "Metal Sound",
+      "type": "steel",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "defense",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "dragon-dance",
+      "name": "Dragon Dance",
+      "type": "dragon",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "speed",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "nasty-plot",
+      "name": "Nasty Plot",
+      "type": "dark",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 2
+        }
+      ]
+    },
+    {
+      "id": "payback",
+      "name": "Payback",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 50,
+      "effects": []
+    },
+    {
+      "id": "sucker-punch",
+      "name": "Sucker Punch",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 70,
+      "effects": []
+    },
+    {
+      "id": "charm",
+      "name": "Charm",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "foe",
+          "stat": "attack",
+          "stages": -2
+        }
+      ]
     }
   ]
 }

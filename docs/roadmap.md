@@ -1540,6 +1540,26 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.91 — Moves that grow  ✅ 2026-11-03
+
+**Shipped.** Third of the four versions of the user's rework of 2026-11-03 ("more moves to learn, progressing like the
+Pokémon's, no Scratch on a final form"). (1) **Learnsets** (§6.9, `scripts/v0991-learnsets.mjs`): every stage learns its
+own by level, cut from the series' Gen IV learnsets (`scripts/fetch-learnsets.mjs` → `scripts/data/learnsets-gen4.json`)
+to the stage's own window and merged with v0.9.90's rows (279 Gen IV rows, about six a stage, fourteen at most); a
+line's Mastery, payload, tutor and egg moves are never added by level. (2) **Tracks** (§6.9.1, learnset `replaces`):
+269 rows take an earlier move's slot in the pool and the active four, by rule — a hit for a hit of its range and type
+(or a Normal one), +10 power and at most one AP band dearer, once four attacks stand; a debuff or brace for a weaker one
+of its stats; a base form keeps four — and 79 filler upgrades so no final form keeps a level-1 filler on any path
+(a content test walks every path). A branch follows its own slots (`upgradeParents(…, false)`), so its upgrade of a
+grown slot arrives beside it. The level-up window says *Grew into* ~~Scratch~~ → Fire Fang. (3) **Move Reminder**
+(§6.9.2): the Move Manager gives a replaced move back, free, between nodes (`remind-move`). (4) **76 Gen II–IV moves**
+(`scripts/v0991-moves.mjs`: the fangs, Ghost, Dragon, Bug and Poison moves, Charm as Normal, Scary Face, Dragon Dance,
+Rock Polish) with illustrations. (5) Balance: both sides hold their tracks, the enemies gained more (R1 53 · R2|R1 39 ·
+run 5 %); the Region tier ×0.50 / ×0.64 / ×0.67 brought it back — R1 63 · R2|R1 48 · R3|R2 47 · League 59 · run 8 % (360
+runs); the Ring's rival Attack 1.7 → 2.05 so its own held. The 12-seed `wild-boss-3phase` rail eased to 0.2 faints /
+0.76 HP left; goldens regenerated. **Not done:** enemy kits by role, disruption, more doubles and combos (v0.9.92); an
+authored pass on lines whose rule-made tracks read oddly.
+
 ### v0.9.90 — Real evolution levels  ✅ 2026-11-03
 
 **Shipped.** Second of the four versions of the user's rework of 2026-11-03 ("evolve at the original games' rate, no

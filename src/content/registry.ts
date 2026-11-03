@@ -1,4 +1,4 @@
-import type { AbilityDef, BadgeDef, ConsumableDef, ContentRegistry, EvolutionBranch, EvolutionItemDef, HeldItemDef, MoveDef, RegionModifierDef, RelicDef, ScenarioDef, SpeciesDef, TmDef } from '@/sim/content/defs';
+import type { AbilityDef, BadgeDef, ConsumableDef, ContentRegistry, EvolutionBranch, EvolutionItemDef, HeldItemDef, LearnsetEntry, MoveDef, RegionModifierDef, RelicDef, ScenarioDef, SpeciesDef, TmDef } from '@/sim/content/defs';
 import { AbilitiesFileSchema, BadgesFileSchema, ConsumablesFileSchema, EvolutionItemsFileSchema, HeldItemsFileSchema, MasteryFileSchema, MovesFileSchema, RegionModifiersFileSchema, RelicsFileSchema, ScenariosFileSchema, SpeciesFileSchema, TmsFileSchema } from './schemas';
 import movesJson from './data/moves.json';
 import speciesJson from './data/species.json';
@@ -49,12 +49,12 @@ class MapRegistry implements ContentRegistry {
   }
 
   /** §6.9 — base form first, then each stage's own entries, ordered by level. */
-  lineLearnset(id: string): readonly { level: number; move: string }[] {
+  lineLearnset(id: string): readonly LearnsetEntry[] {
     const cached = this.lineCache.get(id);
     if (cached) return cached;
     const chain: SpeciesDef[] = [];
     for (let cur: string | undefined = id; cur; cur = this.preEvolution.get(cur)) chain.unshift(this.species(cur));
-    const out: { level: number; move: string }[] = [];
+    const out: LearnsetEntry[] = [];
     const seen = new Set<string>();
     for (const s of chain)
       for (const l of [...s.learnset].sort((a, b) => a.level - b.level))
@@ -213,6 +213,16 @@ export function buildRegistry(): MapRegistry {
           throw new ContentError(`§6.9: ${s.id} learns ${l.move} at level ${l.level}, at or above its evolveLevel ${s.evolveLevel}`);
     if (s.stage === 'basic' && s.learnset.filter((l) => l.level <= 1).length !== 2)
       throw new ContentError(`§6.9: ${s.id} is a base form and must know exactly 2 moves at level 1`);
+    // §6.9.1 — a track replaces a move its line can hold by then: learned earlier, or handed over by an earlier evolution.
+    for (const l of s.learnset) {
+      if (!l.replaces) continue;
+      reg.move(l.replaces);
+      const before = reg.lineLearnset(s.id).filter((x) => x.level <= l.level && x.move !== l.move).map((x) => x.move);
+      const given: string[] = [];
+      const parentOf = (id: string) => species.find((x) => x.evolvesTo.includes(id))?.id;
+      for (let p = parentOf(s.id); p; p = parentOf(p)) for (const br of reg.species(p).branches) given.push(...br.adds, ...br.upgrades.map((u) => u.to));
+      if (!before.includes(l.replaces) && !given.includes(l.replaces)) throw new ContentError(`§6.9.1: ${s.id} learns ${l.move} at ${l.level} in place of ${l.replaces}, which its line cannot hold before`);
+    }
     for (const t of s.tutorMoves) reg.move(t);
     for (const e of s.eggMoves) reg.move(e);
     // §6.3 — a species that evolves must offer at least one archetype, or the Evolution screen has nothing

@@ -218,6 +218,28 @@ describe('content registry', () => {
     }
   });
 
+  it('§6.9.1 — NoFinalForm_KeepsALevelOneFiller_OnAnyPath: its tracks or its evolutions grew every one of them', () => {
+    // The user's report (2026-11-03): a final form with Scratch. Ditto is a Transform and a spare (species-gen1.md).
+    const filler = ['tackle', 'scratch', 'pound', 'peck', 'wrap', 'growl', 'leer', 'tail-whip', 'sand-attack', 'string-shot', 'harden', 'defense-curl', 'withdraw'];
+    let finals = 0;
+    for (const s of reg.allSpecies()) {
+      if (s.evolvesTo.length || s.id === 'ditto') continue;
+      finals++;
+      for (const p of kitPaths(reg, s.id)) for (const f of filler) expect(p.pool, `${s.id} [${p.branches.join(' > ') || 'base'}] keeps ${f}`).not.toContain(f);
+    }
+    expect(finals).toBeGreaterThan(60);
+  });
+
+  it('§6.9.1 — EveryTrack_ReplacesAMoveOfItsRole_LearnedEarlier', () => {
+    for (const s of reg.allSpecies()) for (const l of s.learnset) {
+      if (!l.replaces) continue;
+      const [m, o] = [reg.move(l.move), reg.move(l.replaces)];
+      // A hit for a hit of its range, a debuff or a brace for one of its own kind.
+      expect(m.power > 0, `${s.id}: ${l.move} ← ${l.replaces}`).toBe(o.power > 0);
+      if (m.power > 0) expect(m.range, `${s.id}: ${l.move} ← ${l.replaces}`).toBe(o.range);
+    }
+  });
+
   it('§6.3.5 / §6.9 — EveryPath_EndsWithARealKit: an attack of its type, three attacks, one that reaches from the bench (v0.9.11)', () => {
     // The user's review (v0.9.11): rather too many moves than a Pokémon with bad ones. Every form, on every path its
     // line can take, at the last level it holds that form: a move of its own type worth playing for its stage (a base

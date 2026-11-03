@@ -17,7 +17,7 @@ import { LevelUpPanel } from './LevelUpPanel';
 import { ProgressDoor } from './ProgressDoor';
 import { ResultUnit } from './ResultUnit';
 import { SpoilCard } from './SpoilCard';
-import { monAt, progress, RESULT_MS, resultMons, revealPlan, ribbonTone, spoilsOf, type Beat, type ResultMon } from './results';
+import { levelNews, monAt, progress, RESULT_MS, resultMons, revealPlan, ribbonTone, spoilsOf, type Beat, type ResultMon } from './results';
 import { useReveal, useRevealSounds } from './useReveal';
 import styles from './FightResults.module.css';
 
@@ -210,7 +210,7 @@ export function FightResults() {
             const at = monAt(m, plan, t);
             const species = content.species(m.mon.speciesId);
             const up = m.up;
-            const learned = up ? up.learned.map((id) => ({ name: content.move(id).name, pooled: !up.activated.includes(id) })) : [];
+            const news = up ? levelNews(up, content) : null;
             return (
               <div key={m.mon.uid} className={`${PLACE_SLOT[m.place]} ${styles.slot}`}>
                 <ResultUnit
@@ -221,7 +221,7 @@ export function FightResults() {
                   shiny={!!m.mon.shiny}
                   level={at.level}
                   grew={!!up && at.level > (up.from ?? at.level)}
-                  levelTip={up && done ? levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, learned) : undefined}
+                  levelTip={up && done ? levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, news?.learned, news?.grew) : undefined}
                   tag={PLACE_TAG[m.place]}
                   lead={m.place === 'lead'}
                   hp={{ now: at.hp, max: at.maxHp }}
@@ -320,7 +320,7 @@ export function FightResults() {
             return (
               <Tipped
                 key={m.mon.uid}
-                tip={up ? levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, up.learned.map((id) => ({ name: content.move(id).name, pooled: !up.activated.includes(id) }))) : xpGainTip(m.xp!.gain, true, Math.max(0, xpToNext(m.mon.level) - m.mon.xp))}
+                tip={up ? (() => { const news = levelNews(up, content); return levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, news.learned, news.grew); })() : xpGainTip(m.xp!.gain, true, Math.max(0, xpToNext(m.mon.level) - m.mon.xp))}
                 className={styles.boxMon}
                 data-testid={`xp-${species.id}`}
               >

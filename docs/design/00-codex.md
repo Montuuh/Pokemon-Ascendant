@@ -348,10 +348,13 @@ the Pokédex's shiny collection. Cosmetic, as in the series.
 **Active 100 %, benched Box 75 %** (`exp-share` → 100).
 Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 % growth.
 
-**Learnset** — a base form knows **2 moves at level 1** and **4 by its evolution level**; an evolved form has no
-learnset of its own. Deck contribution is `min(known, 4)`. A run opens with a **two-card deck** and thickens as you
-recruit and level. **Every move is a Gen I move** at its modern type (v0.9.5), one made better (**+**) where its type
-has nowhere stronger to climb, or a later one: Dark and Steel's (v0.9.84) and Gen II–IV's keyword moves (v0.9.89).
+**Learnset** — a base form knows **2 moves at level 1** and **4 by its evolution level**; every stage learns its own by
+level, cut from the series' Gen IV learnsets (v0.9.91, §6.9). A move **grows**: a learnset row can replace an earlier
+one in its slot — Scratch → Fire Fang, Fire Spin → Flamethrower (§6.9.1) — no final form keeps a level-1 filler, and
+the **Move Reminder** in the Move Manager gives a replaced move back, free (§6.9.2). Deck contribution is
+`min(known, 4)`. A run opens with a **two-card deck** and thickens as you recruit and level. **Every move is a Gen I
+move** at its modern type (v0.9.5), one made better (**+**) where its type has nowhere stronger to climb, or a later
+one: Dark and Steel's (v0.9.84), Gen II–IV's keyword moves (v0.9.89) and the 76 the stages' learnsets needed (v0.9.91).
 
 **Evolution** — player-initiated between nodes, permanent. **The series' levels and methods** (v0.9.90, §6.2.4, §6.3.7):
 Gen I's level, or a stone only (§6.3.2), or a level-up holding its own item for a trade line (Twisted Spoon, Macho Brace,

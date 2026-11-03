@@ -357,6 +357,538 @@
       "type": "dragon",
       "power": 60,
       "gen": 2
+    },
+    {
+      "id": "dragon-claw",
+      "name": "Dragon Claw",
+      "type": "dragon",
+      "power": 80,
+      "gen": 3
+    },
+    {
+      "id": "dragon-pulse",
+      "name": "Dragon Pulse",
+      "type": "dragon",
+      "power": 90,
+      "gen": 4
+    },
+    {
+      "id": "twister",
+      "name": "Twister",
+      "type": "dragon",
+      "power": 40,
+      "gen": 2
+    },
+    {
+      "id": "dragon-breath",
+      "name": "Dragon Breath",
+      "type": "dragon",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "shadow-ball",
+      "name": "Shadow Ball",
+      "type": "ghost",
+      "power": 80,
+      "gen": 2
+    },
+    {
+      "id": "shadow-claw",
+      "name": "Shadow Claw",
+      "type": "ghost",
+      "power": 70,
+      "gen": 4
+    },
+    {
+      "id": "shadow-punch",
+      "name": "Shadow Punch",
+      "type": "ghost",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "shadow-sneak",
+      "name": "Shadow Sneak",
+      "type": "ghost",
+      "power": 40,
+      "gen": 4
+    },
+    {
+      "id": "astonish",
+      "name": "Astonish",
+      "type": "ghost",
+      "power": 30,
+      "gen": 3
+    },
+    {
+      "id": "bullet-seed",
+      "name": "Bullet Seed",
+      "type": "grass",
+      "power": 75,
+      "gen": 3
+    },
+    {
+      "id": "seed-bomb",
+      "name": "Seed Bomb",
+      "type": "grass",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "leaf-blade",
+      "name": "Leaf Blade",
+      "type": "grass",
+      "power": 90,
+      "gen": 3
+    },
+    {
+      "id": "energy-ball",
+      "name": "Energy Ball",
+      "type": "grass",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "giga-drain",
+      "name": "Giga Drain",
+      "type": "grass",
+      "power": 60,
+      "gen": 2
+    },
+    {
+      "id": "power-whip",
+      "name": "Power Whip",
+      "type": "grass",
+      "power": 120,
+      "gen": 4
+    },
+    {
+      "id": "mach-punch",
+      "name": "Mach Punch",
+      "type": "fighting",
+      "power": 40,
+      "gen": 2
+    },
+    {
+      "id": "drain-punch",
+      "name": "Drain Punch",
+      "type": "fighting",
+      "power": 60,
+      "gen": 4
+    },
+    {
+      "id": "brick-break",
+      "name": "Brick Break",
+      "type": "fighting",
+      "power": 75,
+      "gen": 3
+    },
+    {
+      "id": "cross-chop",
+      "name": "Cross Chop",
+      "type": "fighting",
+      "power": 100,
+      "gen": 2
+    },
+    {
+      "id": "dynamic-punch",
+      "name": "Dynamic Punch",
+      "type": "fighting",
+      "power": 100,
+      "gen": 2
+    },
+    {
+      "id": "vital-throw",
+      "name": "Vital Throw",
+      "type": "fighting",
+      "power": 70,
+      "gen": 2
+    },
+    {
+      "id": "vacuum-wave",
+      "name": "Vacuum Wave",
+      "type": "fighting",
+      "power": 40,
+      "gen": 4
+    },
+    {
+      "id": "aura-sphere",
+      "name": "Aura Sphere",
+      "type": "fighting",
+      "power": 90,
+      "gen": 4
+    },
+    {
+      "id": "reversal",
+      "name": "Reversal",
+      "type": "fighting",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "flail",
+      "name": "Flail",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "double-hit",
+      "name": "Double Hit",
+      "type": "normal",
+      "power": 70,
+      "gen": 4
+    },
+    {
+      "id": "crush-claw",
+      "name": "Crush Claw",
+      "type": "normal",
+      "power": 75,
+      "gen": 3
+    },
+    {
+      "id": "scary-face",
+      "name": "Scary Face",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "tickle",
+      "name": "Tickle",
+      "type": "normal",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "aqua-jet",
+      "name": "Aqua Jet",
+      "type": "water",
+      "power": 40,
+      "gen": 4
+    },
+    {
+      "id": "aqua-tail",
+      "name": "Aqua Tail",
+      "type": "water",
+      "power": 90,
+      "gen": 4
+    },
+    {
+      "id": "water-pulse",
+      "name": "Water Pulse",
+      "type": "water",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "ice-shard",
+      "name": "Ice Shard",
+      "type": "ice",
+      "power": 40,
+      "gen": 4
+    },
+    {
+      "id": "ice-fang",
+      "name": "Ice Fang",
+      "type": "ice",
+      "power": 65,
+      "gen": 4
+    },
+    {
+      "id": "powder-snow",
+      "name": "Powder Snow",
+      "type": "ice",
+      "power": 40,
+      "gen": 2
+    },
+    {
+      "id": "fire-fang",
+      "name": "Fire Fang",
+      "type": "fire",
+      "power": 65,
+      "gen": 4
+    },
+    {
+      "id": "flame-wheel",
+      "name": "Flame Wheel",
+      "type": "fire",
+      "power": 60,
+      "gen": 2
+    },
+    {
+      "id": "lava-plume",
+      "name": "Lava Plume",
+      "type": "fire",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "heat-wave",
+      "name": "Heat Wave",
+      "type": "fire",
+      "power": 100,
+      "gen": 3
+    },
+    {
+      "id": "will-o-wisp",
+      "name": "Will-O-Wisp",
+      "type": "fire",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "thunder-fang",
+      "name": "Thunder Fang",
+      "type": "electric",
+      "power": 65,
+      "gen": 4
+    },
+    {
+      "id": "spark",
+      "name": "Spark",
+      "type": "electric",
+      "power": 65,
+      "gen": 2
+    },
+    {
+      "id": "discharge",
+      "name": "Discharge",
+      "type": "electric",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "zap-cannon",
+      "name": "Zap Cannon",
+      "type": "electric",
+      "power": 120,
+      "gen": 2
+    },
+    {
+      "id": "poison-jab",
+      "name": "Poison Jab",
+      "type": "poison",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "poison-fang",
+      "name": "Poison Fang",
+      "type": "poison",
+      "power": 50,
+      "gen": 3
+    },
+    {
+      "id": "cross-poison",
+      "name": "Cross Poison",
+      "type": "poison",
+      "power": 70,
+      "gen": 4
+    },
+    {
+      "id": "sludge-bomb",
+      "name": "Sludge Bomb",
+      "type": "poison",
+      "power": 90,
+      "gen": 2
+    },
+    {
+      "id": "gunk-shot",
+      "name": "Gunk Shot",
+      "type": "poison",
+      "power": 120,
+      "gen": 4
+    },
+    {
+      "id": "earth-power",
+      "name": "Earth Power",
+      "type": "ground",
+      "power": 90,
+      "gen": 4
+    },
+    {
+      "id": "mud-shot",
+      "name": "Mud Shot",
+      "type": "ground",
+      "power": 55,
+      "gen": 3
+    },
+    {
+      "id": "mud-bomb",
+      "name": "Mud Bomb",
+      "type": "ground",
+      "power": 65,
+      "gen": 4
+    },
+    {
+      "id": "aerial-ace",
+      "name": "Aerial Ace",
+      "type": "flying",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "air-slash",
+      "name": "Air Slash",
+      "type": "flying",
+      "power": 75,
+      "gen": 4
+    },
+    {
+      "id": "air-cutter",
+      "name": "Air Cutter",
+      "type": "flying",
+      "power": 55,
+      "gen": 3
+    },
+    {
+      "id": "feather-dance",
+      "name": "Feather Dance",
+      "type": "flying",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "zen-headbutt",
+      "name": "Zen Headbutt",
+      "type": "psychic",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "psycho-cut",
+      "name": "Psycho Cut",
+      "type": "psychic",
+      "power": 70,
+      "gen": 4
+    },
+    {
+      "id": "x-scissor",
+      "name": "X-Scissor",
+      "type": "bug",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "bug-buzz",
+      "name": "Bug Buzz",
+      "type": "bug",
+      "power": 90,
+      "gen": 4
+    },
+    {
+      "id": "signal-beam",
+      "name": "Signal Beam",
+      "type": "bug",
+      "power": 75,
+      "gen": 3
+    },
+    {
+      "id": "megahorn",
+      "name": "Megahorn",
+      "type": "bug",
+      "power": 120,
+      "gen": 2
+    },
+    {
+      "id": "silver-wind",
+      "name": "Silver Wind",
+      "type": "bug",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "fury-cutter",
+      "name": "Fury Cutter",
+      "type": "bug",
+      "power": 40,
+      "gen": 2
+    },
+    {
+      "id": "ancient-power",
+      "name": "Ancient Power",
+      "type": "rock",
+      "power": 60,
+      "gen": 2
+    },
+    {
+      "id": "stone-edge",
+      "name": "Stone Edge",
+      "type": "rock",
+      "power": 100,
+      "gen": 4
+    },
+    {
+      "id": "rock-blast",
+      "name": "Rock Blast",
+      "type": "rock",
+      "power": 75,
+      "gen": 3
+    },
+    {
+      "id": "power-gem",
+      "name": "Power Gem",
+      "type": "rock",
+      "power": 70,
+      "gen": 4
+    },
+    {
+      "id": "rock-tomb",
+      "name": "Rock Tomb",
+      "type": "rock",
+      "power": 50,
+      "gen": 3
+    },
+    {
+      "id": "rock-polish",
+      "name": "Rock Polish",
+      "type": "rock",
+      "power": 0,
+      "gen": 4
+    },
+    {
+      "id": "metal-sound",
+      "name": "Metal Sound",
+      "type": "steel",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "dragon-dance",
+      "name": "Dragon Dance",
+      "type": "dragon",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "nasty-plot",
+      "name": "Nasty Plot",
+      "type": "dark",
+      "power": 0,
+      "gen": 4
+    },
+    {
+      "id": "payback",
+      "name": "Payback",
+      "type": "dark",
+      "power": 50,
+      "gen": 4
+    },
+    {
+      "id": "sucker-punch",
+      "name": "Sucker Punch",
+      "type": "dark",
+      "power": 80,
+      "gen": 4
+    },
+    {
+      "id": "charm",
+      "name": "Charm",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
     }
   ]
 }

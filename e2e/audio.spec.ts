@@ -42,11 +42,11 @@ test.describe('Sound — §9.5', () => {
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await expect.poll(() => page.evaluate(() => window.__ascendant!.audio.track())).toBe('combat');
     // Play a damaging card on the enemy, then end the turn: its type's whoosh and a hit are asked for.
+    // The first card the sim accepts: the hand is the kits' (v0.9.91's tracks changed which card leads it).
     await page.evaluate(() => {
       const a = window.__ascendant!;
       const s = a.state()!;
-      const card = s.player.hand[0]!;
-      a.dispatch({ type: 'play-card', cardId: card.id, targetUid: s.enemies[0]!.uid });
+      s.player.hand.some((card) => a.dispatch({ type: 'play-card', cardId: card.id, targetUid: s.enemies[0]!.uid }));
     });
     await expect.poll(() => page.evaluate(() => window.__ascendant!.audio.recent().some((id) => id.startsWith('card-')))).toBe(true);
     await page.goto('/?screen=menu');

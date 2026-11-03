@@ -168,6 +168,17 @@ const SCREENS = {
     setup: ['run.new("squirtle", 11)', 'run.fill(6)', 'run.victoryRoad()', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "training").id]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
     match: [/screens\/TrainingScreen/, /components\/RouteStop/],
   },
+  // §6.9.1 (v0.9.91) — a Level Push onto a track's step: Mankey's Low Kick takes Scratch's slot at Lv 5.
+  'training-upgrade': {
+    url: '/?screen=menu', ready: 'training-screen',
+    setup: ['run.new("squirtle", 11)', 'run.victoryRoad()', 'run.patch((d) => { d.reachable = [Object.values(d.map.nodes).find((n) => n.kind === "training").id]; const m = d.box[0]; const was = m.uid; m.uid = "mk"; d.activeUids = d.activeUids.map((u) => (u === was ? "mk" : u)); m.speciesId = "mankey"; m.level = 4; m.xp = 0; m.pool = ["scratch", "leer", "focus-energy"]; m.moveIds = ["scratch", "leer", "focus-energy"]; })', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'],
+    clicks: ['train-mon-mk', 'train-upgrade-level', 'btn-train'],
+    match: [/screens\/results\/LevelUpPanel/, /screens\/TrainingLevelUp/],
+  },
+  // §6.9.2 — the Move Reminder in the Move Manager: a Charmeleon whose Fire Fang took Scratch's slot.
+  'move-reminder': { url: '/?screen=menu', setup: ['run.new("charmander", 7)', 'run.patch((d) => { const m = d.box[0]; m.speciesId = "charmeleon"; m.level = 30; m.pool = ["fire-fang", "ember", "slash", "screech", "dragon-rage"]; m.moveIds = ["fire-fang", "ember", "slash", "dragon-rage"]; })', 'goTo("map")'], clicks: ['btn-team', 'team-manage-moves'], match: [/components\/MoveManager/] },
+  // §6.9.1 — a learnset's tracks on the Pokédex's Kit tab.
+  'hub-pc-kit': { url: '/?screen=hub', setup: ['meta.record([{ t: "combat-end", outcome: "victory", kind: "wild", damageTaken: 0, manualSwaps: 0, faints: 0, defeated: ["charizard"], enemies: ["charizard"], activeSpecies: ["charmander"], leadTurns: { charmander: 3 } }])'], clicks: ['kiosk-pc', 'dex-charizard', 'dex-sheet-tab-kit'], match: [/hub\/SpeciesSheet/] },
   // A19 — enter the seeded event through the reducer; no auto-player or fabricated terminal phase.
   mystery: { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.pay(100)', 'run.jump("mystery")', 'run.dispatch({ type: "enter-node", nodeId: a.run.state().reachable[0] })', 'run.dispatch({ type: "begin-combat" })', 'goTo("map")'], match: [/screens\/EventScreen/, /screens\/events\//] },
   // A11 — enter real Summit/League states directly; never rely on the auto-player reaching an art review.
@@ -233,7 +244,7 @@ const EXPECTED_ROOT = {
   'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
   map: 'map-screen', 'map-labels': 'map-screen', 'map-labels-end': 'map-screen', 'map-region-2-end': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
   'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',
-  city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-full-box': 'center-screen', 'team-evolution': 'team-screen', 'team-trade': 'team-screen', 'hub-pc-eevee-line': 'pc-sheet', 'hub-pc-kadabra-line': 'pc-sheet', 'center-heal': 'center-screen', 'center-therapy': 'center-screen', 'center-groom': 'center-screen',
+  city: 'city-screen', 'city-celadon': 'city-screen', 'city-gate': 'reflection', dojo: 'dojo-screen', center: 'center-screen', 'center-full-box': 'center-screen', 'team-evolution': 'team-screen', 'team-trade': 'team-screen', 'training-upgrade': 'training-screen', 'move-reminder': 'move-manager', 'hub-pc-kit': 'pc-sheet', 'hub-pc-eevee-line': 'pc-sheet', 'hub-pc-kadabra-line': 'pc-sheet', 'center-heal': 'center-screen', 'center-therapy': 'center-screen', 'center-groom': 'center-screen',
   shop: 'shop-screen', merchant: 'shop-screen', store: 'shop-screen', aid: 'aid-screen', training: 'training-screen',
   'ring-guide': 'ring-guide', ring: 'ring-screen', 'ring-coliseum': 'ring-screen', 'ring-climb': 'ring-screen', 'ring-prize': 'ring-prize-screen',
   'game-corner': 'game-corner-room', 'game-corner-roulette': 'game-corner-screen', 'game-corner-slots': 'game-corner-screen', 'game-corner-open': 'game-corner-room', 'game-corner-shut': 'game-corner-room',

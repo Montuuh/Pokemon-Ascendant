@@ -13,11 +13,14 @@ describe('The kit on every path — §6.3.5', () => {
     const mankey = kitPaths(content, 'mankey');
     expect(mankey).toHaveLength(1);
     expect(mankey[0]!.branches).toEqual([]);
-    expect(mankey[0]!.pool).toEqual(['scratch', 'leer', 'low-kick', 'karate-chop']);
+    // §6.9.1 — its tracks at work: Low Kick takes Scratch's slot at 5, Screech Leer's at 21.
+    expect(mankey[0]!.pool).toEqual(['low-kick', 'screech', 'focus-energy', 'karate-chop']);
     const primeape = kitPaths(content, 'primeape');
     expect(primeape.map((p) => p.branches)).toEqual([['primeape-vanguard'], ['primeape-specialist']]);
-    // The vanguard path upgrades Karate Chop and turns Low Kick into Submission: Low Kick is forgotten.
-    expect(primeape[0]!.pool).toContain('submission');
+    // The vanguard path upgrades Karate Chop and turns Low Kick into Submission: Low Kick is forgotten — and by Lv 59 its
+    // track has made Submission Close Combat (§6.9.1).
+    expect(primeape[0]!.pool).toContain('close-combat');
+    expect(primeape[0]!.pool).not.toContain('submission');
     expect(primeape[0]!.pool).not.toContain('low-kick');
     expect(kitPaths(content, 'venusaur').length).toBe(content.species('bulbasaur').branches.length * content.species('ivysaur').branches.length);
   });

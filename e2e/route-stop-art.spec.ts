@@ -107,7 +107,7 @@ for (const viewport of [
 
     test('Training_LongLearnset_AllReplacementChoicesFit', async ({ page }) => {
       await atStop(page, 'training');
-      // Tauros has the largest single-stage learnset: eight future moves at Lv 5.
+      // Tauros has the largest single-stage learnset: twelve future moves at Lv 5 (v0.9.91, §6.9).
       await page.evaluate(() =>
         window.__ascendant!.run.patch((d) => {
           const m = d.box[5]!;
@@ -119,7 +119,7 @@ for (const viewport of [
       );
       await page.locator('[data-testid^="train-mon-"]').last().click();
       await page.getByTestId('train-upgrade-move-replace').click();
-      await expect(page.locator('[data-testid^="train-in-"]')).toHaveCount(8);
+      await expect(page.locator('[data-testid^="train-in-"]')).toHaveCount(12);
       await fits(page);
       await page.mouse.move(2, 2);
       await expect(page.getByRole('tooltip')).toBeHidden();

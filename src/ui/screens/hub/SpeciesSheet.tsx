@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrophy, IconUsers, IconWand, IconSparkles } from '@tabler/icons-react';
+import { IconArrowsShuffle, IconCrown, IconEye, IconEyeOff, IconFlag, IconHeartBroken, IconLock, IconPokeball, IconSwords, IconTargetArrow, IconTrendingUp, IconTrophy, IconUsers, IconWand, IconSparkles } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { getContent } from '@/content/registry';
 import { BOND_RANK_NAME, BOND_RANKS, DEX_FAMILIAR, UNMET_NAME, kitPaths, bondProgress, bondRank, catchRateOf, hiddenAbilityOf, masteryTierFor, normalizeDexEntry, type AccountState, type SpeciesDef, speciesMet, BOND_TIER } from '@/sim';
@@ -169,13 +169,22 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
   const hidden = hiddenAbilityOf(line, content);
   const masteryMoves = content.masteryMoves(line);
   const abilities = s.availableAbilities.filter((a) => a !== hidden);
-  const moveRow = (moveId: string, lv: number | null, locked = false, key = moveId) => {
+  const moveRow = (moveId: string, lv: number | null, locked = false, key = moveId, replaces?: string) => {
     const m = content.move(moveId);
     return (
-      <Tipped key={key} as="li" tip={moveDefTip(m)} className={`${styles.move} ${locked ? styles.moveLocked : ''}`}>
+      <Tipped key={key} as="li" tip={moveDefTip(m, { replaces })} className={`${styles.move} ${locked ? styles.moveLocked : ''}`}>
         <span className={`${styles.moveLv} tabular`}>{lv === null ? '—' : `Lv ${lv}`}</span>
         <TypeBadge type={m.type} size={18} mode="attack" />
-        <span className={styles.moveName}>{m.name}</span>
+        <span className={styles.moveName}>
+          {m.name}
+          {/* §6.9.1 — a track's step: a rising arrow, and the card it grows out of on hover (the row's tip). */}
+          {replaces && (
+            <>
+              <IconTrendingUp size={14} className={styles.moveReplaces} aria-hidden="true" />
+              <span className="sr-only">{DEX_EVO_TEXT.replaces(content.move(replaces).name)}</span>
+            </>
+          )}
+        </span>
         <span className={`${styles.moveStat} tabular`}>{m.apCost} AP{m.power > 0 ? ` · ${m.power}` : ''}</span>
       </Tipped>
     );
@@ -188,7 +197,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
       {s.learnset.length > 0 && (
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>{DEX_EVO_TEXT.learnset} <InfoDot tip={learnsetTip(s.id)} /></h3>
-          <ul className={styles.moves}>{s.learnset.map((e, i) => moveRow(e.move, e.level, false, `${e.move}-${i}`))}</ul>
+          <ul className={styles.moves}>{s.learnset.map((e, i) => moveRow(e.move, e.level, false, `${e.move}-${i}`, e.replaces))}</ul>
         </section>
       )}
       {s.stage !== 'basic' && (
