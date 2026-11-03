@@ -535,7 +535,7 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `withdraw-plus` | Withdraw+ | Water | Def | Melee | — | 1 | — | — | Guard 80 · self Def +1 |
 | `hypnosis-plus` | Hypnosis+ | Psychic | Util | Ranged | — | 1 | — | — | Sleep 85 % |
 | `vice-grip-plus` | Vice Grip+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
-| `leech-seed-plus` | Leech Seed+ | Grass | Util | Ranged | — | 1 | — | — | Poison |
+| `leech-seed-plus` | Leech Seed+ | Grass | Util | Ranged | — | 0 | — | — | seed, as Leech Seed, for 0 AP (§5.2.3) |
 | `bone-club-plus` | Bone Club+ | Ground | Off | Melee | — | 2 | 75 | — | — |
 | `smokescreen-plus` | Smokescreen+ | Normal | Util | Ranged | — | 0 | — | — | foe Atk −2 |
 | `self-destruct-plus` | Self-Destruct+ | Normal | Off | Melee | — | 3 | 100 | — | recoil 50 % · foe Def −1 |

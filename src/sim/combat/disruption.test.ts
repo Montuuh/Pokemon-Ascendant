@@ -174,6 +174,26 @@ describe('Leech Seed and Curse — §5.2.3', () => {
     expect(s.player.team[0]!.hp).toBe(lead.hp - Math.floor(lead.maxHp * 0.25));
   });
 
+  it('YourLeechSeed_SapsTheirLead_AndFeedsYours', () => {
+    let s = tweak(play(quiet(fight(['leech-seed'])), 'leech-seed'), (d) => void (d.player.team[0]!.hp = 1));
+    const foe = s.enemies[0]!;
+    expect(foe.volatile?.seeded?.bySide).toBe('player');
+    s = endTurn(s);
+    const sap = Math.floor(foe.maxHp * 0.125);
+    expect(s.enemies[0]!.hp).toBe(foe.hp - sap);
+    expect(s.player.team[0]!.hp).toBe(Math.min(1 + sap, leadOf(s).maxHp));
+  });
+
+  it('LeechSeed_OnAGrassType_DoesNotTakeHold', () => {
+    const s = play(quiet(fight(['leech-seed'], ['growl'], { species: 'bulbasaur' })), 'leech-seed');
+    expect(s.enemies[0]!.volatile?.seeded).toBeUndefined();
+  });
+
+  it('LeechSeedPlus_IsTheSameSeed_ForNoAP', () => {
+    const s = play(quiet(fight(['leech-seed-plus'])), 'leech-seed-plus', 0, 0);
+    expect(s.enemies[0]!.volatile?.seeded).toMatchObject({ percent: 0.125, heal: true, bySide: 'player' });
+  });
+
   it('AI_NeverSeedsAGrassType', () => {
     const s = start(scenario({ team: [{ species: 'bulbasaur', level: 42, moves: ['tackle'] }, { species: 'charmander', level: 42 }], enemies: [WALL(['leech-seed'])] }));
     expect(scoreIntent(s, s.enemies[0]!, { intent: aims('disrupt', 'leech-seed'), move: ctx.content.move('leech-seed') }, ctx)).toBe(0);

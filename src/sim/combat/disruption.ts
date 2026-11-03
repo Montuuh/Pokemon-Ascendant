@@ -47,6 +47,11 @@ export function applyDisruption(state: CombatState, ctx: RunCtx, user: Combatant
       return;
     case 'seed':
       if (!target || target.volatile?.seeded) return;
+      // Per §5.2.3 — a Grass-type shrugs off a seed (not a curse), as in the series.
+      if (fx.heal && target.types.includes('grass')) {
+        log(state, 'system', `It doesn't affect ${target.name}…`);
+        return;
+      }
       vol(target).seeded = { percent: fx.percent, heal: fx.heal, bySide: isPlayers(state, user) ? 'player' : 'enemy' };
       log(state, 'system', fx.heal ? `${target.name} was seeded!` : `${user.name} laid a curse on ${target.name}!`);
       return;

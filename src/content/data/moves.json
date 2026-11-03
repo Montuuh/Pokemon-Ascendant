@@ -3361,13 +3361,13 @@
       "role": "utility",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 1,
+      "apCost": 0,
       "power": 0,
       "effects": [
         {
-          "kind": "status",
-          "status": "poison",
-          "chance": 1
+          "kind": "seed",
+          "percent": 0.125,
+          "heal": true
         }
       ]
     },
