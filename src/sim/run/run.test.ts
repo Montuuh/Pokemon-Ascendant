@@ -338,6 +338,20 @@ describe('XP and levels — §6.2', () => {
     expect(mon.moveIds.length).toBeLessThanOrEqual(4);
   });
 
+  it('LevelUp_AddsTheMaxHpGained_ToCurrentHp_ButNotToAFaintedOne_§6.2.2', () => {
+    const hurt = newPartyMon('charmander', 10, content, 1);
+    hurt.hp = 5;
+    const before = maxHpOf(hurt, content);
+    grantXp(hurt, xpToNext(10) + xpToNext(11), content);
+    expect(hurt.hp).toBe(5 + maxHpOf(hurt, content) - before);
+    const full = newPartyMon('charmander', 10, content, 1);
+    grantXp(full, xpToNext(10), content);
+    expect(full.hp).toBe(maxHpOf(full, content));
+    const fainted = { ...newPartyMon('charmander', 10, content, 1), hp: 0 };
+    grantXp(fainted, xpToNext(10), content);
+    expect(fainted.hp).toBe(0);
+  });
+
   it('LevelUp_NeverExceedsFourActiveMoves', () => {
     const mon = newPartyMon('pidgey', 1, content, 1);
     grantXp(mon, 5000, content);
@@ -351,8 +365,10 @@ describe('HP, Trauma and defeat — §2.4, §8.2', () => {
     s = enter(s, s.map.nodes[s.reachable[0]!]!.kind);
     s = apply(s, { type: 'begin-combat' });
     if (s.phase !== 'combat') return;
+    const was = s.box[0]!;
     s = win(s, { team: s.activeUids.map((uid) => ({ uid, hp: 4, status: { kind: 'poison' as const, turnsLeft: null }, fainted: false })) });
-    expect(s.box[0]!.hp).toBe(4);
+    // The fight's 4, plus only the Max HP the win's level-ups added (§6.2.2).
+    expect(s.box[0]!.hp).toBe(4 + maxHpOf(s.box[0]!, content) - maxHpOf(was, content));
     expect(s.box[0]!.status).toMatchObject({ kind: 'poison', turnsLeft: null });
   });
 

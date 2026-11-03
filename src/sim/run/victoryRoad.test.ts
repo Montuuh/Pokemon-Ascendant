@@ -111,8 +111,12 @@ describe('Victory Road, the run — §2.12', () => {
     const s = standOn(onVictoryRoad(), 'gauntlet');
     const hpBefore = s.box.map((m) => m.hp);
     const after = apply(s, { type: 'finish-combat', report: report(s) });
-    // HP carried out is exactly the fight's: 10 each, no breather on top.
-    for (const uid of s.activeUids) expect(after.box.find((m) => m.uid === uid)!.hp).toBe(10);
+    // HP carried out is exactly the fight's: 10 each, no breather on top — only the Max HP its level-ups added (§6.2.2).
+    for (const uid of s.activeUids) {
+      const was = s.box.find((m) => m.uid === uid)!;
+      const now = after.box.find((m) => m.uid === uid)!;
+      expect(now.hp).toBe(10 + effectiveMax(after, now, content) - effectiveMax(s, was, content));
+    }
     expect(hpBefore.length).toBeGreaterThan(0);
     expect(after.pendingReward!.relicPick!.length).toBeGreaterThan(0);
     // Misty was offered beside Brock and never beaten: hers is the Perfect Clear's Badge.

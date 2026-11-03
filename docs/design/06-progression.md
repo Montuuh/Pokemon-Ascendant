@@ -78,7 +78,8 @@ Multipliers stack multiplicatively: `lucky-egg-token` ×1.15, the `quick-study` 
 ## §6.2.2 Levelling up
 
 Level-ups are processed **between nodes**, never mid-combat. The fight's result (§9.4.5) shows the XP bar
-fill, applies the stat increase immediately, and **offers evolution to any Pokémon that crossed its threshold** (§6.2.4) — as
+fill, applies the stat increase immediately — the Max HP a level adds is added to current HP as well, as in the series,
+so a wounded Pokémon is not left further from full by levelling (a fainted one stays fainted) — and **offers evolution to any Pokémon that crossed its threshold** (§6.2.4) — as
 the series' surprise, on Continue: nothing on the result says one is coming.
 
 Evolution can be **postponed** (§6.3.1; user decision, 2026-10-30). The current form keeps its existing stats and

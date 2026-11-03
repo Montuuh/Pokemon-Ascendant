@@ -2,6 +2,7 @@ import type { ContentRegistry, EvolutionBranch, EvolutionItemUse, EvolveMethod, 
 import type { EnemyTier } from '../content/defs';
 import { learnInto, slotIndex, upgradeParents } from '../combat/kit';
 import { statAtLevel } from '../combat/stats';
+import { maxHpOf } from './encounter';
 import type { LevelUp, PartyMon } from './types';
 
 // §6.2 — XP, levels and what a level-up gives you. Numbers are the ProgressionConfig values from
@@ -201,6 +202,8 @@ export function grantXp(mon: PartyMon, amount: number, content: ContentRegistry,
     statsAt: { hp: at('hp'), attack: at('attack'), defense: at('defense'), speed: at('speed') },
   };
   if (upgraded.length) up.upgraded = upgraded;
+  // §6.2.2 — the Max HP a level adds is added to current HP too, as in the series; a fainted Pokémon stays at 0.
+  if (mon.hp > 0) mon.hp += maxHpOf(mon, content) - maxHpOf({ ...mon, level: from }, content);
   let befriended = 0;
   for (let l = from; l < mon.level; l++) befriended += befriend(mon, levelUpFriendship(mon.friendship, config) * friendshipScale, config);
   if (befriended) up.friendship = befriended;
