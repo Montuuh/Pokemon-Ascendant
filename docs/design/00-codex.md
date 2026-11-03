@@ -98,7 +98,7 @@ Pokémon.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
   numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier on Attack only — an enemy's HP is
-  never scaled (v0.9.12; ×0.55 / ×0.70 / ×0.76 since v0.9.90's real evolution levels, divisor 5) — **Acting Twice** (§5.6.1: two intents on one 3-AP
+  never scaled (v0.9.12; ×0.55 / ×0.70 / ×0.76 since v0.9.90's real evolution levels; divisor 10 with the half-scale stats since v0.9.93) — **Acting Twice** (§5.6.1: two intents on one 3-AP
   budget, broken by a quarter of its HP or a super-effective hit; v0.9.92: a Gym's ace and the Elite's Lead from R1, a Rare from
   R1's eighth column, every trainer's ace and a Gym's first from R2, the League's aces and the Champion's last two; at most two), and a
   curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
@@ -218,9 +218,9 @@ with AP costs (Thunder −1 in rain, +1 in sun; Blizzard −1 in hail, §4.3.15)
 
 ## 4. Resolution — the maths *(Topic 4)*
 
-**Damage** = `floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / 8 )`. One floor at the end. No minimum
+**Damage** = `floor( Power × (Atk/Def) × Range × Crit × STAB × TypeEff / Divisor )`. One floor at the end. No minimum
 clamp — only immunity deals 0. Level is not in the formula.
-**Divisor 5** (v0.9.12; 8 until enemies got their whole HP back) · STAB 1.5 · Crit 1.5 · Ranged 0.75.
+**Divisor 10** (v0.9.93, with the half-scale stats of §6.2.3; 5 from v0.9.12, 8 until enemies got their whole HP back) · STAB 1.5 · Crit 1.5 · Ranged 0.75.
 **Critical rhythm** (§4.1.3.1): every Pokémon, both sides, fills a meter as it acts (your side by the AP its cards cost, 2–5 AP; an enemy per action, 2–4) at a pace set by its Speed and moved by Speed stages and Paralysis, and crits its next hit when it is full; an enemy's crit is declared as CRIT on its intent.
 **Stats:** one Attack, one Defence, derived from Gen I as `attack = max(Atk, Spc)`,
 `defence = round((Def+Spc)/2)`. Effective = `base + growth×(level−1)`, then stage, then status.

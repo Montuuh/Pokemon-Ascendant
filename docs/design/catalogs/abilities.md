@@ -95,7 +95,7 @@ Adding an ability means picking an existing hook or adding one. Hooks in **bold*
 | `steadfast` | Steadfast | Positional | On entering Lead: self Atk +1 | `on-enter-lead` | machop | ✅ v0.3 |
 | `run-down` | Run Down | Positional | The first manual swap each combat costs 0 AP | new `swap-discount` | rattata, eevee | ✅ v0.4 |
 | `infiltrator` | Infiltrator | Positional | The wearer's moves ignore a target's raised Defence (v0.7.5 — was "ignore the Home Field bonus", which waits on v0.8.4) | `ignore-defence-stages` | zubat (hidden) | ✅ v0.7.5 |
-| `healer` | Healer | Support | At turn end, heal a bench ally 3 HP | `turn-end-bench-heal` (3) | pidgeot, bulbasaur, oddish | ✅ |
+| `healer` | Healer | Support | At turn end, heal a bench ally 2 HP | `turn-end-bench-heal` (2) | pidgeot, bulbasaur, oddish | ✅ |
 | `friend-guard` | Friend Guard | Support | Bench takes −10 % Cleave damage | `low-hp-damage-reduction` (`cleaveOnly`) | — (reserved) | 🔒 |
 | `rain-dish` | Rain Dish | Support | Each Water move it plays restores 1/16 of its HP (v0.7.5 — was a turn-end heal in Rain) | `type-move-heal` (water, 16) | squirtle (hidden), lapras (hidden) | ✅ v0.7.5 |
 | `hydration` | Hydration | Support | Status conditions clear at turn end while Rain is active | `field-draw` variant | lapras | 🔒 not in the build — Lapras's hidden ability is Rain Dish since v0.9.1, which works today; Hydration waits for a line that needs it |

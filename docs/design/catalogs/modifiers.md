@@ -19,7 +19,7 @@
 | `hive-badge` | Hive | Bug | R1 | When a card cycles discard → deck, 20 % chance of a free copy in hand next turn | `on-reshuffle` | ✅ |
 | `plain-badge` | Plain | Normal | R1 | **The first card you play each turn costs 1 less AP** (min 0) | `on-ap-cost` | ✅ redesigned 2026-09-19 |
 | `volcano-badge` | Volcano | Fire | R2 | Offensive cards costing 3+ AP deal +20 % | `on-damage` | ✅ |
-| `rainbow-badge` | Rainbow | Grass | R2 | At turn start, a statused Lead restores 3 HP | `on-turn-start` | ✅ |
+| `rainbow-badge` | Rainbow | Grass | R2 | At turn start, a statused Lead restores 2 HP | `on-turn-start` | ✅ |
 | `thunder-badge` | Thunder | Electric | R2 | The first Ranged move each turn costs −1 AP (min 0) | `on-ap-cost` | ✅ |
 | `soul-badge` | Soul | Poison | R2 | Applying a status to an enemy draws 1 skill card | `on-status-apply` | ✅ |
 | `marsh-badge` | Marsh | Psychic | R3 | Every Unknown intent is revealed for the first 2 turns of each combat | `on-combat-start` | ✅ built v0.7.4 (`reveal-intents`, until turn 2; also reads through a Hex Maniac's veil) |
@@ -65,7 +65,7 @@ the macro expression of Pillar 3.
 | id | Name | Effect (this Region only) | Tier | Status |
 |---|---|---|---|---|
 | `hand-of-plenty` | Hand of Plenty | +1 max hand size | Strong | ✅ |
-| `swap-fuel` | Swap Fuel | The Lead heals 5 HP on every manual swap | Strong | ✅ |
+| `swap-fuel` | Swap Fuel | The Lead heals 3 HP on every manual swap | Strong | ✅ |
 | `lucky-draw` | Lucky Draw | Draw 1 extra consumable card on turn 1 of every combat | Medium | ✅ |
 | `type-affinity` | Type Affinity | All moves of a **type you choose** deal +10 % | Strong | ✅ |
 | `status-mastery` | Status Mastery | Statuses you apply last +1 turn | Medium | ✅ |

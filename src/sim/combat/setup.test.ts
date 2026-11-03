@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PIDGEY, STARTERS, content, ctx, eventsOf, scenario, start, startFixture } from '../testing/harness';
-import { HP_PER_LEVEL, STAT_GROWTH_RATE, effectiveMaxHp, statAtLevel } from './stats';
+import { HP_PER_LEVEL, STAT_GROWTH_RATE, STAT_SCALE, effectiveMaxHp, statAtLevel } from './stats';
 
 describe('createCombat — §3.2.1 Combat Start', () => {
   it('Start_ThreeStarters_BuildsTwelveCardDeckAndDrawsFive', () => {
@@ -30,10 +30,10 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     const s = start(scenario({ team: [{ species: 'charmander', level: 11 }], enemies: [PIDGEY] }));
     const c = s.player.team[0]!;
     const species = ctx.content.species('charmander');
-    // §6.2.3 (v0.9.10) — base × (1 + rate × 10), and HP adds the level.
-    expect(c.maxHp).toBe(Math.round(39 * (1 + STAT_GROWTH_RATE * 10) + HP_PER_LEVEL * 11));
+    // §6.2.3 (v0.9.10, v0.9.93) — base × (1 + rate × 10), HP adds the level, all at the half scale.
+    expect(c.maxHp).toBe(Math.round((39 * (1 + STAT_GROWTH_RATE * 10) + HP_PER_LEVEL * 11) * STAT_SCALE));
     // §4.1.5.1 — Attack is max(Atk 52, Spc 60) = 60, not the raw physical stat.
-    expect(c.base.attack).toBe(Math.round(60 * (1 + STAT_GROWTH_RATE * 10)));
+    expect(c.base.attack).toBe(Math.round(60 * (1 + STAT_GROWTH_RATE * 10) * STAT_SCALE));
     expect(c.base.attack).toBe(statAtLevel(species, 'attack', 11));
   });
 

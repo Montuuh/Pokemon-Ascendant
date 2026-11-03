@@ -594,10 +594,10 @@
       "categories": [
         "status"
       ],
-      "description": "Curing a status also restores 15 HP.",
+      "description": "Curing a status also restores 8 HP.",
       "hook": "heal-bonus",
       "params": {
-        "flatOnCure": 15
+        "flatOnCure": 8
       },
       "tier": 2,
       "discovery": {

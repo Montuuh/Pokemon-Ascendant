@@ -27,7 +27,8 @@ describe('Relics — §7.3', () => {
   });
 
   it('TypeBoost_MultipliesOnlyItsOwnType_§7.3.6', () => {
-    const team = teamWithKit(['water-gun', 'tackle']);
+    // Lv 40: a hit big enough that a 20 % term is never floored away (§6.2.3's half-scale stats make early hits small).
+    const team = teamWithKit(['water-gun', 'tackle'], 'squirtle', 40);
     const base = start(plain({ team, enemies: [PIDGEY] }));
     const withRelic = start(plain({ team, enemies: [PIDGEY], relics: ['water-gem'] }));
 
@@ -50,7 +51,7 @@ describe('Relics — §7.3', () => {
     // Mystic Water and the Water Gem both boost Water. §7.3.6 says independent multiplicative terms, so
     // 1.1 × 1.2 = 1.32, not 1 + 0.1 + 0.2 = 1.3. One damage point apart on a small hit, and the difference
     // compounds: this is the assertion that stops someone "simplifying" the stack into a sum.
-    const team = teamWithKit(['water-gun']);
+    const team = teamWithKit(['water-gun'], 'squirtle', 40);
     const one = start(plain({ team, enemies: [PIDGEY], relics: ['water-gem'] }));
     const bare = start(plain({ team, enemies: [PIDGEY] }));
     const move = content.move('water-gun');
@@ -76,7 +77,7 @@ describe('Relics — §7.3', () => {
       cardId: consumableCard(withConsumableHand(withKit, ['antidote']), 'antidote').id,
     });
     expect(after.player.team[0]!.status).toBeNull();
-    expect(after.player.team[0]!.hp).toBe(hurt + 15);
+    expect(after.player.team[0]!.hp).toBe(hurt + 8);
   });
 
   it("HealersKit_HealsNothing_WhenThereWasNoStatusToCure", () => {

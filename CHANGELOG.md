@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.93 — The series' scale · 2026-11-04
+
+Stats read like the games': about half of what they were.
+
+- **Half-scale stats.** A Lv 50 Pokémon has ~90 HP and ~96 Attack, close to the series.
+- **Same fights.** Damage scales with them: a hit takes the same share of a health bar.
+- **Flat heals halved.** Potions 10 / 30 / 60 HP; small heals halved too.
+- **Saves kept.** A run in progress carries on at the new scale.
+
 ### v0.9.92 — Enemies with intent · 2026-11-03
 
 Enemies carry more moves, play tricks, act twice more often and run combos.

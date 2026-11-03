@@ -39,7 +39,8 @@ describe('Determinism & replay', () => {
     for (const id of ids) {
       const r = autoPlay(startFixture(id), ctx);
       expect(r.state.outcome, id).not.toBe('in-progress');
-      expect(r.turns, id).toBeLessThan(40);
+      // A stall guard, not a pace target: the Champion's fixture runs ~33–40 turns since v0.9.93's half-scale rounding.
+      expect(r.turns, id).toBeLessThan(50);
     }
   });
 });

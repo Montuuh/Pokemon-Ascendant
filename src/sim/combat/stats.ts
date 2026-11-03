@@ -30,12 +30,19 @@ export const STAT_GROWTH_RATE = 0.025;
 /** §6.2.3 — HP also gains this much a level whatever its base, as the series adds the level to HP: a low-level fight keeps some length. */
 export const HP_PER_LEVEL = 0.7;
 
-// §6.2.3 — level-scaled base stats: base × (1 + rate × (level − 1)), then the archetype's lean (§6.3.4) for a
-// Pokémon that has taken a path. (Until v0.9.10: base + a flat per-line growth × (level − 1), which gave Geodude
-// Golem's growth and a single stage a quarter more than a final form.)
+/**
+ * §6.2.3 — the scale every stat is printed at (v0.9.93, the user's call: numbers like the series'). Halved, a Lv 50
+ * Pokémon reads ~90 / 96 / 79 / 77 where the series has ~132 / 98 / 82 / 81. Damage is a ratio of Attack to Defence
+ * (§4.1.1), so the divisor doubled with it and every flat HP amount was halved: a fight lasts as long as before.
+ */
+export const STAT_SCALE = 0.5;
+
+// §6.2.3 — level-scaled base stats: (base × (1 + rate × (level − 1)) + HP's per-level term) × the scale, then the
+// archetype's lean (§6.3.4) for a Pokémon that has taken a path. (Until v0.9.10: base + a flat per-line growth ×
+// (level − 1), which gave Geodude Golem's growth and a single stage a quarter more than a final form.)
 export function statAtLevel(species: SpeciesDef, stat: 'hp' | Stat, level: number, archetype?: BranchArchetype | null): number {
   const lv = Math.max(1, Math.trunc(level));
-  const raw = species.baseStats[stat] * (1 + STAT_GROWTH_RATE * (lv - 1)) + (stat === 'hp' ? HP_PER_LEVEL * lv : 0);
+  const raw = (species.baseStats[stat] * (1 + STAT_GROWTH_RATE * (lv - 1)) + (stat === 'hp' ? HP_PER_LEVEL * lv : 0)) * STAT_SCALE;
   return Math.round(archetype ? raw * ARCHETYPE_STAT_BIAS[archetype][stat] : raw);
 }
 

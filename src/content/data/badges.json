@@ -72,14 +72,14 @@
       "name": "Rainbow Badge",
       "type": "grass",
       "region": 2,
-      "description": "At turn start, a Lead with a status condition restores 3 HP.",
+      "description": "At turn start, a Lead with a status condition restores 2 HP.",
       "flavour": "Proof that a garden grows through anything.",
       "hook": "turn-end-heal",
       "params": {
         "atTurnStart": true,
         "leadOnly": true,
         "whileStatused": true,
-        "amount": 3
+        "amount": 2
       }
     },
     {

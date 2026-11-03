@@ -1,6 +1,8 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-03 · **Version:** v0.9.92 (*Enemies with intent*).
+**Date:** 2026-11-04 · **Version:** v0.9.93 (*The series' scale*).
+**Shipped 2026-11-04 (v0.9.93):** stats at half scale (`STAT_SCALE` 0.5, §6.2.3), divisor 5 → 10, flat HP amounts halved,
+save v24. Harness R1 63 · R2|R1 51 · R3|R2 38 · League 67 · run 8 %. Watch: small multipliers floor away on early hits.
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords. ✅ v0.9.90 real
 evolution levels and methods, Friendship. ✅ v0.9.91 progressive learnsets (tracks, Move Reminder, no filler on a final

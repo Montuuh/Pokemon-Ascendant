@@ -1,5 +1,5 @@
 import type { ContentRegistry } from '../content/defs';
-import { RUN_SAVE_VERSION, mintUid, uidIndex } from './run';
+import { RUN_SAVE_VERSION, effectiveMax, mintUid, uidIndex } from './run';
 import { hasPlaceFor } from './legendaries';
 import { DEFAULT_PROGRESSION, readyBranches, xpToNext } from './xp';
 import type { RunState } from './types';
@@ -263,8 +263,35 @@ function migrateLevelsTo23(run: RunState, content: ContentRegistry): void {
   }
 }
 
+/** §6.2.3 — half of an amount the run holds at the old scale, never taking a standing Pokémon to 0. */
+const halve = (n: number): number => (n > 0 ? Math.max(1, Math.round(n / 2)) : n);
+
+/**
+ * §6.2.3 — v23 → v24: stats are printed at half scale (v0.9.93). Every HP the run holds is halved, a Training Grounds'
+ * boost with it, and a fight's record (HP before the heal, the gains and the stats it shows) reads at the new scale.
+ */
+function migrateScaleTo24(run: RunState, content: ContentRegistry): void {
+  run.version = RUN_SAVE_VERSION;
+  for (const mon of run.box) {
+    if (mon.boosts) for (const k of Object.keys(mon.boosts) as (keyof NonNullable<typeof mon.boosts>)[]) mon.boosts[k] = Math.round(mon.boosts[k]! / 2);
+    mon.hp = Math.min(halve(mon.hp), effectiveMax(run, mon, content));
+  }
+  const walk = (node: unknown): void => {
+    if (Array.isArray(node)) return node.forEach(walk);
+    if (!node || typeof node !== 'object') return;
+    const o = node as Record<string, unknown>;
+    if (typeof o.hp === 'number') o.hp = halve(o.hp);
+    for (const key of ['gains', 'statsAt']) {
+      const stats = o[key] as Record<string, number> | undefined;
+      if (stats && typeof stats === 'object') for (const k of ['attack', 'defense', 'speed']) if (typeof stats[k] === 'number') stats[k] = halve(stats[k]);
+    }
+    for (const v of Object.values(o)) walk(v);
+  };
+  for (const [k, v] of Object.entries(run)) if (k !== 'box') walk(v);
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22, 22: migrateLevelsTo23 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22, 22: migrateLevelsTo23, 23: migrateScaleTo24 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

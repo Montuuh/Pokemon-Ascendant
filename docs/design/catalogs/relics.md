@@ -62,7 +62,7 @@
 | `steady-aim` | Steady Aim | combat | Crit multiplier 1.5 → 1.75 | T2 | ✅ |
 | `lure-module` | Lure Module | meta | Wild Areas roll their rarity twice and keep the rarer — 36 / 45 / 19 % (§2.6.2). Was "+1 species choice", which the v0.9.7 pool-and-roll has no choice for | T2 | ✅ v0.9.7 |
 | `battle-tracker` | Battle Tracker | meta | A species already fought this run never hides its first intent again (§5.5.1). Was "+5 % Witnessed reveal rate", a rate the Pokédex's single Familiar tier no longer has | T2 | ✅ v0.7.5 |
-| `healers-kit` | Healer's Kit | status | Status cures also restore +15 HP | T1 | ✅ |
+| `healers-kit` | Healer's Kit | status | Status cures also restore +8 HP | T1 | ✅ |
 | `bond-bracelet` | Bond Bracelet | combat | The first time the Lead drops below 50 %, the whole bench gains Def +1 | T2 | ✅ |
 
 ## 3. Rare (7) — drop weight 10 %

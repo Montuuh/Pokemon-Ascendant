@@ -15,10 +15,10 @@
       "id": "swap-fuel",
       "name": "Swap Fuel",
       "tier": "strong",
-      "description": "Every manual swap heals your new Lead 5 HP.",
+      "description": "Every manual swap heals your new Lead 3 HP.",
       "hook": "swap-heal",
       "params": {
-        "amount": 5
+        "amount": 3
       }
     },
     {

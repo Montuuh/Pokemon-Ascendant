@@ -92,9 +92,20 @@ applies the chosen branch and catches up the evolved form's learnset without rep
 has very few in total, Gyarados very many; Legendaries and single stages higher"):
 
 ```
-stat(level) = base × (1 + STAT_GROWTH_RATE × (level − 1))      STAT_GROWTH_RATE = 0.025
-HP adds the level on top                                        HP_PER_LEVEL = 0.7
+stat(level) = (base × (1 + STAT_GROWTH_RATE × (level − 1))     STAT_GROWTH_RATE = 0.025
+               + HP's per-level term) × STAT_SCALE              HP_PER_LEVEL = 0.7 (HP only) · STAT_SCALE = 0.5
 ```
+
+**Printed at the series' scale** (v0.9.93, the user's call: the numbers read too big next to the games'). The
+scale halves every stat, so the roster's mean at Lv 10 / 20 / 30 / 40 / 50 is about 43 / 53 / 43 / 42 ·
+55 / 64 / 52 / 51 · 66 / 75 / 61 / 59 · 78 / 85 / 70 / 68 · 90 / 96 / 79 / 77 (HP / Atk / Def / Spe), where the
+series' (IV 15, no EVs) is 34 / 23 / 20 / 20 at Lv 10 and 132 / 98 / 82 / 81 at Lv 50: close at the end of the run,
+higher early, because a Pokémon here starts from its base at Lv 1 rather than from almost nothing. The scale is
+cosmetic by construction: damage is a ratio of Attack to Defence (§4.1.1), so the divisor doubled with it (5 → 10)
+and every flat HP amount was halved (Potions §7.2.1, Swap Fuel, the Rainbow Badge, Healer, Healer's Kit, a Training
+Grounds' Stat Boost), and a fight takes as many hits as before. The two −1 reductions (Boulder Badge, Iron Skin)
+stay at 1, the smallest step there is: early on they now take a sixth of a hit rather than a third. What it does change is rounding: with hits half as
+big, a small multiplier (a +10 % item on a 7-damage hit) floors away early in the run, as it does in the series.
 
 The base is the species' own (§4.1.5.1: Attack the higher of Gen I's Attack and Special, Defence their mean), so a
 species' total at any level keeps the proportion of its base total, as the series' does: Magikarp stays small,
@@ -485,7 +496,7 @@ rank 2 (§6.8.3).
 | **Type** | Immunity or altered interaction with a type | Levitate: immune to Ground |
 | **Survival** | Changes faint or damage thresholds | Sturdy: survive one lethal hit per combat at 1 HP |
 | **Status** | Immunity to, or exploitation of, a condition | Immunity: cannot be Poisoned |
-| **Support** | Helps the rest of the team | Healer: heal a bench ally 3 HP at turn end |
+| **Support** | Helps the rest of the team | Healer: heal a bench ally 2 HP at turn end |
 | **Aura** | Grants a Lead Aura while this Pokémon leads | §6.5.4 |
 
 ## §6.5.3 Key designs

@@ -32,8 +32,8 @@ export const VICTORY_ROAD = {
   wildStage: 'victory-road-wild',
   /** §2.12.1 — a Gauntlet's Ace Trainer: four Pokémon, every one two-phase, two at a time. */
   gauntlet: { size: 4, phaseCount: 2 as const, onField: 2 as const, sprite: 'acetrainer', names: ['Naomi', 'Gwen', 'Vincent', 'Dakota', 'Rolando', 'Mira'] },
-  /** §2.12.3 — what a Training Grounds' Stat Boost adds, for the rest of the run. */
-  statBoost: { hp: 12, attack: 6, defense: 6, speed: 6 } as Record<'hp' | 'attack' | 'defense' | 'speed', number>,
+  /** §2.12.3 — what a Training Grounds' Stat Boost adds, for the rest of the run (half of v0.9.92's, with the stats, §6.2.3). */
+  statBoost: { hp: 6, attack: 3, defense: 3, speed: 3 } as Record<'hp' | 'attack' | 'defense' | 'speed', number>,
 } as const;
 
 /** §2.12.3 — the five upgrades of a Training Grounds; one a node, and they do not combine. */

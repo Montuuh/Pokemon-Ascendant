@@ -109,10 +109,10 @@
       "id": "healer",
       "name": "Healer",
       "category": "support",
-      "description": "At turn end, restore 3 HP to a random bench ally.",
+      "description": "At turn end, restore 2 HP to a random bench ally.",
       "hook": "turn-end-bench-heal",
       "params": {
-        "amount": 3
+        "amount": 2
       },
       "gdd": "§6.6"
     },

@@ -129,11 +129,11 @@ describe('Region Modifiers inside a fight — §7.3.6', () => {
   it('SwapFuel_HealsTheIncomingLead_AndOnlyOnAManualSwap_§2.11.3', () => {
     const hurt = (id?: string) =>
       tweak(start(scenario({ team: [...STARTERS], enemies: [PIDGEY], ...(id ? { regionModifier: id } : {}) })), (d) => {
-        for (const c of d.player.team) c.hp = Math.max(1, c.maxHp - 20);
+        for (const c of d.player.team) c.hp = Math.max(1, c.maxHp - 10);
       });
     const fuelled = dispatch(hurt('swap-fuel'), { type: 'swap', benchIndex: 1 });
     const plain = dispatch(hurt(), { type: 'swap', benchIndex: 1 });
-    expect(fuelled.player.team[1]!.hp).toBe(plain.player.team[1]!.hp + 5);
+    expect(fuelled.player.team[1]!.hp).toBe(plain.player.team[1]!.hp + 3);
   });
 
   it('ARunWithNoModifier_PlaysExactlyAsBefore', () => {

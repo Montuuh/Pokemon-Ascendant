@@ -1485,7 +1485,7 @@ The gate. Three modifiers are offered, seeded and weighted to your team; you pic
 | Modifier | Effect for the next Region | Tier |
 |---|---|---|
 | **Hand of Plenty** | +1 max hand size | Strong |
-| **Swap Fuel** | The Lead heals 5 HP on every manual swap | Strong |
+| **Swap Fuel** | The Lead heals 3 HP on every manual swap | Strong |
 | **Sturdy Lead** | Once per combat the Lead survives a lethal hit at 1 HP | Strong |
 | **Type Affinity** | All moves of a type you choose deal +10 % | Strong |
 | **Trauma Resistance** | Each Trauma stack costs 4 % instead of 5 % (cap unchanged) | Strong |
@@ -1797,7 +1797,7 @@ No fight. Pick one Pokémon from the Box and one upgrade. **One or two per Victo
 
 | Upgrade | Effect |
 |---|---|
-| **Stat Boost** | One stat raised for the rest of the run: **HP +12** (healed by as much), **Attack, Defense or Speed +6** |
+| **Stat Boost** | One stat raised for the rest of the run: **HP +6** (healed by as much), **Attack, Defense or Speed +3** (halved with the stats in v0.9.93, §6.2.3) |
 | **Move Upgrade** | One move becomes its **upgraded form** — the `+` version the content already carries (more power, a cheaper cost or a rider) |
 | **Level Push** | Exactly one level, now |
 | **Early Evolution** | Evolve now, whatever the level, with the full choice of path (§6.3) |

@@ -755,7 +755,7 @@ the player cannot feel is not a reward.)*
 ## §5.10.2 Region 2 tier
 
 **🔥 Volcano Badge** *(Fire)* — Offensive cards costing 3 or more AP deal +20 % damage.
-**🌿 Rainbow Badge** *(Grass)* — At turn start, a Lead with a status condition restores 3 HP.
+**🌿 Rainbow Badge** *(Grass)* — At turn start, a Lead with a status condition restores 2 HP.
 **⚡ Thunder Badge** *(Electric)* — The first Ranged move each turn costs 1 less AP (minimum 0).
 **💗 Soul Badge** *(Poison)* — Applying a status condition to an enemy draws 1 skill card.
 

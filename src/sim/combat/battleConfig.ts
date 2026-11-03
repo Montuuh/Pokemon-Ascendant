@@ -17,7 +17,7 @@ export interface RhythmCurve {
 }
 
 export interface BattleConfig {
-  /** §4.1.1 — damage formula divisor. Unity shipped 8; v0.9.12 took it to 5 when enemies got their whole HP back. */
+  /** §4.1.1 — damage formula divisor. Unity shipped 8; v0.9.12 took it to 5 when enemies got their whole HP back; v0.9.93 to 10 with the half-scale stats. */
   divisor: number;
   /** §4.1.2 — same-type attack bonus. */
   stabMultiplier: number;
@@ -178,7 +178,8 @@ export interface BattleConfig {
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   // §4.1.1 — 5 since v0.9.12: every enemy fights on its whole HP, so every hit, yours and theirs, lands harder.
-  divisor: 5,
+  // 10 since v0.9.93: stats are printed at half scale (§6.2.3), HP with them, so a hit takes the same share it did.
+  divisor: 10,
   doubleActionApBudget: 3,
   doubleActionApBudgetBoss: 4,
   comboBreakShare: 0.25,

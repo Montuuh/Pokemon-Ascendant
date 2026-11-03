@@ -1540,6 +1540,18 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.93 — The series' scale  ✅ 2026-11-04
+
+**Shipped.** The user's call (2026-11-04: "too many stats next to the series — rebalance down"). Measured first: the
+growth per level was already the series' (+2 Attack, +2.3 HP a level against +1.9 / +2.5); the numbers were high
+because a Pokémon starts from its whole base at Lv 1. Every stat is now printed at half scale (`STAT_SCALE` 0.5 in
+`combat/stats.ts`, §6.2.3): the roster's mean at Lv 50 is ~90 / 96 / 79 / 77 against the series' ~132 / 98 / 82 / 81.
+Damage is a ratio (§4.1.1), so the divisor went 5 → 10 and every flat HP amount was halved — Potions 10 / 30 / 60,
+Swap Fuel 3, Rainbow Badge 2, Healer 2, Healer's Kit 8, the Training Grounds' Stat Boost +6 HP / +3; the −1 reductions
+stay at 1. Saves v23 → v24 halve the HP they hold (`migrateScaleTo24`). Fights take the same turns (fixtures ±0.3 on
+average); harness R1 63 · R2|R1 51 · R3|R2 38 · League 67 · run 8 % (was 58 · 46 · 44 · 71 · 8 %). Small multipliers now
+floor away on early hits, as in the series.
+
 ### v0.9.92 — Enemies with intent  ✅ 2026-11-03
 
 **Shipped.** Last of the four versions of the user's rework of 2026-11-03 ("many more moves for the enemies, stronger and

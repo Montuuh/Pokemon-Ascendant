@@ -24,7 +24,7 @@ damage = floor( Power × (Attack / Defence) × Range × Crit × STAB × TypeEff 
 | **Crit** | 1.5 on a crit, otherwise 1.0 | §4.1.3 |
 | **STAB** | 1.5 when the move's type matches either of the user's types | derived |
 | **TypeEff** | 4 / 2 / 1 / 0.5 / 0.25 / 0 | §4.1.2 |
-| **Divisor** | **8** (`BattleConfig.divisor`) | balance config |
+| **Divisor** | **10** (`BattleConfig.divisor`) | balance config |
 
 **Rules that fall out of it**
 
@@ -38,7 +38,8 @@ damage = floor( Power × (Attack / Defence) × Range × Crit × STAB × TypeEff 
 Divisor 5 is the tuned value (v0.9.12). Divisor 8 landed wild fights at 4–5 turns while every enemy fought on a
 fraction of its HP (§2.2.1); with its whole HP back — the user's call: an enemy is the Pokémon its species and level
 say — the fights doubled, and tuning the enemies' Attack alone could not hold Region 3 (37 %, Gyms of 46 turns, every
-hit 3 % of a Pokémon's HP). At 5, for both sides, fights run 5 / 8 / 10 turns by Region and Gyms 8 / 13 / 19.
+hit 3 % of a Pokémon's HP). At 5, for both sides, fights run 5 / 8 / 10 turns by Region and Gyms 8 / 13 / 19. **10 since v0.9.93**: stats are
+printed at half scale (§6.2.3), HP with them, so the divisor doubled and a hit takes the same share of a health bar.
 *(Ratified 2026-09-19 after the v0.1 balance pass. Earlier drafts said "TBD via playtesting" and an old document
 said 50; 8 is correct.)*
 

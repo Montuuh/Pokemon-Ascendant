@@ -13,7 +13,7 @@
     },
     {
       "type": "play-card",
-      "cardId": "c2"
+      "cardId": "c7"
     },
     {
       "type": "end-turn"
@@ -21,6 +21,47 @@
     {
       "type": "play-card",
       "cardId": "c5"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c8"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c10"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c5"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c1"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
+    },
+    {
+      "type": "end-turn"
     },
     {
       "type": "play-card",
@@ -28,33 +69,15 @@
     },
     {
       "type": "play-card",
-      "cardId": "c9"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c4"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c9"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c5"
+      "cardId": "c7"
     },
     {
       "type": "play-card",
       "cardId": "c2"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
     },
     {
       "type": "end-turn"
@@ -66,63 +89,32 @@
     },
     {
       "type": "play-card",
+      "cardId": "c5"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
       "cardId": "c1"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c6"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c9"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c7"
-    },
-    {
-      "type": "use-consumable",
-      "cardId": "k15"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "end-turn"
     },
     {
       "type": "play-card",
       "cardId": "c5"
     },
     {
+      "type": "end-turn"
+    },
+    {
       "type": "play-card",
       "cardId": "c4"
     },
     {
-      "type": "end-turn"
-    },
-    {
-      "type": "swap",
-      "benchIndex": 1
-    },
-    {
       "type": "play-card",
-      "cardId": "c1"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c7"
+      "cardId": "c2"
     }
   ],
-  "fingerprint": "t8 victory lead=1 ap=1 team=[wartortle:50/99,butterfree:98/98,rattata:55/55] enemies=[geodude:0/76,golem:0/148] events=135 rng=2156671001",
+  "fingerprint": "t8 victory lead=0 ap=1 team=[wartortle:24/49,butterfree:49/49,rattata:14/28] enemies=[geodude:0/38,golem:0/74] events=126 rng=2156671001",
   "turns": 8,
   "outcome": "victory"
 }

@@ -241,7 +241,7 @@ The other fifteen shape a turn rather than a type:
 | **Steady Aim** | Combat | Crit multiplier 1.5 → 1.75 |
 | **Lure Module** | Meta | Wild Areas roll their rarity twice and keep the rarer (§2.6.2) |
 | **Battle Tracker** | Meta | After defeating an enemy, +5 % Witnessed reveal rate on similar species this run |
-| **Healer's Kit** | Status | Status cures also restore +15 HP |
+| **Healer's Kit** | Status | Status cures also restore +8 HP |
 | **Bond Bracelet** | Combat | The first time the Lead drops below 50 %, the whole bench gains Defence +1 |
 
 ## §7.3.5 Rare relics (7)

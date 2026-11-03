@@ -9,9 +9,9 @@
       "target": "ally",
       "effect": {
         "kind": "heal-flat",
-        "amount": 20
+        "amount": 10
       },
-      "description": "Restore 20 HP to one Pokémon.",
+      "description": "Restore 10 HP to one Pokémon.",
       "gdd": "§7.2.1",
       "upgradeTo": "super-potion"
     },
@@ -23,9 +23,9 @@
       "target": "ally",
       "effect": {
         "kind": "heal-flat",
-        "amount": 60
+        "amount": 30
       },
-      "description": "Restore 60 HP to one Pokémon.",
+      "description": "Restore 30 HP to one Pokémon.",
       "gdd": "§7.2.1",
       "upgradeTo": "hyper-potion"
     },
@@ -195,9 +195,9 @@
       "target": "ally",
       "effect": {
         "kind": "heal-flat",
-        "amount": 120
+        "amount": 60
       },
-      "description": "Restore 120 HP to one Pokémon.",
+      "description": "Restore 60 HP to one Pokémon.",
       "gdd": "§7.2.1",
       "upgradeTo": "max-potion"
     },

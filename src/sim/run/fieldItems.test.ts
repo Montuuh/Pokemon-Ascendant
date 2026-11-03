@@ -23,11 +23,11 @@ const withBag = (ids: string[], tweak: (d: RunState) => void = () => {}) =>
 describe('Bag items out of a fight — §7.2.1', () => {
   it('APotion_HealsABoxPokemon_AndIsSpent', () => {
     let s = withBag(['potion'], (d) => {
-      d.box[0]!.hp = 10;
+      d.box[0]!.hp = 5;
     });
     const uid = s.box[0]!.uid;
     s = apply(s, { type: 'use-item', consumableId: 'potion', uid });
-    expect(s.box[0]!.hp).toBe(Math.min(effectiveMax(s, s.box[0]!, content), 30));
+    expect(s.box[0]!.hp).toBe(Math.min(effectiveMax(s, s.box[0]!, content), 15));
     expect(s.consumables).toEqual([]);
   });
 
