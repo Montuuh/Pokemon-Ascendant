@@ -1,0 +1,38 @@
+/* §3.11.6 — a side's conditions at the top of its own half of the stage, by the centre line: small pills over the sky. */
+.row {
+  position: absolute;
+  top: var(--sp-2);
+  z-index: 3;
+  display: flex;
+  gap: var(--sp-1);
+  pointer-events: none;
+}
+/* Both rows meet at the stage's top centre, the sky every formation leaves free (a group's bench intent sits top-right):
+   the half a row stands in still says whose it is. */
+.yours {
+  right: calc(50% + var(--sp-2));
+}
+.theirs {
+  left: calc(50% + var(--sp-2));
+}
+.chip {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  font-family: var(--font-ui);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+/* Whose side: yours in your blue, the foe's in its red, on the border only (D5). */
+.yours .chip {
+  border-color: var(--type-water);
+}
+.theirs .chip {
+  border-color: var(--type-fire);
+}

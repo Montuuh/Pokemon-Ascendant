@@ -308,11 +308,16 @@ A **single-stage** species learns its kit by level — two at level 1, the rest 
 | 1 | 40–50 | 45–55 |
 | 2 | 60–75 | 65–90 |
 | 3 | 85–100 | 90–100 |
-| 4 | 110–130 | 115–130 |
+| 3 + Recharge (§3.11.8) | 130–170 | 130–170 |
+| 3 + Fatigue (§3.11.8) | 110–120 | 110–120 |
+| 3 + a drop of its own stats | 110–130 | 110–130 |
+
+No card is printed above 3 AP (§3.7, v0.9.89): the 4-AP ultimates were playable only on a relic's or an Ether's AP, so
+they became 3 AP with a drawback — the series' own turn of recharge, its misses as next turn's Fatigue.
 
 A move carrying **both** a modifier and a rider sits at the bottom of its band, and so do Gen I's high-critical moves
 (Karate Chop, Razor Leaf, Crabhammer, Slash), which crit every time here. A `cleave` move counts as ~1.6× its printed
-power; recoil, a rampage's self-Confusion and a sacrifice are budgeted apart, and so are Mastery tiers (§6.8.4). A
+power; recoil, a rampage's self-Confusion and free returns, a charge's turn of warning and a sacrifice are budgeted apart, and so are Mastery tiers (§6.8.4). A
 content test enforces the bands — decided 2026-09-19, and made real in v0.9.5, when every move was re-cut from its
 Gen I numbers.
 

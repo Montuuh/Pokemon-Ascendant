@@ -22,6 +22,8 @@ body {
   font-size: var(--type-body);
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
+  /* The pixel face's "fl" ligature drew Reflect as "ReAect": every glyph stands alone (D9). */
+  font-variant-ligatures: none;
   overflow: hidden; /* screens own their scrolling */
 }
 

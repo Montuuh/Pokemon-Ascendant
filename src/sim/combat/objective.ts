@@ -35,6 +35,14 @@ export function objectiveIntent(state: CombatState, enemy: EnemyCombatant, ctx: 
 }
 
 /**
+ * §5.6.5 — a guard saves its finisher for the hold's last turn: it recharges (§3.11.8), so spent early it would leave
+ * the race's last turn empty.
+ */
+export function objectiveHoldsBack(state: CombatState, moveId: string, ctx: CombatCtx): boolean {
+  return state.objective?.kind === 'hold' && !lastTurn(state) && moveId === ctx.config.objectives.guardFinisher;
+}
+
+/**
  * §5.6.5 — the turn's end. A runner still standing after its last turn gets away (the fight ends as Fled: no XP, no
  * drop, no catch, no toll). A hold-out with a Pokémon of yours standing after its last turn is won; before it, the
  * guard grows angrier — its Attack up a stage at the end of every turn.

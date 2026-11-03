@@ -11,7 +11,7 @@ import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from './battleConfig';
 import { outspeeds } from './stats';
 import { rhythmReady, spendsRhythm } from './rhythm';
-import { fieldApDelta, isShielded, ppLeft, protectBlocked } from './keywords';
+import { fieldApDelta, guardAmount, isShielded, ppLeft, protectBlocked } from './keywords';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
 // Every rule here mirrors the reducer's validation — keep them in lockstep (tests assert agreement).
@@ -43,6 +43,8 @@ export interface CardPlayability {
    * played onto one of them, never cast at nothing. Empty for a card that aims at the foe.
    */
   allyTargets: number[];
+  /** §3.11.4 — the Guard it would give its owner now (null for a card without one): the number the card prints. */
+  guard: number | null;
 }
 
 export interface CardTarget {
@@ -180,6 +182,10 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
     hitsAll: move.targeting === 'cleave',
     targets,
     allyTargets: allyRecipients(state, move, state.player.team.indexOf(owner)),
+    guard: (() => {
+      const fx = move.effects.find((e) => e.kind === 'guard');
+      return fx && fx.kind === 'guard' ? guardAmount(owner, fx.power, ctx) : null;
+    })(),
   };
 }
 

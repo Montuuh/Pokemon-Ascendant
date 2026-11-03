@@ -47,7 +47,8 @@ describe('Protect — §3.11.2', () => {
   });
 
   it('EnemyProtect_IsUpWhenDeclared_SoYourSingleTargetCardSaysSo_§5.2.1', () => {
-    const s = fight(['tackle', 'water-gun'], ['probe-protect', 'tackle']);
+    // §5.3.1 — a hurt enemy is the one that raises its Protect.
+    const s = start(scenario({ team: [{ species: 'squirtle', level: 30, moves: ['tackle', 'water-gun'] }, STARTERS[0]!, STARTERS[2]!], enemies: [{ ...WALL(['probe-protect', 'tackle']), hpPercent: 0.3 }] }));
     const e = s.enemies[0]!;
     expect(e.intent?.stance).toBe(true);
     expect(e.volatile?.protectTurn).toBe(s.turn);

@@ -1,5 +1,5 @@
 import { IconBolt, IconBrain, IconCloudFog, IconCloudRain, IconHome, IconLeaf, IconSnowflake, IconSpider, IconSun, IconVaccineBottle, IconWind } from '@tabler/icons-react';
-import { battlefields, type FieldId, type FieldState, type PokemonType } from '@/sim';
+import { battlefields, FIELD_CATEGORY, type CombatState, type FieldId, type FieldState, type PokemonType } from '@/sim';
 import { FIELD_LABEL, homeFieldLabel } from '@/ui/strings';
 import { fieldTip, homeFieldTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
@@ -38,11 +38,13 @@ interface Props {
   suppressed?: boolean;
   /** Smaller, for a preview card. */
   compact?: boolean;
+  /** §4.3.15 — the turns a move-set field has left, by category. */
+  timers?: CombatState['fieldTimers'];
 }
 
 // §9.2.2.1 / §4.3 — the ground a fight is on: each Battlefield standing and any Home Field, one chip each, with the
 // numbers behind a hover. The same chips on the combat top bar and on a node's preview card.
-export function FieldChips({ fields, suppressed = false, compact = false }: Props) {
+export function FieldChips({ fields, suppressed = false, compact = false, timers }: Props) {
   const standing = battlefields(fields);
   if (!standing.length && !fields.home) return null;
   return (
@@ -50,9 +52,11 @@ export function FieldChips({ fields, suppressed = false, compact = false }: Prop
       {standing.map((id) => {
         const Icon = ICON[id];
         return (
-          <Tipped key={id} tip={fieldTip(id, suppressed)} className={[styles.chip, TONE[id] ?? '', suppressed ? styles.suppressed : ''].join(' ')} data-testid={`field-${id}`}>
+          <Tipped key={id} tip={fieldTip(id, suppressed, timers?.[FIELD_CATEGORY[id]])} className={[styles.chip, TONE[id] ?? '', suppressed ? styles.suppressed : ''].join(' ')} data-testid={`field-${id}`}>
             <Icon size={compact ? 14 : 16} aria-hidden="true" />
             {FIELD_LABEL[id]}
+            {/* §4.3.15 — a field a move set says how long it has. */}
+            {timers?.[FIELD_CATEGORY[id]] && <span className={`${styles.turns} tabular`} data-testid={`field-${id}-turns`}>{timers[FIELD_CATEGORY[id]]!.turnsLeft}</span>}
           </Tipped>
         );
       })}

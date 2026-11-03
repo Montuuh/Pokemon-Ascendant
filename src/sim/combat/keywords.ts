@@ -106,10 +106,7 @@ export function applyKeyword(state: CombatState, ctx: RunCtx, user: Combatant, f
       log(state, 'system', `${user.name} braced itself!`);
       return true;
     case 'guard': {
-      // §3.11.4 — level-free, like the hits it stops (§4.1.1 has no level in it): the move's power over the divisor, ×
-      // the species' base Defence against the reference, × its Defence stage.
-      const base = ctx.content.species(user.speciesId).baseStats.defense;
-      const amount = Math.max(1, Math.floor((fx.power / ctx.config.divisor) * (base / ctx.config.keywords.guardReferenceDefence) * stageMultiplier(user.stages.defense, ctx.config)));
+      const amount = guardAmount(user, fx.power, ctx);
       user.guard = (user.guard ?? 0) + amount;
       emit(state, { t: 'keyword', uid: user.uid, keyword: 'guard', amount });
       log(state, 'system', `${user.name} guards (${user.guard}).`);
@@ -162,6 +159,16 @@ export function applyKeyword(state: CombatState, ctx: RunCtx, user: Combatant, f
     default:
       return false;
   }
+}
+
+/**
+ * §3.11.4 — the Guard a move of `power` gives this Pokémon now: level-free, like the hits it stops (§4.1.1 has no level in
+ * it) — the power over the divisor, × the species' base Defence against the reference, × its Defence stage. The card
+ * prints this number, so the plate and the chip agree.
+ */
+export function guardAmount(c: Combatant, power: number, ctx: Pick<RunCtx, 'content' | 'config'>): number {
+  const base = ctx.content.species(c.speciesId).baseStats.defense;
+  return Math.max(1, Math.floor((power / ctx.config.divisor) * (base / ctx.config.keywords.guardReferenceDefence) * stageMultiplier(c.stages.defense, ctx.config)));
 }
 
 const SIDE_TEXT: Record<SideCondition['id'], string> = {

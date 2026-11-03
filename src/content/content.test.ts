@@ -238,7 +238,9 @@ describe('content registry', () => {
       for (const p of kitPaths(reg, s.id)) {
         const at = `${s.id} [${p.branches.join(' > ') || 'base'}]: ${p.pool.join(' ')}`;
         const attacks = p.pool.map((m) => reg.move(m)).filter((m) => m.role === 'offensive');
-        expect(Math.max(0, ...attacks.filter((m) => s.types.includes(m.type)).map((m) => m.power)), `${at} — its type's best`).toBeGreaterThanOrEqual(need);
+        // §3.11.9 — a rampage lands its power on every turn it runs: the card is worth all of them.
+        const worth = (m: (typeof attacks)[number]) => m.power * (1 + m.effects.reduce((n, e) => (e.kind === 'rampage' ? n + e.turns : n), 0));
+        expect(Math.max(0, ...attacks.filter((m) => s.types.includes(m.type)).map(worth)), `${at} — its type's best`).toBeGreaterThanOrEqual(need);
         if (evolved && !cocoons.has(s.id)) {
           expect(attacks.length, `${at} — attacks`).toBeGreaterThanOrEqual(3);
           expect(attacks.some((m) => m.range !== 'melee'), `${at} — a Ranged attack`).toBe(true);
@@ -267,11 +269,15 @@ describe('content registry', () => {
     expect(checked).toBe(155);
   });
 
-  it('§3.6 — every move is a Gen I move at its Gen I name and its modern type, or one of the later Dark and Steel moves, or one made better (+, ++)', () => {
-    const table = (file: string) => (JSON.parse(readFileSync(`src/content/data/${file}`, 'utf8')) as { moves: { id: string; name: string; type: string }[] }).moves;
+  it('§3.6 — every move is a Gen I move at its Gen I name and its modern type, or one of the later moves (Gen II–IV, Dark and Steel), or one made better (+, ++)', () => {
+    const table = (file: string) => (JSON.parse(readFileSync(`src/content/data/${file}`, 'utf8')) as { moves: { id: string; name: string; type: string; gen?: number }[] }).moves;
     const gen1 = new Map([...table('gen1-moves.json'), ...table('later-moves.json')].map((m) => [m.id, m]));
-    // The later moves are only ever Dark or Steel: the two types Generation I does not have.
-    for (const m of table('later-moves.json')) expect(['dark', 'steel'], m.id).toContain(m.type);
+    // The later moves are of Generations II–IV (the GBA/DS era the art is), or one of v0.9.84's Dark and Steel set; never Fairy.
+    for (const m of table('later-moves.json')) {
+      expect(m.type, m.id).not.toBe('fairy');
+      if (m.gen !== undefined) expect(m.gen, m.id).toBeLessThanOrEqual(4);
+      else expect(['dark', 'steel'], m.id).toContain(m.type);
+    }
     const enemyOnly = new Set(['call-for-help', 'cover']);
     for (const m of reg.allMoves()) {
       if (enemyOnly.has(m.id)) continue;
@@ -283,18 +289,26 @@ describe('content registry', () => {
     }
   });
 
-  it('§6.3.6.4 — every damaging card sits in its AP band; Cleave, recoil, sacrifice and Mastery tiers are budgeted apart', () => {
+  it('§6.3.6.4 — every damaging card sits in its AP band; Cleave, recoil, sacrifice, charge, rampage and Mastery tiers are budgeted apart', () => {
     const band: Record<number, { melee: [number, number]; ranged: [number, number] }> = {
       1: { melee: [40, 50], ranged: [45, 55] },
       2: { melee: [60, 75], ranged: [65, 90] },
       3: { melee: [85, 100], ranged: [90, 100] },
-      4: { melee: [110, 130], ranged: [115, 130] },
     };
+    // §6.3.6.4 / §3.11.8 — the 3-AP ultimates, each with its drawback's band.
+    const ultimate = (m: (typeof moves)[number]): [number, number] | null =>
+      m.effects.some((e) => e.kind === 'recharge') ? [130, 170]
+      : m.effects.some((e) => e.kind === 'fatigue') ? [110, 120]
+      : m.effects.some((e) => e.kind === 'stage' && e.target === 'self' && e.stages < 0) && m.apCost === 3 ? [110, 130]
+      : null;
+    const moves = reg.allMoves();
     const mastery = new Set(reg.allSpecies().flatMap((s) => reg.masteryMoves(s.id).slice(1)).filter(Boolean));
-    for (const m of reg.allMoves()) {
+    for (const m of moves) {
+      // §3.7 — no card is printed above 3 AP.
+      expect(m.apCost, m.id).toBeLessThanOrEqual(3);
       if (m.power <= 1 || mastery.has(m.id) || m.targeting === 'cleave') continue;
-      if (m.effects.some((e) => e.kind === 'recoil' || (e.kind === 'status' && e.self))) continue;
-      const [lo, hi] = band[m.apCost]![m.range];
+      if (m.effects.some((e) => e.kind === 'recoil' || e.kind === 'charge' || e.kind === 'rampage' || (e.kind === 'status' && e.self))) continue;
+      const [lo, hi] = ultimate(m) ?? band[m.apCost]![m.range];
       expect(m.power, `${m.id} (${m.apCost} AP ${m.range})`).toBeGreaterThanOrEqual(lo);
       expect(m.power, `${m.id} (${m.apCost} AP ${m.range})`).toBeLessThanOrEqual(hi);
     }

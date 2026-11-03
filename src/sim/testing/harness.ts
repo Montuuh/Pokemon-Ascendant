@@ -26,7 +26,11 @@ export const PROBE_MOVES: Record<string, MoveDef> = Object.fromEntries(
     probe('probe-regen', { type: 'water', role: 'defensive', effects: [{ kind: 'heal', percentOfMaxHp: 0.125, durationTurns: 3 }] }),
     probe('probe-poison', { type: 'poison', range: 'ranged', effects: [{ kind: 'status', status: 'poison', chance: 1 }] }),
     probe('probe-sleep', { type: 'grass', range: 'ranged', effects: [{ kind: 'status', status: 'sleep', chance: 1 }] }),
-    // §3.11 — the move keywords, before the catalogue carries them (v0.9.89 ports the real rows).
+    // §7.4 — the team guards the items keep (Safeguard and Wide Guard were cards until v0.9.89), and Revenge's bonus.
+    probe('probe-team-safeguard', { role: 'defensive', effects: [{ kind: 'team-guard', guard: 'status' }] }),
+    probe('probe-wide-guard', { role: 'defensive', effects: [{ kind: 'team-guard', guard: 'cleave', percent: 50 }] }),
+    probe('probe-revenge', { type: 'fighting', role: 'offensive', apCost: 2, power: 65, effects: [{ kind: 'power-bonus', when: 'self-below', below: 0.5, multiplier: 1.5 }] }),
+    // §3.11 — the move keywords, on probes, so the rules are tested apart from the catalogue's rows.
     probe('probe-protect', { role: 'defensive', range: 'ranged', pp: 2, effects: [{ kind: 'protect' }] }),
     probe('probe-endure', { role: 'defensive', range: 'ranged', apCost: 0, effects: [{ kind: 'endure' }] }),
     probe('probe-guard', { type: 'water', role: 'defensive', range: 'ranged', effects: [{ kind: 'guard', power: 60 }] }),

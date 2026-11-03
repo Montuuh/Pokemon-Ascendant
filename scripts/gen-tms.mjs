@@ -89,6 +89,20 @@ const TMS = [
   [53, 'flash-cannon', any(hasType('steel'), inLines('porygon', 'voltorb', 'abra', 'staryu', 'clefairy', 'mewtwo'))],
   [54, 'iron-tail', any(hasType('steel'), inLines('rattata', 'pikachu', 'charmander', 'squirtle', 'sandshrew', 'nidoran-f', 'nidoran-m', 'eevee', 'dratini', 'kangaskhan', 'tauros', 'growlithe'))],
   [55, 'steel-wing', any(hasType('steel'), inLines('pidgey', 'spearow', 'doduo', 'farfetchd', 'aerodactyl', 'dratini'))],
+  // The move keywords (v0.9.89, §3.11): Gen II–IV's TMs of the same moves, by the same kind of rule.
+  [56, 'protect', all],
+  [57, 'rain-dance', any(hasType('water'), inLines('pikachu', 'magnemite', 'voltorb', 'electabuzz', 'jolteon', 'zapdos', 'nidoran-f', 'nidoran-m', 'clefairy', 'chansey', 'kangaskhan', 'snorlax'))],
+  [58, 'sunny-day', any(hasType('fire', 'grass'), inLines('clefairy', 'jigglypuff', 'chansey', 'kangaskhan', 'snorlax', 'tauros', 'dratini'))],
+  [59, 'sandstorm', any(hasType('rock', 'ground', 'steel'), inLines('sandshrew', 'cubone'))],
+  [60, 'hail', hasType('ice', 'water')],
+  [61, 'safeguard', any(hasType('psychic', 'dragon'), inLines('clefairy', 'jigglypuff', 'chansey', 'lapras', 'eevee', 'butterfree'))],
+  [62, 'substitute', all],
+  [63, 'endure', all],
+  [64, 'giga-impact', final],
+  [65, 'calm-mind', any(hasType('psychic'), inLines('clefairy', 'jigglypuff', 'chansey', 'lapras'))],
+  [66, 'bulk-up', any(hasType('fighting'), BIPEDS)],
+  [67, 'roost', hasType('flying')],
+  [68, 'overheat', hasType('fire')],
 ];
 
 /** The three the game shipped first keep their ids and take rules too (they had hand lists of 3, 9 and 6). */

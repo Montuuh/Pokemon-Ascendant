@@ -1,5 +1,5 @@
 import { IconAlertTriangle, IconArrowBackUp, IconArrowForwardUp, IconHandGrab, IconLock, IconShield, IconSparkles, IconSwords, IconTargetArrow, IconZzz } from '@tabler/icons-react';
-import type { CardPlayability } from '@/sim';
+import { ppLeft, type CardPlayability } from '@/sim';
 import { iconOf, moveArt } from '@/ui/art';
 import { TypeLabel } from './TypeBadge';
 import { describeMove } from '@/ui/moveText';
@@ -60,6 +60,8 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
   // panel while the card is held. The ×N chip keeps the hand comparable at a glance, against the enemy Lead.
   const lead = play.damage;
   const costChanged = play.apCost !== move.apCost;
+  // §3.11.1 — the sim's count of what is left, never worked out here.
+  const pp = ppLeft(owner, move) ?? 0;
   const lockLabel = play.reason ? LOCK_LABEL[play.reason] : undefined;
 
   return (
@@ -177,6 +179,14 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
         <Range size={14} stroke={2.4} className={styles.footIcon} />
         <Role size={14} stroke={2.4} className={styles.footIcon} />
         {costChanged && <span className={styles.costNote}>was {move.apCost}</span>}
+        {/* §3.11.1 — the PP it has left this fight, one pip each; a spent one hollow. */}
+        {move.pp && (
+          <span className={styles.pp} data-testid="card-pp" aria-label={`${pp} of ${move.pp} PP left`}>
+            {Array.from({ length: move.pp }, (_, i) => (
+              <span key={i} className={i < pp ? styles.ppOn : styles.ppOff} />
+            ))}
+          </span>
+        )}
         <span className={`${move.power > 0 ? styles.power : styles.noPower} display tabular`}>{move.power > 0 ? move.power : '—'}</span>
         <TypeLabel type={move.type} size={12} className={styles.typeLabel} />
       </span>

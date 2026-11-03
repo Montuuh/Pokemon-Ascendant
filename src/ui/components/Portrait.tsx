@@ -10,6 +10,7 @@ import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
 import { UnitChips } from './UnitChips';
 import { RhythmDial } from './RhythmDial';
+import { keywordUnitChips } from './keywordChips';
 import { combatantTip, shieldTip, traumaTip } from '@/ui/tips';
 import { SHIELD_LABEL, STAT_SHORT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { Tipped, useTip } from '@/ui/tooltip';
@@ -143,7 +144,10 @@ export function Portrait({ turn, mon, variant, slotLabel, slotId, allyIndex, fxS
         </span>
         {/* Its stages, Shield and Trauma on the window's corner, only when it has any: the card keeps one size. */}
         <UnitChips
+          ally
           chips={[
+            // §3.11 — what a keyword left on it changes this turn's decision: first.
+            ...keywordUnitChips(mon, turn ?? -1),
             // §7.3.7 Battle Hardened — the shield it opened the fight behind, drawn on the bar too.
             ...(mon.shield > 0
               ? [{ key: 'shield', label: `${SHIELD_LABEL} ${mon.shield}`, explain: UNIT_CHIPS_TEXT.shieldBody(mon.shield), node: <Tipped tip={shieldTip(mon.shield)} className={`${card.chip} ${card.info}`} data-testid="unit-shield">{SHIELD_LABEL} {mon.shield}</Tipped> }]

@@ -13,6 +13,7 @@ import { PauseMenu } from '@/ui/components/PauseMenu';
 import { MoveCard } from '@/ui/components/MoveCard';
 import { OutcomeOverlay } from '@/ui/components/OutcomeOverlay';
 import { Portrait } from '@/ui/components/Portrait';
+import { SideChips } from '@/ui/components/SideChips';
 import { FieldChips } from '@/ui/components/FieldChips';
 import { IntentArrows } from '@/ui/components/IntentArrows';
 import { TrainerParty } from '@/ui/components/TrainerParty';
@@ -530,7 +531,7 @@ export function CombatScreen() {
           {/* §5.6.5 — a hold-out counts its turns on the top line; a runner counts on its own card. */}
           {state.objective?.kind === 'hold' && <ObjectiveChip kind="hold" turns={state.objective.turns} live={state} />}
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
-          <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} />
+          <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} timers={state.fieldTimers} />
         </div>
         {/* §9.2.2.1 — the bar's middle says what to do now while a card or an item waits for its target, and what just
             happened otherwise: on the field the hint lay across the very Pokémon you were aiming at. */}
@@ -572,6 +573,9 @@ export function CombatScreen() {
           style={{ backgroundImage: `url(${stageBackdrop(state.stage)})`, ...fxTimings(), ...motionTimings() }}
         >
         <div className={styles.stageTint} aria-hidden="true" />
+        {/* §3.11.6 — each side's Reflect, Light Screen, Safeguard, Mist and Wish, over its own half of the stage. */}
+        <SideChips side="player" sides={state.sides} />
+        <SideChips side="enemy" sides={state.sides} />
         {/* §9.9.2 — what a move does in the ground itself (Earthquake), under the cards. */}
         <div className={styles.floor} aria-hidden="true">
           <MoveFxLayer moves={fx.moves} boxes={slotBoxes} floor />
@@ -640,7 +644,7 @@ export function CombatScreen() {
         {/* §9.2.2.4 — the AP, in the middle of the screen: docked at the bottom centre of the field, right over the hand
             it is spent from, with what the card under the pointer would spend shown before it is paid. */}
         <div className={styles.apDock}>
-          <ApMeter ap={state.player.ap} base={ctx.config.baseApPerTurn} cost={costPreview} />
+          <ApMeter ap={state.player.ap} base={ctx.config.baseApPerTurn} cost={costPreview} debt={state.player.apDebt ?? 0} />
           {state.player.defensiveDiscount && (
             <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
               −1 Def

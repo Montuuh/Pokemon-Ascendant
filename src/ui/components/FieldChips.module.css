@@ -60,3 +60,10 @@
 .suppressed svg {
   opacity: 0.6;
 }
+/* §4.3.15 — the turns a move-set field has left, a small count after its name. */
+.turns {
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  font-size: var(--type-micro);
+}

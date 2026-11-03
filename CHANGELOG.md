@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.89 — Move keywords · 2026-11-03
+
+Moves that guard, heal, set the weather or pay later; no card above 3 AP.
+
+- **Guard and heal.** Protect, Endure, Guard, Substitute, screens; heals have PP.
+- **Weather moves.** Rain Dance, Sunny Day, Sandstorm, Hail; Thunder cheaper in rain.
+- **Ultimates.** 3 AP with Recharge, Fatigue or a stat drop; Fly lands next turn.
+- **38 new moves.** From Gen II–IV, with 13 TMs; an enemy's Protect is up at once.
+
 ### v0.9.88 — Authored Gym teams · 2026-11-02
 
 Every Gym Leader fields five distinct, authored Pokémon.

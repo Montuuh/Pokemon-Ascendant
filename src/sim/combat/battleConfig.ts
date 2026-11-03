@@ -130,6 +130,18 @@ export interface BattleConfig {
     /** §3.11.4 — the base Defence at which a Guard move's power blocks a hit of that power one for one. */
     guardReferenceDefence: number;
   };
+  /**
+   * §5.3.1 — how an enemy weighs the move keywords: a stance's score (against an attack's power) and when it is worth
+   * it, and what a charge's warning and an ultimate's recharge take off a hit's score.
+   */
+  keywordAi: {
+    protect: number; protectIdle: number; protectBelowHp: number;
+    endure: number; endureBelowHp: number;
+    guard: number; substitute: number; counter: number; screen: number; fieldSet: number;
+    charge: number; recharge: number;
+    /** A move that takes this share of its hit back or more is a sacrifice: worth this much while the enemy is healthy. */
+    sacrificeRecoil: number; sacrificeHealthy: number;
+  };
   /** §5.9.5 — the Gym Leaders' rules. */
   gymRules: GymRuleConfig;
   /** §2.12.2.1 — the Legendaries' arena rules. */
@@ -214,6 +226,16 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   // singles' 0.5), and its two extra turns for a rock: 3 + 2 is the series' own 5 + 3 scaled to these longer turns.
   // Guard's reference is the roster's mean base Defence, so an average wall's Withdraw blocks the hit its power names.
   keywords: { screenMultiplier: 0.66, rockExtraTurns: 2, weatherHeal: { sun: 2, other: 0.5 }, guardReferenceDefence: 70 },
+  // §5.3.1 — a stance scores against an attack's power (a 1-AP hit is 40–55): Protect is the hurt enemy's play, a
+  // screen or a field one it makes once, a guard a weak turn. Measured on the harness with the v0.9.89 kits.
+  keywordAi: {
+    protect: 90, protectIdle: 15, protectBelowHp: 0.5,
+    endure: 70, endureBelowHp: 0.25,
+    guard: 35, substitute: 45, counter: 35, screen: 55, fieldSet: 60,
+    charge: 0.75, recharge: 0.7,
+    // v0.9.89: with no card above 3 AP, Explosion became affordable and a healthy Golem opened with it (a 5-turn boss).
+    sacrificeRecoil: 0.5, sacrificeHealthy: 0.4,
+  },
   // §5.9.5 — the Leaders' rules, measured on the whole-run harness with every Gym (v0.9.13).
   gymRules: {
     rockSolidCap: 0.5,

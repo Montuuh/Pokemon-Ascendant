@@ -109,7 +109,7 @@ describe('On-kill — §7.4', () => {
 
 describe('Team guards — §7.4', () => {
   it('Safeguard_EatsTheNextStatusTheEnemyLands_ThenIsSpent', () => {
-    const armed = playOnly(vs(['mist', 'water-gun']), 'mist');
+    const armed = playOnly(vs(['probe-team-safeguard', 'water-gun']), 'probe-team-safeguard');
     expect(armed.player.guards.status).toBe(1);
 
     // The charge is spent by an enemy status landing on the team, which is the only way one gets there.
@@ -124,7 +124,7 @@ describe('Team guards — §7.4', () => {
   });
 
   it('WideGuard_SoftensOneCleave_ThenTheNextOneLandsInFull', () => {
-    const s = playOnly(vs(['light-screen', 'water-gun']), 'light-screen');
+    const s = playOnly(vs(['probe-wide-guard', 'water-gun']), 'probe-wide-guard');
     expect(s.player.guards.cleave).toEqual({ charges: 1, percent: 50 });
   });
 
@@ -219,7 +219,7 @@ describe('The Mastery moves’ effects — §5.13.2 (v0.7.5)', () => {
     const scarred = tweak(s, (d) => { d.player.team[0]!.traumaStacks = 3; });
     expect(hit(scarred, 'probe-trauma-bonus')).toBeGreaterThan(hit(s, 'probe-trauma-bonus'));
     const low = tweak(s, (d) => { d.player.team[0]!.hp = 1; });
-    expect(hit(low, 'counter')).toBeGreaterThan(hit(s, 'counter'));
+    expect(hit(low, 'probe-revenge')).toBeGreaterThan(hit(s, 'probe-revenge'));
   });
 
   it('BellyDrum_PaysHpUpFront_NeverBelowOne_AndRaisesAttack', () => {

@@ -103,3 +103,13 @@
 html[data-motion='reduced'] .cell[data-state='spend'] {
   animation: none;
 }
+/* §3.11.12 — AP borrowed from next turn, a small red note after the cells. */
+.debt {
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  background: var(--brand-red-deep);
+  color: var(--ink-on-red);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  white-space: nowrap;
+}

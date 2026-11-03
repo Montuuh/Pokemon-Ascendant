@@ -295,8 +295,10 @@ Lead mechanic, the AI and relic effects.
 
 - **Every move is a Gen I move** (v0.9.5, the user's call): its Gen I name, its modern type where the game has the
   type (Gust Flying, Karate Chop Fighting, Sand Attack Ground, **Bite Dark** since v0.9.84), and its Gen I
-  accuracy as the rider's chance, since nothing here misses. **The one exception is the type pair Generation I never had:**
-  the 14 later moves of Dark and Steel (Crunch, Iron Tail…, v0.9.84) — a content test holds the set to that list. A line whose type runs out of stronger Gen I moves climbs
+  accuracy as the rider's chance, since nothing here misses. **The exceptions are later moves, of Generations II–IV (the
+  GBA/DS era the art is) and never Fairy:** the 14 of Dark and Steel (Crunch, Iron Tail…, v0.9.84) and the moves the
+  keywords need (Protect, Rain Dance, Blast Burn, Outrage…, v0.9.89, §3.11) — a content test holds the set to that list.
+  *(The user's call, 2026-11-03: "import more where Gen I has few".)* A line whose type runs out of stronger Gen I moves climbs
   by **+** — Lick → Lick+ — and its Mastery is a Gen I move's + and ++ (§6.8.4). `catalogs/moves.md` is the list.
 - No mandatory-Ranged rule. Kits are built from species identity and tactical role.
 - Ranged moves sit at ~70–80 % of the damage of a Melee move at the same AP, which the ×0.75 range modifier
@@ -458,7 +460,8 @@ off next turn's refill (Temtem's overexertion, Across the Obelisk's Fatigue). Th
 - **Wish** heals whoever stands in the user's place at the end of the *next* Resolution — swap a hurt one in to take it.
 - **Ingrain** roots the user: it regenerates every turn and cannot be swapped out for the rest of the fight. Aqua Ring
   regenerates without the roots.
-- **Heal Pulse** heals the Lead.
+- A heal may name its side's **Lead** instead of its user (`target: lead` on the move): a bench Support tending the
+  front. No Gen II–IV move does it yet; the rule is there for the tutor lists.
 
 ## §3.11.14 Baton Pass
 

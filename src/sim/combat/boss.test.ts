@@ -20,7 +20,8 @@ describe('Boss phases — §5.8.3 / §5.9.4', () => {
   });
 
   it('Entrenchment_OnPhase2Entry_PlusTwoDefOnce', () => {
-    let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [ACE] })), (d) => {
+    // A kit without Defense Curl, whose Guard stance would add its own stage (§3.11.4).
+    let s = tweak(start(scenario({ kind: 'boss', team: TEAM, enemies: [{ ...ACE, moves: ['rock-throw', 'rock-slide', 'tackle'] }] })), (d) => {
       d.enemies[0]!.hp = Math.floor(d.enemies[0]!.maxHp * 0.45);
     });
     s = dispatch(s, { type: 'end-turn' }); // the next turn's start commits the phase (§5.8.3)

@@ -6,7 +6,7 @@
 > **Every move is a Gen I move (v0.9.5, the user's call, 2026-10-08).** Its name is the Gen I name; its type is the
 > modern one where the game has that type — Gust is Flying, Karate Chop Fighting, Sand Attack Ground, Bite Dark (since
 > v0.9.84, when the type joined) — **and the only moves that are not Gen I's are the 14 of the two types Gen I lacked,
-> Dark and Steel (§1b).** A **+** is that move made better, the card an evolution upgrades into when its type has
+> Dark and Steel (§1b), and since v0.9.89 the Gen II–IV moves the keywords need (§1c, §3.11).** A **+** is that move made better, the card an evolution upgrades into when its type has
 > no stronger Gen I move to climb to (Lick → Lick+); a Mastery tier is the line's Lv1 move's **+** and **++**
 > (§6.8.4). A content test holds every row to the 165 moves of Generation I (`gen1-moves.json`). The enemy-only
 > `call-for-help` and `cover` are actions, not moves anyone learns.
@@ -23,11 +23,15 @@
 > | 1 | 40–50 | 45–55 | the workhorse |
 > | 2 | 60–75 | 65–90 | a rider or a modifier costs ~10 power |
 > | 3 | 85–100 | 90–100 | |
-> | 4 | 110–130 | 115–130 | the ultimate |
+> | 3 + Recharge | 130–170 | 130–170 | the ultimate (§3.11.8); Explosion's 170 also takes its recoil |
+> | 3 + Fatigue | 110–120 | 110–120 | the series' inaccurate nukes |
+> | 3 + a self drop | 110–130 | 110–130 | Overheat, Close Combat |
+>
+> No card is printed above 3 AP (§3.7): until v0.9.89 the 4-AP ultimates could only be played on a relic's or an Ether's AP.
 >
 > A move with both a modifier and a rider sits at the foot of its band; Gen I's high-critical moves (Karate Chop,
 > Razor Leaf, Crabhammer, Slash) crit every time and pay for it there. Cleave (×~1.6), recoil, a rampage's
-> self-Confusion and a sacrifice are budgeted apart; Mastery tiers have their own bands (`mastery-moves.md`).
+> self-Confusion and its free returns, a charge's turn of warning and a sacrifice are budgeted apart; Mastery tiers have their own bands (`mastery-moves.md`).
 >
 > **Accuracy is a rider.** The sim never misses, so a Gen I status move's accuracy is its chance: Sing and
 > Supersonic 55 %, Hypnosis 60 %, the powders and Glare 75 %, Toxic 85 %, Thunder Wave and Confuse Ray certain.
@@ -62,7 +66,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `pay-day` | Pay Day | Normal | Off | Ranged | — | 1 | 50 | — | — |
 | `scratch` | Scratch | Normal | Off | Melee | — | 1 | 40 | — | — |
 | `vice-grip` | Vice Grip | Normal | Off | Melee | — | 1 | 50 | — | — |
-| `guillotine` | Guillotine | Normal | Off | Melee | — | 4 | 130 | cd 2 | ignores Def stages |
+| `guillotine` | Guillotine | Normal | Off | Melee | — | 3 | 130 | — | Recharge · ignores Def stages |
 | `razor-wind` | Razor Wind | Normal | Off | Ranged | — | 3 | 95 | backstrike | — |
 | `swords-dance` | Swords Dance | Normal | Util | Melee | — | 1 | — | — | self Atk +2 |
 | `cut` | Cut | Normal | Off | Melee | — | 1 | 50 | — | — |
@@ -70,17 +74,17 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `bind` | Bind | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
 | `slam` | Slam | Normal | Off | Melee | — | 2 | 75 | — | — |
 | `stomp` | Stomp | Normal | Off | Melee | — | 2 | 70 | — | — |
-| `mega-kick` | Mega Kick | Normal | Off | Melee | — | 4 | 120 | — | — |
+| `mega-kick` | Mega Kick | Normal | Off | Melee | — | 3 | 120 | — | Fatigue 1 |
 | `headbutt` | Headbutt | Normal | Off | Melee | — | 2 | 70 | — | — |
 | `horn-attack` | Horn Attack | Normal | Off | Melee | — | 2 | 65 | — | — |
 | `fury-attack` | Fury Attack | Normal | Off | Melee | — | 1 | 45 | — | 3 hits |
-| `horn-drill` | Horn Drill | Normal | Off | Melee | — | 4 | 130 | cd 2 | ignores Def stages |
+| `horn-drill` | Horn Drill | Normal | Off | Melee | — | 3 | 130 | — | Recharge · ignores Def stages |
 | `tackle` | Tackle | Normal | Off | Melee | — | 1 | 40 | — | — |
 | `body-slam` | Body Slam | Normal | Off | Melee | — | 3 | 85 | — | Paralysis 30 % |
 | `wrap` | Wrap | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
 | `take-down` | Take Down | Normal | Off | Melee | — | 2 | 75 | — | recoil 25 % |
-| `thrash` | Thrash | Normal | Off | Melee | — | 3 | 100 | — | self Confusion |
-| `double-edge` | Double-Edge | Normal | Off | Melee | — | 4 | 120 | — | recoil 33 % |
+| `thrash` | Thrash | Normal | Off | Melee | — | 2 | 60 | — | Rampage 2 |
+| `double-edge` | Double-Edge | Normal | Off | Melee | — | 3 | 120 | — | recoil 33 % |
 | `tail-whip` | Tail Whip | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
 | `leer` | Leer | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
 | `bite` | Bite | Dark | Off | Melee | — | 1 | 50 | — | — |
@@ -90,27 +94,28 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `supersonic` | Supersonic | Normal | Util | Ranged | — | 1 | — | — | Confusion 55 % |
 | `sonic-boom` | Sonic Boom | Normal | Off | Ranged | — | 1 | 50 | — | — |
 | `disable` | Disable | Normal | Util | Ranged | — | 1 | — | — | foe Atk −2 |
-| `hyper-beam` | Hyper Beam | Normal | Off | Ranged | — | 4 | 130 | cd 2 | — |
+| `hyper-beam` | Hyper Beam | Normal | Off | Ranged | — | 3 | 150 | — | Recharge |
+| `substitute` | Substitute | Normal | Def | Ranged | — | 1 | — | — | Substitute 25 % |
 | `strength` | Strength | Normal | Off | Melee | — | 2 | 75 | — | — |
 | `growth` | Growth | Normal | Util | Melee | — | 0 | — | — | self Atk +1 |
 | `quick-attack` | Quick Attack | Normal | Off | Melee | SF | 1 | 40 | — | — |
 | `rage` | Rage | Normal | Off | Melee | — | 1 | 40 | — | self Atk +1 |
 | `screech` | Screech | Normal | Util | Ranged | — | 1 | — | — | foe Def −2 |
 | `double-team` | Double Team | Normal | Def | Melee | — | 0 | — | — | self Def +1 |
-| `recover` | Recover | Normal | Def | Melee | — | 1 | — | cd 2 | heal 40 % |
-| `harden` | Harden | Normal | Def | Melee | — | 0 | — | — | self Def +1 |
+| `recover` | Recover | Normal | Def | Melee | — | 1 | — | — | heal 50 % · PP 1 |
+| `harden` | Harden | Normal | Def | Melee | — | 1 | — | — | Guard 50 · self Def +1 |
 | `minimize` | Minimize | Normal | Def | Melee | — | 1 | — | — | self Def +2 |
 | `smokescreen` | Smokescreen | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
-| `defense-curl` | Defense Curl | Normal | Def | Melee | — | 0 | — | — | self Def +1 |
+| `defense-curl` | Defense Curl | Normal | Def | Melee | — | 1 | — | — | Guard 40 · self Def +1 |
 | `focus-energy` | Focus Energy | Normal | Util | Melee | — | 0 | — | — | self Atk +1 |
 | `metronome` | Metronome | Normal | Util | Melee | — | 1 | — | — | draw 2 |
 | `self-destruct` | Self-Destruct | Normal | Off | Melee | — | 3 | 130 | — | recoil 50 % |
 | `egg-bomb` | Egg Bomb | Normal | Off | Ranged | — | 3 | 95 | — | — |
 | `swift` | Swift | Normal | Off | Ranged | — | 1 | 55 | — | — |
-| `skull-bash` | Skull Bash | Normal | Off | Melee | — | 3 | 95 | — | — |
+| `skull-bash` | Skull Bash | Normal | Off | Melee | — | 2 | 85 | — | Charge · self Def +1 |
 | `spike-cannon` | Spike Cannon | Normal | Off | Ranged | — | 1 | 50 | — | 3 hits |
 | `constrict` | Constrict | Normal | Off | Melee | — | 1 | 40 | — | foe Spd −1 |
-| `soft-boiled` | Soft-Boiled | Normal | Def | Melee | — | 1 | — | cd 2 | heal 50 % |
+| `soft-boiled` | Soft-Boiled | Normal | Def | Melee | — | 1 | — | — | heal 50 % · PP 1 |
 | `glare` | Glare | Normal | Util | Ranged | — | 1 | — | — | Paralysis 75 % |
 | `barrage` | Barrage | Normal | Off | Ranged | — | 1 | 50 | — | 3 hits |
 | `lovely-kiss` | Lovely Kiss | Normal | Util | Ranged | — | 1 | — | — | Sleep 75 % |
@@ -118,7 +123,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `dizzy-punch` | Dizzy Punch | Normal | Off | Melee | — | 2 | 65 | — | Confusion 20 % |
 | `flash` | Flash | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
 | `splash` | Splash | Normal | Util | Melee | — | 0 | — | — | draw 1 |
-| `explosion` | Explosion | Normal | Off | Melee | — | 4 | 170 | cd 2 | recoil 75 % |
+| `explosion` | Explosion | Normal | Off | Melee | — | 3 | 170 | — | recoil 75 % · Recharge |
 | `fury-swipes` | Fury Swipes | Normal | Off | Melee | — | 1 | 45 | — | 3 hits |
 | `hyper-fang` | Hyper Fang | Normal | Off | Melee | — | 2 | 75 | — | — |
 | `sharpen` | Sharpen | Normal | Util | Melee | — | 0 | — | — | self Atk +1 |
@@ -137,7 +142,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `rolling-kick` | Rolling Kick | Fighting | Off | Melee | SB | 2 | 65 | — | — |
 | `submission` | Submission | Fighting | Off | Melee | — | 3 | 90 | — | recoil 25 % |
 | `low-kick` | Low Kick | Fighting | Off | Melee | — | 1 | 50 | — | — |
-| `counter` | Counter | Fighting | Off | Melee | — | 2 | 65 | — | ×1.5 below 50 % HP |
+| `counter` | Counter | Fighting | Def | Ranged | — | 1 | — | — | Counter Melee ×1.5 · PP 2 |
 | `seismic-toss` | Seismic Toss | Fighting | Off | Melee | — | 2 | 70 | — | — |
 | `high-jump-kick` | High Jump Kick | Fighting | Off | Melee | SF | 3 | 100 | — | recoil 25 % |
 
@@ -149,16 +154,16 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `ember` | Ember | Fire | Off | Ranged | — | 1 | 45 | — | Burn 10 % |
 | `flamethrower` | Flamethrower | Fire | Off | Ranged | — | 3 | 95 | — | Burn 10 % |
 | `fire-spin` | Fire Spin | Fire | Off | Ranged | — | 2 | 65 | — | Burn 30 % |
-| `fire-blast` | Fire Blast | Fire | Off | Ranged | — | 4 | 120 | — | Burn 30 % |
+| `fire-blast` | Fire Blast | Fire | Off | Ranged | — | 3 | 120 | — | Burn 30 % · Fatigue 1 |
 
 ### Ice
 
 | id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|---|---|
 | `ice-punch` | Ice Punch | Ice | Off | Melee | — | 2 | 70 | — | Freeze 10 % |
-| `mist` | Mist | Ice | Def | Melee | — | 1 | — | — | team guard: next status |
+| `mist` | Mist | Ice | Def | Ranged | — | 1 | — | — | Mist 3 turns |
 | `ice-beam` | Ice Beam | Ice | Off | Ranged | — | 3 | 95 | — | Freeze 10 % |
-| `blizzard` | Blizzard | Ice | Off | Ranged | — | 4 | 120 | — | Freeze 10 % |
+| `blizzard` | Blizzard | Ice | Off | Ranged | — | 3 | 120 | — | Freeze 10 % · −1 AP in Hail · Fatigue 1 |
 | `aurora-beam` | Aurora Beam | Ice | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
 | `haze` | Haze | Ice | Util | Ranged | — | 1 | — | — | cure the team |
 
@@ -170,7 +175,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `thunder-shock` | Thunder Shock | Electric | Off | Ranged | — | 1 | 45 | — | Paralysis 10 % |
 | `thunderbolt` | Thunderbolt | Electric | Off | Ranged | — | 3 | 95 | — | Paralysis 10 % |
 | `thunder-wave` | Thunder Wave | Electric | Util | Ranged | — | 1 | — | — | Paralysis |
-| `thunder` | Thunder | Electric | Off | Ranged | — | 4 | 120 | — | Paralysis 10 % |
+| `thunder` | Thunder | Electric | Off | Ranged | — | 3 | 120 | — | Paralysis 10 % · −1 AP in Rain · +1 AP in Sun · Fatigue 1 |
 
 ### Flying
 
@@ -178,11 +183,11 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 |---|---|---|---|---|---|---|---|---|---|
 | `gust` | Gust | Flying | Off | Ranged | — | 1 | 45 | — | — |
 | `wing-attack` | Wing Attack | Flying | Off | Melee | — | 2 | 65 | — | — |
-| `fly` | Fly | Flying | Off | Melee | SF | 3 | 90 | — | — |
+| `fly` | Fly | Flying | Off | Melee | SF | 2 | 75 | — | Charge, out of reach |
 | `peck` | Peck | Flying | Off | Melee | — | 1 | 45 | — | — |
 | `drill-peck` | Drill Peck | Flying | Off | Melee | — | 2 | 75 | — | — |
 | `mirror-move` | Mirror Move | Flying | Util | Melee | — | 1 | — | — | self Atk +1 · draw 1 |
-| `sky-attack` | Sky Attack | Flying | Off | Melee | SF | 4 | 110 | cd 1 | always crit |
+| `sky-attack` | Sky Attack | Flying | Off | Melee | SF | 2 | 80 | — | Charge · always crit |
 
 ### Grass
 
@@ -193,10 +198,10 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `mega-drain` | Mega Drain | Grass | Off | Ranged | — | 2 | 70 | — | drain 50 % |
 | `leech-seed` | Leech Seed | Grass | Util | Ranged | — | 1 | — | — | Poison 90 % |
 | `razor-leaf` | Razor Leaf | Grass | Off | Ranged | — | 2 | 65 | — | always crit |
-| `solar-beam` | Solar Beam | Grass | Off | Ranged | — | 4 | 120 | cd 1 | — |
+| `solar-beam` | Solar Beam | Grass | Off | Ranged | — | 2 | 100 | — | Charge (none in Sun) · ×0.5 in Rain |
 | `stun-spore` | Stun Spore | Grass | Util | Ranged | — | 1 | — | — | Paralysis 75 % |
 | `sleep-powder` | Sleep Powder | Grass | Util | Ranged | — | 1 | — | — | Sleep 75 % |
-| `petal-dance` | Petal Dance | Grass | Off | Melee | SF | 3 | 100 | — | self Confusion |
+| `petal-dance` | Petal Dance | Grass | Off | Melee | SF | 2 | 60 | — | Rampage 2 |
 | `spore` | Spore | Grass | Util | Ranged | — | 2 | — | — | Sleep |
 
 ### Ground
@@ -205,8 +210,8 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 |---|---|---|---|---|---|---|---|---|---|
 | `sand-attack` | Sand Attack | Ground | Util | Ranged | — | 0 | — | — | foe Atk −1 |
 | `earthquake` | Earthquake | Ground | Off | Melee | — | 3 | 90 | cleave cd 1 | — |
-| `fissure` | Fissure | Ground | Off | Melee | — | 4 | 130 | cd 2 | ignores Def stages |
-| `dig` | Dig | Ground | Off | Melee | SB | 2 | 75 | — | — |
+| `fissure` | Fissure | Ground | Off | Melee | — | 3 | 130 | — | Recharge · ignores Def stages |
+| `dig` | Dig | Ground | Off | Melee | SB | 2 | 75 | — | Charge, out of reach |
 | `bone-club` | Bone Club | Ground | Off | Melee | — | 2 | 65 | — | — |
 | `bonemerang` | Bonemerang | Ground | Off | Ranged | — | 2 | 70 | — | 2 hits |
 
@@ -237,10 +242,10 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
 |---|---|---|---|---|---|---|---|---|---|
 | `water-gun` | Water Gun | Water | Off | Ranged | — | 1 | 45 | — | — |
-| `hydro-pump` | Hydro Pump | Water | Off | Ranged | — | 4 | 120 | — | — |
+| `hydro-pump` | Hydro Pump | Water | Off | Ranged | — | 3 | 120 | — | Fatigue 1 |
 | `surf` | Surf | Water | Off | Ranged | — | 2 | 70 | cleave | — |
 | `bubble-beam` | Bubble Beam | Water | Off | Ranged | — | 2 | 65 | — | foe Spd −1 |
-| `withdraw` | Withdraw | Water | Def | Melee | — | 0 | — | — | self Def +1 |
+| `withdraw` | Withdraw | Water | Def | Melee | — | 1 | — | — | Guard 60 · self Def +1 |
 | `waterfall` | Waterfall | Water | Off | Melee | — | 2 | 75 | — | — |
 | `clamp` | Clamp | Water | Off | Melee | — | 1 | 45 | — | foe Def −1 |
 | `bubble` | Bubble | Water | Off | Ranged | — | 1 | 45 | — | foe Atk −1 |
@@ -258,13 +263,13 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `agility` | Agility | Psychic | Util | Melee | — | 0 | — | — | self Spd +2 · draw 1 |
 | `teleport` | Teleport | Psychic | Util | Melee | — | 0 | — | — | draw 1 |
 | `barrier` | Barrier | Psychic | Def | Melee | — | 1 | — | — | self Def +2 |
-| `light-screen` | Light Screen | Psychic | Def | Melee | — | 1 | — | — | team guard: next Cleave −50 % |
-| `reflect` | Reflect | Psychic | Def | Melee | — | 1 | — | — | self Def +1 · bench Def +1 |
+| `light-screen` | Light Screen | Psychic | Def | Ranged | — | 1 | — | — | Light Screen 3 turns |
+| `reflect` | Reflect | Psychic | Def | Ranged | — | 1 | — | — | Reflect 3 turns |
 | `amnesia` | Amnesia | Psychic | Def | Melee | — | 1 | — | — | self Def +2 |
 | `kinesis` | Kinesis | Psychic | Util | Ranged | — | 0 | — | — | foe Atk −1 |
 | `dream-eater` | Dream Eater | Psychic | Off | Ranged | — | 2 | 90 | — | drain 50 % |
 | `psywave` | Psywave | Psychic | Off | Ranged | — | 1 | 50 | — | — |
-| `rest` | Rest | Psychic | Def | Melee | — | 1 | — | — | heal 100 % · self Sleep |
+| `rest` | Rest | Psychic | Def | Melee | — | 1 | — | — | heal 100 % · self Sleep · PP 1 |
 
 ### Dragon
 
@@ -320,6 +325,54 @@ Fang at L10 so it keeps a Normal attack worth playing (§6.3.6).
 and a retreat (SB); `bullet-punch` is the Steel hit that arrives first (SF); `night-slash` is Slash in Dark, crit every time;
 `metal-claw` and `meteor-mash` raise Attack, `steel-wing` Defence; `flash-cannon`, `iron-tail` and `crunch` lower Defence.
 
+## 1c. Later moves — the keywords' Gen II–IV moves (v0.9.89)
+
+The moves of Generations II–IV the move keywords (§3.11) were written for (the user's call, 2026-11-03: "import more moves
+where Gen I has few"): Protect and Detect, the weather dances, the heals and screens, the starter ultimates, the finishers
+that pay with a stat drop or recoil, Outrage. Reference data for the content test: `src/content/data/later-moves.json`,
+with each move's generation. A new row here needs one there, and an illustration (`docs/art/prompts/move-art.json`).
+
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `protect` | Protect | Normal | Def | Ranged | — | 1 | — | — | Protect · PP 2 |
+| `detect` | Detect | Fighting | Def | Ranged | — | 1 | — | — | Protect · PP 2 |
+| `endure` | Endure | Normal | Def | Ranged | — | 0 | — | — | Endure · PP 1 |
+| `rain-dance` | Rain Dance | Water | Util | Ranged | — | 1 | — | — | Rain 3 turns |
+| `sunny-day` | Sunny Day | Fire | Util | Ranged | — | 1 | — | — | Sun 3 turns |
+| `sandstorm` | Sandstorm | Rock | Util | Ranged | — | 1 | — | — | Sandstorm 3 turns |
+| `hail` | Hail | Ice | Util | Ranged | — | 1 | — | — | Hail 3 turns |
+| `safeguard` | Safeguard | Normal | Def | Ranged | — | 1 | — | — | Safeguard 3 turns |
+| `wish` | Wish | Normal | Def | Ranged | — | 1 | — | — | Wish 50 % · PP 1 |
+| `heal-bell` | Heal Bell | Normal | Util | Ranged | — | 1 | — | — | cure the team |
+| `aromatherapy` | Aromatherapy | Grass | Util | Ranged | — | 1 | — | — | cure the team |
+| `ingrain` | Ingrain | Grass | Def | Melee | — | 1 | — | — | heal 6 % × 20 turns · rooted · PP 1 |
+| `aqua-ring` | Aqua Ring | Water | Def | Melee | — | 1 | — | — | heal 6 % × 20 turns · PP 1 |
+| `synthesis` | Synthesis | Grass | Def | Melee | — | 1 | — | — | heal 25 % (×2 Sun, ×0.5 other weather) · PP 2 |
+| `moonlight` | Moonlight | Normal | Def | Melee | — | 1 | — | — | heal 25 % (×2 Sun, ×0.5 other weather) · PP 2 |
+| `morning-sun` | Morning Sun | Normal | Def | Melee | — | 1 | — | — | heal 25 % (×2 Sun, ×0.5 other weather) · PP 2 |
+| `milk-drink` | Milk Drink | Normal | Def | Melee | — | 1 | — | — | heal 50 % · PP 1 |
+| `roost` | Roost | Flying | Def | Melee | — | 1 | — | — | heal 50 % · PP 1 |
+| `mirror-coat` | Mirror Coat | Psychic | Def | Ranged | — | 1 | — | — | Counter Ranged ×1.5 · PP 2 |
+| `baton-pass` | Baton Pass | Normal | Util | Melee | SB | 1 | — | — | Baton Pass |
+| `u-turn` | U-turn | Bug | Off | Melee | SB | 2 | 60 | — | — |
+| `iron-defense` | Iron Defense | Steel | Def | Melee | — | 1 | — | — | Guard 60 · self Def +1 |
+| `calm-mind` | Calm Mind | Psychic | Util | Melee | — | 1 | — | — | self Atk +1 · self Def +1 |
+| `bulk-up` | Bulk Up | Fighting | Util | Melee | — | 1 | — | — | self Atk +1 · self Def +1 |
+| `giga-impact` | Giga Impact | Normal | Off | Melee | — | 3 | 150 | — | Recharge |
+| `blast-burn` | Blast Burn | Fire | Off | Ranged | — | 3 | 150 | — | Recharge |
+| `hydro-cannon` | Hydro Cannon | Water | Off | Ranged | — | 3 | 150 | — | Recharge |
+| `frenzy-plant` | Frenzy Plant | Grass | Off | Ranged | — | 3 | 150 | — | Recharge |
+| `overheat` | Overheat | Fire | Off | Ranged | — | 3 | 130 | — | self Atk −2 |
+| `draco-meteor` | Draco Meteor | Dragon | Off | Ranged | — | 3 | 130 | — | self Atk −2 |
+| `leaf-storm` | Leaf Storm | Grass | Off | Ranged | — | 3 | 130 | — | self Atk −2 |
+| `close-combat` | Close Combat | Fighting | Off | Melee | — | 3 | 120 | — | self Def −2 |
+| `superpower` | Superpower | Fighting | Off | Melee | — | 3 | 120 | — | self Atk −1 · self Def −1 |
+| `flare-blitz` | Flare Blitz | Fire | Off | Melee | — | 3 | 120 | — | recoil 33 % · Burn 10 % |
+| `volt-tackle` | Volt Tackle | Electric | Off | Melee | — | 3 | 120 | — | recoil 33 % · Paralysis 10 % |
+| `wood-hammer` | Wood Hammer | Grass | Off | Melee | — | 3 | 120 | — | recoil 33 % |
+| `brave-bird` | Brave Bird | Flying | Off | Melee | — | 3 | 120 | — | recoil 33 % |
+| `outrage` | Outrage | Dragon | Off | Melee | — | 2 | 60 | — | Rampage 2 |
+
 ## 2. Made better (+)
 
 What a first or final evolution upgrades a card into, derived from its move: more power within its band, or a
@@ -336,7 +389,7 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `bubble-plus` | Bubble+ | Water | Off | Ranged | — | 1 | 55 | — | foe Atk −1 |
 | `skull-bash-plus` | Skull Bash+ | Normal | Off | Melee | — | 3 | 100 | — | foe Def −1 |
 | `bubble-beam-plus` | Bubble Beam+ | Water | Off | Ranged | — | 2 | 80 | — | foe Spd −1 |
-| `harden-plus` | Harden+ | Normal | Def | Melee | — | 0 | — | — | self Def +2 |
+| `harden-plus` | Harden+ | Normal | Def | Melee | — | 1 | — | — | Guard 70 · self Def +1 |
 | `leech-life-plus` | Leech Life+ | Bug | Off | Melee | — | 1 | 50 | — | drain 50 % · foe Def −1 |
 | `string-shot-plus` | String Shot+ | Bug | Util | Ranged | — | 0 | — | — | foe Spd −2 |
 | `gust-plus` | Gust+ | Flying | Off | Ranged | — | 1 | 55 | — | — |
@@ -352,7 +405,7 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `bite-plus` | Bite+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
 | `wrap-plus` | Wrap+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
 | `thunder-shock-plus` | Thunder Shock+ | Electric | Off | Ranged | — | 1 | 55 | — | Paralysis 10 % |
-| `defense-curl-plus` | Defense Curl+ | Normal | Def | Melee | — | 0 | — | — | self Def +2 |
+| `defense-curl-plus` | Defense Curl+ | Normal | Def | Melee | — | 1 | — | — | Guard 60 · self Def +1 |
 | `tail-whip-plus` | Tail Whip+ | Normal | Util | Ranged | — | 0 | — | — | foe Def −2 |
 | `horn-attack-plus` | Horn Attack+ | Normal | Off | Melee | — | 2 | 75 | — | — |
 | `double-slap-plus` | Double Slap+ | Normal | Off | Melee | — | 1 | 50 | — | 4 hits |
@@ -369,7 +422,7 @@ stronger rider when the band is full; a utility's stage, chance, heal or draw on
 | `aurora-beam-plus` | Aurora Beam+ | Ice | Off | Ranged | — | 2 | 80 | — | foe Atk −1 |
 | `pound-plus` | Pound+ | Normal | Off | Melee | — | 1 | 50 | — | — |
 | `clamp-plus` | Clamp+ | Water | Off | Melee | — | 1 | 50 | — | foe Def −2 |
-| `withdraw-plus` | Withdraw+ | Water | Def | Melee | — | 0 | — | — | self Def +2 |
+| `withdraw-plus` | Withdraw+ | Water | Def | Melee | — | 1 | — | — | Guard 80 · self Def +1 |
 | `hypnosis-plus` | Hypnosis+ | Psychic | Util | Ranged | — | 1 | — | — | Sleep 85 % |
 | `vice-grip-plus` | Vice Grip+ | Normal | Off | Melee | — | 1 | 50 | — | foe Def −1 |
 | `leech-seed-plus` | Leech Seed+ | Grass | Util | Ranged | — | 1 | — | — | Poison |

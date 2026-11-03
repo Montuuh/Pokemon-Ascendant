@@ -1540,6 +1540,33 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.89 — Move keywords  ✅ 2026-11-03
+
+**Shipped.** The user's rework of 2026-11-03 (special moves beyond attack/status/stage, after Slay the Spire, Across the
+Obelisk and Temtem), first of four versions (v0.9.90 real evolution levels and Friendship, v0.9.91 progressive learnsets,
+v0.9.92 enemy kits, doubles and combos). (1) **Keywords** (§3.11, `combat/keywords.ts`, `keywordTurn.ts`): PP per fight
+(the last use exhausts the card), Protect/Detect (not twice running), Endure (first rung of the faint ladder, §7.3.6),
+Guard (a hit's worth of HP until next turn, level-free by base Defence), Substitute, side conditions (Reflect ×0.66 on
+Melee, Light Screen on Ranged, Safeguard, Mist, 3 turns), fields set by a move for 3 turns with AP costs (§4.3.15:
+Thunder −1 in rain, +1 in Sun; Blizzard −1 in hail), Recharge, Fatigue, Rampage (free returns, locked, then Confused),
+Charge and out of reach (Solar Beam, Fly, Dig), Counter/Mirror Coat, Overexert, Wish, Ingrain, Baton Pass. An enemy's
+guarding keyword is a stance, up when declared (§5.2.1), weighed by `keywordAi` (§5.3.1); a sacrifice waits for low HP.
+(2) **No card above 3 AP** (§3.7): the 13 four-AP moves are 3 AP with Recharge (Hyper Beam, the OHKO moves, Explosion),
+Fatigue (Fire Blast, Blizzard, Thunder, Hydro Pump, Mega Kick) or recoil; §6.3.6.4 gains the ultimate bands. (3)
+**Content** (`scripts/v0989-keywords.mjs`): 31 Gen I rows re-cut (Reflect, Light Screen and Mist were stages or one-shot
+guards; an enemy Reflect raised *your* Defence), Substitute joins, 38 Gen II–IV moves (`later-moves.json` with their
+generation; §3.6 now allows Gen II–IV, never Fairy), 13 TMs (tm56–tm68), 39 illustrations. (4) **UI**: keyword chips
+with the stages on every card (`keywordChips.tsx`, folding at 720p clear of the rhythm dial), each side's conditions at
+the stage's top centre (`SideChips.tsx`), a move-set field's turns on its chip, PP pips, AP owed next turn on the
+capsule, an enemy stance read as "up now" with its rule; the display face's ligatures off ("Reflect" read "ReAect").
+UI review: Ship with fixes over three rounds (4 + 2 Blockers fixed). e2e `keywords.spec.ts`. Measured on the run
+harness, before → after: R1 57 → 69, R2|R1 57 → 49, R3|R2 59 → 49, League|R3 43 → 60, full run 8 → 10 % (short samples,
+inside the noise); the intent forecast reads 99 %, the rest the chance riders the now-affordable nukes roll. The 12-seed
+rails for `full-hand-3mon` and `wild-boss-3phase` moved to 1.8 / 5.5 turns, the `wild-boss-3phase` golden regenerated.
+**Not done:** the weather rocks (the hook is read, no held item carries it), Tailwind and the Terrain moves (outside the
+Gen II–IV import), the new moves in learnsets (v0.9.91) and in enemy kits by design (v0.9.92), a card's footer naming an
+enduring target.
+
 ### v0.9.88 — Authored Gym teams  ✅ 2026-11-02
 
 **Shipped 2026-11-02** (designed 2026-10-29). Region 2's Gym Attack ×0.62 → ×0.55 with Blaine/Erika/Koga scales;

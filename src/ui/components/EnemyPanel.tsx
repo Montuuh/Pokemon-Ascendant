@@ -14,6 +14,7 @@ import { ShinyMark } from './ShinyMark';
 import { ObjectiveChip } from './ObjectiveChip';
 import { UnitChips } from './UnitChips';
 import { RhythmDial } from './RhythmDial';
+import { keywordUnitChips } from './keywordChips';
 import { armourTip, intentCardTip, nextIntentTip, phaseTip, placeTip, signatureWaitTip } from '@/ui/tips';
 import { Tip, Tipped, useTip } from '@/ui/tooltip';
 import card from './UnitCard.module.css';
@@ -248,6 +249,8 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
                 preview already counts: on a short stage only the first chip stays out. */}
             <UnitChips
               chips={[
+                // §3.11 / §5.2.1 — its stance and what its keywords left on it, first: they decide what your cards can do.
+                ...keywordUnitChips(enemy, state.turn),
                 // §5.6.5 — a runner wears its countdown on its own card.
                 ...(runner ? [{ key: 'runner', label: OBJECTIVE_TEXT.runnerChip(state.objective!.turns), node: <ObjectiveChip kind="flee" turns={state.objective!.turns} live={state} compact terse /> }] : []),
                 ...(enemy.sturdyAvailable

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState } from '@/sim';
-import { nodeHint } from '@/ui/strings';
+import { controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
+import { nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
@@ -152,15 +152,43 @@ const MODIFIER_BODY = {
   none: null,
 } as const;
 
+/** §3.11 — a move's keywords, each as its whole rule: what the card's plate says in a few words. */
+export function keywordRules(move: MoveDef): string[] {
+  const lines: string[] = [];
+  for (const fx of move.effects) {
+    if (fx.kind === 'protect') lines.push(KEYWORD_RULE.protect);
+    if (fx.kind === 'endure') lines.push(KEYWORD_RULE.endure);
+    if (fx.kind === 'guard') lines.push(KEYWORD_RULE.guard(fx.power));
+    if (fx.kind === 'substitute') lines.push(KEYWORD_RULE.substitute(Math.round(fx.percentOfMaxHp * 100)));
+    if (fx.kind === 'side-condition') lines.push(KEYWORD_RULE.side(SIDE_NAME[fx.condition].name, SIDE_NAME[fx.condition].effect, fx.turns));
+    if (fx.kind === 'set-field') lines.push(KEYWORD_RULE.field(FIELD_IN[fx.field] ?? fx.field, fx.turns));
+    if (fx.kind === 'field-cost') lines.push(KEYWORD_RULE.fieldCost(fx.delta, FIELD_IN[fx.field] ?? fx.field));
+    if (fx.kind === 'recharge') lines.push(KEYWORD_RULE.recharge);
+    if (fx.kind === 'fatigue') lines.push(KEYWORD_RULE.fatigue(fx.ap));
+    if (fx.kind === 'rampage') lines.push(KEYWORD_RULE.rampage(fx.turns));
+    if (fx.kind === 'charge') lines.push(KEYWORD_RULE.charge(!!fx.outOfReach, fx.skipIn ? (FIELD_IN[fx.skipIn] ?? fx.skipIn) : null));
+    if (fx.kind === 'counter') lines.push(KEYWORD_RULE.counter(fx.range, fx.multiplier));
+    if (fx.kind === 'wish') lines.push(KEYWORD_RULE.wish(Math.round(fx.percentOfMaxHp * 100)));
+    if (fx.kind === 'root') lines.push(KEYWORD_RULE.root);
+    if (fx.kind === 'baton-pass') lines.push(KEYWORD_RULE.batonPass);
+  }
+  if (move.overexert) lines.push(KEYWORD_RULE.overexert(move.overexert));
+  return lines;
+}
+
 /** §3.3.4, §4.1 — a move card in full: what it is, what it does, what it will do to this target. */
 export function moveTip(play: CardPlayability): ReactNode {
   const { move, owner } = play;
   const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', ROLE_NAME[move.role], `${play.apCost} AP${play.apCost !== move.apCost ? ` (base ${move.apCost})` : ''}`];
   if (move.power > 0) meta.push(`${move.power} power`);
+  // §3.11.1 — what it has left this fight.
+  const pp = ppLeft(owner, move);
+  if (pp !== null) meta.push(`PP ${pp}/${move.pp}`);
   if (move.targeting === 'cleave') meta.push('Hits every enemy');
   // §5.13.2 — the fifth card says so: it is the one card in the hand no Move Manager can reach.
   if (play.card.mastery) meta.push('★ Mastery');
-  const lines: ReactNode[] = [describeMoveDef(move)];
+  const lines: ReactNode[] = [describeMoveDef(move, { guard: play.guard }), ...keywordRules(move)];
+  if (pp !== null) lines.push(KEYWORD_RULE.pp);
   lines.push(RANGE_BODY[move.range]);
   const role = ROLE_BODY[move.role];
   if (role) lines.push(role);
@@ -191,7 +219,8 @@ export function moveTip(play: CardPlayability): ReactNode {
 export function moveDefTip(move: MoveDef): ReactNode {
   const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${move.apCost} AP`];
   if (move.power > 0) meta.push(`${move.power} power`);
-  const lines: ReactNode[] = [describeMoveDef(move), RANGE_BODY[move.range]];
+  if (move.pp) meta.push(`PP ${move.pp}`);
+  const lines: ReactNode[] = [describeMoveDef(move), ...keywordRules(move), RANGE_BODY[move.range]];
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
   if (move.power > 0) lines.push(attackChart(move.type));
@@ -234,7 +263,8 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
   // §5.6.1 — a broken second action is not going to happen: its card says that and nothing else.
   if (intent.broken && move) return <Tip title={`${enemy.name}: ${move.name}`} meta={['Broken']} body="It will not happen this turn." />;
   if (intent.hidden || !move) return intentTip(intent.kind, undefined, intent.hidden, recoveryText);
-  const meta: ReactNode[] = [...(intent.signature ? [PHASE_TEXT.signature] : []), typeName(move.type), INTENT_LABEL[intent.kind] ?? cap(intent.kind)];
+  // §5.2.1 — a stance is up already: it says so, and gives its rule rather than the buff's advice.
+  const meta: ReactNode[] = [...(intent.signature ? [PHASE_TEXT.signature] : []), typeName(move.type), intent.stance ? STANCE_LABEL : (INTENT_LABEL[intent.kind] ?? cap(intent.kind))];
   if (move.power > 0) meta.push(`${move.power} power`, move.range === 'melee' ? 'Melee' : 'Ranged');
   const lines: ReactNode[] = [];
   if (recoveryText) lines.push(recoveryText);
@@ -251,6 +281,7 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     );
   } else if (intent.kind === 'getaway') lines.push(OBJECTIVE_TEXT.getawayBody);
   else if (intent.kind === 'guard') lines.push(`Steps in front of ${ally.name}: after this turn it leads, braced with +1 Defence, and your Melee cards reach only it.`);
+  else if (intent.stance) lines.push(...keywordRules(move));
   else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
   if (enemy.acts === 2 && action === 0) lines.push('It acts twice: this first, then the Also below.');
   if (action === 1) {
@@ -287,7 +318,7 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       title={`${enemy.name}: ${move.name}`}
       meta={meta}
       body={lines.map((l, i) => <div key={i}>{l}</div>)}
-      footer={INTENT_BODY[intent.kind]}
+      footer={intent.stance ? STANCE_FOOTER : INTENT_BODY[intent.kind]}
     />
   );
 }
@@ -295,8 +326,10 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
 const mult = (m: number) => `×${Math.round(m * 100) / 100}`;
 
 /** §4.3.1–§4.3.4 — a Battlefield, with its numbers read off the config, and what answers it. */
-export function fieldTip(id: FieldId, suppressed = false): ReactNode {
-  return fieldTipWith(id, fieldBody(id), suppressed);
+export function fieldTip(id: FieldId, suppressed = false, timer?: { turnsLeft: number; restore: FieldId | null }): ReactNode {
+  // §4.3.15 — a field a move set says how long it has and what comes back.
+  const body = timer ? <>{fieldBody(id)}<div><b>{FIELD_TIMER_TEXT(timer.turnsLeft, timer.restore ? (FIELD_LABEL[timer.restore] ?? null) : null)}</b></div></> : fieldBody(id);
+  return fieldTipWith(id, body, suppressed);
 }
 
 /** §4.3 — what one Battlefield does, in one paragraph, for its own tip and for Metronome's next one. */
@@ -317,7 +350,7 @@ export function fieldBody(id: FieldId): string {
   return body[id];
 }
 
-function fieldTipWith(id: FieldId, text: string, suppressed: boolean): ReactNode {
+function fieldTipWith(id: FieldId, text: ReactNode, suppressed: boolean): ReactNode {
   return <Tip title={FIELD_LABEL[id]} body={text} footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'} />;
 }
 
@@ -488,8 +521,23 @@ export function nextIntentTip(detail: string): ReactNode {
 // ── AP, swaps, the Lead ──────────────────────────────────────────────────────────────────────────────────
 
 /** §3.2.2 — the AP pool. */
-export function apTip(ap: number, max = 3): ReactNode {
-  return <Tip title={`${ap} of ${max} action points`} body="Every card and every swap costs AP. You get 3 at the start of each turn; unspent AP is lost, so a turn that ends with points left is a turn that did less than it could." />;
+export function apTip(ap: number, max = 3, debt = 0): ReactNode {
+  const body = 'Every card and every swap costs AP. You get 3 at the start of each turn; unspent AP is lost, so a turn that ends with points left is a turn that did less than it could.';
+  // §3.11.12 — what an overexerting card borrowed from next turn.
+  return <Tip title={`${ap} of ${max} action points`} body={debt > 0 ? <>{body}<div><b>{AP_DEBT_TEXT.line(debt)}</b></div></> : body} />;
+}
+
+/** §3.11.6 / §3.11.13 — a side condition in one line, for a folded chip's bubble: its clock and what it does (a wish: how much, where, when). */
+export function sideConditionLine(s: SideCondition, place: string | null): string {
+  if (s.id === 'wish') return SIDE_CHIP_TEXT.wish(s.amount ?? 0, place ?? 'its place', s.turnsLeft);
+  return `${s.turnsLeft} turn${s.turnsLeft === 1 ? '' : 's'}: ${SIDE_NAME[s.id].effect}.`;
+}
+
+/** §3.11.6 / §3.11.13 — a side condition by its side: whose, what it does, how long it has (a wish: how much, where, when). */
+export function sideConditionTip(s: SideCondition, place: string | null): ReactNode {
+  if (s.id === 'wish') return <Tip title={SIDE_CHIP_TEXT.title(SIDE_CHIP_TEXT.wishName, s.side)} body={SIDE_CHIP_TEXT.wish(s.amount ?? 0, place ?? 'its place', s.turnsLeft)} />;
+  const n = SIDE_NAME[s.id];
+  return <Tip title={SIDE_CHIP_TEXT.title(n.name, s.side)} meta={[SIDE_CHIP_TEXT.turns(s.turnsLeft)]} body={`${cap(n.effect)}.`} />;
 }
 
 /** §2.7.3 — the rival trainer's team by the trainer's side: who is out, who is beaten, how many still wait. */

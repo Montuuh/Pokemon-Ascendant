@@ -78,6 +78,26 @@ scoring function from being perfectly reverse-engineered without making it play 
 *(The heal-weighting, buff-decay, tie-break and Backstrike-targeting rules came out of the v0.1 playtest, where
 a Geodude spent a losing fight using Defense Curl. Ratified 2026-09-19.)*
 
+## §5.3.1 Weighing the move keywords
+
+The keywords of §3.11 are weighed against an attack's power like any other intent (`keywordAi` in BattleConfig):
+
+| Move | Score |
+|---|---|
+| **Protect** | 90 below half its HP, 15 above: the hurt enemy's play, never a healthy one's opener; never two turns running |
+| **Endure** | 70 below a quarter of its HP, else nothing |
+| **Guard**, **Counter** | 35 — a weak turn on its own; a brace that also raises a stat is weighed as the raise is (§5.3's decay) |
+| **Substitute** | 45 while it has HP to pay twice over and no decoy stands |
+| **A screen** (Reflect, Light Screen, Safeguard, Mist) | 55, once: nothing while it stands |
+| **A field it sets** | 60 when its own kit gains by it (a Water move for the rain, a move the field makes cheaper, an Ice-type for the hail), and it is not up already |
+| **A charge** | its hit ×0.75: the turn of warning is yours |
+| **A recharge** | its hit ×0.7 |
+| **A sacrifice** (half its hit or more back: Self-Destruct, Explosion) | its hit ×0.6 while it stands above `lowSelfHpThreshold`; the desperate play, not the opener |
+
+*(v0.9.89: with no card above 3 AP, Explosion became affordable, and a healthy boss Golem opened with it — a five-turn climax.
+The sacrifice weight puts it back where the series uses it.)* A guard on a hold-out (§5.6.5) also keeps its finisher for the
+hold's last turn: it recharges, so spent early it would leave that turn empty.
+
 # §5.4 Cleave and Backstrike
 
 **Cleave** damages every currently occupied, non-fainted slot. It **never fizzles**: with one Pokémon left, it

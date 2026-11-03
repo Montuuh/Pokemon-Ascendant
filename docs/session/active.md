@@ -1,21 +1,23 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-02 · **Version:** v0.9.88 (*Authored Gym teams*).
+**Date:** 2026-11-03 · **Version:** v0.9.89 (*Move keywords*).
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
-**Current:** v0.9.86 shipped — AP provenance, postponable evolution and manual Center services; full browser suite 444/444 (one load timeout passed alone), UI review Ship. [Report](../reviews/2026-10-30-ap-evolution-center.md). Previous Safari/equipment/status fixes shipped in v0.9.85.
-**Shipped 2026-11-02:** v0.9.87 phases/signatures (`combat/phases.ts`, e2e boss-phases), rhythm cue at impact, token guard test (`tokens.test.ts`). Final browser suite 449/450 (`ring-art` 1920 timed out under load, 5/5 alone — a known flaky check). Design-system artifact refreshed (all marks Keep; next is v0.9.88).
-**Shipped 2026-11-02 (v0.9.88):** twelve five-member authored Gym teams (`GymMember`, `gymTeamFor`, no padding); guest named on preview pill, fork tip and Team matchup; pre-v0.9.88 maps keep the legacy roster via `preview.gymRoster`/`gymTeamOf`. Calibration over 990 runs: Gyms lost 6/10/10 % by Region (legacy 6/5/18), whole run 22 % (23 %); R2 Gym Attack ×0.55, Blaine ×0.85, Erika ×0.9, Koga ×0.85. Lorelei stays hardest (37 %, 32.6 t; lowering her Attack made it worse). UI review: Ship with fixes, applied. Evidence `playtest/gym-teams-2026-11-02/`.
-**Next:** v1.0.
+**Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords (§3.11, §4.3.15, §5.2.1,
+§5.3.1; 38 Gen II–IV moves, no card above 3 AP). Next **v0.9.90**: real evolution levels (no squish, FRLG bands 5→63,
+`STAT_GROWTH_RATE` ~0.024 so each Gym's stats hold), stone evolutions item-only with guaranteed stock, trade evolutions by
+levelling with a held item (Twisted Spoon, Macho Brace, Hard Stone, Spell Tag, Metal Coat), a new in-run Friendship
+(Umbreon, Soothe Bell, Daisy's grooming, Return). Then **v0.9.91** progressive learnsets (`replaces` tracks, Move
+Reminder, no filler on a final form) and **v0.9.92** enemy kits by role, disruption effects, more double actions and
+telegraphed combos per Gym/Elite/League. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
+**Shipped 2026-11-03 (v0.9.89):** keyword engine (`combat/keywords.ts`, `keywordTurn.ts`), content by
+`scripts/v0989-keywords.mjs`, UI chips (`keywordChips.tsx`, `SideChips.tsx`), e2e `keywords.spec.ts`. Run harness R1 69 ·
+R2|R1 49 · R3|R2 49 · run 10 % (noise); intent forecast 99 % (chance riders). UI review Ship with fixes, 3 rounds.
+**Shipped 2026-11-02 (v0.9.88):** twelve five-member authored Gym teams; guest named on the preview; pre-v0.9.88 maps keep
+the legacy roster. Lorelei stays hardest (37 %).
 **Art review (24 Oct):** closed by the user on 2026-11-02; its unimplemented findings (B20–B26, B29, B32, B33) are dropped, not pending. B30 fixed in architecture.md.
-
-**Phase decision (2026-10-29, not implemented):** user chose irreversible escalation plus a telegraphed authored signature per three-phase ace. §5.8.3 now latches thresholds while alive, commits next turn before AP refill, preserves current intent and allows KO before activation. One signature opportunity, consumed on declaration; normal AP/status/target rules, full visibility even under Fog, no bonus action/universal survival. Natural Sturdy stays. Confusion keeps uniform choice. §9.2.2.3 owns active/pending/signature UX; Gym/Elite catalogues carry moves/counters. OPEN closed. [Report](../reviews/2026-10-29-enemy-phases-and-gyms.md).
-**Evidence:** playtest/enemy-phase-gym-review-2026-10-29/: reducer probes, 1080p/720p captures at 150 %, 43 focused tests, 240 baseline runs, catalogue validation. All 12 current Gyms repeat species; Surge lost 0/35, Lorelei 6/13 and 42.4 turns. These are current-roster conditional samples, not replacement balance. Designer: Proceed with notes after two corrected authoring gaps. No runtime/UI changes or new release yet.
-**Verification:** final npm run check exits 0, 967 passed / 3 skipped, refs/catalogues/version green; one existing Fast Refresh warning. First catalogue-definition failure retained and fixed. The custom catalogue validator checks all 60 members / 240 move references, evolution/lines/types/guest/ace/default-starter/Legendary and Status Siege options.
-**Phase decision verification:** check-phase-decision.log exits 0, 967 passed / 3 skipped, 7,391 § citations resolve; 20 authored signature profiles and all 60 kits pass AP/data validation. Independent designer: Proceed with notes, P1–P5 aligned; wording points resolved. Runtime implementation/calibration still pending v0.9.87.
 
 **Dark and Steel (v0.9.84):** Gen II 17-type chart; Umbreon/Scizor/Steelix/Magnezone (155 species), 14 later moves, six TMs, Gems/Black Glasses/Plates/Metal Coat; Magnemite Electric/Steel. Eevee has four paths; archetype uniqueness is per target species. R3 Magnezone/Steelix trainers cost 13 win-rate points and were replaced. Four later species use enlarged Gen VII box icons. No new Dark/Steel Gym or Elite.
 **Rhythm (v0.9.81–83):** continuous Speed curve; ally fills by printed AP (k 260, 2–5, carry 0.5), enemy per action. Card hover fill, ghost arc, pace chevron and ready cue built. Cue is delay-timed, not impact-timed; held/dragged/720p ghosts remain unreviewed. Earlier threshold-tier design is superseded.
-**Results/rewards (v0.9.80):** first Gym pick 2 Uncommon + 1 Rare; Flow State free swap each turn; Apex Reveal wired; one level panel per level, learned move holds for click/Space/Enter; 720p/150 % overlap fixed. Evolution stays a surprise on Continue.
 
 **UI debt:** audit dead-CSS scan follows only modules imported as styles; Text over gradients/images is not measured by the audit. Shortlisted later: web-design-guidelines, break-ui, kill-ai-slop scanner. Every visual implementation still needs measured audit plus independent ui-reviewer, not just captures.
 **Motion:** D11/D12 in ui-doctrine.md; docs/design/ui/motion-review.md; System/Reduced/Full matrix, ui:motion, real-time ui:film. Ready-cue audio/impact synchronisation debt above remains.

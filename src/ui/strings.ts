@@ -105,6 +105,10 @@ export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: stri
   'owner-frozen': { title: 'Frozen', sub: 'this turn' },
   'owner-fainted': { title: 'Fainted', sub: 'out of the fight' },
   sealed: { title: 'Sealed', sub: 'this turn' },
+  recharging: { title: 'Recharge', sub: 'this turn' },
+  'no-pp': { title: 'No PP', sub: 'this fight' },
+  'protect-again': { title: 'Not again', sub: 'used last turn' },
+  'target-protected': { title: 'Protected', sub: 'this turn' },
 };
 
 /** §5.9.5 — the chip's count, in a few words: when a timed rule lands, or where a growing one stands. */
@@ -1281,3 +1285,67 @@ export const DROP_ON_FOE = 'Play it onto an enemy.';
 export function dropOnAlly(names: string[]): string {
   return names.length === 1 ? `Play it onto ${names[0]}.` : 'Play it onto one of the highlighted Pokémon.';
 }
+
+/** §3.11 — the move keywords' chips on a card: a word on the chip, the rule in its bubble (one voice with the card's). */
+export const KEYWORD_TEXT = {
+  protect: { label: 'Protect', tip: 'Protect is up: nothing the other side aims at it lands this turn. An area hit still reaches the rest.' },
+  endure: { label: 'Endure', tip: 'Endure: a hit that would knock it out this turn leaves it at 1 HP.' },
+  guard: { label: (n: number) => `Guard ${n}`, tip: (n: number) => `Guard: the next ${n} damage from moves goes here first. Gone when the next turn starts.` },
+  substitute: { label: (n: number) => `Sub ${n}`, tip: (n: number) => `Substitute: a decoy with ${n} HP takes the hits first, and no status or stat drop reaches it while it stands.` },
+  counter: { label: 'Counter', tip: (range: 'melee' | 'ranged') => `Counter: every ${range === 'melee' ? 'Melee' : 'Ranged'} hit it takes this turn is returned half again as hard.` },
+  recharge: { label: 'Recharge', now: 'Recharging: its cards are locked this turn and it cannot swap out.', next: 'It must recharge next turn: its cards will be locked and it cannot swap out.' },
+  charge: { label: 'Charging', away: 'Away', tip: 'Charging: its hit lands at the start of next turn.', awayTip: 'Out of reach: everything aimed at it misses until its hit lands next turn.' },
+  rampage: { label: 'Rampage', tip: (left: number) => `On a rampage: it cannot swap out, its move comes back free ${left} more time${left === 1 ? '' : 's'}, then it is Confused.` },
+  rooted: { label: 'Rooted', tip: 'Rooted: it regenerates every turn and cannot swap out for the rest of the fight.' },
+} as const;
+
+/** §3.11 — a keyword's whole rule, for a card's bubble and an enemy stance's intent card. */
+export const KEYWORD_RULE = {
+  pp: 'Its last use takes the card out of the deck until the fight ends.',
+  protect: 'Protect: nothing the other side aims at it lands this turn; an area hit still reaches the rest. Not two turns running.',
+  endure: 'Endure: a hit that would knock it out this turn leaves it at 1 HP.',
+  guard: (power: number) => `Guard: soaks about a ${power}-power hit before HP, until the next turn starts. Burn, Poison and weather pass it by.`,
+  substitute: (pct: number) => `Substitute: pays ${pct}% of max HP for a decoy that takes the hits first; no status or stat drop reaches it while it stands.`,
+  side: (name: string, effect: string, turns: number) => `${name}: ${effect} for ${turns} turns.`,
+  field: (name: string, turns: number) => `Sets ${name} for ${turns} turns over whatever stood there, for both sides; then the fight's own ground returns.`,
+  fieldCost: (delta: number, name: string) => `In ${name} it costs ${Math.abs(delta)} AP ${delta < 0 ? 'less' : 'more'}.`,
+  recharge: 'Recharge: next turn its cards are locked and it cannot swap out. Its teammates still play.',
+  fatigue: (ap: number) => `Fatigue: your next turn starts ${ap} AP short.`,
+  rampage: (turns: number) => `Rampage: it comes back to your hand free for ${turns} turns while it cannot swap out, then it is Confused.`,
+  charge: (away: boolean, skipIn: string | null) => `${away ? 'Out of reach: everything aimed at it misses until ' : 'Charge: '}the hit lands at the start of your next turn${skipIn ? `; in ${skipIn} it lands at once` : ''}.`,
+  counter: (range: 'melee' | 'ranged', mult: number) => `Counter: every ${range === 'melee' ? 'Melee' : 'Ranged'} hit it takes this turn is returned ×${mult}.`,
+  wish: (pct: number) => `Wish: whoever stands in its place at the end of next turn recovers ${pct}% of its max HP.`,
+  root: 'Rooted: it regenerates every turn and cannot swap out for the rest of the fight.',
+  batonPass: 'Baton Pass: on the step back, its stat changes and its Substitute go to the new Lead.',
+  overexert: (ap: number) => `Overexert: it can be played with up to ${ap} AP you do not have; the rest comes off next turn.`,
+} as const;
+
+/** §3.11.6 / §4.3 — the side conditions' and the fields' names as the keyword lines say them. */
+export const SIDE_NAME: Record<'reflect' | 'light-screen' | 'safeguard' | 'mist', { name: string; short: string; effect: string }> = {
+  reflect: { name: 'Reflect', short: 'Reflect: Melee −⅓', effect: 'Melee damage into its side is cut by a third' },
+  'light-screen': { name: 'Light Screen', short: 'Light Screen: Ranged −⅓', effect: 'Ranged damage into its side is cut by a third' },
+  safeguard: { name: 'Safeguard', short: 'Safeguard: no status', effect: 'no status can be put on its side' },
+  mist: { name: 'Mist', short: 'Mist: no stat drops', effect: 'the other side cannot lower its side’s stats' },
+};
+export const FIELD_IN: Record<string, string> = { 'rain-dance': 'the rain', 'sunny-day': 'the Sun', hail: 'the hail', sandstorm: 'the sandstorm', 'electric-terrain': 'Electric Terrain', 'grassy-terrain': 'Grassy Terrain', 'psychic-terrain': 'Psychic Terrain', 'misty-terrain': 'Misty Terrain', 'toxic-spikes': 'Toxic Spikes', 'sticky-web': 'a Sticky Web' };
+
+/** §5.2.1 — an enemy's stance on its intent card: it is already up. */
+export const STANCE_LABEL = 'Up now';
+export const STANCE_CHIP = ' — up now';
+export const STANCE_FOOTER = 'A stance is up the moment it is declared: your cards this turn already meet it.';
+
+/** §3.11.6 / §3.11.13 — a side's condition as a chip by its side: an icon and the turns, the rest in its bubble. */
+export const SIDE_CHIP_TEXT = {
+  title: (name: string, side: 'player' | 'enemy') => `${side === 'player' ? 'Your' : 'The foe’s'} ${name}`,
+  turns: (n: number) => `${n} turn${n === 1 ? '' : 's'} left — it counts down at the end of each turn.`,
+  wish: (amount: number, place: string, turnsLeft: number) => `${amount} HP to whoever stands at ${place} at the end of ${turnsLeft <= 1 ? 'this' : 'next'} turn.`,
+  wishName: 'Wish',
+  more: (n: number) => `+${n}`,
+  moreTitle: (n: number) => `${n} more on this side`,
+} as const;
+
+/** §4.3.15 — a field a move set: how long it has, and what comes back. */
+export const FIELD_TIMER_TEXT = (turns: number, restore: string | null) => `${turns} turn${turns === 1 ? '' : 's'} left, then ${restore ? `${restore} returns` : 'it clears'}.`;
+
+/** §3.11.12 — AP an overexerting card borrowed: off the next refill. */
+export const AP_DEBT_TEXT = { mark: (n: number) => `−${n} next`, line: (n: number) => `${n} AP owed: next turn starts ${n} short.` } as const;

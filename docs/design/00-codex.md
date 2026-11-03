@@ -11,6 +11,7 @@
 ---
 
 > **Rewards/status digest refreshed 2026-10-30:** Safari first-catch equipment gift, useful equipment access and bounded control (§2.11.6, §7.4.1, §4.2).
+> **Combat digest refreshed 2026-11-03:** the move keywords and the 3-AP ceiling (§3.11, §4.3.15, §5.2.1) in v0.9.89.
 > **Enemy/Gym digest refreshed 2026-11-02:** irreversible phases and declared ace signatures (§5.8.3,
 > §9.2.2.3) implemented in v0.9.87; twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3)
 > shipped in v0.9.88.
@@ -182,7 +183,7 @@ Atomic — no mid-combat save, no flee. Two outcomes, checked continuously; a le
 - **Draw:** 5 skill + 2 consumable cards; AP → 3; swap counter → 0; Confusion discards.
 - **Intent:** each enemy reveals one intent targeting a **slot**, showing kind, magnitude and the slot's current
   occupant.
-- **Action:** spend 3 AP on cards (0–3, rare 4), consumables (0–2) and swaps. Effects resolve immediately.
+- **Action:** spend 3 AP on cards (0–3), consumables (0–2) and swaps. Effects resolve immediately.
 - **Resolution:** intents fire (supports first, lead enemy last) → status ticks → faints → outcome check → hand
   to discard.
 
@@ -196,6 +197,16 @@ unless the card has Step-Forward; **Ranged plays anywhere** at ×0.75.
 - Neither increments the counter; neither gets the discount; both are Melee-only and mutually exclusive.
 - **Faint:** Lead faints → pick any bench member free. Bench faints → it just leaves. Either way its 4 moves
   (+Mastery) are **purged from deck and discard**. A Frozen Lead that faints voids the lock.
+
+**Move keywords** (§3.11, v0.9.89, after Slay the Spire, Across the Obelisk and Temtem): **PP** a fight on heals,
+Protect and Counter (the last one exhausts the card) · **Protect**/Detect (nothing aimed at it lands; not twice running)
+· **Endure** · **Guard** (a hit's worth of HP until next turn, level-free, by base Defence) · **Substitute** · side conditions
+(**Reflect** Melee ×0.66, **Light Screen** Ranged, **Safeguard**, **Mist**, 3 turns) · fields set by a move for 3 turns,
+with AP costs (Thunder −1 in rain, +1 in sun; Blizzard −1 in hail, §4.3.15) · **no card above 3 AP**: ultimates pay with
+**Recharge** (next turn its cards are off and it cannot swap), **Fatigue** (next turn 1 AP short) or a self drop ·
+**Rampage** (free returns, locked, then Confused) · **Charge** / out of reach (Solar Beam, Fly) · **Counter**/Mirror Coat
+· **Overexert** · **Wish**, **Ingrain**, weather-scaled heals · **Baton Pass**. An enemy's guarding keyword is a
+**stance**, up when declared (§5.2.1). 38 Gen II–IV moves joined the 162 of Gen I.
 
 **Deck** 12 (→15 with Mastery), hand always 5, discard reshuffles when empty.
 **Consumables are spent** (v0.8.6): the whole bag is open every turn behind a **Bag** button (one card per kind,
@@ -339,8 +350,8 @@ Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 %
 
 **Learnset** — a base form knows **2 moves at level 1** and **4 by its evolution level**; an evolved form has no
 learnset of its own. Deck contribution is `min(known, 4)`. A run opens with a **two-card deck** and thickens as you
-recruit and level. **Every move is a Gen I move** at its modern type (v0.9.5), or one made better (**+**) where its type
-has nowhere stronger to climb.
+recruit and level. **Every move is a Gen I move** at its modern type (v0.9.5), one made better (**+**) where its type
+has nowhere stronger to climb, or a later one: Dark and Steel's (v0.9.84) and Gen II–IV's keyword moves (v0.9.89).
 
 **Evolution** — player-initiated between nodes, permanent. **12 and 26** are the uniform thresholds (a few
 bespoke exceptions, e.g. Magikarp at 18). At **each** evolution you freely choose an archetype —

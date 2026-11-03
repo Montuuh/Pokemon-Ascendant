@@ -147,7 +147,7 @@ describe('Ally targets — §5.6', () => {
 
   it('AllyTargets_BenchStage_TheBenchStanding_NotTheLead', () => {
     const s = base();
-    expect(allyRecipients(s, ctx.content.move('reflect'), s.player.leadIndex)).toEqual([0, 1, 2].filter((i) => i !== s.player.leadIndex));
+    expect(allyRecipients(s, ctx.content.move('probe-bench-buff'), s.player.leadIndex)).toEqual([0, 1, 2].filter((i) => i !== s.player.leadIndex));
   });
 
   it('AllyTargets_TeamCure_EveryoneStanding_NotTheFainted', () => {

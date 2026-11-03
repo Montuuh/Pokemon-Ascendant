@@ -16,12 +16,13 @@ export interface UnitChip {
   node: ReactNode;
 }
 
-export function UnitChips({ chips }: { chips: readonly UnitChip[] }) {
+/** `ally`: on your cards the rhythm dial overhangs the window's left edge, so the chips start past it. */
+export function UnitChips({ chips, ally = false }: { chips: readonly UnitChip[]; ally?: boolean }) {
   if (!chips.length) return null;
   const folds = chips.length > 2;
   const rest = chips.slice(1);
   return (
-    <span className={card.chips}>
+    <span className={ally ? `${card.chips} ${card.chipsAlly}` : card.chips}>
       {chips.map((c, i) => (
         <span key={c.key} className={folds && i > 0 ? card.chipFolds : undefined}>
           {c.node}

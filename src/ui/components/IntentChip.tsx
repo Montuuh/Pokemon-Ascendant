@@ -1,7 +1,7 @@
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
 import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy, visibleMoot } from '@/sim';
 import { intentGlyph } from '@/ui/art';
-import { INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT } from '@/ui/strings';
+import { INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT, STANCE_CHIP } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import { intentTone } from '@/ui/intentTone';
@@ -80,7 +80,8 @@ export function IntentChip({ state, enemy, ctx, forecast, action, signatureShown
                 ) : null}
               </>
             )}
-            {intent.kind === 'buff' && (ally && ally.uid !== enemy.uid ? <> → <b>{ally.name}</b></> : ' — powering up')}
+            {/* §5.2.1 — a stance is up already; a buff is still coming. */}
+            {intent.kind === 'buff' && (intent.stance ? STANCE_CHIP : ally && ally.uid !== enemy.uid ? <> → <b>{ally.name}</b></> : ' — powering up')}
             {intent.kind === 'stall' && move && (ally && ally.uid !== enemy.uid ? <> → heals <b>{ally.name}</b></> : ' — recovering')}
             {/* §5.6.2 — a call names who will answer it. */}
             {intent.kind === 'summon' && <> → <b>{called.length ? `+${called.join(', +')}` : 'nobody left'}</b></>}

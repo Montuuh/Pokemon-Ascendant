@@ -168,6 +168,10 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   const plays = all.filter((p) => p.playable);
   const damaging = plays.filter((p) => p.damage && p.damage.final > 0);
 
+  // §3.11.8 / §3.11.10 — a hit that lands next turn, or leaves its user recharging or the team short, is worth less than its number.
+  const fatigueOf = (p: CardPlayability) => p.move.effects.reduce((n, e) => (e.kind === 'fatigue' ? n + e.ap : n), 0);
+  const discount = (p: CardPlayability) => (p.move.effects.some((e) => e.kind === 'charge') ? 0.7 : 1) * (p.move.effects.some((e) => e.kind === 'recharge') ? 0.75 : 1);
+
   // 4a. Nothing damaging is online but a bench Pokémon holds melee cards: swap to bring them online
   //     when the swap plus the card still fit in the AP budget (§3.3.1 — the swap IS the decision).
   if (damaging.length === 0) {
@@ -230,6 +234,23 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   const ko = damaging.find((p) => aim(p).ko);
   if (ko) return pick(ko);
 
+  // 3c. §3.11 — the keywords the telegraph asks for: Protect the Lead from a hit it cannot take, heal a Pokémon that is
+  // low while its PP lasts, raise the screen for the range coming in, guard the Lead against a real hit.
+  {
+    const has = (p: CardPlayability, kind: string) => p.move.effects.some((e) => e.kind === kind);
+    const lead = state.player.team[state.player.leadIndex]!;
+    const byLead = (p: CardPlayability) => p.owner.uid === lead.uid;
+    const protect = plays.find((p) => byLead(p) && has(p, 'protect'));
+    if (protect && incoming >= Math.min(lead.hp, lead.maxHp * 0.35)) return pick(protect);
+    const mend = plays.find((p) => p.move.power === 0 && p.move.effects.some((e) => e.kind === 'heal' && !e.durationTurns && !e.target) && hpFraction(p.owner) < 0.45);
+    if (mend) return pick(mend);
+    const range = intent?.moveId ? ctx.content.move(intent.moveId).range : null;
+    const screen = plays.find((p) => p.move.effects.some((e) => e.kind === 'side-condition' && e.condition === (range === 'melee' ? 'reflect' : 'light-screen')));
+    if (screen && range && incoming >= lead.maxHp * 0.25 && !(state.sides ?? []).some((s) => s.side === 'player' && s.id === (range === 'melee' ? 'reflect' : 'light-screen'))) return pick(screen);
+    const guard = plays.find((p) => byLead(p) && has(p, 'guard'));
+    if (guard && incoming >= lead.maxHp * 0.2 && !lead.guard) return pick(guard);
+  }
+
   // 4c. §4.2 — control before damage, the way a player meets a fight that will last: put the most dangerous foe that
   // will outlive this turn to Sleep (or freeze it), else Paralyse it, else Burn or Poison it — a status card is worth
   // more than a hit against anything with three of our best hits left in it (two cost more than it saved in Region 3).
@@ -265,7 +286,8 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
     if (raise && enemyHp > 2 * Math.max(1, perTurn) && ownerIsLead(raise, state)) return pick(raise);
   }
   if (damaging.length > 0) {
-    damaging.sort((a, b) => aim(b).dmg / Math.max(1, b.apCost) - aim(a).dmg / Math.max(1, a.apCost) || aim(b).dmg - aim(a).dmg);
+    const per = (p: CardPlayability) => (aim(p).dmg * discount(p)) / Math.max(1, p.apCost + fatigueOf(p));
+    damaging.sort((a, b) => per(b) - per(a) || aim(b).dmg - aim(a).dmg);
     return pick(damaging[0]!);
   }
   // 5. Free utility (debuffs/buffs) before ending.

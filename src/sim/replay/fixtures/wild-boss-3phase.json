@@ -20,7 +20,15 @@
     },
     {
       "type": "play-card",
+      "cardId": "c3"
+    },
+    {
+      "type": "play-card",
       "cardId": "c5"
+    },
+    {
+      "type": "use-consumable",
+      "cardId": "k15"
     },
     {
       "type": "play-card",
@@ -35,20 +43,12 @@
       "targetIndex": 0
     },
     {
-      "type": "use-consumable",
-      "cardId": "k15"
-    },
-    {
       "type": "play-card",
-      "cardId": "c1"
+      "cardId": "c4"
     },
     {
       "type": "play-card",
       "cardId": "c9"
-    },
-    {
-      "type": "swap",
-      "benchIndex": 0
     },
     {
       "type": "play-card",
@@ -56,6 +56,14 @@
     },
     {
       "type": "end-turn"
+    },
+    {
+      "type": "swap",
+      "benchIndex": 0
+    },
+    {
+      "type": "play-card",
+      "cardId": "c1"
     },
     {
       "type": "play-card",
@@ -66,34 +74,10 @@
       "cardId": "c3"
     },
     {
-      "type": "play-card",
-      "cardId": "c4"
-    },
-    {
       "type": "end-turn"
-    },
-    {
-      "type": "use-consumable",
-      "cardId": "k13",
-      "targetIndex": 0
-    },
-    {
-      "type": "play-card",
-      "cardId": "c6"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c2"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c4"
     }
   ],
-  "fingerprint": "t6 victory lead=0 ap=1 team=[wartortle:38/100,butterfree:98/98,rattata:56/56] enemies=[geodude:0/77,golem:0/149] events=99 rng=2792278177",
-  "turns": 6,
+  "fingerprint": "t4 victory lead=0 ap=0 team=[wartortle:70/100,butterfree:98/98,rattata:56/56] enemies=[geodude:0/77,golem:0/149] events=77 rng=1926902152",
+  "turns": 4,
   "outcome": "victory"
 }

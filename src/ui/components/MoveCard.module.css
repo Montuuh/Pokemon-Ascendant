@@ -320,6 +320,21 @@ html[data-motion='reduced'] .crit::after {
 .typeLabel {
   flex: 0 0 auto;
 }
+/* §3.11.1 — a card's PP: a pip a use, filled while it is left. */
+.pp {
+  display: inline-flex;
+  gap: 2px;
+}
+.ppOn,
+.ppOff {
+  width: var(--sp-1);
+  height: var(--sp-1);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--ink-primary);
+}
+.ppOn {
+  background: var(--ink-primary);
+}
 
 /* D11 — a loop stops under either reduced-motion switch; its resting look carries the state. */
 @media (prefers-reduced-motion: reduce) {

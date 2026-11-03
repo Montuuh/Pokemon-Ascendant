@@ -158,11 +158,14 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 130,
-      "effects": [],
-      "ignoresDefenseStages": true,
-      "cooldown": 2
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ],
+      "ignoresDefenseStages": true
     },
     {
       "id": "razor-wind",
@@ -250,9 +253,14 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "step-forward",
-      "apCost": 3,
-      "power": 90,
-      "effects": []
+      "apCost": 2,
+      "power": 75,
+      "effects": [
+        {
+          "kind": "charge",
+          "outOfReach": true
+        }
+      ]
     },
     {
       "id": "bind",
@@ -328,9 +336,14 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 120,
-      "effects": []
+      "effects": [
+        {
+          "kind": "fatigue",
+          "ap": 1
+        }
+      ]
     },
     {
       "id": "jump-kick",
@@ -422,11 +435,14 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 130,
-      "effects": [],
-      "ignoresDefenseStages": true,
-      "cooldown": 2
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ],
+      "ignoresDefenseStages": true
     },
     {
       "id": "tackle",
@@ -497,14 +513,12 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 3,
-      "power": 100,
+      "apCost": 2,
+      "power": 60,
       "effects": [
         {
-          "kind": "status",
-          "status": "confusion",
-          "chance": 1,
-          "self": true
+          "kind": "rampage",
+          "turns": 2
         }
       ]
     },
@@ -515,7 +529,7 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 120,
       "effects": [
         {
@@ -787,14 +801,15 @@
       "name": "Mist",
       "type": "ice",
       "role": "defensive",
-      "range": "melee",
+      "range": "ranged",
       "modifier": "none",
       "apCost": 1,
       "power": 0,
       "effects": [
         {
-          "kind": "team-guard",
-          "guard": "status"
+          "kind": "side-condition",
+          "condition": "mist",
+          "turns": 3
         }
       ]
     },
@@ -816,9 +831,14 @@
       "role": "offensive",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 120,
-      "effects": []
+      "effects": [
+        {
+          "kind": "fatigue",
+          "ap": 1
+        }
+      ]
     },
     {
       "id": "surf",
@@ -856,13 +876,22 @@
       "role": "offensive",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 120,
       "effects": [
         {
           "kind": "status",
           "status": "freeze",
           "chance": 0.1
+        },
+        {
+          "kind": "field-cost",
+          "field": "hail",
+          "delta": -1
+        },
+        {
+          "kind": "fatigue",
+          "ap": 1
         }
       ]
     },
@@ -926,10 +955,13 @@
       "role": "offensive",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 4,
-      "power": 130,
-      "effects": [],
-      "cooldown": 2
+      "apCost": 3,
+      "power": 150,
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ]
     },
     {
       "id": "peck",
@@ -984,19 +1016,19 @@
       "id": "counter",
       "name": "Counter",
       "type": "fighting",
-      "role": "offensive",
-      "range": "melee",
+      "role": "defensive",
+      "range": "ranged",
       "modifier": "none",
-      "apCost": 2,
-      "power": 65,
+      "apCost": 1,
+      "power": 0,
       "effects": [
         {
-          "kind": "power-bonus",
-          "when": "self-below",
-          "below": 0.5,
+          "kind": "counter",
+          "range": "melee",
           "multiplier": 1.5
         }
-      ]
+      ],
+      "pp": 2
     },
     {
       "id": "seismic-toss",
@@ -1106,10 +1138,20 @@
       "role": "offensive",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 4,
-      "power": 120,
-      "effects": [],
-      "cooldown": 1
+      "apCost": 2,
+      "power": 100,
+      "effects": [
+        {
+          "kind": "charge",
+          "skipIn": "sunny-day"
+        },
+        {
+          "kind": "power-bonus",
+          "when": "in-field",
+          "field": "rain-dance",
+          "multiplier": 0.5
+        }
+      ]
     },
     {
       "id": "poison-powder",
@@ -1169,14 +1211,12 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "step-forward",
-      "apCost": 3,
-      "power": 100,
+      "apCost": 2,
+      "power": 60,
       "effects": [
         {
-          "kind": "status",
-          "status": "confusion",
-          "chance": 1,
-          "self": true
+          "kind": "rampage",
+          "turns": 2
         }
       ]
     },
@@ -1284,13 +1324,27 @@
       "role": "offensive",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 120,
       "effects": [
         {
           "kind": "status",
           "status": "paralysis",
           "chance": 0.1
+        },
+        {
+          "kind": "field-cost",
+          "field": "rain-dance",
+          "delta": -1
+        },
+        {
+          "kind": "field-cost",
+          "field": "sunny-day",
+          "delta": 1
+        },
+        {
+          "kind": "fatigue",
+          "ap": 1
         }
       ]
     },
@@ -1325,11 +1379,14 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 130,
-      "effects": [],
-      "ignoresDefenseStages": true,
-      "cooldown": 2
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ],
+      "ignoresDefenseStages": true
     },
     {
       "id": "dig",
@@ -1340,7 +1397,12 @@
       "modifier": "step-backward",
       "apCost": 2,
       "power": 75,
-      "effects": []
+      "effects": [
+        {
+          "kind": "charge",
+          "outOfReach": true
+        }
+      ]
     },
     {
       "id": "toxic",
@@ -1549,10 +1611,10 @@
       "effects": [
         {
           "kind": "heal",
-          "percentOfMaxHp": 0.4
+          "percentOfMaxHp": 0.5
         }
       ],
-      "cooldown": 2
+      "pp": 1
     },
     {
       "id": "harden",
@@ -1561,9 +1623,13 @@
       "role": "defensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
+        {
+          "kind": "guard",
+          "power": 50
+        },
         {
           "kind": "stage",
           "target": "self",
@@ -1632,9 +1698,13 @@
       "role": "defensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
+        {
+          "kind": "guard",
+          "power": 60
+        },
         {
           "kind": "stage",
           "target": "self",
@@ -1650,9 +1720,13 @@
       "role": "defensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
+        {
+          "kind": "guard",
+          "power": 40
+        },
         {
           "kind": "stage",
           "target": "self",
@@ -1684,15 +1758,15 @@
       "name": "Light Screen",
       "type": "psychic",
       "role": "defensive",
-      "range": "melee",
+      "range": "ranged",
       "modifier": "none",
       "apCost": 1,
       "power": 0,
       "effects": [
         {
-          "kind": "team-guard",
-          "guard": "cleave",
-          "percent": 50
+          "kind": "side-condition",
+          "condition": "light-screen",
+          "turns": 3
         }
       ]
     },
@@ -1716,22 +1790,15 @@
       "name": "Reflect",
       "type": "psychic",
       "role": "defensive",
-      "range": "melee",
+      "range": "ranged",
       "modifier": "none",
       "apCost": 1,
       "power": 0,
       "effects": [
         {
-          "kind": "stage",
-          "target": "self",
-          "stat": "defense",
-          "stages": 1
-        },
-        {
-          "kind": "stage",
-          "target": "bench",
-          "stat": "defense",
-          "stages": 1
+          "kind": "side-condition",
+          "condition": "reflect",
+          "turns": 3
         }
       ]
     },
@@ -1887,13 +1954,17 @@
       "role": "offensive",
       "range": "ranged",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 120,
       "effects": [
         {
           "kind": "status",
           "status": "burn",
           "chance": 0.3
+        },
+        {
+          "kind": "fatigue",
+          "ap": 1
         }
       ]
     },
@@ -1944,9 +2015,19 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 3,
-      "power": 95,
-      "effects": []
+      "apCost": 2,
+      "power": 85,
+      "effects": [
+        {
+          "kind": "charge"
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
     },
     {
       "id": "spike-cannon",
@@ -2033,7 +2114,7 @@
           "percentOfMaxHp": 0.5
         }
       ],
-      "cooldown": 2
+      "pp": 1
     },
     {
       "id": "high-jump-kick",
@@ -2157,11 +2238,14 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "step-forward",
-      "apCost": 4,
-      "power": 110,
-      "effects": [],
-      "alwaysCrit": true,
-      "cooldown": 1
+      "apCost": 2,
+      "power": 80,
+      "effects": [
+        {
+          "kind": "charge"
+        }
+      ],
+      "alwaysCrit": true
     },
     {
       "id": "transform",
@@ -2321,15 +2405,17 @@
       "role": "offensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 4,
+      "apCost": 3,
       "power": 170,
       "effects": [
         {
           "kind": "recoil",
           "percentOfDamage": 0.75
+        },
+        {
+          "kind": "recharge"
         }
-      ],
-      "cooldown": 2
+      ]
     },
     {
       "id": "fury-swipes",
@@ -2383,7 +2469,8 @@
           "chance": 1,
           "self": true
         }
-      ]
+      ],
+      "pp": 1
     },
     {
       "id": "rock-slide",
@@ -2657,14 +2744,18 @@
       "role": "defensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
+        {
+          "kind": "guard",
+          "power": 70
+        },
         {
           "kind": "stage",
           "target": "self",
           "stat": "defense",
-          "stages": 2
+          "stages": 1
         }
       ]
     },
@@ -2926,14 +3017,18 @@
       "role": "defensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
+        {
+          "kind": "guard",
+          "power": 60
+        },
         {
           "kind": "stage",
           "target": "self",
           "stat": "defense",
-          "stages": 2
+          "stages": 1
         }
       ]
     },
@@ -3214,14 +3309,18 @@
       "role": "defensive",
       "range": "melee",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
+        {
+          "kind": "guard",
+          "power": 80
+        },
         {
           "kind": "stage",
           "target": "self",
           "stat": "defense",
-          "stages": 2
+          "stages": 1
         }
       ]
     },
@@ -4482,6 +4581,689 @@
           "kind": "status",
           "status": "paralysis",
           "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "substitute",
+      "name": "Substitute",
+      "type": "normal",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "substitute",
+          "percentOfMaxHp": 0.25
+        }
+      ]
+    },
+    {
+      "id": "protect",
+      "name": "Protect",
+      "type": "normal",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "protect"
+        }
+      ],
+      "pp": 2
+    },
+    {
+      "id": "detect",
+      "name": "Detect",
+      "type": "fighting",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "protect"
+        }
+      ],
+      "pp": 2
+    },
+    {
+      "id": "endure",
+      "name": "Endure",
+      "type": "normal",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 0,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "endure"
+        }
+      ],
+      "pp": 1
+    },
+    {
+      "id": "rain-dance",
+      "name": "Rain Dance",
+      "type": "water",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "set-field",
+          "field": "rain-dance",
+          "turns": 3
+        }
+      ]
+    },
+    {
+      "id": "sunny-day",
+      "name": "Sunny Day",
+      "type": "fire",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "set-field",
+          "field": "sunny-day",
+          "turns": 3
+        }
+      ]
+    },
+    {
+      "id": "sandstorm",
+      "name": "Sandstorm",
+      "type": "rock",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "set-field",
+          "field": "sandstorm",
+          "turns": 3
+        }
+      ]
+    },
+    {
+      "id": "hail",
+      "name": "Hail",
+      "type": "ice",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "set-field",
+          "field": "hail",
+          "turns": 3
+        }
+      ]
+    },
+    {
+      "id": "safeguard",
+      "name": "Safeguard",
+      "type": "normal",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "side-condition",
+          "condition": "safeguard",
+          "turns": 3
+        }
+      ]
+    },
+    {
+      "id": "wish",
+      "name": "Wish",
+      "type": "normal",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "wish",
+          "percentOfMaxHp": 0.5
+        }
+      ],
+      "pp": 1
+    },
+    {
+      "id": "heal-bell",
+      "name": "Heal Bell",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "team-cure"
+        }
+      ]
+    },
+    {
+      "id": "aromatherapy",
+      "name": "Aromatherapy",
+      "type": "grass",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "team-cure"
+        }
+      ]
+    },
+    {
+      "id": "ingrain",
+      "name": "Ingrain",
+      "type": "grass",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.0625,
+          "durationTurns": 20
+        },
+        {
+          "kind": "root"
+        }
+      ],
+      "pp": 1
+    },
+    {
+      "id": "aqua-ring",
+      "name": "Aqua Ring",
+      "type": "water",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.0625,
+          "durationTurns": 20
+        }
+      ],
+      "pp": 1
+    },
+    {
+      "id": "synthesis",
+      "name": "Synthesis",
+      "type": "grass",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.25,
+          "weatherScaled": true
+        }
+      ],
+      "pp": 2
+    },
+    {
+      "id": "moonlight",
+      "name": "Moonlight",
+      "type": "normal",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.25,
+          "weatherScaled": true
+        }
+      ],
+      "pp": 2
+    },
+    {
+      "id": "morning-sun",
+      "name": "Morning Sun",
+      "type": "normal",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.25,
+          "weatherScaled": true
+        }
+      ],
+      "pp": 2
+    },
+    {
+      "id": "milk-drink",
+      "name": "Milk Drink",
+      "type": "normal",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.5
+        }
+      ],
+      "pp": 1
+    },
+    {
+      "id": "roost",
+      "name": "Roost",
+      "type": "flying",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "heal",
+          "percentOfMaxHp": 0.5
+        }
+      ],
+      "pp": 1
+    },
+    {
+      "id": "mirror-coat",
+      "name": "Mirror Coat",
+      "type": "psychic",
+      "role": "defensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "counter",
+          "range": "ranged",
+          "multiplier": 1.5
+        }
+      ],
+      "pp": 2
+    },
+    {
+      "id": "baton-pass",
+      "name": "Baton Pass",
+      "type": "normal",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "step-backward",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "baton-pass"
+        }
+      ]
+    },
+    {
+      "id": "u-turn",
+      "name": "U-turn",
+      "type": "bug",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "step-backward",
+      "apCost": 2,
+      "power": 60,
+      "effects": []
+    },
+    {
+      "id": "iron-defense",
+      "name": "Iron Defense",
+      "type": "steel",
+      "role": "defensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "guard",
+          "power": 60
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "calm-mind",
+      "name": "Calm Mind",
+      "type": "psychic",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "bulk-up",
+      "name": "Bulk Up",
+      "type": "fighting",
+      "role": "utility",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": 1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": 1
+        }
+      ]
+    },
+    {
+      "id": "giga-impact",
+      "name": "Giga Impact",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 150,
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ]
+    },
+    {
+      "id": "blast-burn",
+      "name": "Blast Burn",
+      "type": "fire",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 150,
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ]
+    },
+    {
+      "id": "hydro-cannon",
+      "name": "Hydro Cannon",
+      "type": "water",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 150,
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ]
+    },
+    {
+      "id": "frenzy-plant",
+      "name": "Frenzy Plant",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 150,
+      "effects": [
+        {
+          "kind": "recharge"
+        }
+      ]
+    },
+    {
+      "id": "overheat",
+      "name": "Overheat",
+      "type": "fire",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "draco-meteor",
+      "name": "Draco Meteor",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "leaf-storm",
+      "name": "Leaf Storm",
+      "type": "grass",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 130,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "close-combat",
+      "name": "Close Combat",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "superpower",
+      "name": "Superpower",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "attack",
+          "stages": -1
+        },
+        {
+          "kind": "stage",
+          "target": "self",
+          "stat": "defense",
+          "stages": -1
+        }
+      ]
+    },
+    {
+      "id": "flare-blitz",
+      "name": "Flare Blitz",
+      "type": "fire",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.33
+        },
+        {
+          "kind": "status",
+          "status": "burn",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "volt-tackle",
+      "name": "Volt Tackle",
+      "type": "electric",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.33
+        },
+        {
+          "kind": "status",
+          "status": "paralysis",
+          "chance": 0.1
+        }
+      ]
+    },
+    {
+      "id": "wood-hammer",
+      "name": "Wood Hammer",
+      "type": "grass",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.33
+        }
+      ]
+    },
+    {
+      "id": "brave-bird",
+      "name": "Brave Bird",
+      "type": "flying",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 3,
+      "power": 120,
+      "effects": [
+        {
+          "kind": "recoil",
+          "percentOfDamage": 0.33
+        }
+      ]
+    },
+    {
+      "id": "outrage",
+      "name": "Outrage",
+      "type": "dragon",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 60,
+      "effects": [
+        {
+          "kind": "rampage",
+          "turns": 2
         }
       ]
     }

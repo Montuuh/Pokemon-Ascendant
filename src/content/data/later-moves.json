@@ -1,5 +1,5 @@
 {
-  "_note": "v0.9.84 — the moves of later generations the game carries, all of the two types Generation I does not have (Dark, Steel). Reference data for the content test that keeps every move in moves.json either a Gen I move (gen1-moves.json) or one of these (§3.6); the game never reads it.",
+  "_note": "The moves of later generations the game carries (§3.6): the 14 Dark and Steel moves of v0.9.84, and from v0.9.89 the Gen II–IV moves the keywords need (§3.11). Reference data for the content test that keeps every move in moves.json either a Gen I move (gen1-moves.json) or one of these, with `gen` the generation that introduced it; the game never reads it.",
   "moves": [
     {
       "id": "pursuit",
@@ -84,6 +84,272 @@
       "name": "Meteor Mash",
       "type": "steel",
       "power": 85
+    },
+    {
+      "id": "protect",
+      "name": "Protect",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "detect",
+      "name": "Detect",
+      "type": "fighting",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "endure",
+      "name": "Endure",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "rain-dance",
+      "name": "Rain Dance",
+      "type": "water",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "sunny-day",
+      "name": "Sunny Day",
+      "type": "fire",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "sandstorm",
+      "name": "Sandstorm",
+      "type": "rock",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "hail",
+      "name": "Hail",
+      "type": "ice",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "safeguard",
+      "name": "Safeguard",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "wish",
+      "name": "Wish",
+      "type": "normal",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "heal-bell",
+      "name": "Heal Bell",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "aromatherapy",
+      "name": "Aromatherapy",
+      "type": "grass",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "ingrain",
+      "name": "Ingrain",
+      "type": "grass",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "aqua-ring",
+      "name": "Aqua Ring",
+      "type": "water",
+      "power": 0,
+      "gen": 4
+    },
+    {
+      "id": "synthesis",
+      "name": "Synthesis",
+      "type": "grass",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "moonlight",
+      "name": "Moonlight",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "morning-sun",
+      "name": "Morning Sun",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "milk-drink",
+      "name": "Milk Drink",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "roost",
+      "name": "Roost",
+      "type": "flying",
+      "power": 0,
+      "gen": 4
+    },
+    {
+      "id": "mirror-coat",
+      "name": "Mirror Coat",
+      "type": "psychic",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "baton-pass",
+      "name": "Baton Pass",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "u-turn",
+      "name": "U-turn",
+      "type": "bug",
+      "power": 60,
+      "gen": 4
+    },
+    {
+      "id": "iron-defense",
+      "name": "Iron Defense",
+      "type": "steel",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "calm-mind",
+      "name": "Calm Mind",
+      "type": "psychic",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "bulk-up",
+      "name": "Bulk Up",
+      "type": "fighting",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "giga-impact",
+      "name": "Giga Impact",
+      "type": "normal",
+      "power": 150,
+      "gen": 4
+    },
+    {
+      "id": "blast-burn",
+      "name": "Blast Burn",
+      "type": "fire",
+      "power": 150,
+      "gen": 3
+    },
+    {
+      "id": "hydro-cannon",
+      "name": "Hydro Cannon",
+      "type": "water",
+      "power": 150,
+      "gen": 3
+    },
+    {
+      "id": "frenzy-plant",
+      "name": "Frenzy Plant",
+      "type": "grass",
+      "power": 150,
+      "gen": 3
+    },
+    {
+      "id": "overheat",
+      "name": "Overheat",
+      "type": "fire",
+      "power": 130,
+      "gen": 3
+    },
+    {
+      "id": "draco-meteor",
+      "name": "Draco Meteor",
+      "type": "dragon",
+      "power": 130,
+      "gen": 4
+    },
+    {
+      "id": "leaf-storm",
+      "name": "Leaf Storm",
+      "type": "grass",
+      "power": 130,
+      "gen": 4
+    },
+    {
+      "id": "close-combat",
+      "name": "Close Combat",
+      "type": "fighting",
+      "power": 120,
+      "gen": 4
+    },
+    {
+      "id": "superpower",
+      "name": "Superpower",
+      "type": "fighting",
+      "power": 120,
+      "gen": 3
+    },
+    {
+      "id": "flare-blitz",
+      "name": "Flare Blitz",
+      "type": "fire",
+      "power": 120,
+      "gen": 4
+    },
+    {
+      "id": "volt-tackle",
+      "name": "Volt Tackle",
+      "type": "electric",
+      "power": 120,
+      "gen": 3
+    },
+    {
+      "id": "wood-hammer",
+      "name": "Wood Hammer",
+      "type": "grass",
+      "power": 120,
+      "gen": 4
+    },
+    {
+      "id": "brave-bird",
+      "name": "Brave Bird",
+      "type": "flying",
+      "power": 120,
+      "gen": 4
+    },
+    {
+      "id": "outrage",
+      "name": "Outrage",
+      "type": "dragon",
+      "power": 60,
+      "gen": 2
     }
   ]
 }

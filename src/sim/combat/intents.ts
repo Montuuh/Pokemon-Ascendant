@@ -8,7 +8,8 @@ import type { BattleConfig } from './battleConfig';
 import type { CombatCtx } from './context';
 import { emit, log } from './context';
 import { applyMoveEffects, breakdownFor } from './damageFlow';
-import { fieldApDelta, isStance, ppLeft, protectBlocked } from './keywords';
+import { fieldApDelta, fieldStands, isStance, ppLeft, protectBlocked, sideHas } from './keywords';
+import type { FieldId } from './fields';
 import { teamRevealsIntents, abilityBlocksMove } from './abilities';
 import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './items';
 import { bossArchetype } from './boss';
@@ -18,7 +19,7 @@ import { activeEnemy, slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
 import { hpFraction } from './stats';
 import { cardsLocked, controlBlocked, isImmuneToStatus, paralysisApBonus } from './status';
-import { objectiveIntent } from './objective';
+import { objectiveHoldsBack, objectiveIntent } from './objective';
 import { typeMultiplier } from './typeChart';
 
 // §5 — enemy AI: candidate intents from the enemy's 4 moves, context-aware scoring, randomness floor,
@@ -132,6 +133,14 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   if (enemyMoveCost(state, enemy, move, ctx) > cfg.baseApPerTurn) return 0;
   // §3.11.1 — no PP left; §3.11.2 — no Protect two turns running.
   if (ppLeft(enemy, move) === 0 || protectBlocked(state, enemy, move)) return 0;
+  // §5.3.1 — a stance is weighed by what it guards against now, never as setup (§5.2.1).
+  if (intent.stance) return stanceScore(state, enemy, move, ctx);
+  // §5.3.1 — a charge gives a turn's warning and an ultimate a turn's recharge: both are worth less than their power.
+  if (move.effects.some((e) => e.kind === 'charge')) score *= cfg.keywordAi.charge;
+  if (move.effects.some((e) => e.kind === 'recharge')) score *= cfg.keywordAi.recharge;
+  // §5.3.1 — a sacrifice (Self-Destruct, Explosion: half its hit or more back) is the desperate play, not the opener.
+  const sacrifice = move.effects.some((e) => e.kind === 'recoil' && e.percentOfDamage >= cfg.keywordAi.sacrificeRecoil);
+  if (sacrifice && hpFraction(enemy) >= cfg.lowSelfHpThreshold) score *= cfg.keywordAi.sacrificeHealthy;
 
   const occ = intent.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
   if (intent.targetSlot && !occ) return 0; // never target an empty slot
@@ -208,6 +217,42 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   return score;
 }
 
+/** §5.3.1 — what a stance is worth this turn: its best effect, by the enemy's HP and what already stands. */
+function stanceScore(state: CombatState, enemy: EnemyCombatant, move: MoveDef, ctx: CombatCtx): number {
+  const w = ctx.config.keywordAi;
+  const hp = hpFraction(enemy);
+  let best = 0;
+  for (const fx of move.effects) {
+    if (fx.kind === 'protect') best = Math.max(best, hp < w.protectBelowHp ? w.protect : w.protectIdle);
+    if (fx.kind === 'endure') best = Math.max(best, hp < w.endureBelowHp ? w.endure : 0);
+    if (fx.kind === 'guard') best = Math.max(best, w.guard);
+    if (fx.kind === 'substitute') best = Math.max(best, (enemy.substitute ?? 0) > 0 || hp <= fx.percentOfMaxHp * 2 ? 0 : w.substitute);
+    if (fx.kind === 'counter') best = Math.max(best, w.counter);
+    if (fx.kind === 'side-condition') best = Math.max(best, sideHas(state, 'enemy', fx.condition) ? 0 : w.screen);
+    if (fx.kind === 'set-field') best = Math.max(best, fieldFavours(state, enemy, fx.field, ctx) ? w.fieldSet : 0);
+    // A brace that also raises a stat is weighed as the raise is (§5.3): its decay with the stages banked, its setup bonus.
+    if (fx.kind === 'stage' && fx.target === 'self' && fx.stages > 0) {
+      const banked = Math.max(0, enemy.stages[fx.stat]);
+      const raise = banked >= 6 ? 0 : ctx.config.defaultUtilityWeight * Math.max(0, 1 - banked / 3) * (hp > ctx.config.highSelfHpThreshold ? ctx.config.setupSelfMultiplier : 1);
+      best = Math.max(best, raise);
+    }
+  }
+  return best;
+}
+
+/** §5.3.1 — a field is worth setting when it is not up already and its own kit gains by it. */
+function fieldFavours(state: CombatState, enemy: EnemyCombatant, field: FieldId, ctx: CombatCtx): boolean {
+  if (fieldStands(state, field, ctx.content)) return false;
+  const moves = enemy.moveIds.map((id) => ctx.content.move(id));
+  const reads = moves.some((m) => m.effects.some((e) => (e.kind === 'field-cost' && e.field === field && e.delta < 0) || (e.kind === 'charge' && e.skipIn === field)));
+  if (reads) return true;
+  if (field === 'rain-dance') return moves.some((m) => m.power > 0 && m.type === 'water');
+  if (field === 'sunny-day') return moves.some((m) => m.power > 0 && m.type === 'fire');
+  if (field === 'hail') return enemy.types.includes('ice');
+  if (field === 'sandstorm') return enemy.types.some((t) => t === 'rock' || t === 'ground' || t === 'steel');
+  return false;
+}
+
 /** §5.9.4 — Phase-2 archetype filters constrain intent TYPE, not target. §5.8.3 — they stop at Phase 3's entry. */
 function applyArchetypeFilter(enemy: EnemyCombatant, cands: Candidate[], config: BattleConfig): Candidate[] {
   void config;
@@ -224,7 +269,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
   const cands: Candidate[] = [];
   for (const moveId of enemy.moveIds) {
     // §5.6.1 — a second action is a different move from the first, and both fit the turn's AP budget.
-    if (moveId === exclude) continue;
+    if (moveId === exclude || objectiveHoldsBack(state, moveId, ctx)) continue;
     const move = ctx.content.move(moveId);
     if (enemyMoveCost(state, enemy, move, ctx) > maxAp) continue;
     const intent = classifyMove(state, enemy, move, ctx);

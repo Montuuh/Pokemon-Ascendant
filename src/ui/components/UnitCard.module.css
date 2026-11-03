@@ -144,6 +144,10 @@
   align-items: flex-start;
   gap: 2px;
 }
+/* On your cards the rhythm dial overhangs the window's left edge: the chips start past it, never under it. */
+.chipsAlly {
+  left: var(--sp-5);
+}
 /* Each chip's wrapper hugs its chip (a line box would add the card's line height to every row). */
 .chips > span {
   display: flex;
@@ -158,6 +162,10 @@
   display: none;
 }
 @container (max-height: 680px) {
+  /* One row: the first chip and its "+N" side by side, clear of the rhythm dial on the window's edge. */
+  .chips {
+    flex-direction: row;
+  }
   .chips > .chipFolds {
     display: none;
   }
