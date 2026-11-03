@@ -31,7 +31,7 @@ XP is awarded at combat end and scales with the enemy tier.
 | Wild | 26 | `ProgressionConfig.wildXp` |
 | Trainer | 39 | `trainerXp` |
 | Elite | 49 | `eliteXp` |
-| Gym Leader | 80 | `gymXp` |
+| Gym Leader | 28 | `gymXp` |
 | Elite Wild, Victory Road's Gauntlet and Apex | 66 | `apexXp` |
 | A League door | 120 | `leagueXp` |
 
@@ -103,7 +103,9 @@ Legendary carries the higher total its base already gives it — with no bonus o
 at Lv 30 where the old curves left it. *(Until v0.9.10 each line had a flat growth per level, shared by every stage
 and +25 % for a single stage: Geodude grew as fast as Golem, and Tauros and Lapras out-totalled Dragonite at Lv 30.)*
 
-The XP curve is `xpToNext(L) = 8 + (L − 1) × 2` (`levelUpBaseXp`, `levelUpSlopeXp`), to the series' Lv 100.
+The XP curve is `xpToNext(L) = 32 + (L − 1) × 1.2` (`levelUpBaseXp`, `levelUpSlopeXp`), to the series' Lv 100 —
+steep at the start and flat later, so Lv 5 → 6 costs 37 and Lv 44 → 45 costs 84. *(v0.9.92, the user's call of 2026-11-03:
+"two trainer and wild nodes and I was Lv 14". The `8 + 2(L − 1)` before cost 16 at Lv 5, a third of one trainer's pay.)*
 *(v0.9.90: the levels stretched by 1.4 (§6.2.4), and the rate, the HP per level and the curve came down by the same
 factor — 0.035, 1 and 12 + 4(L − 1) before — so a Pokémon at the same point of the run has the stats and the XP to its
 next level it had at the compressed level.)*
@@ -113,6 +115,13 @@ next level it had at the compressed level.)*
 **Evolution levels are the series' own** (v0.9.90, the user's call of 2026-11-03: "evolve at the original games' rate,
 no level squish"): each species takes its Gen I level and its Gen I method — a level, a stone, the held item a trade
 line levels up with (§6.3.8), or Friendship (§6.3.9). The run's level axis stretched to hold them, not its difficulty:
+
+**The team's arc** (v0.9.92, the user's call of 2026-11-03): about **Lv 18 at the end of Region 1, 30 at the end of
+Region 2 and 45 at the end of Region 3**. Measured (720 runs, the harness's per-layer trace): the active team stands
+at Lv 7.5 at layer 4, 12.4 at layer 10 and **18.3** going into Gym 1 (19.7 out); **30.7** into Gym 2 (31.9 out); **43.6**
+into Gym 3 (44.6 out) — level with the Region's foes the whole way, where the `8 + 2(L − 1)` curve had it at 9 / 14 / 20.5
+/ 32.5 / 44, two or three levels over Regions 1 and 2. The Gym pays 28, not 80: its five Pokémon stand over the team, and
+at 80 the Gym alone was four levels. Region Attack tiers came down to hold the run's shape (§2.2.1).
 
 | Stretch | Wild | Its Gym's ace |
 |---|---|---|

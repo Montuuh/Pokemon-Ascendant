@@ -1182,11 +1182,14 @@ export interface StatTier {
  * v0.9.91 (§6.9.1) — the progressive learnsets: both sides hold their tracks' moves (a wild Charmeleon Fire Fang, not
  * Scratch), and the enemies gained more by it (R1 53 % · R2|R1 39 % · R3|R2 44 % · run 5 %). ×0.50 / ×0.64 / ×0.67 — R1 63 %
  * · R2|R1 48 % · R3|R2 47 % · League 59 % · run 8 % (360 runs).
+ * v0.9.92 (§6.2.4) — the slower XP curve: the team stands at Lv 18 / 30 / 44 at each Gym where it stood at 20 / 32 / 44,
+ * and evolves later (R1 47 % · R2|R1 36 %). ×0.46 / ×0.52 / ×0.60 — R1 63 % · R2|R1 49 % · R3|R2 48 % · League 83 % · run
+ * 12 % (720 runs, two blocks).
  */
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { attack: 0.5 },
-  { attack: 0.64 },
-  { attack: 0.67 },
+  { attack: 0.46 },
+  { attack: 0.52 },
+  { attack: 0.6 },
 ];
 
 /**

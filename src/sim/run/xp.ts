@@ -58,8 +58,8 @@ export interface FriendshipConfig {
   groomPrice: number;
 }
 
-// Tuned against the whole-run harness (src/sim/balance/runBalance.test.ts), not a single fight: a seven-node
-// route has to carry a Lv 5 starter to roughly Lv 14, which is the level the Gym in §5.9 is written for.
+// Tuned against the whole-run harness (src/sim/balance/runBalance.test.ts), not a single fight: the route has to carry
+// a Lv 5 starter to about Lv 18 at Region 1's Gym, 30 at Region 2's and 45 at Region 3's (§6.2.4).
 export const DEFAULT_PROGRESSION: ProgressionConfig = {
   // v0.8.6: ×0.8 with extra enemies at extraEnemyXpShare (were 48 / 72 / 110 / 200, every enemy in full).
   // v0.8.7: wild and trainer ×0.9 again (29 / 43) — the 20-column route walks ~12 fights where the old one walked
@@ -69,14 +69,17 @@ export const DEFAULT_PROGRESSION: ProgressionConfig = {
   // 2026-10-20: 66 → 49 and 120 → 80 — the Elite and the Gym stand over the team now (§2.8.1, §5.9.3), and the level
   // factor below pays them that much more; the run's XP stays where it was (harness: team Lv at each Gym unchanged).
   eliteXp: 49,
-  gymXp: 80,
+  // v0.9.92 (§6.2.4): 80 → 28 — a Gym is five Pokémon over the team, and at 80 it paid four levels in one fight.
+  gymXp: 28,
   apexXp: 66,
   leagueXp: 120,
   benchXpShare: 0.75,
   // v0.9.90 (§6.2.4): 12 + 4(L−1) → 8 + 2(L−1), so the XP to reach a real level is what reaching the compressed one
   // cost (the levels stretched by 1.4: 8x + x² against 12x/1.4 + 2(x/1.4)², x the levels gained); the cap is the series' 100.
-  levelUpBaseXp: 8,
-  levelUpSlopeXp: 2,
+  // v0.9.92 (§6.2.4, the user's arc — Lv 18 / 30 / 45 at each Region's end): 8 + 2(L−1) → 32 + 1.2(L−1). The flat start
+  // let two trainers take a starter from Lv 5 to 14; the new curve costs four times as much at Lv 5, as much at Lv 44.
+  levelUpBaseXp: 32,
+  levelUpSlopeXp: 1.2,
   maxLevel: 100,
   xpLevelExponent: 2.5,
   extraEnemyXpShare: 0.5,
@@ -98,9 +101,9 @@ function levelUpFriendship(friendship: number, config: ProgressionConfig): numbe
   return friendship < 100 ? low : friendship < 200 ? mid : high;
 }
 
-/** §6.2.3 — the XP needed to leave level L. */
+/** §6.2.3 — the XP needed to leave level L, a whole number (the slope is fractional since v0.9.92). */
 export function xpToNext(level: number, config = DEFAULT_PROGRESSION): number {
-  return config.levelUpBaseXp + (Math.max(1, level) - 1) * config.levelUpSlopeXp;
+  return Math.round(config.levelUpBaseXp + (Math.max(1, level) - 1) * config.levelUpSlopeXp);
 }
 
 /** §6.2.1 — XP for clearing an encounter, by the tier of what you beat (and the boss-wilds' and the League's own). */

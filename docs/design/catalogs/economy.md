@@ -103,11 +103,11 @@ and Dratini are the Safari's too: the park's are stalked, the Trader's are stole
 | Wild | 26 | `wildXp` |
 | Trainer | 39 | `trainerXp` |
 | Elite | 49 | `eliteXp` |
-| Gym | 80 | `gymXp` |
+| Gym | 28 | `gymXp` |
 | Elite Wild · Gauntlet · Apex | 66 | `apexXp` |
 | League door | 120 | `leagueXp` |
 | Distribution | Active 100 % / benched Box 75 %; `exp-share` lifts the bench to 100 % | |
-| Level curve | `xpToNext(L) = 12 + (L − 1) × 4` | `levelUpBaseXp`, `levelUpSlopeXp` |
+| Level curve | `xpToNext(L) = 32 + (L − 1) × 1.2` | `levelUpBaseXp`, `levelUpSlopeXp` |
 | Single-stage bonus | +25 % stat growth per level (§6.2.4) | `singleStageGrowthBonusPercent` |
 | Multipliers | `lucky-egg-token` ×1.15 · `quick-study` ×1.15 · `living-legend` ×1.3 | |
 
@@ -115,8 +115,8 @@ Each figure is **per enemy**, so a two-Pokémon trainer pays double.
 
 **Target arc** (§6.2.4): the series' own evolution levels, staggered across the run (v0.9.90); until then the
 thresholds were compressed to a uniform 12 and 26, first evolution at the end of Region 1 and final at the end of
-Region 2. The curve is `8 + 2(L − 1)` since v0.9.90 (§6.2.3), the old `12 + 4(L − 1)` on the stretched scale; the
-measurements below are on the old scale.
+Region 2. The curve is `32 + 1.2(L − 1)` since v0.9.92 (§6.2.3; `8 + 2(L − 1)` in v0.9.90–91, `12 + 4(L − 1)` before);
+the measurements below are on the old scale.
 
 **Measured, 2026-09-19.** The seven-node Region 1 route takes a Lv 5 starter to **Lv 14–17** and fires 2–4
 evolutions per run (`src/sim/balance/runBalance.test.ts`, 18 seeds per starter). The first values tried
