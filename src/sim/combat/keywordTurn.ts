@@ -65,7 +65,8 @@ export function keywordTurnEnd(state: CombatState): void {
   for (const c of [...state.player.team, ...state.enemies]) if (c.volatile?.recharge === 'active') delete c.volatile.recharge;
 
   if (state.sides?.length) {
-    for (const s of state.sides) s.turnsLeft -= 1;
+    // §5.2.3 — Spikes and Stealth Rock stay for the fight.
+    for (const s of state.sides) if (!s.lasting) s.turnsLeft -= 1;
     for (const s of state.sides.filter((x) => x.turnsLeft <= 0)) {
       // §3.11.13 — the wish comes true for whoever stands in its place now.
       if (s.id === 'wish') {
@@ -99,4 +100,4 @@ export function keywordTurnEnd(state: CombatState): void {
   }
 }
 
-const SIDE_LABEL = { reflect: 'Reflect', 'light-screen': 'Light Screen', safeguard: 'Safeguard', mist: 'Mist', wish: 'wish' } as const;
+const SIDE_LABEL = { reflect: 'Reflect', 'light-screen': 'Light Screen', safeguard: 'Safeguard', mist: 'Mist', wish: 'wish', spikes: 'Spikes', 'stealth-rock': 'Stealth Rock' } as const;

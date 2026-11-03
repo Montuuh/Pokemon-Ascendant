@@ -1181,6 +1181,114 @@
           }
         }
       ]
+    },
+    {
+      "id": "trainer-gengar-perish",
+      "name": "Trainer — Gengar's Perish Song",
+      "description": "A Gengar that holds your Lead with Mean Look, then sings Perish Song: its finisher is shown as next turn's Combo (§5.5.2).",
+      "kind": "trainer",
+      "stage": "cave",
+      "seed": 1192,
+      "trainer": {
+        "name": "Hex Maniac Hope",
+        "sprite": "hexmaniac"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 36
+          },
+          {
+            "species": "charmeleon",
+            "level": 36
+          },
+          {
+            "species": "ivysaur",
+            "level": 36
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "potion"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "gengar",
+          "level": 36,
+          "tier": "trainer",
+          "phaseCount": 1,
+          "moves": [
+            "mean-look",
+            "perish-song",
+            "shadow-ball",
+            "hypnosis",
+            "dream-eater",
+            "curse"
+          ],
+          "combo": [
+            "mean-look",
+            "perish-song"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "trainer-onix-rocks",
+      "name": "Trainer — Onix's rocks and Roar",
+      "description": "An Onix that acts twice: Stealth Rock on your side and a Roar that drags your Lead out onto it (§5.2.3).",
+      "kind": "trainer",
+      "stage": "cave",
+      "seed": 1193,
+      "trainer": {
+        "name": "Hiker Marcos",
+        "sprite": "hiker"
+      },
+      "player": {
+        "team": [
+          {
+            "species": "wartortle",
+            "level": 30
+          },
+          {
+            "species": "charmeleon",
+            "level": 30
+          },
+          {
+            "species": "ivysaur",
+            "level": 30
+          }
+        ],
+        "leadIndex": 0,
+        "consumables": [
+          "super-potion",
+          "potion"
+        ],
+        "balls": 0
+      },
+      "enemies": [
+        {
+          "species": "onix",
+          "level": 30,
+          "tier": "trainer",
+          "phaseCount": 1,
+          "acts": 2,
+          "moves": [
+            "stealth-rock",
+            "roar",
+            "rock-throw",
+            "bind",
+            "sandstorm"
+          ],
+          "combo": [
+            "stealth-rock",
+            "roar"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -46,7 +46,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   // §5.6.1 — who acts twice is fixed with the node too. A Rare is said on the pool's Rare row: it is true of every
   // wild node from Region 2, so a chip would never tell one node from another.
   const actor = run ? doubleActorFor(node, run) : null;
-  const doubled = actor === 'lead' || actor === 'ace' ? actor : null;
+  const doubled = actor && actor !== 'rare' ? actor : null;
   const fields = run ? fieldsFor(node, run, content) : {};
   const GroupIcon =
     plan.kind === 'acts-twice'

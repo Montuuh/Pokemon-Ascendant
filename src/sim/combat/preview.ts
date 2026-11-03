@@ -12,6 +12,7 @@ import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from './battleConfig';
 import { outspeeds } from './stats';
 import { rhythmReady, spendsRhythm } from './rhythm';
 import { fieldApDelta, guardAmount, isShielded, ppLeft, protectBlocked } from './keywords';
+import { cardDisabled, isTaunted, isTrapped } from './disruption';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
 // Every rule here mirrors the reducer's validation — keep them in lockstep (tests assert agreement).
@@ -45,6 +46,8 @@ export interface CardPlayability {
   allyTargets: number[];
   /** §3.11.4 — the Guard it would give its owner now (null for a card without one): the number the card prints. */
   guard: number | null;
+  /** §5.2.3 — a Disable's or a Taunt's lock: the last turn it holds (the overlay says it). */
+  lockedUntil?: number;
 }
 
 export interface CardTarget {
@@ -62,9 +65,12 @@ export function allyRecipients(state: CombatState, move: MoveDef, ownerIndex: nu
   return [ownerIndex];
 }
 
-/** §5.6 — does the move land on the foe side at all (a hit, a status, a stat drop)? */
+const AT_FOE = new Set(['disable', 'taunt', 'force-swap', 'trap', 'drowsy', 'seed', 'knock-off']);
+
+/** §5.6 — does the move land on the foe side at all (a hit, a status, a stat drop, a disruption)? */
 export function aimsAtFoe(move: MoveDef): boolean {
-  return move.power > 0 || move.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && e.target === 'foe'));
+  // §5.2.3 — a team drop and a disruption aimed at one Pokémon land on the foe side too.
+  return move.power > 0 || move.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && (e.target === 'foe' || e.target === 'foe-side')) || AT_FOE.has(e.kind));
 }
 
 /**
@@ -146,6 +152,9 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   // §3.11.1 — its PP for the fight is spent; §3.11.2 — Protect cannot go up two turns running.
   else if (ppLeft(owner, move) === 0) reason = 'no-pp';
   else if (protectBlocked(state, owner, move)) reason = 'protect-again';
+  // §5.2.3 — the card a Disable named; under a Taunt, every card of that Pokémon that does no damage.
+  else if (cardDisabled(state, owner.uid, move.id)) reason = 'disabled';
+  else if (move.power === 0 && isTaunted(owner, state.turn)) reason = 'taunted';
   // §5.9.5 Mind Lock — the card Sabrina sealed at the draw, shown sealed and never hidden.
   else if (isSealed(state, card.id)) reason = 'sealed';
   else if (move.range === 'melee' && !isLead && move.modifier !== 'step-forward') reason = 'melee-needs-lead';
@@ -153,6 +162,7 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (choiceLockBlocks(state, owner, move, ctx.content)) reason = 'choice-locked';
   else if (stepsForward && isPositionLocked(owner)) reason = 'owner-frozen';
   else if (stepsForward && lead(state) && isPositionLocked(lead(state)!)) reason = 'lead-frozen';
+  else if (stepsForward && lead(state) && isTrapped(lead(state)!, state.turn)) reason = 'lead-trapped';
   // §3.11.12 — an overexerting card may borrow from next turn.
   else if (apCost > state.player.ap + (move.overexert ?? 0)) reason = 'not-enough-ap';
   else if (move.power > 0 && !enemy) reason = 'no-enemy';
@@ -182,6 +192,7 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
     hitsAll: move.targeting === 'cleave',
     targets,
     allyTargets: allyRecipients(state, move, state.player.team.indexOf(owner)),
+    ...(reason === 'disabled' && state.player.disabled ? { lockedUntil: state.player.disabled.untilTurn } : reason === 'taunted' && owner.volatile?.tauntUntil ? { lockedUntil: owner.volatile.tauntUntil } : {}),
     guard: (() => {
       const fx = move.effects.find((e) => e.kind === 'guard');
       return fx && fx.kind === 'guard' ? guardAmount(owner, fx.power, ctx) : null;
@@ -217,6 +228,8 @@ export function swapOptions(state: CombatState, config: BattleConfig = DEFAULT_B
     else if (b.hp <= 0) reason = 'target-fainted';
     else if (isPositionLocked(b)) reason = 'target-frozen';
     else if (l && isPositionLocked(l)) reason = 'lead-frozen';
+    // §5.2.3 Mean Look — the Lead cannot be swapped out by hand.
+    else if (l && isTrapped(l, state.turn)) reason = 'lead-trapped';
     else if (cost > state.player.ap) reason = 'not-enough-ap';
     return { benchIndex, cost, quick, allowed: reason === null, reason };
   });

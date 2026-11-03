@@ -8,10 +8,6 @@
     },
     {
       "type": "play-card",
-      "cardId": "c5"
-    },
-    {
-      "type": "play-card",
       "cardId": "c1"
     },
     {
@@ -39,9 +35,17 @@
     },
     {
       "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c6"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c9"
     }
   ],
-  "fingerprint": "t3 victory lead=0 ap=0 team=[wartortle:54/97,ivysaur:98/98,charmeleon:95/95] enemies=[graveler:0/99] events=41 rng=1541594578",
+  "fingerprint": "t3 victory lead=0 ap=0 team=[wartortle:54/97,ivysaur:98/98,charmeleon:95/95] enemies=[graveler:0/99] events=48 rng=3795274202",
   "turns": 3,
   "outcome": "victory"
 }

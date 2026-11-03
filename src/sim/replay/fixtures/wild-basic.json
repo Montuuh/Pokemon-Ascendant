@@ -4,10 +4,6 @@
   "actions": [
     {
       "type": "play-card",
-      "cardId": "c9"
-    },
-    {
-      "type": "play-card",
       "cardId": "c2"
     },
     {
@@ -34,7 +30,7 @@
       "cardId": "c0"
     }
   ],
-  "fingerprint": "t2 victory lead=0 ap=1 team=[charmander:56/56,squirtle:59/59,bulbasaur:60/60] enemies=[pidgey:0/54] events=31 rng=3294888660",
+  "fingerprint": "t2 victory lead=0 ap=1 team=[charmander:56/56,squirtle:59/59,bulbasaur:60/60] enemies=[pidgey:0/54] events=29 rng=537126454",
   "turns": 2,
   "outcome": "victory"
 }

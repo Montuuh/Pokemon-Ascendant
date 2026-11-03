@@ -3,6 +3,10 @@
 > Data for §5.9.2–§5.9.5 and §5.10. **✅ v0.9.88** — all twelve five-slot teams ship in `run/region.ts` (the Phase-3
 > signatures since v0.9.87). The user chose five members with a thematic off-type support permitted (2026-10-29).
 > A map generated before v0.9.88 keeps its legacy roster through that Region (`gymTeamOf`).
+> **v0.9.92 — legal forms, six moves, a combo.** Every member is a form it could be at its level (§6.3.7: a level
+> evolution needs the level; a stone or a held item is legal at any level for a trainer), a test holds it
+> (`run/gymTeams.test.ts`). Each fields six moves — the scripted four, then the roles they lack from the Leader's
+> type repertoire (§5.2.2) — and each ace an authored combo (§5.5.2), in the *Combo* column.
 >> **Levels (v0.9.90).** The levels in this catalogue's tables are on the old scale; the data's moved by
 > `round(1 + 1.4 (L − 1))` — 12 → 16, 20 → 28, 26 → 36 — when evolution took the series' levels (§6.2.4).
 
@@ -14,16 +18,16 @@ job, not an extra support actor or an escalation buff. Levels and phase counts f
 ### `rock-gym-r1` — Brock · Rock Solid
 
 `rock-gym-r1` · `boulder-badge` · Entrenchment. Sandslash is the guest: sand disruption and Ground coverage.
-Water and Grass remain good answers. Kabutops and Omastar have modest kits and one phase; their base stats are
-a named Region 1 balance risk, not permission to flatten their HP. Graveler's three phases distinguish the ace.
+Water and Grass remain good answers. v0.9.92: Kabuto, Omanyte and Sandshrew (their evolutions come at 40, 40 and
+22) and Onix as the ace, as in the series; Geodude opens.
 
 | Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
-| 1 | `onix` | Opening bind and Defence pressure | `rock-throw`, `bind`, `screech`, `tackle` |
-| 2 | `kabutops` | Physical pressure and Grass drain | `scratch-plus`, `rock-throw`, `absorb`, `harden` |
-| 3 | `omastar` | Ranged coverage and a braced shell | `bubble-beam`, `horn-attack`, `withdraw`, `rock-slide` |
-| 4 | `sandslash` | Guest: sand control | `slash`, `sand-attack`, `dig`, `defense-curl` |
-| 5 | `graveler` | Ace: Rock/Ground wall | `rock-slide`, `rock-throw`, `harden`, `dig` |
+| 1 | `geodude` | Opening Rock pressure | `rock-throw`, `tackle`, `defense-curl`, `sand-attack` |
+| 2 | `kabuto` | Physical pressure and Grass drain | `scratch-plus`, `rock-throw`, `absorb`, `harden` |
+| 3 | `omanyte` | Ranged coverage and a braced shell | `bubble-beam`, `horn-attack`, `withdraw`, `rock-slide` |
+| 4 | `sandshrew` | Guest: sand control | `slash`, `sand-attack`, `dig`, `defense-curl` |
+| 5 | `onix` | Ace: Rock wall · **Combo** Stealth Rock → Roar | `rock-slide`, `rock-throw`, `bind`, `screech` |
 
 ### `water-gym-r1` — Misty · Riptide
 
@@ -32,11 +36,11 @@ Confusion, Sleep and smokescreen pressure planning; Riptide remains the central 
 
 | Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
-| 1 | `golduck` | Opening Psychic coverage and disruption | `confusion`, `water-gun`, `tail-whip`, `disable` |
-| 2 | `poliwhirl` | Sleep and physical coverage | `bubble-plus`, `body-slam`, `hypnosis`, `submission` |
-| 3 | `seaking` | Horn pressure and Confusion | `horn-attack-plus`, `water-gun`, `supersonic`, `tail-whip` |
-| 4 | `seadra` | Ranged pressure and Ice coverage | `bubble-beam`, `smokescreen`, `leer`, `ice-beam` |
-| 5 | `kingler` | Ace: claws and a hardened shell | `crabhammer`, `bubble-beam`, `stomp`, `harden` |
+| 1 | `psyduck` | Opening Psychic coverage and disruption | `confusion`, `water-gun`, `tail-whip`, `disable` |
+| 2 | `poliwag` | Sleep and its slap · **Combo** Hypnosis → Wake-Up Slap | `bubble-plus`, `body-slam`, `hypnosis`, `wake-up-slap` |
+| 3 | `goldeen` | Horn pressure and Confusion | `horn-attack-plus`, `water-gun`, `supersonic`, `tail-whip` |
+| 4 | `horsea` | Ranged pressure and Ice coverage | `bubble-beam`, `smokescreen`, `leer`, `ice-beam` |
+| 5 | `starmie` | Ace (a Water Stone) · **Combo** Rain Dance → Bubble Beam | `bubble-beam`, `swift`, `recover`, `rain-dance` |
 
 ### `bug-gym-r1` — Aster · Swarm
 
@@ -45,11 +49,11 @@ Scyther/Pinsir/Scizor stat jump: this early Gym tests condition management. Fire
 
 | Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
-| 1 | `venomoth` | Opening Confusion siege and Psychic coverage | `psybeam`, `leech-life`, `disable`, `supersonic` |
-| 2 | `parasect` | Drain and Paralysis | `leech-life-plus`, `absorb`, `stun-spore`, `slash` |
+| 1 | `venonat` | Opening Confusion siege and Psychic coverage | `psybeam`, `leech-life`, `disable`, `supersonic` |
+| 2 | `paras` | Drain and Paralysis | `leech-life-plus`, `absorb`, `stun-spore`, `slash` |
 | 3 | `beedrill` | Multi-hit pressure | `twineedle-plus`, `poison-sting-plus`, `agility`, `harden-plus` |
-| 4 | `gloom` | Guest: garden spores and drain | `mega-drain`, `acid-plus`, `poison-powder`, `stun-spore` |
-| 5 | `butterfree` | Ace: Sleep and Confusion | `sleep-powder`, `confusion`, `gust`, `harden` |
+| 4 | `oddish` | Guest: garden spores and drain | `mega-drain`, `acid-plus`, `poison-powder`, `stun-spore` |
+| 5 | `butterfree` | Ace: Sleep and Confusion · **Combo** Sleep Powder → Dream Eater | `sleep-powder`, `confusion`, `gust`, `harden` |
 
 ### `normal-gym-r1` — Whitney · Rollout
 
@@ -60,9 +64,9 @@ Sing but never loops Rest. Raticate keeps Dig coverage.
 |---|---|---|---|
 | 1 | `pidgeotto` | Opening Flying pressure | `wing-attack`, `gust`, `sand-attack`, `quick-attack-plus` |
 | 2 | `farfetchd` | Light pressure and debuffs | `peck`, `gust`, `leer`, `sand-attack` |
-| 3 | `persian` | Fast Dark coverage | `slash`, `bite-plus`, `pay-day`, `screech` |
+| 3 | `meowth` | Fast Dark coverage | `slash`, `bite-plus`, `pay-day`, `screech` |
 | 4 | `wigglytuff` | Sleep and physical staying power | `body-slam`, `double-slap-plus`, `sing`, `defense-curl` |
-| 5 | `raticate` | Ace: burst and Ground coverage | `hyper-fang`, `quick-attack-plus`, `dig`, `tail-whip` |
+| 5 | `raticate` | Ace: burst and Ground coverage · **Combo** Tail Whip → Hyper Fang | `hyper-fang`, `quick-attack-plus`, `dig`, `tail-whip` |
 
 ## 2. Region 2 — Fire · Grass · Electric · Poison
 
@@ -76,10 +80,10 @@ the four authored moves. Two enemies share the field; these are not five separat
 | Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
 | 1 | `ninetales` | Opening ranged pressure and trapping | `flamethrower`, `quick-attack`, `fire-spin`, `tail-whip-plus` |
-| 2 | `rapidash` | Fast physical pressure | `stomp-plus`, `ember`, `agility`, `growl` |
+| 2 | `ponyta` | Fast physical pressure | `stomp-plus`, `ember`, `agility`, `growl` |
 | 3 | `magmar` | Confusion and close pressure | `fire-punch`, `confuse-ray`, `ember`, `leer` |
 | 4 | `flareon` | Mixed reach and disruption | `flamethrower`, `swift`, `sand-attack`, `fire-spin` |
-| 5 | `arcanine` | Ace: physical and Dark coverage | `flamethrower`, `take-down`, `bite-plus`, `roar` |
+| 5 | `arcanine` | Ace: physical and Dark coverage · **Combo** Sunny Day → Flamethrower | `flamethrower`, `take-down`, `bite-plus`, `roar` |
 
 ### `grass-gym-r2` — Erika · Bloom
 
@@ -92,7 +96,7 @@ Poison occupy different slots. Drain stays species identity; repeated percentage
 | 2 | `parasect` | Paralysis and physical drain | `leech-life-plus`, `slash`, `stun-spore`, `absorb` |
 | 3 | `exeggutor` | Psychic coverage and seeded pressure | `razor-leaf`, `psychic`, `leech-seed`, `stomp` |
 | 4 | `victreebel` | Physical setup and Grass pressure | `razor-leaf`, `vine-whip-plus`, `slam-plus`, `swords-dance` |
-| 5 | `vileplume` | Ace: Poison and draining flowers | `petal-dance`, `mega-drain`, `toxic-plus`, `sludge` |
+| 5 | `vileplume` | Ace: Poison and draining flowers · **Combo** Sunny Day → Solar Beam | `petal-dance`, `mega-drain`, `toxic-plus`, `sludge` |
 
 ### `electric-gym-r2` — Surge · Overcharge
 
@@ -102,10 +106,10 @@ Electrode's Normal burst keep Ground useful without letting it answer every acti
 | Slot | Pokémon | Role | Scripted four moves |
 |---|---|---|---|
 | 1 | `raichu` | Opening Paralysis and mixed reach | `thunderbolt`, `thunder-wave`, `quick-attack-plus`, `slam` |
-| 2 | `magneton` | Armoured ranged pressure | `thunderbolt`, `sonic-boom-plus`, `swift`, `supersonic` |
+| 2 | `magnemite` | Armoured ranged pressure | `thunderbolt`, `sonic-boom-plus`, `swift`, `supersonic` |
 | 3 | `electabuzz` | Speed and Defence disruption | `thunderbolt`, `quick-attack`, `leer`, `screech` |
 | 4 | `jolteon` | Fast Bug coverage | `thunderbolt`, `pin-missile`, `swift`, `sand-attack` |
-| 5 | `electrode` | Ace: charged burst | `thunderbolt`, `thunder-wave`, `sonic-boom-plus`, `self-destruct` |
+| 5 | `electrode` | Ace: charged burst · **Combo** Rain Dance → Thunder | `thunderbolt`, `thunder-wave`, `sonic-boom-plus`, `self-destruct` |
 
 ### `poison-gym-r2` — Koga · Toxic
 
@@ -116,9 +120,9 @@ Weezing/Golbat. Ground immunity and Psychic coverage remain visible species/inte
 |---|---|---|---|
 | 1 | `arbok` | Opening constriction and Paralysis | `wrap-plus`, `glare`, `bite-plus`, `sludge` |
 | 2 | `golbat` | Flying coverage and Confusion | `wing-attack`, `bite-plus`, `supersonic`, `haze` |
-| 3 | `muk` | Durable Poison pressure and disruption | `sludge`, `acid-plus`, `disable`, `pound-plus` |
-| 4 | `venomoth` | Poison delivery and Psychic coverage | `psybeam`, `poison-powder`, `supersonic`, `leech-life` |
-| 5 | `weezing` | Ace: poison cloud and explosion | `smog-plus`, `poison-gas`, `smokescreen-plus`, `self-destruct` |
+| 3 | `grimer` | Durable Poison pressure and disruption | `sludge`, `acid-plus`, `disable`, `pound-plus` |
+| 4 | `koffing` | Poison cloud and explosion | `smog-plus`, `poison-gas`, `smokescreen-plus`, `self-destruct` |
+| 5 | `nidoking` | Ace (a Moon Stone) · **Combo** Mean Look → Toxic | `sludge`, `double-kick`, `toxic-plus`, `horn-attack-plus` |
 
 ## 3. Region 3 — Psychic · Ground · Fighting · Ice
 
@@ -136,7 +140,7 @@ is setup rather than an unbounded healing loop.
 | 2 | `mr-mime` | Barrier and Defence-independent coverage | `psychic`, `reflect`, `barrier`, `seismic-toss` |
 | 3 | `slowbro` | Water coverage and disruption | `surf`, `psychic`, `disable`, `growl` |
 | 4 | `exeggutor` | Grass coverage and seeded pressure | `razor-leaf`, `stomp`, `leech-seed`, `psychic` |
-| 5 | `alakazam` | Ace: fast pressure without Recover | `psychic`, `psybeam`, `reflect`, `seismic-toss` |
+| 5 | `alakazam` | Ace: fast pressure without Recover · **Combo** Calm Mind → Psychic | `psychic`, `psybeam`, `reflect`, `seismic-toss` |
 
 ### `ground-gym-r3` — Giovanni · Tremor
 
@@ -149,7 +153,7 @@ type still gives her Status Siege (§5.9.4). Bone, sand and rock replace the dup
 | 2 | `sandslash` | Dig and sand disruption | `slash`, `dig`, `sand-attack`, `swift` |
 | 3 | `dugtrio` | Fast Ground pressure | `earthquake`, `slash`, `sand-attack`, `growl` |
 | 4 | `marowak` | Bone strikes and Defence disruption | `bone-club-plus`, `earthquake`, `headbutt`, `leer` |
-| 5 | `rhydon` | Ace: Rock/Ground wall | `rock-slide`, `dig`, `stomp-plus`, `tail-whip` |
+| 5 | `rhydon` | Ace: Rock/Ground wall · **Combo** Rock Polish → Earthquake | `rock-slide`, `dig`, `stomp-plus`, `tail-whip` |
 
 ### `fighting-gym-r3` — Kiyo · Close Quarters
 
@@ -162,7 +166,7 @@ the kit matter after the player counter-picks Psychic or Flying.
 | 2 | `poliwrath` | Water coverage and Sleep pressure | `submission-plus`, `bubble-beam`, `hypnosis`, `ice-punch` |
 | 3 | `hitmonlee` | Kicks and setup | `double-kick`, `rolling-kick`, `meditate`, `swift` |
 | 4 | `hitmonchan` | Physical and elemental coverage | `submission`, `mega-punch`, `fire-punch`, `ice-punch` |
-| 5 | `machamp` | Ace: heavy blows and Electric coverage | `karate-chop`, `submission`, `seismic-toss`, `thunder-punch` |
+| 5 | `machamp` | Ace: heavy blows and Electric coverage · **Combo** Bulk Up → Submission | `karate-chop`, `submission`, `seismic-toss`, `thunder-punch` |
 
 ### `ice-gym-r3` — Lorelei · Ice Armour
 
@@ -176,7 +180,7 @@ baseline Gym. Fire shatters the Leader's armour on Slowbro too.
 | 2 | `jynx` | Sleep and Psychic coverage | `ice-beam`, `psychic`, `lovely-kiss`, `double-slap` |
 | 3 | `slowbro` | Guest: cold-water control | `ice-beam`, `psychic`, `disable`, `surf` |
 | 4 | `cloyster` | Armoured multi-hit pressure | `ice-beam`, `clamp-plus`, `spike-cannon`, `withdraw-plus` |
-| 5 | `lapras` | Ace: the freezing beam | `ice-beam`, `surf`, `body-slam`, `mist` |
+| 5 | `lapras` | Ace: the freezing beam · **Combo** Hail → Blizzard | `ice-beam`, `surf`, `body-slam`, `mist` |
 
 ## 4. Phase archetypes and ace signatures
 
@@ -191,14 +195,14 @@ shared Acting Twice budget. Paralysis may still make a signature unaffordable an
 
 | Gym id | Ace | signatureMove | Printed AP | Concrete response |
 |---|---|---|---:|---|
-| `rock-gym-r1` | `graveler` | `rock-slide` | 2 | Rock-resistant Lead; reduce its Attack or finish the ace before Resolution |
-| `water-gym-r1` | `kingler` | `crabhammer` | 3 | Water/Grass resistance, Defence or a KO before its claws land |
+| `rock-gym-r1` | `onix` | `rock-slide` | 2 | Rock-resistant Lead; reduce its Attack or finish the ace before Resolution |
+| `water-gym-r1` | `starmie` | `bubble-beam` | 2 | Water/Grass/Dragon resistance; in the rain it hits half again as hard |
 | `bug-gym-r1` | `butterfree` | `confusion` | 1 | Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep |
 | `normal-gym-r1` | `raticate` | `hyper-fang` | 2 | Rock/Steel resistance or Ghost immunity; a defensive swap also answers Rollout |
 | `fire-gym-r2` | `arcanine` | `flamethrower` | 3 | Fire/Water/Rock resistance or damage reduction; remove it before the hit |
 | `grass-gym-r2` | `vileplume` | `petal-dance` | 3 | Grass-resistant Lead; the move retains its printed self-Confusion drawback |
 | `electric-gym-r2` | `electrode` | `thunderbolt` | 3 | Ground immunity or Electric resistance; the signature does not override either |
-| `poison-gym-r2` | `weezing` | `self-destruct` | 3 | Ghost immunity or Rock/Steel resistance; printed recoil follows damage, not an automatic self-KO |
+| `poison-gym-r2` | `nidoking` | `sludge` | 3 | Poison immunity or Steel/Ground resistance; cure the Poison it leaves |
 | `psychic-gym-r3` | `alakazam` | `psychic` | 3 | Dark immunity or Psychic/Steel resistance; keep its Attack debuffs in place |
 | `ground-gym-r3` | `rhydon` | `rock-slide` | 2 | Rock-resistant Lead and Defence; Water/Grass burst can KO it before Resolution |
 | `fighting-gym-r3` | `machamp` | `submission` | 3 | Ghost immunity or Fighting resistance; the move retains its printed recoil |

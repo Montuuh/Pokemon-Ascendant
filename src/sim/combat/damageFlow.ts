@@ -26,7 +26,7 @@ import {
   ridersAlwaysApply,
 } from './abilities';
 import { statusApplyDrawBonus, statusChillMultiplier, firstHitRelic, itemAttackMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
-import type { Combatant, CombatState, EnemyCombatant } from './state';
+import type { Combatant, CombatState, DamageCause, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
 import { effectivenessLabel } from './typeChart';
@@ -34,6 +34,7 @@ import { enemySlotLabel } from './slots';
 import { fieldBlocksStatus, fieldDamageMultiplier, fieldsSuppressed, isGrounded, toxicSpikesSpare } from './fields';
 import { arenaBlocksStage, arenaBlocksStatus, arenaDamageMultiplier, playfulTakes, rekindles } from './arenaRules';
 import { markHurt, ruleDamageMultiplier, ruleEscalatesPoison, ruleHitCap, ruleMeltsDefence, shatterIce } from './gymRules';
+import { applyDisruption, enterSideHazards, helpingMultiplier, hurtSinceItsTurn } from './disruption';
 import { applyKeyword, counterReturn, fieldStands, keywordBlocksDrop, keywordBlocksStatus, screenMultiplier, weatherHealMultiplier } from './keywords';
 
 // Shared damage / effect pipeline used by player cards and enemy intents.
@@ -99,7 +100,9 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // §5.13.2 — a Mastery move's condition is one more multiplier, before the one floor.
   const bonus = powerBonus(attacker, target, move, state, ctx);
   // Ability and thaw multipliers are applied to the pre-floor value so a single floor remains (§4.1.1).
-  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul * ruleMul * screenMul);
+  // §5.2.3 Helping Hand — this turn's hits of the Pokémon an ally helped.
+  const helped = state ? helpingMultiplier(attacker, state.turn) : 1;
+  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul * ruleMul * screenMul * helped);
   // §5.13.2 Super Fang — a share of what the target has left, whatever the formula says. Immunity still wins.
   const fixed = move.effects.find((e) => e.kind === 'fixed-damage');
   if (fixed && fixed.kind === 'fixed-damage' && raw.typeMultiplier > 0) final = Math.max(1, Math.floor(target.hp * fixed.percentOfTargetHp));
@@ -111,7 +114,7 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
 }
 
 /** §5.13.2 — the product of a move's `power-bonus` conditions that hold right now; 1 when none do. */
-function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state: CombatState | undefined, ctx: Pick<RunCtx, 'content' | 'config'>): number {
+export function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state: CombatState | undefined, ctx: Pick<RunCtx, 'content' | 'config'>): number {
   let m = 1;
   for (const fx of move.effects) {
     if (fx.kind !== 'power-bonus') continue;
@@ -120,6 +123,12 @@ function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state
     if (fx.when === 'target-poisoned' && target.status?.kind === 'poison') m *= fx.multiplier ?? 1;
     if (fx.when === 'self-below' && attacker.hp < attacker.maxHp * (fx.below ?? 0)) m *= fx.multiplier ?? 1;
     if (fx.when === 'per-trauma' && move.power > 0) m *= (move.power + (fx.perStack ?? 0) * attacker.traumaStacks) / move.power;
+    // §5.5.2 — the finishers a combo sets up: a sleeper, a paralysed target, one below its share, a foe that hit it first.
+    if (fx.when === 'target-asleep' && target.status?.kind === 'sleep') m *= fx.multiplier ?? 1;
+    if (fx.when === 'target-paralyzed' && target.status?.kind === 'paralysis') m *= fx.multiplier ?? 1;
+    if (fx.when === 'target-below' && target.hp < target.maxHp * (fx.below ?? 0)) m *= fx.multiplier ?? 1;
+    if (fx.when === 'hurt-this-turn' && state && hurtSinceItsTurn(state, attacker)) m *= fx.multiplier ?? 1;
+    if (fx.when === 'target-holds-item' && target.heldItemId) m *= fx.multiplier ?? 1;
     // §6.3.9 Return — the printed power at full Friendship, its share below (the series' friendship / 2.5).
     if (fx.when === 'friendship') m *= Math.max(1, attacker.friendship ?? ctx.config.friendship.foe) / ctx.config.friendship.max;
   }
@@ -271,7 +280,7 @@ export function onEnterLead(state: CombatState, ctx: RunCtx, index: number): voi
     if (fx.target === 'self') changeStage(state, entering, fx.stat, fx.stages);
     else for (const e of state.enemies) changeStage(state, e, fx.stat, fx.stages);
   }
-  enterHazards(state, ctx, entering);
+  enterLeadHazards(state, ctx, entering);
 }
 
 /**
@@ -293,6 +302,12 @@ export function enterHazards(state: CombatState, ctx: RunCtx, entering: Combatan
   }
 }
 
+/** §4.3.12 / §5.2.3 — the field's hazards, then the side's: Spikes and Stealth Rock laid by a move. */
+export function enterLeadHazards(state: CombatState, ctx: RunCtx, entering: Combatant): void {
+  enterHazards(state, ctx, entering);
+  enterSideHazards(state, ctx, entering);
+}
+
 /**
  * Apply `amount` damage to `target`. Handles Shell Armor, Sturdy (§5.8.3 / §6.6), fainting, deck purge (§3.3.5),
  * Trauma (§8.2) and sequential enemy replacement (§5.9.3). Returns the damage actually dealt.
@@ -304,7 +319,7 @@ export function dealDamage(
   target: Combatant,
   amount: number,
   /** `holdFaint`: the caller logs the hit first and resolves the faint itself (`strike`), so the log reads in order. */
-  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor'; cleave?: boolean; holdFaint?: boolean },
+  meta: { crit: boolean; effectiveness: ReturnType<typeof effectivenessLabel>; cause: DamageCause; cleave?: boolean; holdFaint?: boolean },
 ): number {
   if (target.hp <= 0) return 0;
   let dmg = Math.max(0, amount);
@@ -400,6 +415,8 @@ export function dealDamage(
   if (isPlayers(state, target)) state.player.totalDamageTaken += dmg;
   emit(state, { t: 'damage', sourceUid, targetUid: target.uid, amount: dmg, crit: meta.crit, effectiveness: meta.effectiveness, hpAfter: target.hp, cause: meta.cause });
   markHurt(state, target, dmg);
+  // §5.2.3 Revenge — it remembers the turn a move hurt it.
+  if (meta.cause === 'move' && dmg > 0 && sourceUid) (target.volatile ??= {}).hurtTurn = state.turn;
   staggerCombo(state, ctx, sourceUid, target, dmg, meta.effectiveness, meta.cause);
   // §2.12.2.1 Rekindle — the first time the Legendary falls to its share, it rises: HP back and its status gone.
   if (rekindles(state, target, ctx.config)) {
@@ -430,13 +447,29 @@ const isPlayers = (state: CombatState, c: Combatant) => state.player.team.some((
 function staggerCombo(state: CombatState, ctx: RunCtx, sourceUid: string | null, target: Combatant, dmg: number, effectiveness: string, cause: string): void {
   if (cause !== 'move' || state.phase !== 'action' || !sourceUid || !state.player.team.some((m) => m.uid === sourceUid)) return;
   const enemy = state.enemies.find((e) => e.uid === target.uid);
-  if (!enemy?.second || enemy.second.broken || enemy.hp <= 0) return;
+  const second = !!enemy?.second && !enemy.second.broken;
+  // §5.5.2 — a combo's finisher, promised for next turn, breaks the same way.
+  const plan = !!enemy?.next?.combo;
+  if (!enemy || (!second && !plan) || enemy.hp <= 0) return;
   enemy.stagger = (enemy.stagger ?? 0) + dmg;
   const superEffective = effectiveness === 'double' || effectiveness === 'quad';
   if (!superEffective && enemy.stagger < comboBreakAt(enemy, ctx)) return;
-  enemy.second = { ...enemy.second, broken: true };
-  emit(state, { t: 'combo-break', enemyUid: enemy.uid });
-  log(state, 'system', `${enemy.name}'s second action is broken — it will act only once.`);
+  if (second) {
+    enemy.second = { ...enemy.second!, broken: true };
+    // §5.5.2 — a combo run in one turn loses its finisher with it.
+    emit(state, { t: 'combo-break', enemyUid: enemy.uid });
+    log(state, 'system', `${enemy.name}'s second action is broken — it will act only once.`);
+  }
+  if (plan) {
+    const finisherId = enemy.next!.intent.moveId;
+    const finisher = finisherId ? ctx.content.move(finisherId).name : 'its follow-up';
+    enemy.next = null;
+    enemy.comboRestUntil = state.turn + 1 + ctx.config.combo.rest;
+    // The finisher waits out next turn too: a broken plan is not just played a turn late.
+    if (finisherId) enemy.cooldowns[finisherId] = Math.max(enemy.cooldowns[finisherId] ?? 0, 2);
+    if (!second) emit(state, { t: 'combo-break', enemyUid: enemy.uid });
+    log(state, 'system', `${enemy.name}'s plan is broken — no ${finisher} next turn.`);
+  }
 }
 
 /**
@@ -542,14 +575,15 @@ export function onFaint(state: CombatState, ctx: RunCtx, c: Combatant): void {
       const strongest = [...state.enemies].sort((a, b) => b.hp - a.hp || b.level - a.level)[0]!;
       state.enemies = [strongest, ...state.enemies.filter((x) => x.uid !== strongest.uid)];
       log(state, 'enemy', `${strongest.name} steps up to lead!`);
-      enterHazards(state, ctx, strongest);
+      enterLeadHazards(state, ctx, strongest);
     } else if (wasLead && state.enemies[0]) {
       // A lone replacement takes the Lead too, and steps on what lies there.
-      enterHazards(state, ctx, state.enemies[0]);
+      enterLeadHazards(state, ctx, state.enemies[0]);
     }
     // Telegraph immediately so the player can still react with remaining AP (§5.1). After the promotion, so a
     // newcomer's intent is chosen knowing whether it leads.
-    for (const next of arrived) ctx.declareIntentFor?.(state, next);
+    // A Stealth Rock may have felled an arrival on its way in (§5.2.3): only the ones still standing declare.
+    for (const next of arrived) if (state.enemies.includes(next)) ctx.declareIntentFor?.(state, next);
   }
 }
 
@@ -644,6 +678,12 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         break;
       }
       case 'stage': {
+        // §5.2.3 — Growl, Leer, Tail Whip: every standing Pokémon of the other side.
+        if (fx.target === 'foe-side') {
+          const side = isPlayers(state, attacker) ? state.enemies : state.player.team;
+          for (const m of side) if (m.hp > 0 && !keywordBlocksDrop(state, attacker, m, fx.stages)) changeStage(state, m, fx.stat, fx.stages);
+          break;
+        }
         // §7.4 Aromatic Mist — a stage the caster hands to everyone *but* itself, which is what makes it a
         // support card rather than a cheaper self-buff.
         if (fx.target === 'bench') {
@@ -726,6 +766,19 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
       case 'wish':
       case 'root':
         applyKeyword(state, ctx, attacker, fx);
+        break;
+      case 'disable':
+      case 'taunt':
+      case 'force-swap':
+      case 'trap':
+      case 'drowsy':
+      case 'perish':
+      case 'seed':
+      case 'hazard':
+      case 'knock-off':
+      case 'haze':
+      case 'helping-hand':
+        applyDisruption(state, ctx, attacker, target, fx);
         break;
       case 'recharge':
       case 'fatigue':

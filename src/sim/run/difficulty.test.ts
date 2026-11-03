@@ -81,9 +81,11 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
 describe('The status accent — §2.2', () => {
   it('RegionOne_EnemiesKeepTheirOwnKits', () => {
     // Its own kit — a caller's Call for Help (§5.6.3) and a Defender's Cover (§5.6) are its group's, not the Region's accent.
+    // §5.2.2 — a trainer's kit is its own four first, then the roles its trainer fills; no Region accent in Region 1.
     for (const e of firstFight(0).enemies) {
       const own = activeMoves(content, e.species, e.level);
-      expect((e.moves ?? own).filter((id) => id !== 'call-for-help' && id !== 'cover').every((id) => own.includes(id))).toBe(true);
+      const kit = (e.moves ?? own).filter((id) => id !== 'call-for-help' && id !== 'cover');
+      expect(kit.slice(0, own.length)).toEqual(own);
     }
   });
 

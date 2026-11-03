@@ -889,6 +889,104 @@
       "type": "normal",
       "power": 0,
       "gen": 2
+    },
+    {
+      "id": "taunt",
+      "name": "Taunt",
+      "type": "dark",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "yawn",
+      "name": "Yawn",
+      "type": "normal",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "perish-song",
+      "name": "Perish Song",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "mean-look",
+      "name": "Mean Look",
+      "type": "normal",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "spikes",
+      "name": "Spikes",
+      "type": "ground",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "stealth-rock",
+      "name": "Stealth Rock",
+      "type": "rock",
+      "power": 0,
+      "gen": 4
+    },
+    {
+      "id": "knock-off",
+      "name": "Knock Off",
+      "type": "dark",
+      "power": 20,
+      "gen": 3
+    },
+    {
+      "id": "helping-hand",
+      "name": "Helping Hand",
+      "type": "normal",
+      "power": 0,
+      "gen": 3
+    },
+    {
+      "id": "curse",
+      "name": "Curse",
+      "type": "ghost",
+      "power": 0,
+      "gen": 2
+    },
+    {
+      "id": "wake-up-slap",
+      "name": "Wake-Up Slap",
+      "type": "fighting",
+      "power": 60,
+      "gen": 4
+    },
+    {
+      "id": "smelling-salts",
+      "name": "Smelling Salts",
+      "type": "normal",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "brine",
+      "name": "Brine",
+      "type": "water",
+      "power": 65,
+      "gen": 4
+    },
+    {
+      "id": "revenge",
+      "name": "Revenge",
+      "type": "fighting",
+      "power": 60,
+      "gen": 3
+    },
+    {
+      "id": "avalanche",
+      "name": "Avalanche",
+      "type": "ice",
+      "power": 60,
+      "gen": 4
     }
   ]
 }

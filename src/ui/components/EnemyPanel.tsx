@@ -2,12 +2,12 @@ import type { CSSProperties } from 'react';
 import { IconLock, IconQuestionMark } from '@tabler/icons-react';
 import { IntentChip } from './IntentChip';
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
-import { SLOT_LABEL, bossArchetype, controlRecoveryThrough, effectiveSpeed, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
+import { SLOT_LABEL, bossArchetype, comboBreakLeft, controlRecoveryThrough, effectiveSpeed, describeIntent, enemySlotLabel, phaseMarkers } from '@/sim';
 import { CatchPicker } from './CatchPicker';
 import { intentGlyph, spriteOf } from '@/ui/art';
 import type { SpriteSlot } from '@/ui/hooks/useCombatFx';
 import { ArenaSprite } from './ArenaSprite';
-import { ARMOUR_LABEL, STAT_SHORT, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
+import { ARMOUR_LABEL, COMBO_TEXT, STAT_SHORT, INTENT_BADGE, INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT, UNIT_CHIPS_TEXT } from '@/ui/strings';
 import { HpBar } from './HpBar';
 import { StatusBadge, TypeBadge } from './TypeBadge';
 import { ShinyMark } from './ShinyMark';
@@ -79,7 +79,9 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
   // §5.5.1 — under Trainer's Instinct the enemy's committed plan for next turn sits under this turn's.
   const next = enemy.next?.intent ?? null;
   const nextMove = next?.moveId ? ctx.content.move(next.moveId) : null;
-  const nextTipProps = useTip(next ? nextIntentTip(`${enemy.name} ${describeIntent(state, enemy, ctx, next)}`) : null);
+  // §5.5.2 — a combo's finisher says so, and what it takes to break it.
+  const combo = !!enemy.next?.combo;
+  const nextTipProps = useTip(next ? nextIntentTip(`${enemy.name} ${describeIntent(state, enemy, ctx, next)}`, combo ? { left: comboBreakLeft(enemy, ctx) } : undefined) : null);
   const alsoTipProps = useTip(enemy.second ? intentCardTip(state, enemy, forecast, 1, [], ctx) : null);
   // §5.6.5 — the flee race's runner: the one enemy of a fight that has one.
   const runner = state.objective?.kind === 'flee' && enemy.hp > 0;
@@ -129,7 +131,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
           )}
           {next && enemy.hp > 0 && (
             <span className={[styles.badge, styles.compactOnly].join(' ')} tabIndex={0} data-testid="intent-next-badge" {...nextTipProps}>
-              {INTENT_BADGE.then}
+              {combo ? INTENT_BADGE.combo : INTENT_BADGE.then}
             </span>
           )}
         </div>
@@ -152,7 +154,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
         )}
         {next && enemy.hp > 0 && (
           <div className={`${styles.next} ${styles.fullOnly}`} data-testid="intent-next" tabIndex={0} {...nextTipProps}>
-            <span className={styles.nextLabel}>Then</span>
+            <span className={styles.nextLabel}>{combo ? COMBO_TEXT.label : 'Then'}</span>
             {next.hidden ? (
               <IconQuestionMark size={14} />
             ) : (
@@ -250,7 +252,7 @@ export function EnemyPanel({ state, enemy, ctx, forecast, targetable, aimed, pre
             <UnitChips
               chips={[
                 // §3.11 / §5.2.1 — its stance and what its keywords left on it, first: they decide what your cards can do.
-                ...keywordUnitChips(enemy, state.turn),
+                ...keywordUnitChips(enemy, state.turn, false),
                 // §5.6.5 — a runner wears its countdown on its own card.
                 ...(runner ? [{ key: 'runner', label: OBJECTIVE_TEXT.runnerChip(state.objective!.turns), node: <ObjectiveChip kind="flee" turns={state.objective!.turns} live={state} compact terse /> }] : []),
                 ...(enemy.sturdyAvailable

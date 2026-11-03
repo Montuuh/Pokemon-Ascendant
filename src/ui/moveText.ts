@@ -1,5 +1,5 @@
-import type { CardPlayability, MoveDef } from '@/sim';
-import { FIELD_IN, SIDE_NAME } from '@/ui/strings';
+import { DEFAULT_BATTLE_CONFIG, type CardPlayability, type MoveDef, type MoveEffect } from '@/sim';
+import { DISRUPT_TEXT, FIELD_IN, SIDE_NAME, fmtMult, frac } from '@/ui/strings';
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -10,7 +10,7 @@ export function describeMoveDef(move: MoveDef, opts: { guard?: number | null } =
   if (move.power > 0) parts.push(move.targeting === 'cleave' ? 'Hits every enemy.' : 'Deals damage.');
   for (const fx of move.effects) {
     if (fx.kind === 'status') parts.push(`${fx.chance >= 1 ? '' : `${Math.round(fx.chance * 100)}% `}${cap(fx.status)}${fx.self ? ' (self)' : ''}.`);
-    if (fx.kind === 'stage') parts.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} (${fx.target === 'self' ? 'self' : 'foe'}).`);
+    if (fx.kind === 'stage') parts.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} (${fx.target === 'self' ? 'self' : fx.target === 'foe-side' ? 'all foes' : fx.target === 'bench' ? 'your bench' : 'foe'}).`);
     if (fx.kind === 'heal') {
       const who = fx.target === 'lead' ? ' (the Lead)' : '';
       parts.push(fx.durationTurns ? `Regen ${Math.round(fx.percentOfMaxHp * 100)}% HP a turn${who}.` : `Heal ${Math.round(fx.percentOfMaxHp * 100)}% HP${who}.`);
@@ -19,14 +19,7 @@ export function describeMoveDef(move: MoveDef, opts: { guard?: number | null } =
     if (fx.kind === 'drain') parts.push(`Heals ${fx.percentOfDamage === 0.5 ? 'half' : `${Math.round(fx.percentOfDamage * 100)}%`} of the damage it deals.`);
     if (fx.kind === 'recoil') parts.push(`Recoil: ${Math.round(fx.percentOfDamage * 100)}% of the damage it deals.`);
     if (fx.kind === 'draw') parts.push(`Draw ${fx.cards}.`);
-    if (fx.kind === 'power-bonus')
-      parts.push(
-        fx.when === 'target-poisoned' ? `×${fx.multiplier} power into a Poisoned target.`
-        : fx.when === 'self-below' ? `×${fx.multiplier} power below ${Math.round((fx.below ?? 0) * 100)}% HP.`
-        : fx.when === 'in-field' ? `×${fx.multiplier} power in ${FIELD_IN[fx.field ?? 'rain-dance']}.`
-        : fx.when === 'friendship' ? 'Full power at full Friendship; less the less fond it is.'
-        : `+${fx.perStack} power per Trauma stack.`,
-      );
+    if (fx.kind === 'power-bonus') parts.push(powerBonusText(fx));
     if (fx.kind === 'fixed-damage') parts.push(`Takes ${Math.round(fx.percentOfTargetHp * 100)}% of the target's current HP.`);
     if (fx.kind === 'self-damage') parts.push(`Costs ${Math.round(fx.percentOfMaxHp * 100)}% of its own HP.`);
     if (fx.kind === 'multi-hit') parts.push(`Hits ${fx.hits} times; the power is the total.`);
@@ -49,6 +42,8 @@ export function describeMoveDef(move: MoveDef, opts: { guard?: number | null } =
     if (fx.kind === 'wish') parts.push(`Wish: ${Math.round(fx.percentOfMaxHp * 100)}% HP here next turn.`);
     if (fx.kind === 'root') parts.push('Rooted for the fight.');
     if (fx.kind === 'baton-pass') parts.push('Passes its stat changes on.');
+    const d = disruptCard(fx);
+    if (d) parts.push(d);
   }
   // §4.3.15 — the field costs in one line: "−1 AP in the rain, +1 in the Sun".
   const costs = move.effects.flatMap((fx) => (fx.kind === 'field-cost' ? [`${fx.delta < 0 ? '−' : '+'}${Math.abs(fx.delta)} in ${FIELD_IN[fx.field]}`] : []));
@@ -58,6 +53,99 @@ export function describeMoveDef(move: MoveDef, opts: { guard?: number | null } =
   if (move.modifier === 'step-forward') parts.push('Step-Forward.');
   if (move.modifier === 'step-backward') parts.push('Step-Backward.');
   return parts.join(' ');
+}
+
+/** §5.13.2 / §5.5.2 — a power bonus in a few words, one per condition (a new condition fails the typecheck here). */
+function powerBonusText(fx: Extract<MoveEffect, { kind: 'power-bonus' }>): string {
+  const m = `×${fx.multiplier ?? 1}`;
+  switch (fx.when) {
+    case 'target-poisoned':
+      return `${m} power into a Poisoned target.`;
+    case 'self-below':
+      return `${m} power below ${Math.round((fx.below ?? 0) * 100)}% HP.`;
+    case 'in-field':
+      return `${m} power in ${FIELD_IN[fx.field ?? 'rain-dance']}.`;
+    case 'friendship':
+      return 'Full power at full Friendship; less the less fond it is.';
+    case 'per-trauma':
+      return `+${fx.perStack} power per Trauma stack.`;
+    case 'target-asleep':
+      return `${m} power into a sleeping target.`;
+    case 'target-paralyzed':
+      return `${m} power into a paralysed target.`;
+    case 'target-below':
+      return `${m} power into a target below ${Math.round((fx.below ?? 0) * 100)}% HP.`;
+    case 'hurt-this-turn':
+      return `${m} power if a move hurt it since it last acted.`;
+    case 'target-holds-item':
+      return `${m} power while the target holds an item.`;
+    default: {
+      const never: never = fx.when;
+      return never;
+    }
+  }
+}
+
+/** §5.2.3 — a disruption in a few words on the card's face; null for any other effect. */
+function disruptCard(fx: MoveEffect): string | null {
+  const t = DISRUPT_TEXT.card;
+  switch (fx.kind) {
+    case 'disable':
+      return t.disable(fx.turns);
+    case 'taunt':
+      return t.taunt;
+    case 'force-swap':
+      return t.forceSwap;
+    case 'trap':
+      return t.trap(fx.turns);
+    case 'drowsy':
+      return t.drowsy;
+    case 'perish':
+      return t.perish(fx.turns, frac(DEFAULT_BATTLE_CONFIG.disruption.perishPercent));
+    case 'seed':
+      return fx.heal ? t.seed(frac(fx.percent)) : t.curse(frac(fx.percent));
+    case 'hazard':
+      return t.hazard(SIDE_NAME[fx.hazard].name);
+    case 'knock-off':
+      return t.knockOff;
+    case 'haze':
+      return t.haze;
+    case 'helping-hand':
+      return t.helpingHand(fmtMult(fx.multiplier));
+    default:
+      return null;
+  }
+}
+
+/** §5.2.3 — a disruption's whole rule, for the card's bubble (`keywordRules`); null for any other effect. */
+export function disruptRule(fx: MoveEffect): string | null {
+  const t = DISRUPT_TEXT.rule;
+  switch (fx.kind) {
+    case 'disable':
+      return t.disable(fx.turns);
+    case 'taunt':
+      return t.taunt;
+    case 'force-swap':
+      return t.forceSwap;
+    case 'trap':
+      return t.trap(fx.turns);
+    case 'drowsy':
+      return t.drowsy;
+    case 'perish':
+      return t.perish(fx.turns, frac(DEFAULT_BATTLE_CONFIG.disruption.perishPercent));
+    case 'seed':
+      return fx.heal ? t.seed(frac(fx.percent)) : t.curse(frac(fx.percent));
+    case 'hazard':
+      return t.hazard(SIDE_NAME[fx.hazard].name, SIDE_NAME[fx.hazard].effect);
+    case 'knock-off':
+      return t.knockOff;
+    case 'haze':
+      return t.haze;
+    case 'helping-hand':
+      return t.helpingHand(fmtMult(fx.multiplier));
+    default:
+      return null;
+  }
 }
 
 export function describeMove(play: CardPlayability): string {

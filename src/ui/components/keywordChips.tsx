@@ -1,6 +1,7 @@
-import { IconArrowBackUp, IconBattery1, IconBatteryCharging, IconFeather, IconFlame, IconHeartbeat, IconMask, IconPlant2, IconShield, IconShieldHalf } from '@tabler/icons-react';
+import { IconArrowBackUp, IconBan, IconBattery1, IconBatteryCharging, IconEyeExclamation, IconFeather, IconFlame, IconGhost2, IconHandStop, IconHeartbeat, IconMask, IconMoodAngry, IconPlant2, IconSeedling, IconShield, IconShieldHalf, IconZzz } from '@tabler/icons-react';
 import type { Combatant } from '@/sim';
-import { KEYWORD_TEXT } from '@/ui/strings';
+import { getContent } from '@/content/registry';
+import { KEYWORD_TEXT, fmtMult, frac } from '@/ui/strings';
 import { Tip, Tipped } from '@/ui/tooltip';
 import type { UnitChip } from './UnitChips';
 import card from './UnitCard.module.css';
@@ -10,7 +11,7 @@ import card from './UnitCard.module.css';
 // rampage, roots. Each chip says itself in a word and opens its rule; on a short stage it folds into "+N" with the rest.
 // A keyword changes the turn's decision, so its chips come first.
 
-export function keywordUnitChips(c: Combatant, turn: number): UnitChip[] {
+export function keywordUnitChips(c: Combatant, turn: number, mine = true): UnitChip[] {
   const v = c.volatile;
   const out: UnitChip[] = [];
   const chip = (key: string, Icon: typeof IconShield, label: string, explain: string, tone: string): UnitChip => ({
@@ -33,5 +34,13 @@ export function keywordUnitChips(c: Combatant, turn: number): UnitChip[] {
   if (v?.rampage) out.push(chip('rampage', IconFlame, KEYWORD_TEXT.rampage.label, KEYWORD_TEXT.rampage.tip(v.rampage.left), card.warn!));
   if (v?.recharge) out.push(chip('recharge', IconBattery1, KEYWORD_TEXT.recharge.label, v.recharge === 'active' ? KEYWORD_TEXT.recharge.now : KEYWORD_TEXT.recharge.next, card.warn!));
   if (v?.rooted) out.push(chip('rooted', IconPlant2, KEYWORD_TEXT.rooted.label, KEYWORD_TEXT.rooted.tip, card.info!));
+  // §5.2.3 — what a disruption left on it: amber, a thing to answer — the most urgent first (the trap a swap cannot
+  // answer, the sleep and the drain a swap does), so a short stage's fold leads with it.
+  if ((v?.trappedUntil ?? 0) >= turn) out.push(chip('trapped', IconEyeExclamation, KEYWORD_TEXT.trapped.label, KEYWORD_TEXT.trapped.tip(v!.trappedUntil!), card.warn!));
+  if (v?.drowsyTurn !== undefined) out.push(chip('drowsy', IconZzz, KEYWORD_TEXT.drowsy.label, KEYWORD_TEXT.drowsy.tip(mine), card.warn!));
+  if (v?.seeded) out.push(v.seeded.heal ? chip('seeded', IconSeedling, KEYWORD_TEXT.seeded.label, KEYWORD_TEXT.seeded.tip(frac(v.seeded.percent), mine), card.warn!) : chip('cursed', IconGhost2, KEYWORD_TEXT.cursed.label, KEYWORD_TEXT.cursed.tip(frac(v.seeded.percent), mine), card.warn!));
+  if ((v?.tauntUntil ?? 0) >= turn) out.push(chip('taunt', IconMoodAngry, KEYWORD_TEXT.taunt.label, KEYWORD_TEXT.taunt.tip(v!.tauntUntil!), card.warn!));
+  if (v?.disabledMove && turn <= v.disabledMove.untilTurn) out.push(chip('disabled', IconBan, KEYWORD_TEXT.disabled.label, KEYWORD_TEXT.disabled.tip(getContent().move(v.disabledMove.moveId).name, v.disabledMove.untilTurn), card.warn!));
+  if (v?.helped?.turn === turn) out.push(chip('helped', IconHandStop, KEYWORD_TEXT.helped.label, KEYWORD_TEXT.helped.tip(fmtMult(v.helped.multiplier)), card.warn!));
   return out;
 }

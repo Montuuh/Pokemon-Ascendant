@@ -4,12 +4,12 @@ import { MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, bossArchetype, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
-import { describeMoveDef } from '@/ui/moveText';
+import { describeMoveDef, disruptRule } from '@/ui/moveText';
 import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
-import { DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -172,6 +172,9 @@ export function keywordRules(move: MoveDef): string[] {
     if (fx.kind === 'wish') lines.push(KEYWORD_RULE.wish(Math.round(fx.percentOfMaxHp * 100)));
     if (fx.kind === 'root') lines.push(KEYWORD_RULE.root);
     if (fx.kind === 'baton-pass') lines.push(KEYWORD_RULE.batonPass);
+    // §5.2.3 — a disruption's rule (and Helping Hand's, an enemy's stance).
+    const d = disruptRule(fx);
+    if (d) lines.push(d);
   }
   if (move.overexert) lines.push(KEYWORD_RULE.overexert(move.overexert));
   return lines;
@@ -241,6 +244,7 @@ const INTENT_BODY: Record<string, string> = {
   backstrike: 'Aims past your Lead at a bench slot. If that slot is empty when it lands, it fizzles.',
   buff: 'Raising one of its own stats this turn. It is not hitting you — this is the turn to hit it.',
   debuff: 'Lowering one of your stats. Usually aimed at the Lead.',
+  disrupt: DISRUPT_TEXT.footer,
   stall: 'Recovering HP or setting up. A free turn for you.',
   status: 'Trying to inflict a status on your Lead. A swap moves the target.',
   unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
@@ -286,6 +290,7 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       : `${who.join(' and ')} join the fight as supports, behind their Lead. They act from next turn.`,
     );
   } else if (intent.kind === 'getaway') lines.push(OBJECTIVE_TEXT.getawayBody);
+  else if (intent.kind === 'disrupt') lines.push(move.effects.some((e) => e.kind === 'hazard') ? DISRUPT_TEXT.intent.yourSide : DISRUPT_TEXT.intent.bothSides);
   else if (intent.kind === 'guard') lines.push(`Steps in front of ${ally.name}: after this turn it leads, braced with +1 Defence, and your Melee cards reach only it.`);
   else if (intent.stance) lines.push(...keywordRules(move));
   else lines.push(ally.uid === enemy.uid ? 'On itself.' : `On ${ally.name}, its Lead.`);
@@ -314,6 +319,10 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
     if (fx.kind === 'heal') lines.push(`${ally.name} recovers ${Math.round(fx.percentOfMaxHp * 100)}% of its HP.`);
     if (fx.kind === 'recoil') lines.push(`It takes ${Math.round(fx.percentOfDamage * 100)}% of the damage back.`);
     if (fx.kind === 'drain') lines.push(`It heals ${Math.round(fx.percentOfDamage * 100)}% of the damage it deals.`);
+    // §5.2.3 — what the disruption does to you, by name (who a Roar drags in, the card a Disable locks).
+    if (fx.kind === 'stage' && fx.target === 'foe-side') lines.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} on every Pokémon of your side.`);
+    const d = disruptIntentLine(state, fx, ctx, (uid) => hits.find((h) => h.targetUid === uid)?.amount ?? 0);
+    if (d && !intent.stance) lines.push(<b key={`d-${fx.kind}`}>{d}</b>);
   }
   if (move.cooldown) lines.push(`Then it cannot use it for ${move.cooldown} turn${move.cooldown === 1 ? '' : 's'}.`);
   // §5.8.3 / §9.2.2.3 — a declared signature names its authored answer: what still works now.
@@ -324,9 +333,58 @@ export function intentCardTip(state: CombatState, enemy: EnemyCombatant, forecas
       title={`${enemy.name}: ${move.name}`}
       meta={meta}
       body={lines.map((l, i) => <div key={i}>{l}</div>)}
-      footer={intent.stance ? STANCE_FOOTER : INTENT_BODY[intent.kind]}
+      footer={intent.stance ? STANCE_FOOTER : intent.kind === 'disrupt' ? disruptFooter(move) : INTENT_BODY[intent.kind]}
     />
   );
+}
+
+/** §5.2.3 — what answers a disruption: a swap for most; not a trap, a hazard or a drag. */
+function disruptFooter(move: MoveDef): string {
+  if (move.effects.some((e) => e.kind === 'trap')) return DISRUPT_TEXT.trapFooter;
+  if (move.effects.some((e) => e.kind === 'hazard')) return DISRUPT_TEXT.hazardFooter;
+  if (move.effects.some((e) => e.kind === 'force-swap')) return DISRUPT_TEXT.dragFooter;
+  return DISRUPT_TEXT.footer;
+}
+
+/**
+ * §5.2.3 — one disruption of an enemy's intent, said to you: the card it locks, who it drags in, what it costs you.
+ * `entry` is what the forecast says the dragged one takes on this action (the hazards, laid this turn or before).
+ */
+function disruptIntentLine(state: CombatState, fx: MoveDef['effects'][number], ctx: CombatCtx, entry: (uid: string) => number): string | null {
+  const t = DISRUPT_TEXT.intent;
+  const lead = state.player.team[state.player.leadIndex];
+  switch (fx.kind) {
+    case 'disable': {
+      const best = lead ? [...lead.moveIds].map((id) => ctx.content.move(id)).sort((a, b) => b.power - a.power)[0] : undefined;
+      return best ? t.disable(best.name, fx.turns) : null;
+    }
+    case 'taunt':
+      return t.taunt;
+    case 'force-swap': {
+      const who = forcedSwapTarget(state);
+      if (who === null) return t.stands;
+      const mon = state.player.team[who]!;
+      return t.drag(mon.name, entry(mon.uid));
+    }
+    case 'trap':
+      return t.trap(fx.turns);
+    case 'drowsy':
+      return t.drowsy;
+    case 'perish':
+      return t.perish(fx.turns, frac(ctx.config.disruption.perishPercent));
+    case 'seed':
+      return fx.heal ? t.seed(frac(fx.percent)) : t.curse(frac(fx.percent));
+    case 'hazard':
+      return t.hazard(SIDE_NAME[fx.hazard].name, SIDE_NAME[fx.hazard].effect);
+    case 'knock-off':
+      return t.knockOff;
+    case 'haze':
+      return t.haze;
+    case 'helping-hand':
+      return t.helpingHand(fmtMult(fx.multiplier));
+    default:
+      return null;
+  }
 }
 
 const mult = (m: number) => `×${Math.round(m * 100) / 100}`;
@@ -480,7 +538,7 @@ export function stoneUseTip(stoneId: string): ReactNode {
 }
 
 /** §5.6.1 — the node's Pokémon that acts twice, on its preview card. */
-export function doubleActorTip(who: 'lead' | 'ace'): ReactNode {
+export function doubleActorTip(who: keyof typeof DOUBLE_ACTOR_LABEL): ReactNode {
   return <Tip title={DOUBLE_ACTOR_LABEL[who]} body={DOUBLE_ACTOR_HINT} />;
 }
 
@@ -515,7 +573,9 @@ export function placeTip(place: string, alone = false, shiny = false, meta: stri
 }
 
 /** §5.5.1 Trainer's Instinct — the enemy's plan for next turn, and the one way it can change. */
-export function nextIntentTip(detail: string): ReactNode {
+export function nextIntentTip(detail: string, combo?: { left: number }): ReactNode {
+  // §5.5.2 — a combo's finisher: its plan, and what breaks it this turn.
+  if (combo) return <Tip title={COMBO_TEXT.title} body={detail} footer={COMBO_TEXT.footer(combo.left)} />;
   return (
     <Tip
       title="Next turn (Trainer's Instinct)"
@@ -537,6 +597,7 @@ export function apTip(ap: number, max = 3, debt = 0): ReactNode {
 /** §3.11.6 / §3.11.13 — a side condition in one line, for a folded chip's bubble: its clock and what it does (a wish: how much, where, when). */
 export function sideConditionLine(s: SideCondition, place: string | null): string {
   if (s.id === 'wish') return SIDE_CHIP_TEXT.wish(s.amount ?? 0, place ?? 'its place', s.turnsLeft);
+  if (s.lasting && (s.id === 'spikes' || s.id === 'stealth-rock')) return `${cap(SIDE_NAME[s.id].effect)}.`;
   return `${s.turnsLeft} turn${s.turnsLeft === 1 ? '' : 's'}: ${SIDE_NAME[s.id].effect}.`;
 }
 
@@ -544,7 +605,7 @@ export function sideConditionLine(s: SideCondition, place: string | null): strin
 export function sideConditionTip(s: SideCondition, place: string | null): ReactNode {
   if (s.id === 'wish') return <Tip title={SIDE_CHIP_TEXT.title(SIDE_CHIP_TEXT.wishName, s.side)} body={SIDE_CHIP_TEXT.wish(s.amount ?? 0, place ?? 'its place', s.turnsLeft)} />;
   const n = SIDE_NAME[s.id];
-  return <Tip title={SIDE_CHIP_TEXT.title(n.name, s.side)} meta={[SIDE_CHIP_TEXT.turns(s.turnsLeft)]} body={`${cap(n.effect)}.`} />;
+  return <Tip title={s.lasting ? SIDE_CHIP_TEXT.hazardTitle(n.name, s.side) : SIDE_CHIP_TEXT.title(n.name, s.side)} meta={s.lasting ? undefined : [SIDE_CHIP_TEXT.turns(s.turnsLeft)]} body={`${cap(n.effect)}.`} />;
 }
 
 /** §2.7.3 — the rival trainer's team by the trainer's side: who is out, who is beaten, how many still wait. */
@@ -607,7 +668,7 @@ export function traumaTip(stacks: number, max: number): ReactNode {
 }
 
 /** The Pokémon itself: species, types, level, ability, item — the summary a portrait owes on hover. */
-export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boolean; swapCost?: number; swapQuick?: boolean; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean } }): ReactNode {
+export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boolean; swapCost?: number; swapQuick?: boolean; swapBlocked?: string; incoming?: { name: string; move: string; amount: number; moot?: boolean }[]; incomingKo?: boolean; asLead?: { amount: number; ko: boolean; entry?: { id: 'spikes' | 'stealth-rock'; amount: number }[] } }): ReactNode {
   const content = getContent();
   const meta: ReactNode[] = [`Lv ${c.level}`, ...c.types.map(typeName), `Speed ${effectiveSpeed(c, DEFAULT_BATTLE_CONFIG)}`];
   const lines: ReactNode[] = [];
@@ -633,7 +694,10 @@ export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boo
   for (const h of extra?.incoming ?? []) if (h.moot) lines.push(<div key={`m-${h.name}-${h.move}`}>{h.name}'s {h.move} would take <s>{h.amount}</s> — wasted: it is down by then.</div>);
   // §9.2.5 — the swap, priced in HP (v0.8.6).
   if (extra?.asLead) lines.push(<div key="al">As your Lead this turn it would take <b>{extra.asLead.amount}</b>{extra.asLead.ko ? ' — a knockout' : ''}.</div>);
-  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' — a quick swap: it is faster than the enemy Lead, so it costs 1 less' : ''}. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free. A Pokémon faster than the enemy Lead swaps in for 1 less.` : undefined;
+  // §5.2.3 — what of it the hazards on your side take on the way in.
+  for (const h of extra?.asLead?.entry ?? []) lines.push(<div key={`en-${h.id}`}>{SIDE_CHIP_TEXT.entry(h.amount, SIDE_NAME[h.id].name)}</div>);
+  // §5.2.3 — a swap that cannot be made says why, not what it would cost.
+  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapBlocked ? extra.swapBlocked : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' — a quick swap: it is faster than the enemy Lead, so it costs 1 less' : ''}. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free. A Pokémon faster than the enemy Lead swaps in for 1 less.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }
 

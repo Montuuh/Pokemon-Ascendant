@@ -26,7 +26,8 @@ export type MoveEffect =
    */
   | { kind: 'status'; status: StatusCondition; chance: number; self?: boolean; escalating?: boolean }
   /** §4.2.6 — stat stage change on self or foe. */
-  | { kind: 'stage'; target: 'self' | 'foe' | 'bench'; stat: Stat; stages: number }
+  /** `foe-side` (§5.2.3): every standing Pokémon of the other side — Growl, Leer, Tail Whip. */
+  | { kind: 'stage'; target: 'self' | 'foe' | 'bench' | 'foe-side'; stat: Stat; stages: number }
   /**
    * Heal self by a fraction of EffectiveMaxHP; with `durationTurns` it becomes a regen (Aqua Ring). §3.11.13 —
    * `weatherScaled` reads the weather (Synthesis), `target: 'lead'` heals the Lead instead of the user (Heal Pulse).
@@ -40,7 +41,7 @@ export type MoveEffect =
   /** §4.1.6 — heal a share of the damage this move actually dealt (Absorb, Mega Drain, Leech Life). */
   | { kind: 'drain'; percentOfDamage: number }
   /** §5.13.2 — more power while a condition holds: a Poisoned target, the user below a share of its HP, per Trauma stack. */
-  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma' | 'in-field' | 'friendship'; multiplier?: number; below?: number; perStack?: number; field?: FieldId }
+  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma' | 'in-field' | 'friendship' | 'target-asleep' | 'target-paralyzed' | 'target-below' | 'hurt-this-turn' | 'target-holds-item'; multiplier?: number; below?: number; perStack?: number; field?: FieldId }
   /** §5.13.2 Super Fang — the hit takes a share of the target's current HP. */
   | { kind: 'fixed-damage'; percentOfTargetHp: number }
   /** §5.13.2 Belly Drum — the user pays a share of its max HP, never below 1. */
@@ -90,7 +91,19 @@ export type MoveEffect =
   /** §3.11.13 Ingrain — the user cannot be swapped out for the rest of the fight. */
   | { kind: 'root' }
   /** §3.11.14 Baton Pass — the Step-Backward hands the user's stages and Substitute to the new Lead. */
-  | { kind: 'baton-pass' };
+  | { kind: 'baton-pass' }
+  // §5.2.3 — the utility that hurts (v0.9.92).
+  | { kind: 'disable'; turns: number }
+  | { kind: 'taunt'; turns: number }
+  | { kind: 'force-swap' }
+  | { kind: 'trap'; turns: number }
+  | { kind: 'drowsy' }
+  | { kind: 'perish'; turns: number }
+  | { kind: 'seed'; percent: number; heal: boolean }
+  | { kind: 'hazard'; hazard: 'spikes' | 'stealth-rock' }
+  | { kind: 'knock-off' }
+  | { kind: 'haze' }
+  | { kind: 'helping-hand'; multiplier: number };
 
 /** §3.11.6 — the side conditions. */
 export type SideConditionId = 'reflect' | 'light-screen' | 'safeguard' | 'mist';
@@ -582,6 +595,8 @@ export interface EnemySetup {
   acts?: 1 | 2;
   /** §5.6.2 — the companions its Call for Help can bring in, in order. Not on the field until called. */
   helpers?: EnemySetup[];
+  /** §5.5.2 — its authored combo: a set-up, then the move it sets up, declared together as a plan. */
+  combo?: [string, string];
 }
 
 /** §5.6 — the four support roles. */

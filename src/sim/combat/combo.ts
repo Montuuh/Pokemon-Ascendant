@@ -4,9 +4,12 @@ import type { EnemyCombatant } from './state';
 // §5.6.1 — acting twice, priced in AP rather than HP (v0.9.12, the user's call: an enemy's HP is never scaled). A
 // Pokémon that acts twice spends one budget on both actions, and you can break its second by hurting it enough.
 
-/** §5.6.1 — the AP a Pokémon that acts twice may spend on its two actions: a Gym Leader's ace has the larger budget. */
+/**
+ * §5.6.1 — the AP a Pokémon that acts twice may spend on its two actions: an ace (a Gym Leader's, an Elite Four's, the
+ * Champion's — its three phases) has the larger budget; a Gym's first or the Champion's next-to-last the ordinary one.
+ */
 export function doubleActionBudget(enemy: EnemyCombatant, ctx: CombatCtx): number {
-  return enemy.tier === 'boss' ? ctx.config.doubleActionApBudgetBoss : ctx.config.doubleActionApBudget;
+  return enemy.tier === 'boss' && enemy.phaseCount >= 3 ? ctx.config.doubleActionApBudgetBoss : ctx.config.doubleActionApBudget;
 }
 
 /** §5.6.1 — the damage still to deal it this turn before its second action breaks (0 once broken). */

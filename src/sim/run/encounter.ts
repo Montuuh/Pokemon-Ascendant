@@ -3,8 +3,9 @@ import { APEX, LEGENDARY_ARENAS, type LegendaryId } from './legendaries';
 import type { ContentRegistry, EnemySetup, ScenarioDef } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import { activeMoves, statAtLevel } from '../combat/stats';
+import { enemyKit } from '../combat/enemyKit';
 import type { BiomeId } from './region';
-import { ALL_TRAINERS, ELITE_ATTACK_MULTIPLIER, GYM, GYM_ATTACK_MULTIPLIER, REGIONS, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamOf, regionContent, statTierFor } from './region';
+import { ALL_TRAINERS, ELITE_ATTACK_MULTIPLIER, ELITE_REPERTOIRE, ENEMY_KIT_SIZE, GYM, GYM_ATTACK_MULTIPLIER, GYM_REPERTOIRE, REGIONS, STATUS_ACCENT_FALLBACK, TRAINER_REPERTOIRE, STATUS_ACCENT_FROM, STATUS_ACCENT_MOVES, eliteTeamFor, eliteWildTeamFor, gymById, gymTeamOf, regionContent, statTierFor } from './region';
 import { hasModifier, modifierValue } from './modifiers';
 import { masteryMoveFor } from '../meta/mastery';
 import type { ActiveSetup, MapNode, PartyMon, RingRung, RunState } from './types';
@@ -215,7 +216,7 @@ export function buildGauntletScenario(node: MapNode, run: RunState, content: Con
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    enemies: (node.preview.enemies ?? []).map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: g.phaseCount })),
+    enemies: (node.preview.enemies ?? []).map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: g.phaseCount, moves: enemyKit(content, m.species, m.level, ENEMY_KIT_SIZE.climax, ELITE_REPERTOIRE) })),
     onField: g.onField,
   };
 }
@@ -305,7 +306,8 @@ export function buildTrainerScenario(node: MapNode, run: RunState, content: Cont
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
-    enemies: team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'trainer', phaseCount: 1, ...(roster.veiled ? { veiled: true } : {}) })),
+    // §5.2.2 — five moves by role, its archetype's repertoire first.
+    enemies: team.map((m): EnemySetup => ({ species: m.species, level: m.level, tier: 'trainer', phaseCount: 1, moves: enemyKit(content, m.species, m.level, ENEMY_KIT_SIZE.trainer, TRAINER_REPERTOIRE[roster.archetype]), ...(roster.veiled ? { veiled: true } : {}) })),
   };
 }
 
@@ -335,7 +337,7 @@ export function buildEliteScenario(node: MapNode, run: RunState, content: Conten
     },
     // By slot, not by species: a later Region's preview may have evolved the species the row names.
     // §2.8.1 — its threat by Attack, now that its levels read right (2026-10-20).
-    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: eliteTeamFor(node.layer, elite, regionContent(run.regionIndex).wildBand)[i]?.phaseCount ?? 1, attackMultiplier: ELITE_ATTACK_MULTIPLIER[run.regionIndex] ?? 1 })),
+    enemies: team.map((m, i): EnemySetup => ({ species: m.species, level: m.level, tier: 'elite', phaseCount: eliteTeamFor(node.layer, elite, regionContent(run.regionIndex).wildBand)[i]?.phaseCount ?? 1, attackMultiplier: ELITE_ATTACK_MULTIPLIER[run.regionIndex] ?? 1, moves: enemyKit(content, m.species, m.level, ENEMY_KIT_SIZE.climax, ELITE_REPERTOIRE) })),
   };
 }
 
@@ -405,7 +407,10 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       phaseCount: m.phaseCount,
       // §5.9.3 — the climax hits harder than its Region: a Gym that more levels made easier (they pay more XP).
       attackMultiplier: (GYM_ATTACK_MULTIPLIER[gym.region - 1] ?? 1) * (gym.attackScale ?? 1),
-      ...(m.moves ? { moves: [...m.moves] } : {}),
+      // §5.2.2 — the scripted four, topped up to six by role from the Leader's repertoire and the Pokémon's own moves.
+      moves: enemyKit(content, node.preview.enemies?.[i]?.species ?? m.species, node.preview.enemies?.[i]?.level ?? m.level, ENEMY_KIT_SIZE.climax, gym.repertoire ?? GYM_REPERTOIRE[gym.type] ?? [], m.moves, m.combo),
+      // §5.5.2 — the member's authored combo, telegraphed as a plan.
+      ...(m.combo ? { combo: [...m.combo] as [string, string] } : {}),
       ...(m.signature ? { signature: { ...m.signature } } : {}),
     })),
   };
@@ -432,7 +437,13 @@ function applyRegion(scenario: ScenarioDef, run: RunState, content: ContentRegis
         return m.power === 0 && m.effects.some((fx) => fx.kind === 'status' && !fx.self);
       });
       const type = content.species(e.species).types[0]!;
-      if (!hasStatus) out.moves = [...kit, STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK].slice(-5);
+      // A full kit gives the accent its last slot that is not its combo's or its signature's — never its first (its
+      // strongest attack).
+      const accentMove = STATUS_ACCENT_MOVES[type] ?? STATUS_ACCENT_FALLBACK;
+      const kept = new Set([...(e.combo ?? []), ...(e.signature ? [e.signature.move] : [])]);
+      // Only a slot the template filled (past the scripted or picked four) gives way; with none, the accent is a seventh.
+      const spare = kit.findLastIndex((id, i) => i >= 4 && !kept.has(id));
+      if (!hasStatus && !kit.includes(accentMove)) out.moves = kit.length >= ENEMY_KIT_SIZE.climax && spare >= 0 ? kit.map((id, i) => (i === spare ? accentMove : id)) : [...kit, accentMove];
     }
     return out;
   };

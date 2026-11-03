@@ -7,7 +7,8 @@ import type { IntentKind, SlotId } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { CombatCtx } from './context';
 import { emit, log } from './context';
-import { applyMoveEffects, breakdownFor } from './damageFlow';
+import { applyMoveEffects, breakdownFor, powerBonus } from './damageFlow';
+import { disrupts, isTaunted, isTrapped, moveDisabled } from './disruption';
 import { fieldApDelta, fieldStands, isStance, ppLeft, protectBlocked, sideHas } from './keywords';
 import type { FieldId } from './fields';
 import { teamRevealsIntents, abilityBlocksMove } from './abilities';
@@ -15,10 +16,10 @@ import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './
 import { bossArchetype } from './boss';
 import { signatureIntent, spendSignature } from './phases';
 import { forecastOn, forecastTurn } from './forecast';
-import { activeEnemy, slotOccupant, SLOT_LABEL } from './slots';
+import { activeEnemy, benchIndices, lead, slotOccupant, SLOT_LABEL } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent, QueuedIntent } from './state';
 import { hpFraction } from './stats';
-import { cardsLocked, controlBlocked, isImmuneToStatus, paralysisApBonus } from './status';
+import { cardsLocked, controlBlocked, isImmuneToStatus, isPositionLocked, paralysisApBonus } from './status';
 import { objectiveHoldsBack, objectiveIntent } from './objective';
 import { typeMultiplier } from './typeChart';
 
@@ -56,10 +57,13 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
     return leadEnemy && leadEnemy.uid !== enemy.uid ? { kind: 'guard', moveId: move.id, targetSlot: null, hidden: false, targetEnemyUid: leadEnemy.uid } : null;
   }
   // §5.2.1 — a stance guards its user: declared, it is up.
-  if (isStance(move)) return { kind: 'buff', moveId: move.id, targetSlot: null, hidden: false, stance: true };
+  // §5.2.3 — Helping Hand is a stance too: up when declared, so the Lead's number already carries it.
+  if (isStance(move) || move.effects.some((e) => e.kind === 'helping-hand')) return { kind: 'buff', moveId: move.id, targetSlot: null, hidden: false, stance: true };
+  // §5.2.3 — the utility that hurts: aimed at your Lead, or at your side and the field (a hazard, Perish Song, Haze).
+  if (disrupts(move)) return { kind: 'disrupt', moveId: move.id, targetSlot: move.effects.some((e) => AT_LEAD.has(e.kind)) ? 'lead' : null, hidden: false };
   const status = move.effects.find((e) => e.kind === 'status' && !e.self);
   if (status) return { kind: 'status', moveId: move.id, targetSlot: 'lead', hidden: false };
-  const debuff = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
+  const debuff = move.effects.find((e) => e.kind === 'stage' && (e.target === 'foe' || e.target === 'foe-side'));
   if (debuff) return { kind: 'debuff', moveId: move.id, targetSlot: 'lead', hidden: false };
   const buff = move.effects.find((e) => e.kind === 'stage' && e.target === 'self');
   if (buff) return withAlly(state, enemy, move, { kind: 'buff', moveId: move.id, targetSlot: null, hidden: false });
@@ -117,6 +121,8 @@ function pickBackstrikeSlot(state: CombatState, enemy: EnemyCombatant, move: Mov
 }
 
 const OFFENSIVE: readonly IntentKind[] = ['attack', 'cleave', 'backstrike'];
+/** §5.2.3 — the disruptions that land on one Pokémon (your Lead); the rest land on a side or the field. */
+const AT_LEAD = new Set(['disable', 'taunt', 'force-swap', 'trap', 'drowsy', 'seed']);
 
 /**
  * §5.3 — Score = BaseWeight × TypeEff × StatusState × HPState × CooldownGate (× phase aggression, §5.8.3).
@@ -133,6 +139,8 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   if (enemyMoveCost(state, enemy, move, ctx) > cfg.baseApPerTurn) return 0;
   // §3.11.1 — no PP left; §3.11.2 — no Protect two turns running.
   if (ppLeft(enemy, move) === 0 || protectBlocked(state, enemy, move)) return 0;
+  // §5.2.3 — under your Taunt only its attacks; under your Disable not that move. A kept plan or a combo is held to it too.
+  if ((move.power === 0 && isTaunted(enemy, state.turn)) || moveDisabled(enemy, move.id, state.turn)) return 0;
   // §5.3.1 — a stance is weighed by what it guards against now, never as setup (§5.2.1).
   if (intent.stance) return stanceScore(state, enemy, move, ctx);
   // §5.3.1 — a charge gives a turn's warning and an ultimate a turn's recharge: both are worth less than their power.
@@ -145,6 +153,10 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   const occ = intent.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
   if (intent.targetSlot && !occ) return 0; // never target an empty slot
   if (occ && abilityBlocksMove(occ, move, ctx.content)) return 0; // §6.6 — nor fire a move Damp will smother
+  // §5.2.3 — a disruption is worth what it does now, and nothing when it would do nothing.
+  if (intent.kind === 'disrupt') return disruptScore(state, enemy, move, occ, ctx);
+  // §5.5.2 — a finisher is worth its bonus when its condition holds (Dream Eater on a sleeper, Brine on the hurt).
+  if (occ && move.power > 0) score *= powerBonus(enemy, occ, move, state, ctx);
 
   if (occ && (intent.kind === 'attack' || intent.kind === 'backstrike')) {
     const eff = typeMultiplier(move.type, occ.types);
@@ -169,8 +181,17 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
     if (intent.targetSlot && groupPlansStatus(state, enemy, intent.targetSlot, status === 'confusion', ctx)) return 0;
   }
   if (intent.kind === 'debuff' && occ) {
-    const fx = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
-    if (fx && fx.kind === 'stage' && occ.stages[fx.stat] <= -6) return 0; // already floored
+    const fx = move.effects.find((e) => e.kind === 'stage' && (e.target === 'foe' || e.target === 'foe-side'));
+    // §3.11.6 — your Mist stops every drop.
+    if (sideHas(state, 'player', 'mist')) return 0;
+    if (fx && fx.kind === 'stage') {
+      // §5.3.2 — a drop is worth less the further down its target already is, as a raise is: no Tail Whip loops.
+      const side = fx.target === 'foe-side' ? state.player.team.filter((m) => m.hp > 0) : [occ];
+      const down = side.reduce((acc, m) => acc + Math.max(0, -m.stages[fx.stat]), 0) / Math.max(1, side.length);
+      if (down >= 6) return 0; // already floored
+      if (fx.target === 'foe-side') score = cfg.disruptAi.teamDebuff;
+      score *= Math.max(0, 1 - down / 3);
+    }
   }
   // §5.6.2 — a Call for Help needs a companion left to answer and a free place on the field; it is worth most to a
   // Pokémon standing alone, and it is never "setup": it waits for a turn the field has room.
@@ -217,6 +238,69 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
   return score;
 }
 
+/**
+ * §5.2.3 / §5.3.2 — what a disruption is worth this turn: its weight when its condition holds (your Lead can be locked,
+ * dragged, put to sleep; your side has no Spikes yet), more when it sets up something (a trap under Perish Song, a Roar
+ * onto a hazard), nothing when it would do nothing.
+ */
+function disruptScore(state: CombatState, enemy: EnemyCombatant, move: MoveDef, occ: Combatant | null, ctx: CombatCtx): number {
+  const w = ctx.config.disruptAi;
+  const turn = state.turn;
+  const you = occ ?? lead(state) ?? null;
+  const benchStanding = benchIndices(state).filter((i) => (state.player.team[i]?.hp ?? 0) > 0).length;
+  const hazardsDown = (state.sides ?? []).some((s) => s.side === 'player' && (s.id === 'spikes' || s.id === 'stealth-rock'));
+  const raised = (cs: readonly Combatant[]) => cs.reduce((acc, c) => acc + (['attack', 'defense', 'speed'] as const).reduce((a, s) => a + Math.max(0, c.stages[s]), 0), 0);
+  const lowered = (cs: readonly Combatant[]) => cs.reduce((acc, c) => acc + (['attack', 'defense', 'speed'] as const).reduce((a, s) => a + Math.max(0, -c.stages[s]), 0), 0);
+  const sings = enemy.moveIds.some((id) => ctx.content.move(id).effects.some((e) => e.kind === 'perish'));
+  let best = 0;
+  for (const fx of move.effects) {
+    let v = 0;
+    switch (fx.kind) {
+      case 'disable': {
+        const d = state.player.disabled;
+        if (you && !(d && turn <= d.untilTurn)) v = w.disable;
+        break;
+      }
+      case 'taunt': {
+        // Worth what it shuts: your Lead's moves that do no damage.
+        const shut = you && !isTaunted(you, turn + 1) ? you.moveIds.filter((id) => ctx.content.move(id).power === 0).length : 0;
+        v = w.taunt * Math.min(1, shut / 2);
+        break;
+      }
+      case 'force-swap':
+        // Worth more on a Lead that built itself up, and onto a side with hazards down.
+        if (you && benchStanding > 0 && !isPositionLocked(you) && !you.volatile?.rooted) v = w.forceSwap * (0.5 + raised([you]) / 2 + (hazardsDown ? 0.5 : 0));
+        break;
+      case 'trap':
+        if (you && !isTrapped(you, turn + 1)) v = w.trap * (state.perish || sings ? 2 : 1);
+        break;
+      case 'drowsy':
+        if (you && !you.status && you.volatile?.drowsyTurn === undefined && !isImmuneToStatus(you.types, 'sleep') && !controlBlocked(you, turn) && !sideHas(state, 'player', 'safeguard')) v = w.drowsy;
+        break;
+      case 'seed':
+        // A Grass-type shrugs off a seed; a curse costs half the caster's HP, so only a healthy one lays it.
+        if (you && !you.volatile?.seeded && !(fx.heal && you.types.includes('grass')) && (fx.heal || hpFraction(enemy) > ctx.config.highSelfHpThreshold)) v = w.seed;
+        break;
+      case 'hazard':
+        if (!sideHas(state, 'player', fx.hazard)) v = w.hazard * (benchStanding / 2);
+        break;
+      case 'perish':
+        if (!state.perish && you) v = w.perish * (isTrapped(you, turn + 1) ? 1.5 : 1);
+        break;
+      case 'haze': {
+        // What it takes from you, less what it takes from its own side.
+        const net = raised(state.player.team) - lowered(state.player.team) + lowered(state.enemies) - raised(state.enemies);
+        if (net > 0) v = (w.haze * net) / 2;
+        break;
+      }
+      default:
+        break;
+    }
+    best = Math.max(best, v);
+  }
+  return best;
+}
+
 /** §5.3.1 — what a stance is worth this turn: its best effect, by the enemy's HP and what already stands. */
 function stanceScore(state: CombatState, enemy: EnemyCombatant, move: MoveDef, ctx: CombatCtx): number {
   const w = ctx.config.keywordAi;
@@ -230,6 +314,12 @@ function stanceScore(state: CombatState, enemy: EnemyCombatant, move: MoveDef, c
     if (fx.kind === 'counter') best = Math.max(best, w.counter);
     if (fx.kind === 'side-condition') best = Math.max(best, sideHas(state, 'enemy', fx.condition) ? 0 : w.screen);
     if (fx.kind === 'set-field') best = Math.max(best, fieldFavours(state, enemy, fx.field, ctx) ? w.fieldSet : 0);
+    // §5.2.3 — Helping Hand from a support, for a Lead that is about to hit.
+    if (fx.kind === 'helping-hand') {
+      const helped = activeEnemy(state);
+      const hits = helped && helped.uid !== enemy.uid && helped.hp > 0 && helped.moveIds.some((id) => ctx.content.move(id).power > 0);
+      best = Math.max(best, hits ? ctx.config.disruptAi.helpingHand : 0);
+    }
     // A brace that also raises a stat is weighed as the raise is (§5.3): its decay with the stages banked, its setup bonus.
     if (fx.kind === 'stage' && fx.target === 'self' && fx.stages > 0) {
       const banked = Math.max(0, enemy.stages[fx.stat]);
@@ -272,12 +362,14 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
     if (moveId === exclude || objectiveHoldsBack(state, moveId, ctx)) continue;
     const move = ctx.content.move(moveId);
     if (enemyMoveCost(state, enemy, move, ctx) > maxAp) continue;
+    // §5.2.3 — under your Taunt, only its attacks.
+    if (move.power === 0 && isTaunted(enemy, state.turn)) continue;
     const intent = classifyMove(state, enemy, move, ctx);
     if (!intent) continue;
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx, waive) });
   }
   // Ties resolve toward pressure: offensive intents are considered before setup/utility with equal scores.
-  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, debuff: 2, summon: 3, guard: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5, getaway: 6 };
+  const KIND_PRIORITY: Record<IntentKind, number> = { attack: 0, cleave: 0, backstrike: 0, status: 1, disrupt: 2, debuff: 2, summon: 3, guard: 3, stall: 3, buff: 4, unknown: 5, incapacitated: 5, getaway: 6 };
   const pool = applyArchetypeFilter(enemy, cands, ctx.config)
     .filter((c) => c.score > 0)
     .sort((a, b) => KIND_PRIORITY[a.intent.kind] - KIND_PRIORITY[b.intent.kind]);
@@ -310,6 +402,31 @@ function keywordIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx
  * §5.5.1 — a queued plan is kept only while it is still a move the enemy may play: off cooldown, affordable, into a
  * legal target, and planned in the boss phase it is in now. Anything else and the enemy thinks again.
  */
+/**
+ * §5.5.2 — the combo it would open now: its set-up legal and worth something, its finisher off cooldown with PP, and the
+ * pair worth more than its best single move — the set-up's score plus `followWeight` × the finisher's, judged as it will
+ * land (Dream Eater on the sleeper Hypnosis makes). Null when there is none, or it is resting after the last one.
+ */
+export function comboPlan(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx): { first: Intent; then: Intent } | null {
+  if (!enemy.combo || state.turn < (enemy.comboRestUntil ?? 0)) return null;
+  const [a, b] = enemy.combo;
+  if (!enemy.moveIds.includes(a) || !enemy.moveIds.includes(b)) return null;
+  const setUp = ctx.content.move(a);
+  const finisher = ctx.content.move(b);
+  const first = classifyMove(state, enemy, setUp, ctx);
+  const then = classifyMove(state, enemy, finisher, ctx);
+  if (!first || !then) return null;
+  const opens = scoreIntent(state, enemy, { intent: first, move: setUp }, ctx);
+  if (opens <= 0 || (enemy.cooldowns[b] ?? 0) > 0 || ppLeft(enemy, finisher) === 0) return null;
+  const lands = finisher.power > 0 ? finisher.power * Math.max(1, ...finisher.effects.map((e) => (e.kind === 'power-bonus' && e.when !== 'friendship' && e.when !== 'per-trauma' ? e.multiplier ?? 1 : 1))) : ctx.config.defaultUtilityWeight;
+  const best = Math.max(0, ...enemy.moveIds.map((id) => {
+    const m = ctx.content.move(id);
+    const i = classifyMove(state, enemy, m, ctx);
+    return i ? scoreIntent(state, enemy, { intent: i, move: m }, ctx) : 0;
+  }));
+  return opens + ctx.config.combo.followWeight * lands > best ? { first, then } : null;
+}
+
 function plannedStillLegal(state: CombatState, enemy: EnemyCombatant, planned: QueuedIntent, ctx: CombatCtx): boolean {
   if (!planned.intent.moveId) return false;
   if (enemy.phaseCount > 1 && planned.phase !== enemy.phase) return false;
@@ -363,7 +480,10 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     const open = !forced && sig && 'intent' in sig ? sig.intent : null;
     const confusedPick = open && enemy.confusionTurns > 0 ? chooseIntent(state, enemy, ctx, rng, undefined, Infinity, open.moveId ?? undefined) : null;
     const signature = open && enemy.confusionTurns <= 0 ? open : confusedPick && confusedPick.moveId === open?.moveId ? { ...confusedPick, signature: true } : null;
-    const intent = forced ?? keyworded ?? signature ?? confusedPick ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, Math.min(firstCap, budget)) ?? chooseIntent(state, enemy, ctx, rng, undefined, budget);
+    // §5.5.2 — a combo is opened only when nothing above dictates the turn; a finisher it promised is the kept plan.
+    const combo = !forced && !keyworded && !signature && !confusedPick && !kept && enemy.confusionTurns <= 0 ? comboPlan(state, enemy, ctx) : null;
+    if (kept && planned?.combo) enemy.comboRestUntil = state.turn + 1 + ctx.config.combo.rest;
+    const intent = forced ?? keyworded ?? signature ?? confusedPick ?? kept ?? combo?.first ?? chooseIntent(state, enemy, ctx, rng, undefined, Math.min(firstCap, budget)) ?? chooseIntent(state, enemy, ctx, rng, undefined, budget);
     if (signature) spendSignature(state, enemy);
     enemy.intent = intent ?? { kind: 'stall', moveId: null, targetSlot: null, hidden: false };
     // §5.5 (CL-011) — Elite/Gym enemies hide their first intent until they have fired a move.
@@ -381,10 +501,21 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     enemy.intent.hidden = enemy.intent.signature ? false : veiled;
     // §5.6.1 — a Pokémon that acts twice declares its second action now, chosen knowing the first: a different
     // move, and never a status the first (or the group) already means to put there. It hides what the first hides.
-    if (enemy.acts === 2) {
+    // §5.5.2 — a combo fits one turn of a Pokémon that acts twice when both steps fit its budget; else its finisher is
+    // next turn's plan, shown now.
+    const comboNow = !!combo && enemy.acts === 2 && costOf(combo.first.moveId!) + costOf(combo.then.moveId!) <= budget;
+    if (combo && comboNow) {
+      enemy.second = { ...combo.then, hidden: veiled };
+      enemy.comboRestUntil = state.turn + 1 + ctx.config.combo.rest;
+    } else if (enemy.acts === 2) {
       const spent = enemy.intent.moveId ? costOf(enemy.intent.moveId) : 0;
       const second = chooseIntent(state, enemy, ctx, rng, enemy.intent.moveId ?? undefined, budget - spent);
       enemy.second = second ? { ...second, hidden: veiled } : null;
+    }
+    if (combo && !comboNow) {
+      enemy.next = { intent: { ...combo.then, hidden: veiled }, phase: enemy.phase, combo: true };
+      enemy.stagger = 0;
+      log(state, 'intent', `${enemy.name} is setting something up — watch its next move.`);
     }
     // §4.1.3.1 — a full critical rhythm is declared here, on the hit that will spend it.
     markRhythm(enemy, ctx);
@@ -396,7 +527,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   }
   // §5.5.1 Trainer's Instinct — plan the next turn now, from what the enemy can see now, and show it. It hides
   // exactly as much as this turn's intent does: seeing further ahead is not seeing through a veil.
-  if (relicsQueueIntents(state, ctx.content)) {
+  if (!enemy.next && relicsQueueIntents(state, ctx.content)) {
     const plan = chooseIntent(state, enemy, ctx, rng);
     if (plan) enemy.next = { intent: { ...plan, hidden: veiled }, phase: enemy.phase };
   }
@@ -436,6 +567,7 @@ const HIDDEN_TEXT: Partial<Record<IntentKind, string>> = {
   backstrike: 'is eyeing your bench…',
   status: 'is preparing something nasty…',
   debuff: 'is preparing to weaken you…',
+  disrupt: 'is preparing a trick…',
   buff: 'is powering up…',
   stall: 'is digging in…',
   incapacitated: 'cannot act.',
@@ -469,6 +601,8 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
       return ally && ally.uid !== enemy.uid ? `will power up ${ally.name} (${move?.name}).` : `is powering up (${move?.name}).`;
     case 'debuff':
       return `prepares ${move?.name} → ${slotText}`;
+    case 'disrupt':
+      return `prepares ${move?.name} → ${slotText || 'your side'}`;
     case 'status':
       return `prepares ${move?.name} → ${slotText}`;
     case 'stall':

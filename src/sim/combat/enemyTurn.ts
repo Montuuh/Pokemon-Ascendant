@@ -7,6 +7,7 @@ import { makeEnemy } from './setup';
 import { slotOccupant } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent } from './state';
 import { afterUse, isShielded, spendPp, startsCharge } from './keywords';
+import { isTaunted, moveDisabled } from './disruption';
 
 // §3.2.5 — an enemy executes its telegraphed intent against whoever occupies the targeted slot NOW.
 
@@ -38,6 +39,14 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
   }
   const move = intent.moveId ? ctx.content.move(intent.moveId) : null;
   if (!move) return;
+  // §5.2.3 — your Taunt stops a declared move that does no damage, your Disable the move it named: a set-up read on the
+  // intent and answered before it lands.
+  const broken = move.power === 0 && isTaunted(enemy, state.turn) ? 'taunt' : moveDisabled(enemy, move.id, state.turn) ? 'disable' : null;
+  if (broken) {
+    emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled: true });
+    log(state, 'enemy', broken === 'taunt' ? `${enemy.name} can't use ${move.name} after the taunt!` : `${enemy.name}'s ${move.name} is disabled!`);
+    return;
+  }
 
   enemy.witnessed = true; // §5.5 — Witnessed tier
   if (move.cooldown && move.cooldown > 0) enemy.cooldowns[move.id] = move.cooldown;
@@ -79,7 +88,7 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
   } else if (intent.targetSlot) {
     const occ = slotOccupant(state, intent.targetSlot);
     if (occ) targets.push(occ);
-    else fizzled = intent.kind === 'backstrike' || intent.kind === 'attack' || intent.kind === 'status' || intent.kind === 'debuff';
+    else fizzled = intent.kind === 'backstrike' || intent.kind === 'attack' || intent.kind === 'status' || intent.kind === 'debuff' || intent.kind === 'disrupt';
   }
   emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled });
 
@@ -89,6 +98,13 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
     return;
   }
 
+  // §5.2.3 — a hazard on your side, Perish Song, Haze: aimed at no one, they land on a side or the field.
+  if (intent.kind === 'disrupt' && !intent.targetSlot) {
+    log(state, 'enemy', `${enemy.name} used ${move.name}!`);
+    applyMoveEffects(state, ctx, enemy, null, move);
+    afterUse(state, enemy, move);
+    return;
+  }
   if (intent.kind === 'buff' || intent.kind === 'stall') {
     // §5.6 — a Healer's or Buffer's move lands on the enemy Lead; only a heal-or-raise move is ever aimed there
     // (`allyGivable`), so handing the recipient in as the "user" applies exactly its heal and its raise.

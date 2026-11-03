@@ -74,10 +74,10 @@ describe('Card play — §3.2.4 / §3.3.1 Melee-Ranged', () => {
   });
 
   it('Play_DrawEffect_DrawsExtraCards', () => {
-    let s = start(scenario({ team: [{ species: 'pidgeotto', level: 22, moves: ['whirlwind', 'gust', 'quick-attack', 'agility'] }, ...STARTERS.slice(0, 2)], enemies: [PIDGEY] }));
-    s = withHand(s, ['whirlwind']);
+    let s = start(scenario({ team: [{ species: 'pidgeotto', level: 22, moves: ['teleport', 'gust', 'quick-attack', 'agility'] }, ...STARTERS.slice(0, 2)], enemies: [PIDGEY] }));
+    s = withHand(s, ['teleport']);
     const before = s.player.hand.length;
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'whirlwind').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'teleport').id });
     expect(s.player.hand.length).toBe(before - 1 + 1);
   });
 
@@ -154,7 +154,7 @@ describe('Ally targets — §5.6', () => {
     const s = tweak(base(), (d) => {
       d.player.team[2]!.hp = 0;
     });
-    expect(allyRecipients(s, ctx.content.move('haze'), 0)).toEqual([0, 1]);
+    expect(allyRecipients(s, ctx.content.move('aromatherapy'), 0)).toEqual([0, 1]);
   });
 
   it('CardPlayability_CarriesTheAllyTargets', () => {

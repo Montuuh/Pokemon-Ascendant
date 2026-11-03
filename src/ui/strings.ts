@@ -1,6 +1,6 @@
 import type { Volume } from '@/app/settingsStore';
 import { BOND_RANK_NAME, BOND_TIER } from '@/sim';
-import type { GymRuleConfig, GymRuleId, RejectReason, RuleCounter, ArenaRuleId, ArenaRuleConfig, ArenaCounter } from '@/sim';
+import type { DamageCause, GymRuleConfig, GymRuleId, RejectReason, RuleCounter, ArenaRuleId, ArenaRuleConfig, ArenaCounter } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -48,6 +48,9 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'protect-again': 'Protect cannot go up two turns running.',
   'target-protected': 'It is protected this turn — nothing aimed at it lands. An area move still hits the others.',
   recharging: 'Recharging after its last move — its cards are offline this turn.',
+  disabled: 'Disabled — this card cannot be played until its lock lifts.',
+  taunted: 'Taunted — only its attacks can be played until the taunt wears off.',
+  'lead-trapped': 'Your Lead cannot get away — it cannot be swapped out by hand until the trap wears off.',
 };
 
 /** §5.9.5 Ice Armour — the enemy panel's chip for the shield it wears. */
@@ -90,13 +93,16 @@ export const RHYTHM_TEXT = {
 };
 
 /** §5.6.1 / §5.5.1 — a bench foe's second action and next plan, folded to badges on its chip on a short stage. */
-export const INTENT_BADGE = { also: 'Also', then: 'Then' };
+export const INTENT_BADGE = { also: 'Also', then: 'Then', combo: 'Combo' };
 
 /** §9.2.2.4 — a card that costs more AP than is left, said on its top edge. */
 export const NO_AP_LABEL = 'Not enough AP';
 
 /** §7.3.1 — a relic's rarity, by name. */
 export const RARITY_LABEL: Record<'common' | 'uncommon' | 'rare' | 'legendary', string> = { common: 'Common', uncommon: 'Uncommon', rare: 'Rare', legendary: 'Legendary' };
+
+/** §5.2.3 — a Disable's or a Taunt's lock on a card: the turn it holds through. */
+export const LOCK_UNTIL = (turn: number) => `through Turn ${turn}`;
 
 /** A locked card's overlay: one word for why, and a few for how long (the whole sentence is in its tooltip). */
 export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: string }>> = {
@@ -107,6 +113,8 @@ export const LOCK_LABEL: Partial<Record<RejectReason, { title: string; sub: stri
   sealed: { title: 'Sealed', sub: 'this turn' },
   recharging: { title: 'Recharge', sub: 'this turn' },
   'no-pp': { title: 'No PP', sub: 'this fight' },
+  disabled: { title: 'Disabled', sub: 'this turn' },
+  taunted: { title: 'Taunted', sub: 'attacks only' },
   'protect-again': { title: 'Not again', sub: 'used last turn' },
   'target-protected': { title: 'Protected', sub: 'this turn' },
 };
@@ -155,6 +163,7 @@ export const INTENT_LABEL: Record<string, string> = {
   backstrike: 'Backstrike',
   buff: 'Powering up',
   debuff: 'Debuff',
+  disrupt: 'Disrupt',
   stall: 'Recovering',
   status: 'Status',
   unknown: 'Unknown',
@@ -477,9 +486,11 @@ export const GROUP_HINT: Record<string, string> = {
 };
 
 /** §5.6.1 — who in a fight acts twice, as the node's preview card promises it (v0.9.12). */
-export const DOUBLE_ACTOR_LABEL: Record<'lead' | 'ace', string> = {
+export const DOUBLE_ACTOR_LABEL: Record<'lead' | 'ace' | 'lead-and-ace' | 'last-two', string> = {
   lead: 'Its Lead acts twice',
   ace: 'Its ace acts twice',
+  'lead-and-ace': 'Its first and its ace act twice',
+  'last-two': 'Its last two act twice',
 };
 export const DOUBLE_ACTOR_HINT =
   'Two actions a turn, both shown. Hurt it by a quarter of its Max HP in your turn, or hit it super-effectively, and the second is broken.';
@@ -1320,6 +1331,102 @@ export const KEYWORD_TEXT = {
   charge: { label: 'Charging', away: 'Away', tip: 'Charging: its hit lands at the start of next turn.', awayTip: 'Out of reach: everything aimed at it misses until its hit lands next turn.' },
   rampage: { label: 'Rampage', tip: (left: number) => `On a rampage: it cannot swap out, its move comes back free ${left} more time${left === 1 ? '' : 's'}, then it is Confused.` },
   rooted: { label: 'Rooted', tip: 'Rooted: it regenerates every turn and cannot swap out for the rest of the fight.' },
+  taunt: { label: 'Taunted', tip: (until: number) => `Through Turn ${until} it can only attack.` },
+  trapped: { label: 'Trapped', tip: (until: number) => `Through Turn ${until}, it cannot be swapped out by hand.` },
+  drowsy: { label: 'Drowsy', tip: (mine: boolean) => `At the end of next turn it falls asleep, if it still leads. ${mine ? 'Swap it out to shake it off.' : 'Unless it swaps out.'}` },
+  seeded: { label: 'Seeded', tip: (share: string, mine: boolean) => `It loses ${share} of its max HP at every turn's end, to the other side's Lead, while it leads. ${mine ? 'Swap it out to shake it off.' : 'Unless it swaps out.'}` },
+  cursed: { label: 'Cursed', tip: (share: string, mine: boolean) => `It loses ${share} of its max HP at every turn's end while it leads. ${mine ? 'Swap it out to shake it off.' : 'Unless it swaps out.'}` },
+  disabled: { label: 'Disabled', tip: (move: string, until: number) => `${move} cannot be used through Turn ${until}.` },
+  helped: { label: 'Helped', tip: (m: string) => `Helping Hand: its hits this turn are ×${m}.` },
+} as const;
+
+/** A share of max HP as the series says it: ⅛, ¼, ½ — else a percent. */
+export const frac = (p: number) => (p === 0.125 ? '⅛' : p === 0.25 ? '¼' : p === 0.5 ? '½' : `${Math.round(p * 100)}%`);
+
+/**
+ * §5.2.3 — the disruptions in words: `card` on the move's face (you playing it), `rule` in its bubble, `intent` on an
+ * enemy's intent card (it, at you).
+ */
+export const DISRUPT_TEXT = {
+  card: {
+    disable: (t: number) => `Disables the foe's move for ${t} turns.`,
+    taunt: 'Taunt: the foe only attacks next turn.',
+    forceSwap: "Blows the foe's stat raises away.",
+    trap: (t: number) => `The foe cannot swap out for ${t} turns.`,
+    drowsy: 'Drowsy: asleep at the end of next turn.',
+    perish: (t: number, share: string) => `In ${t} turns each Lead loses ${share} HP.`,
+    seed: (share: string) => `Seeds the foe: ${share} a turn to your Lead.`,
+    curse: (share: string) => `Curses the foe: ${share} a turn.`,
+    hazard: (name: string) => `${name} on the foe's side.`,
+    knockOff: "Knocks the foe's item off.",
+    haze: 'Washes every stat change away.',
+    helpingHand: (m: string) => `Your Lead hits ×${m} this turn.`,
+  },
+  rule: {
+    disable: (t: number) => `Disable: the move the foe declared — else its strongest — cannot be used for ${t} turns; a declared one fizzles.`,
+    taunt: 'Taunt: the foe’s declared move that does no damage fizzles, and next turn it only attacks.',
+    forceSwap: 'On a foe: every stat it raised is blown away. An enemy’s Roar drags your Lead out instead.',
+    trap: (t: number) => `Mean Look: the target cannot be swapped out by hand for ${t} turns.`,
+    drowsy: 'Yawn: the target falls asleep at the end of next turn, if it still leads; a swap shakes it off.',
+    perish: (t: number, share: string) => `Perish Song: after ${t} more turns, whoever leads on each side loses ${share} of its max HP — yours too. Swap out before the last note.`,
+    seed: (share: string) => `Leech Seed: ${share} of the target's max HP at each turn's end, to your Lead, while it leads; not a Grass-type.`,
+    curse: (share: string) => `Curse: ${share} of the target's max HP at each turn's end while it leads.`,
+    hazard: (name: string, effect: string) => `${name} on the foe's side: ${effect}.`,
+    knockOff: 'Knock Off: hits harder while the target holds an item, and knocks it off for the fight.',
+    haze: 'Haze: every stat change on the field, on both sides, is washed away.',
+    helpingHand: (m: string) => `Helping Hand: your Lead's hits this turn are ×${m}.`,
+  },
+  intent: {
+    disable: (move: string, t: number) => `Locks your Lead's strongest card, ${move}, for ${t} turns.`,
+    taunt: "Next turn your Lead's cards that do no damage cannot be played.",
+    drag: (who: string, entry: number) => `Drags your Lead out: ${who} is dragged in, free${entry > 0 ? `, and takes ${entry} from the hazards on your side` : ''}.`,
+    stands: 'Your Lead stands its ground: it cannot move, or nobody can come in.',
+    trap: (t: number) => `Your Lead cannot be swapped out by hand for ${t} turns.`,
+    drowsy: 'Your Lead falls asleep at the end of next turn if it still leads.',
+    perish: (t: number, share: string) => `After ${t} more turns, whoever leads on each side loses ${share} of its max HP.`,
+    seed: (share: string) => `Your Lead loses ${share} of its max HP at each turn's end while it leads, to their Lead; a Grass-type shrugs it off.`,
+    curse: (share: string) => `It pays half its own HP; your Lead loses ${share} at each turn's end while it leads.`,
+    hazard: (name: string, effect: string) => `${name} on your side: ${effect}.`,
+    knockOff: "Your Lead's held item is knocked off for the fight.",
+    haze: 'Every stat change on the field is washed away — yours and its own.',
+    helpingHand: (m: string) => `Its Lead's hits this turn are ×${m}.`,
+    yourSide: 'On your side.',
+    bothSides: 'On both sides of the field.',
+  },
+  /** The footer, by what answers it: a swap for most — not for a trap, a hazard (a swap steps onto it) or a Roar. */
+  footer: 'Most of these are answered by a swap.',
+  trapFooter: 'A swap cannot answer this one: outlast it, or break the plan before it lands.',
+  hazardFooter: 'A swap steps onto it: swap less while it lies there; Spikes miss a Flying-type.',
+  dragFooter: 'A rooted, frozen or recharging Lead stands its ground; it waits a turn before it roars again.',
+} as const;
+
+/** What a floating damage number names when no move dealt it: the status, the weather, the rule, the disruption. */
+export const DAMAGE_CAUSE_LABEL: Record<Exclude<DamageCause, 'move'>, string> = {
+  burn: 'burn',
+  poison: 'poison',
+  sandstorm: 'sandstorm',
+  hail: 'hail',
+  tremor: 'tremor',
+  hazard: 'hazard',
+  seed: 'seed',
+  perish: 'Perish Song',
+};
+
+/** §5.2.3 — where a hazard, Perish Song or Haze is aimed, on its intent chip. */
+export const INTENT_SIDE_LABEL = 'Your side';
+
+/** §5.5.2 — a combo's finisher, shown under the set-up as next turn's plan. */
+export const COMBO_TEXT = {
+  label: 'Combo',
+  title: 'A combo — its finisher, next turn',
+  footer: (left: number) => `Break it this turn: ${left} more damage, or one super-effective hit. A KO, a sleep or a freeze cancels it too, and so does your Taunt or Disable on its set-up.`,
+} as const;
+
+/** §5.2.3 — Perish Song's count, on the top bar: both sides' Leads are struck when it ends. */
+export const PERISH_TEXT = {
+  label: 'Perish',
+  title: 'Perish Song',
+  body: (left: number, percent: number) => `In ${left} turn${left === 1 ? '' : 's'}, whoever leads on each side loses ${frac(percent)} of its max HP. Swap your Lead out before the last note.`,
 } as const;
 
 /** §3.11 — a keyword's whole rule, for a card's bubble and an enemy stance's intent card. */
@@ -1344,7 +1451,9 @@ export const KEYWORD_RULE = {
 } as const;
 
 /** §3.11.6 / §4.3 — the side conditions' and the fields' names as the keyword lines say them. */
-export const SIDE_NAME: Record<'reflect' | 'light-screen' | 'safeguard' | 'mist', { name: string; short: string; effect: string }> = {
+export const SIDE_NAME: Record<'reflect' | 'light-screen' | 'safeguard' | 'mist' | 'spikes' | 'stealth-rock', { name: string; short: string; effect: string }> = {
+  spikes: { name: 'Spikes', short: 'Spikes: ⅛ on entry', effect: 'whoever steps into its Lead loses ⅛ of its HP (not Flying), for the rest of the fight' },
+  'stealth-rock': { name: 'Stealth Rock', short: 'Stealth Rock: ⅛ × Rock on entry', effect: 'whoever steps into its Lead loses ⅛ of its HP times Rock’s effectiveness on it, for the rest of the fight' },
   reflect: { name: 'Reflect', short: 'Reflect: Melee −⅓', effect: 'Melee damage into its side is cut by a third' },
   'light-screen': { name: 'Light Screen', short: 'Light Screen: Ranged −⅓', effect: 'Ranged damage into its side is cut by a third' },
   safeguard: { name: 'Safeguard', short: 'Safeguard: no status', effect: 'no status can be put on its side' },
@@ -1365,6 +1474,9 @@ export const SIDE_CHIP_TEXT = {
   wishName: 'Wish',
   more: (n: number) => `+${n}`,
   moreTitle: (n: number) => `${n} more on this side`,
+  /** §5.2.3 — a hazard is named by where it lies: the side it hurts. */
+  hazardTitle: (name: string, side: 'player' | 'enemy') => `${name} on ${side === 'player' ? 'your' : 'the foe’s'} side`,
+  entry: (amount: number, name: string) => `${amount} of it from the ${name} on the way in.`,
 } as const;
 
 /** §4.3.15 — a field a move set: how long it has, and what comes back. */

@@ -494,7 +494,7 @@ export function CombatScreen() {
     const slot = indexToSlot(state!, bi);
     return (
       <div className={cls}>
-        <Portrait turn={state!.turn} mon={shownMon(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
+        <Portrait turn={state!.turn} mon={shownMon(mon)} variant="bench" slotLabel={SLOT_LABEL[slot]} slotId={slot} allyIndex={bi} fxSlot={slot === 'bench1' ? 'bench1' : 'bench2'} spriteClass={fx.sprites[mon.uid]} swapCost={opt?.cost} swapQuick={opt?.quick} swapAllowed={opt?.allowed} swapHint={swapHint(state!, bi, swaps)} swapBlocked={opt && !opt.allowed && opt.reason ? REJECT_TEXT[opt.reason] : undefined} asLead={asLeadFor(bi)} targeted={targetSlots.has(slot)} selectable={(allySelectable && mon.hp > 0) || stepBackSelectable.has(bi) || allyCardTargets.has(bi)} rhythmGhost={ghostFor(mon.uid)} onHover={(h) => setHoverAllySlot((cur) => (h ? slot : cur === slot ? null : cur))} onClick={() => onTeamClick(bi)} fxClass={fx.classes[mon.uid]} faintPending={!!fx.faintPending[mon.uid]} arrival={arrivalOf(mon.uid)} {...incomingFor(mon.uid)} />
       </div>
     );
   }
@@ -531,7 +531,7 @@ export function CombatScreen() {
           {/* §5.6.5 — a hold-out counts its turns on the top line; a runner counts on its own card. */}
           {state.objective?.kind === 'hold' && <ObjectiveChip kind="hold" turns={state.objective.turns} live={state} />}
           {/* §9.2.2.1 — the active field, with the Home Field marker when the enemy owns it. */}
-          <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} timers={state.fieldTimers} />
+          <FieldChips fields={state.fields} suppressed={fieldsSuppressed(state, ctx.content)} timers={state.fieldTimers} perish={state.perish ? { turnsLeft: state.perish.turnsLeft, percent: ctx.config.disruption.perishPercent } : undefined} />
         </div>
         {/* §9.2.2.1 — the bar's middle says what to do now while a card or an item waits for its target, and what just
             happened otherwise: on the field the hint lay across the very Pokémon you were aiming at. */}

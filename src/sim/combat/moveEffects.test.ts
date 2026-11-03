@@ -145,11 +145,11 @@ describe('Support reach — §7.4', () => {
   });
 
   it('Aromatherapy_ClearsTheWholeTeam', () => {
-    const sick = tweak(vs(['haze', 'water-gun']), (d) => {
+    const sick = tweak(vs(['aromatherapy', 'water-gun']), (d) => {
       d.player.team[0]!.status = { kind: 'burn', appliedTurn: 0, turnsLeft: null };
       d.player.team[1]!.status = { kind: 'paralysis', appliedTurn: 0, turnsLeft: 3 };
     });
-    const s = playOnly(sick, 'haze');
+    const s = playOnly(sick, 'aromatherapy');
     expect(s.player.team[0]!.status).toBeNull();
     expect(s.player.team[1]!.status).toBeNull();
   });

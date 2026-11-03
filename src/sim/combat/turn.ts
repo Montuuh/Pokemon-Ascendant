@@ -15,6 +15,7 @@ import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmu
 import { arenaTurnEnd, armourLead, ruleTurnEnd, ruleTurnStart, sealStrongest } from './ruleTurn';
 import { objectiveTurnEnd } from './objective';
 import { keywordTurnEnd, keywordTurnStart, rampageReturns } from './keywordTurn';
+import { disruptionTurnEnd } from './disruption';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -224,6 +225,8 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
       heal(state, c, Math.max(1, Math.floor(c.maxHp * ctx.config.grassyHealPercent)), 'regen');
     }
   }
+  // §5.2.3 — seeds and curses drain, a drowsy Lead falls asleep, Perish Song counts down.
+  disruptionTurnEnd(state, ctx);
   // §6.8.3 Arena Trap — while the wearer leads, the ground under every enemy gives a little each turn.
   const trapper = state.player.team[state.player.leadIndex];
   const trap = trapper && trapper.hp > 0 ? abilityLeadTrapDivisor(trapper, ctx.content) : 0;

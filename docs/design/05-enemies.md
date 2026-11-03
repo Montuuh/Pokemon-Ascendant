@@ -32,6 +32,7 @@ Intents target **slots**. The display names the slot and its current occupant.
 | `Unknown` | ❓ + a kind glyph | Hidden magnitude (§5.5) |
 | `Summon(helper)` | 👤+ Call for Help → +Nidoran♀ | Brings a named companion onto the field as a support (§5.6.2) |
 | `Getaway` | ⇥ Teleport — gone at the turn's end | A runner's last action: nothing happens to you, and at the turn's end it is gone (§5.6.5) |
+| `Disrupt(move, slot?)` | 🔒 Taunt → Lead · Spikes → your side | A trick in your way: a card locked, a Taunt, a Roar, a seed, a hazard, a countdown (§5.2.3) |
 
 **The number is the hit** (v0.8.1). What an intent prints is the Resolution phase run dry on a copy of the fight:
 every term the real hit has — relics, Badges, held items, abilities, flat reductions, guards, shields, faint
@@ -51,7 +52,69 @@ move, Substitute, Counter and Mirror Coat, a side condition, a field it sets. A 
 declared**, in the Intent phase, not when the enemy acts: the Protect is up through your whole turn, and the Reflect is
 already in the number your cards print. That is what makes it telegraphed rather than reactive — an enemy that raised
 its Protect after your cards had landed would be an ambush (Pillar 1). Its intent chip names the stance; when its turn
-comes it only says so.
+comes it only says so. **Helping Hand** is a stance too (§5.2.3): up when declared, so its Lead's number already carries it.
+
+## §5.2.2 What an enemy carries — kits by role
+
+An enemy's kit is built by **roles, not by power** (v0.9.92, the user's call: "añadirles muchos más movimientos";
+`combat/enemyKit.ts`). A wild Pokémon carries the Auto pick of four (§6.9). A trainer's Pokémon carries **five**; a
+climax's — an Elite Trainer's, a Gauntlet's, a Gym Leader's, the League's — **six** (`ENEMY_KIT_SIZE`). Each slot past
+the four is a role the kit lacked, filled in this order: a **heavy** hit (3 AP), a **set-up** (a raise, a field, Helping
+Hand), a **disruption** (a status, a drop, §5.2.3), a **defence** (Protect, a screen, a heal) — then whatever is left.
+
+Each role is taken from the fight's **repertoire** first, then from what the Pokémon knows at its level, newest first. A
+repertoire is what its trainer teaches, whatever the learnset says, so a fight reads as its trainer:
+
+| Whose | Repertoire |
+|---|---|
+| Hiker | Stealth Rock · Sandstorm · Rock Polish |
+| Swimmer | Rain Dance · Aqua Ring · Haze |
+| Bug Catcher | String Shot · Leech Life · Poison Powder |
+| Engineer | Thunder Wave · Light Screen · Reflect |
+| Lass | Charm · Sing · Wish |
+| Youngster | Focus Energy · Quick Attack · Endure |
+| Hex Maniac | Curse · Mean Look · Confuse Ray |
+| Rocket Grunt | Knock Off · Smokescreen · Toxic |
+| Ace Trainer | Swords Dance · Taunt · Protect |
+| Elite Trainer, Gauntlet | Helping Hand · Taunt · Protect |
+| A Gym Leader | by its type (`GYM_REPERTOIRE`): Brock's rocks and sand, Misty's rain and Haze, Koga's Mean Look and Spikes… |
+| An Elite Four member | its own: Bruno's Bulk Up and Detect, Agatha's Curse and Hypnosis, Will's screens, Lance's Dragon Dance |
+
+A Gym's and the League's scripted four stay as written, and the combo's two moves (§5.5.2) always make the kit. From
+Region 2 the status accent (§2.2) takes the last slot that is not the combo's or the signature's.
+
+*Why roles (v0.9.92):* the old pick kept the two strongest attacks and filled with the newest moves, so a kit was four
+hits or three hits and a Tail Whip. A role template is what makes an enemy a set of decisions to read — what it sets up,
+what it takes away from you, what it guards — and a repertoire is what tells one trainer from another.
+
+## §5.2.3 Disruption — the utility that hurts
+
+The enemies' answer to a deck that only hits (v0.9.92, the user's call: "hacerlos más fuertes los que no sean de daño";
+`combat/disruption.ts`). Each is read on its intent (`Disrupt`) before it lands (Pillar 1), and nearly each is answered
+by **a swap** (Pillar 2). Your side plays the same moves where the foe can feel them.
+
+| Effect | Moves | On you | Answer | On a foe |
+|---|---|---|---|---|
+| **Disable** | Disable | Your Lead's strongest card cannot be played for 2 turns | Play it first; another card | The move it declared fizzles, and it cannot pick it again for its turns |
+| **Taunt** | Taunt | Next turn, no card of it that does no damage | Attack | A declared set-up fizzles; next turn it only attacks |
+| **Drag** | Roar, Whirlwind | Your Lead is dragged out, your most hurt bench dragged in — free, outside the swap ladder | A rooted, frozen or recharging Lead stands | Its raises are blown away |
+| **Trap** | Mean Look | Your Lead cannot be swapped out by hand for 2 turns | — | — |
+| **Drowsy** | Yawn | Asleep at the end of next turn, if it still leads | **Swap it** | The same |
+| **Perish Song** | Perish Song | After 3 more turns, each side's Lead loses ½ its Max HP | **Swap** before the last note | The same: it is a clock on both |
+| **Seed** | Leech Seed | ⅛ of your Lead's Max HP each turn's end, to the other side's Lead; not a Grass-type | **Swap it** | The same, to your Lead |
+| **Curse** (Ghost) | Curse | The caster pays ½ its HP; your Lead loses ¼ each turn's end | **Swap it** | The same |
+| **Hazards** | Spikes, Stealth Rock | On your side for the fight: ⅛ to each Pokémon stepping into your Lead (Spikes miss a Flyer; Stealth Rock × Rock's effectiveness) | Swap less; a Flyer | Each enemy that steps up to lead takes it |
+| **Knock Off** | Knock Off | Its hit ×1.5 while your Lead holds an item; the item is off for the fight (back after it) | — | The same |
+| **Haze** | Haze | Every stage on the field washed away | Do not over-build | The same |
+| **Helping Hand** | Helping Hand | An enemy support's Lead hits ×1.5 this turn — a stance, in its number | Break the support first | Your Lead's hits this turn ×1.5 |
+| **Team drops** | Growl, Leer, Tail Whip | −1 to every Pokémon of your side | Mist | Every foe |
+
+A seed, a curse and drowsiness hold only on the Pokémon that leads: the turn's end sheds them from anyone a swap moved
+to the bench. Numbers are `BattleConfig.disruption` (hazard ⅛, Perish Song ½).
+
+*Why mostly swaps (delegated):* the series' answer to every one of these is to switch out, and switching is the
+signature decision here (Pillar 2). A disruption that only a card could answer would make the deck a checklist; one a
+swap answers makes the enemy's turn a question about your formation.
 
 ---
 
@@ -97,6 +160,30 @@ The keywords of §3.11 are weighed against an attack's power like any other inte
 *(v0.9.89: with no card above 3 AP, Explosion became affordable, and a healthy boss Golem opened with it — a five-turn climax.
 The sacrifice weight puts it back where the series uses it.)* A guard on a hold-out (§5.6.5) also keeps its finisher for the
 hold's last turn: it recharges, so spent early it would leave that turn empty.
+
+## §5.3.2 Weighing the disruption
+
+Utility is weighed **by what it does now**, not at a flat 50 (`disruptAi` in BattleConfig), against an attack's power:
+
+| Move | Score |
+|---|---|
+| **Disable**, **Taunt** | 55 while it would bite: no card already disabled; a Taunt by the share of your Lead's moves that do no damage |
+| **Drag** | 60 × (½ + half its raises + ½ with hazards on your side): a Roar onto Spikes, or off a Lead that built itself up |
+| **Trap** | 35, doubled when Perish Song is up or in its own kit |
+| **Drowsy**, **Seed** | 65 while it can land (no status, not a Grass-type for a seed; a curse only above `highSelfHpThreshold`) |
+| **Hazards** | 55 × your bench standing / 2, once |
+| **Perish Song** | 60, ×1.5 on a trapped Lead; once |
+| **Haze** | 30 per two stages it would take from you net of its own side; nothing when you have less to lose |
+| **Helping Hand** | 55 from a support whose Lead attacks; nothing from the Lead |
+| **A team drop** | 55, decaying as the stat is already down across your side: `× max(0, 1 − down/3)` |
+| **A single drop** | 50, decaying the same way on its target |
+
+**Finishers read their condition.** An attack's score carries its power bonus when the condition holds now — Dream
+Eater on a sleeper, Brine below half, Wake-Up Slap on a sleeper — so an enemy plays its finisher when it lands.
+**A Taunted enemy** only chooses attacks.
+
+*(v0.9.92: a flat 50 had Rattata spam Tail Whip and never chose Haze or Mist. A drop decays as a raise does, and each
+disruption is worth something only when its condition holds.)*
 
 # §5.4 Cleave and Backstrike
 
@@ -152,6 +239,49 @@ the AI's sharpness for a full turn of foresight. Without the relic nothing plans
 
 **Battle Tracker** (Tier-2) works on the same rule from the other side: a species you have already fought this run
 never hides its first intent again, as if it were Familiar (§5.13.1) for the rest of the run.
+
+## §5.5.2 Telegraphed combos
+
+A Gym Leader's ace, every Elite Four member's and the Champion's carry an **authored combo** — a set-up, then the move it
+sets up (v0.9.92, the user's call: "que tuvieran buenos combos determinados combates"). It is declared as a **plan**: the
+set-up is this turn's intent, and its finisher is shown under it as next turn's (`enemy.next`, the queue of §5.5.1),
+marked *Then*. Next turn the finisher is the kept plan. A Pokémon that acts twice (§5.6.1) runs a combo in **one turn**
+when both moves fit its budget — Rain Dance and a Thunder the rain makes cheaper.
+
+**When it opens.** Only when nothing else dictates the turn (a signature, a rampage, an objective's finisher), when the
+set-up would do something, and when the pair is worth more than its best single move: the set-up's score plus 0.8 × the
+finisher's as it will land (`BattleConfig.combo.followWeight`). After a combo runs or is broken it waits **two turns**
+(`combo.rest`): the boss is more than its combo.
+
+**Breaking it.** The same as a second action (§5.6.1): a quarter of its Max HP in your turn, or a super-effective hit,
+and the plan is broken — no finisher next turn, and the finisher waits out that turn too. A KO, a sleep or a freeze
+cancels it; your Taunt, Disable or Haze answers its set-up (§5.2.3); a swap moves the target its finisher needs.
+
+| Whose | Combo | The answer |
+|---|---|---|
+| Brock's Onix | Stealth Rock → Roar | Break the Onix, or a bench that does not mind rocks |
+| Misty's Starmie · Poliwag | Rain Dance → Bubble Beam · Hypnosis → Wake-Up Slap | A Water-resistant Lead · swap the sleeper out |
+| Aster's Butterfree | Sleep Powder → Dream Eater | Safeguard; swap the sleeper |
+| Whitney's Raticate | Tail Whip → Hyper Fang | Break it before the fang |
+| Blaine's Arcanine · Erika's Vileplume | Sunny Day → Flamethrower · Sunny Day → Solar Beam | Rain of your own; a resist |
+| Surge's Electrode | Rain Dance → Thunder | A Ground-type; Protect on the Thunder's turn |
+| Koga's Nidoking | Mean Look → Toxic | Cure it, or break the plan before you are held |
+| Sabrina's Alakazam · Will's | Calm Mind → Psychic | Haze, Taunt, a Dark-type |
+| Giovanni's Rhydon | Rock Polish → Earthquake | A Flyer; break it |
+| Kiyo's and Bruno's Machamp | Bulk Up → Submission · Bulk Up → Cross Chop | A Ghost; Haze |
+| Lorelei's Lapras | Hail → Blizzard | Fire; Light Screen |
+| Agatha's Gengar | **Mean Look → Perish Song** | Swap before the last note — once the look wears off |
+| Will's Jynx · Slowbro | Lovely Kiss → Dream Eater · Yawn → Surf | Swap the sleeper; swap the drowsy |
+| Lance's Gyarados · Dragonite | Dragon Dance → Waterfall · Dragon Dance → Outrage | Ice; Haze |
+| The Champion's ace | its weather, then the move it feeds | A resist; your own weather |
+
+**Finishers** (`power-bonus` on a condition: Dream Eater and Wake-Up Slap on a sleeper, Smelling Salts on a paralysed
+target, Brine below half, Revenge and Avalanche after being hurt, Knock Off on a held item) are printed a band low and
+budgeted on what they land when the condition holds: from their AP band's floor to the next band's ceiling (§6.3.6.4's
+bands) — Dream Eater on a sleeper is a 3-AP hit for 2. The intent's number and the card's carry the bonus when it holds.
+
+*Why a plan and not a surprise:* a combo the player cannot see is an ambush; one shown a turn early is the most
+interesting read a fight can offer — break it, dodge it, or let it come and answer it (Pillar 1).
 
 # §5.6 Multi-enemy encounters
 
@@ -220,11 +350,21 @@ moves count, only in your turn — a status tick or a Counter in the enemies' tu
 carries a meter that fills with what you deal it, and its card says what is left: the answer to a double intent is a
 telegraphed decision, where you aim this turn (Pillar 1).
 
-**Who acts twice** (`run/doubleAction.ts`, `DOUBLE_ACTION`): the Elite Wild in every Region (its shape, §5.6.3);
-from Region 2 a wild Pokémon rolled Rare (§2.6.2 — the banner's promise), an Ace Trainer's Lead (§2.7.1) and the Gym
-Leader's ace, the last of its team; in Region 3 the Elite Trainer's Lead too. **At most one Pokémon in a fight**, so a
-turn never shows more than one double intent to read. The node's preview card says so — *Its Lead acts twice*, *Its
-ace acts twice*, *A Rare acts twice* — before you commit.
+**Who acts twice** (`run/doubleAction.ts`, `DOUBLE_ACTION`; v0.9.92, the user's call: "que sea más frecuente los
+dobles ataques"):
+
+| Fight | Region 1 | Region 2 and 3 |
+|---|---|---|
+| Elite Wild | always (its shape, §5.6.3) | always |
+| A wild Rare (§2.6.2) | from the eighth column | always |
+| A trainer's ace (its last) | an Ace Trainer's | every trainer's |
+| Elite Trainer | its Lead | its Lead and its ace |
+| Gym Leader | its ace | its first and its ace |
+| Victory Road and the League | the Gauntlet's ace, each Elite Four member's ace, the Champion's last two | |
+
+**At most two in a fight.** The budget of 4 is an ace's — three phases: a Gym's, the League's; a Gym's first or the
+Champion's next-to-last has 3. Breaking a second action also breaks a combo run in that turn (§5.5.2). The node's preview
+card says who before you commit — *Its ace acts twice*, *Its first and its ace act twice*, *Its last two act twice*.
 
 *Why placed and not a rule (v0.8.2, delegated):* acting twice is the most dangerous thing an enemy can do under
 Pillar 1 — two telegraphed hits a turn halve the time you have to answer — so it belongs to a few chosen Pokémon,

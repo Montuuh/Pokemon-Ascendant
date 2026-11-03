@@ -1,12 +1,12 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-03 · **Version:** v0.9.91 (*Moves that grow*).
+**Date:** 2026-11-03 · **Version:** v0.9.92 (*Enemies with intent*).
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords. ✅ v0.9.90 real
 evolution levels and methods, Friendship. ✅ v0.9.91 progressive learnsets (tracks, Move Reminder, no filler on a final
-form, 76 Gen II–IV moves). Next **v0.9.92** enemy kits by role,
-disruption effects, more double actions, telegraphed combos per Gym/Elite/League, and the Gym teams re-cut to forms legal
-at their real levels. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
+form, 76 Gen II–IV moves). ✅ **v0.9.92** enemies with intent (kits §5.2.2, disruption §5.2.3,
+weights §5.3.2, combos §5.5.2, doubles §5.6.1, Gym re-cut + test, 14 moves). The rework is complete. Harness (with the
+slower XP curve) R1 58 · R2|R1 46 · R3|R2 44 · League 71 · run 8 %; Region tier ×0.49 / ×0.48 / ×0.60. Open: the new moves in player learnsets/TMs, junk cards, Spite, Follow Me, Elite Trainer combos. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
 **Pushed 2026-11-03 (no version):** base forms learn at the series' levels (`scripts/early-learnsets.mjs`, §6.9): 55 species
 retimed, Lv 1 pair = first hit + first trick (starters Tackle/Scratch + Growl; Ember 7, Vine Whip 9). Leech Seed is in the
 v0.9.92 WIP (`seed`, disruption.ts) — check Grass immunity and the seeded chip when it lands.

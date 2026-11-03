@@ -59,7 +59,9 @@ export type IntentKind =
   /** §5.6 — a Defender steps in front of its Lead and takes the Lead's place (v0.8.6). */
   | 'guard'
   /** §5.6.5 — a runner's last action: it gets away at the end of the turn (Teleport, or just running). */
-  | 'getaway';
+  | 'getaway'
+  /** §5.2.3 — a trick in your way: a Disable, a Taunt, a Roar, a hazard on your side, Perish Song. */
+  | 'disrupt';
 
 // Per §3.3 — the three Active Team slots. Slots are positions; occupants change when the Lead swaps.
 export const SLOT_IDS = ['lead', 'bench1', 'bench2'] as const;

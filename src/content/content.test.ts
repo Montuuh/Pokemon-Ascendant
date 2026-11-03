@@ -14,7 +14,7 @@ describe('content registry', () => {
     expect(reg.allMoves().length).toBeGreaterThanOrEqual(50);
     expect(reg.allSpecies().length).toBeGreaterThanOrEqual(40);
     expect(reg.allConsumables().length).toBeGreaterThanOrEqual(10);
-    expect(reg.allScenarios()).toHaveLength(23);
+    expect(reg.allScenarios()).toHaveLength(25);
   });
 
   it('every species has portrait, box icon and animated battle sprites on disk', () => {
@@ -312,6 +312,7 @@ describe('content registry', () => {
     }
   });
 
+  const FINISHER_WHEN = new Set(['target-asleep', 'target-paralyzed', 'target-below', 'hurt-this-turn', 'target-holds-item']);
   it('§6.3.6.4 — every damaging card sits in its AP band; Cleave, recoil, sacrifice, charge, rampage and Mastery tiers are budgeted apart', () => {
     const band: Record<number, { melee: [number, number]; ranged: [number, number] }> = {
       1: { melee: [40, 50], ranged: [45, 55] },
@@ -333,6 +334,15 @@ describe('content registry', () => {
       expect(m.apCost, m.id).toBeLessThanOrEqual(3);
       if (m.power <= 1 || mastery.has(m.id) || m.targeting === 'cleave') continue;
       if (m.effects.some((e) => e.kind === 'recoil' || e.kind === 'charge' || e.kind === 'rampage' || (e.kind === 'status' && e.self))) continue;
+      // §5.5.2 — a finisher is budgeted on what it lands when its condition holds: from its own band's floor to the next
+      // band's ceiling (Dream Eater on a sleeper is a 3-AP hit for 2).
+      const finisher = m.effects.find((e) => e.kind === 'power-bonus' && FINISHER_WHEN.has(e.when));
+      if (finisher && finisher.kind === 'power-bonus') {
+        const lands = m.power * (finisher.multiplier ?? 1);
+        expect(lands, `${m.id} lands`).toBeGreaterThanOrEqual(band[m.apCost]![m.range][0]);
+        expect(lands, `${m.id} lands`).toBeLessThanOrEqual(band[Math.min(3, m.apCost + 1)]![m.range][1]);
+        continue;
+      }
       const [lo, hi] = ultimate(m) ?? band[m.apCost]![m.range];
       expect(m.power, `${m.id} (${m.apCost} AP ${m.range})`).toBeGreaterThanOrEqual(lo);
       expect(m.power, `${m.id} (${m.apCost} AP ${m.range})`).toBeLessThanOrEqual(hi);

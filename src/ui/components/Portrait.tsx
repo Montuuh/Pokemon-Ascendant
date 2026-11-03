@@ -58,7 +58,9 @@ interface Props {
   /** The hits above add up to a knockout. */
   incomingKo?: boolean;
   /** §9.2.5 — a bench Pokémon: what it would take this turn as the Lead (v0.8.6). */
-  asLead?: { amount: number; ko: boolean } | null;
+  asLead?: { amount: number; ko: boolean; entry?: { id: 'spikes' | 'stealth-rock'; amount: number }[] } | null;
+  /** §5.2.3 — why it cannot be swapped in now (the bubble's footer, in place of the swap's price). */
+  swapBlocked?: string;
   /** §9.9.1 — its Pokémon is still in its ball (`waiting`: the whole card unseen) or coming out of it (`entering`). */
   arrival?: 'waiting' | 'entering' | null;
 }
@@ -68,7 +70,7 @@ interface Props {
 // on a dark head, the animated back sprite in a window lit in its first type, its HP — with the part this turn's visible
 // intents will take striped — and on a bench the swap price and what it would take as the Lead. The hits coming at it
 // hang off the card's edge, towards the enemy. The whole card is one button: a swap, an ally target, a step-back choice.
-export function Portrait({ turn, mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, targeted, selectable, rhythmGhost, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
+export function Portrait({ turn, mon, variant, slotLabel, slotId, allyIndex, fxSlot, spriteClass, swapCost, swapQuick, swapAllowed, swapHint, swapBlocked, targeted, selectable, rhythmGhost, onHover, onClick, fxClass, incoming, incomingKo, asLead, faintPending, arrival }: Props) {
   // §9.9.1 — at 0 HP but its faint still to play: it stands through the hits on screen first.
   const fainted = mon.hp <= 0 && !faintPending;
   const classes = [card.card, styles.unit, styles[variant], targeted ? styles.targeted : '', selectable ? styles.selectable : '', fainted ? styles.fainted : '', arrival ? styles[arrival] : ''].filter(Boolean).join(' ');
@@ -76,7 +78,7 @@ export function Portrait({ turn, mon, variant, slotLabel, slotId, allyIndex, fxS
   // 2026-09-21 — the card's bubble is the Pokémon's summary: types, ability, held item, status, Trauma, and its role
   // right now (Lead, or what a swap costs).
   const hits = !fainted && incoming?.length ? incoming : null;
-  const tip = useTip(combatantTip(mon, { turn, isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost, swapQuick: !!swapQuick } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
+  const tip = useTip(combatantTip(mon, { turn, isLead: variant === 'lead', ...(swapCost !== undefined && !fainted ? { swapCost, swapQuick: !!swapQuick } : {}), ...(swapBlocked && !fainted ? { swapBlocked } : {}), ...(hits ? { incoming: hits, incomingKo: !!incomingKo } : {}), ...(asLead && !fainted ? { asLead } : {}) }));
   const incomingText = hits ? `; incoming: ${hits.map((h) => (h.moot ? `${h.name}'s ${h.move}, wasted on it being down` : `${h.amount} from ${h.name}'s ${h.move}`)).join(', ')}${incomingKo ? ', a knockout' : ''}` : '';
   // §9.2.5 — the HP left after the visible hits: what the striped end of the bar shows (a wasted hit takes nothing).
   const future = hits ? Math.max(0, mon.hp - hits.reduce((a, h) => a + (h.moot ? 0 : h.amount), 0)) : null;

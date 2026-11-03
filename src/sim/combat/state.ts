@@ -115,13 +115,33 @@ export interface Volatile {
   counter?: { range: 'melee' | 'ranged'; multiplier: number; turn: number };
   /** §3.11.13 Ingrain — it cannot be swapped out for the rest of the fight. */
   rooted?: true;
+  /** §5.2.3 Taunt — through this turn, no move but an attack. */
+  tauntUntil?: number;
+  /** §5.2.3 Mean Look — through this turn, it cannot be swapped out. */
+  trappedUntil?: number;
+  /** §5.2.3 Yawn — at the end of this turn, still leading, it falls asleep. */
+  drowsyTurn?: number;
+  /** §5.2.3 Leech Seed / Curse — a share of its HP at every turn's end, fed to the other side's Lead for a seed. */
+  seeded?: { percent: number; heal: boolean; bySide: 'player' | 'enemy' };
+  /** §5.2.3 Helping Hand — its hits this turn are ×`multiplier`. */
+  helped?: { turn: number; multiplier: number };
+  /** §5.2.3 Revenge — the last turn a move hurt it. */
+  hurtTurn?: number;
+  /** §5.2.3 Disable on an enemy — the move it cannot use through `untilTurn` (yours are on `PlayerState.disabled`). */
+  disabledMove?: { moveId: string; untilTurn: number };
 }
 
 /** §3.11.6 / §3.11.13 — a condition over one side, counted down at the end of each Resolution. Wish names its place. */
+/** What dealt a hit: a move, a status tick, the weather, a Gym's rule, or a disruption (§5.2.3: a hazard, a seed, Perish Song). */
+export type DamageCause = 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor' | 'hazard' | 'seed' | 'perish';
+
 export interface SideCondition {
-  id: 'reflect' | 'light-screen' | 'safeguard' | 'mist' | 'wish';
+  /** §5.2.3 — Spikes and Stealth Rock stay for the fight, hurting whoever steps into that side's Lead. */
+  id: 'reflect' | 'light-screen' | 'safeguard' | 'mist' | 'wish' | 'spikes' | 'stealth-rock';
   side: 'player' | 'enemy';
   turnsLeft: number;
+  /** §5.2.3 — it stays for the fight: no clock counts it down (`turnsLeft` is then not a count). */
+  lasting?: true;
   /** Wish — the place it heals (a team index for the player, an enemy uid for the enemy) and how much. */
   place?: number | string;
   amount?: number;
@@ -151,8 +171,11 @@ export interface EnemyCombatant extends Combatant {
   /** §5.6.1 — it acts twice a turn; `second` is this turn's second intent, resolved right after the first. */
   acts?: 2;
   second?: Intent | null;
-  /** §5.6.1 — the damage it has taken in your current turn, toward breaking its second action. */
+  /** §5.6.1 — the damage it has taken in your current turn, toward breaking its second action (or its combo, §5.5.2). */
   stagger?: number;
+  /** §5.5.2 — its authored combo, and the turn it may open it again after one ran or was broken. */
+  combo?: [string, string];
+  comboRestUntil?: number;
   /** §5.6.2 — the companions its Call for Help can still bring in, in order. */
   helpers?: EnemySetup[];
   /** §5.9.5 Bloom — it took damage this turn, so it does not bloom at the turn's end. */
@@ -177,6 +200,8 @@ export interface SignatureState {
 export interface QueuedIntent {
   intent: Intent;
   phase: number;
+  /** §5.5.2 — the second step of a combo: breaking it this turn (a quarter of its HP, or a super-effective hit) cancels it. */
+  combo?: true;
 }
 
 export interface Intent {
@@ -314,6 +339,8 @@ export interface PlayerState {
   exhausted?: SkillCard[];
   /** §3.11.12 — AP borrowed this turn by an overexerting card, owed by next turn's refill. */
   apDebt?: number;
+  /** §5.2.3 Disable — one card of one Pokémon that cannot be played through `untilTurn`. */
+  disabled?: { moveId: string; ownerUid: string; untilTurn: number };
 }
 
 /**
@@ -340,7 +367,7 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'consumable-used'; consumableId: string; targetUid: string | null; apCost: number }
   | { t: 'enemy-action'; enemyUid: string; intent: Intent; fizzled: boolean }
   | { t: 'attack'; sourceUid: string; targetUid: string; moveId: string }
-  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: 'move' | 'burn' | 'poison' | 'sandstorm' | 'hail' | 'tremor' }
+  | { t: 'damage'; sourceUid: string | null; targetUid: string; amount: number; crit: boolean; effectiveness: Effectiveness; hpAfter: number; cause: DamageCause }
   | { t: 'heal'; targetUid: string; amount: number; hpAfter: number; cause: 'move' | 'consumable' | 'regen' | 'ability' }
   | { t: 'status-applied'; targetUid: string; status: StatusCondition }
   | { t: 'status-immune'; targetUid: string; status: StatusCondition }
@@ -403,6 +430,8 @@ export interface CombatState {
   fieldTimers?: Partial<Record<FieldCategory, { turnsLeft: number; restore: FieldId | null }>>;
   /** §3.11.6 — Reflect, Light Screen, Safeguard, Mist and Wish, on either side. */
   sides?: SideCondition[];
+  /** §5.2.3 Perish Song — Resolutions left before both Leads are struck. */
+  perish?: { turnsLeft: number; sungTurn: number };
   /** §5.9.5 — the Gym Leader's rule, for the whole fight. Absent in every fight but a Gym. */
   gymRule?: GymRuleId;
   /** §2.12.2.1 — a Legendary's arena rule, for the whole fight. Absent in every fight but a Legendary's. */
@@ -477,6 +506,10 @@ export type RejectReason =
   | 'no-pp'
   /** §3.11.2 — Protect cannot be raised two turns running. */
   | 'protect-again'
+  /** §5.2.3 — Disable has this card; a Taunt allows attacks only; Mean Look holds the Lead. */
+  | 'disabled'
+  | 'taunted'
+  | 'lead-trapped'
   /** §3.11.2 / §3.11.10 — the target is behind its Protect, or out of reach. */
   | 'target-protected'
   /** §3.11.8 — the owner is recharging. */

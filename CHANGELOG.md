@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.92 — Enemies with intent · 2026-11-03
+
+Enemies carry more moves, play tricks, act twice more often and run combos.
+
+- **Kits by role.** Trainers carry five moves, Gyms and the League six.
+- **Disruption.** Taunt, Disable, Roar, Mean Look, Yawn, Perish Song, Spikes.
+- **More double actions.** Every trainer's ace from Region 2; Gyms from 1.
+- **Combos.** Each Gym and League ace shows its finisher as next turn's Combo.
+
 ### v0.9.91 — Moves that grow · 2026-11-03
 
 Each stage learns its own moves, and a move grows like the Pokémon.

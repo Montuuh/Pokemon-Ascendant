@@ -30,7 +30,8 @@ describe('Acting twice, on an AP budget — §5.6.1', () => {
   });
 
   it('Budget_GymLeadersAce_HasTheLargerOne', () => {
-    const s = fight({ ...RATICATE, tier: 'boss' });
+    // §5.6.1 — an ace's: three phases (v0.9.92: a Gym's first acts twice on the ordinary budget).
+    const s = fight({ ...RATICATE, tier: 'boss', phaseCount: 3 });
     expect(doubleActionBudget(s.enemies[0]!, ctx)).toBe(ctx.config.doubleActionApBudgetBoss);
     expect(doubleActionBudget(fight().enemies[0]!, ctx)).toBe(ctx.config.doubleActionApBudget);
   });

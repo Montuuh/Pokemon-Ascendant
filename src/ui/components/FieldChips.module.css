@@ -50,6 +50,10 @@
 .stickyWeb {
   border-color: var(--type-bug);
 }
+/* §5.2.3 — Perish Song's count: a ghost's song, not a field. */
+.perish {
+  border-color: var(--type-ghost);
+}
 .home {
   border-color: var(--accent-negative);
 }

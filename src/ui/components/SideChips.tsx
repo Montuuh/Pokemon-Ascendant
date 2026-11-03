@@ -1,4 +1,4 @@
-import { IconMist, IconShield, IconShieldCheck, IconShieldStar, IconStar } from '@tabler/icons-react';
+import { IconDiamonds, IconMist, IconShield, IconShieldCheck, IconShieldStar, IconStar, IconTriangles } from '@tabler/icons-react';
 import { SLOT_LABEL, type SideCondition, type SlotId } from '@/sim';
 import { SIDE_CHIP_TEXT, SIDE_NAME } from '@/ui/strings';
 import { sideConditionLine, sideConditionTip } from '@/ui/tips';
@@ -15,7 +15,12 @@ const ICON: Record<SideCondition['id'], typeof IconShield> = {
   safeguard: IconShieldCheck,
   mist: IconMist,
   wish: IconStar,
+  spikes: IconTriangles,
+  'stealth-rock': IconDiamonds,
 };
+
+/** §5.2.3 — Spikes and Stealth Rock stay for the fight (the sim's `lasting`): no clock to count, and they hurt that side. */
+const lasting = (s: SideCondition) => !!s.lasting;
 
 interface Props {
   side: 'player' | 'enemy';
@@ -34,9 +39,9 @@ export function SideChips({ side, sides }: Props) {
       {shown.map((s) => {
         const Icon = ICON[s.id];
         return (
-          <Tipped key={s.id} tip={sideConditionTip(s, placeOf(s))} className={styles.chip} data-testid={`side-${side}-${s.id}`} aria-label={`${nameOf(s)} ${s.turnsLeft}`}>
+          <Tipped key={s.id} tip={sideConditionTip(s, placeOf(s))} className={[styles.chip, lasting(s) ? styles.harm : ''].join(' ')} data-testid={`side-${side}-${s.id}`} aria-label={lasting(s) ? nameOf(s) : `${nameOf(s)} ${s.turnsLeft}`}>
             <Icon size={14} stroke={2.2} aria-hidden="true" />
-            <span className="tabular">{s.turnsLeft}</span>
+            {!lasting(s) && <span className="tabular">{s.turnsLeft}</span>}
           </Tipped>
         );
       })}

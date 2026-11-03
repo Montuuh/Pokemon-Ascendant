@@ -18,7 +18,9 @@ export function intentTone(intent: Intent | null | undefined): IntentTone | null
     case 'debuff':
     case 'buff':
       return 'stat';
+    // §5.2.3 — a trick in your way reads as a condition on you, not as a stat.
     case 'status':
+    case 'disrupt':
       return 'status';
     case 'stall':
     case 'guard':

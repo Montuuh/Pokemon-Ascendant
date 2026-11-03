@@ -1,7 +1,7 @@
 import type { CombatCtx, CombatState, EnemyCombatant, TurnForecast } from '@/sim';
 import { SLOT_LABEL, asLeadDamage, comboBreakAt, intentRecipient, slotOccupant, summonedBy, visibleMoot } from '@/sim';
 import { intentGlyph } from '@/ui/art';
-import { INTENT_LABEL, OBJECTIVE_TEXT, PHASE_TEXT, STANCE_CHIP } from '@/ui/strings';
+import { INTENT_LABEL, INTENT_SIDE_LABEL, OBJECTIVE_TEXT, PHASE_TEXT, STANCE_CHIP } from '@/ui/strings';
 import { intentCardTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import { intentTone } from '@/ui/intentTone';
@@ -70,6 +70,8 @@ export function IntentChip({ state, enemy, ctx, forecast, action, signatureShown
             {intent.crit && <> <b className={styles.crit} data-testid="intent-crit">CRIT</b></>}
             {/* §9.2.5 — an area intent prints no number: every target takes its own, on its portrait. */}
             {intent.kind === 'cleave' && <> → <b>ALL</b></>}
+            {/* §5.2.3 — a hazard, Perish Song, Haze: aimed at your side, as the log says. */}
+            {intent.kind === 'disrupt' && !intent.targetSlot && <> → <b>{INTENT_SIDE_LABEL}</b></>}
             {intent.targetSlot && (
               <>
                 {' '}→ <span className={styles.nowrap}><b>{SLOT_LABEL[intent.targetSlot]}</b> ({slotOcc ? slotOcc.name : 'empty'})</span>

@@ -102,8 +102,14 @@ describe('The League — §2.1.6', () => {
     for (const m of after.box) {
       if (!s.activeUids.includes(m.uid)) continue;
       const max = effectiveMax(after, m, content);
+      // The fight's 20 and the rest on top; the level-ups this fight paid also add their Max HP to HP (§6.2.2), so the rest
+      // is a floor here, not the exact figure.
+      const rest = Math.max(1, Math.floor((max * LEAGUE.microRest) / 100));
       if (m.uid === fallen) expect(m.hp).toBe(0);
-      else expect(m.hp).toBe(Math.min(max, 20 + Math.max(1, Math.floor((max * LEAGUE.microRest) / 100))));
+      else {
+        expect(m.hp).toBeGreaterThanOrEqual(Math.min(max, 20 + rest));
+        expect(m.hp).toBeLessThanOrEqual(max);
+      }
     }
     expect(after.reachable).toEqual([Object.values(after.map.nodes).find((n) => n.layer === 1)!.id]);
   });

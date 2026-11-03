@@ -147,6 +147,24 @@ export interface BattleConfig {
     /** A move that takes this share of its hit back or more is a sacrifice: worth this much while the enemy is healthy. */
     sacrificeRecoil: number; sacrificeHealthy: number;
   };
+  /**
+   * §5.2.3 — the disruption numbers: what a Spike or a Stealth Rock takes from the Lead stepping on it (× Rock's
+   * effectiveness for the rock; they stay for the fight), and what Perish Song's last note takes from both Leads.
+   */
+  disruption: { hazardPercent: number; perishPercent: number };
+  /**
+   * §5.3.2 — how an enemy weighs a disruption move (against an attack's power), and a debuff's decay: a debuff on a
+   * target already that far down is worth this much less per stage.
+   */
+  disruptAi: {
+    disable: number; taunt: number; forceSwap: number; trap: number; drowsy: number; perish: number; seed: number;
+    hazard: number; haze: number; helpingHand: number; teamDebuff: number;
+  };
+  /**
+   * §5.5.2 — combos: an enemy opens one when its set-up plus `followWeight` × what it sets up beats its best single move;
+   * after one runs or is broken it waits `rest` turns before the next.
+   */
+  combo: { followWeight: number; rest: number };
   /** §5.9.5 — the Gym Leaders' rules. */
   gymRules: GymRuleConfig;
   /** §2.12.2.1 — the Legendaries' arena rules. */
@@ -243,6 +261,14 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
     // v0.9.89: with no card above 3 AP, Explosion became affordable and a healthy Golem opened with it (a 5-turn boss).
     sacrificeRecoil: 0.5, sacrificeHealthy: 0.4,
   },
+  // §5.2.3 — the series' 1/8 for a Spike and a Stealth Rock (neutral), for the fight; Perish Song's half (the series' faint,
+  // softened for a fight of three: it is a clock to answer, not a kill).
+  disruption: { hazardPercent: 0.125, perishPercent: 0.5 },
+  // §5.3.2 — a disruption move scores against an attack's power (a 1-AP hit is 40–55, a 2-AP 65–80): worth a good hit when
+  // its condition holds, nothing when it would do nothing. Measured on the harness with the v0.9.92 kits.
+  // §5.5.2 — the plan's §4.4: step 1 + 0.8 × step 2; a turn between combos, so the boss is not only its combo.
+  combo: { followWeight: 0.8, rest: 2 },
+  disruptAi: { disable: 55, taunt: 55, forceSwap: 60, trap: 35, drowsy: 65, perish: 60, seed: 65, hazard: 55, haze: 30, helpingHand: 55, teamDebuff: 55 },
   // §5.9.5 — the Leaders' rules, measured on the whole-run harness with every Gym (v0.9.13).
   gymRules: {
     rockSolidCap: 0.5,

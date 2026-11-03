@@ -3,7 +3,7 @@ import { ppLeft, type CardPlayability } from '@/sim';
 import { iconOf, moveArt } from '@/ui/art';
 import { TypeLabel } from './TypeBadge';
 import { describeMove } from '@/ui/moveText';
-import { LOCK_LABEL, REJECT_TEXT, NO_AP_LABEL } from '@/ui/strings';
+import { LOCK_LABEL, LOCK_UNTIL, REJECT_TEXT, NO_AP_LABEL } from '@/ui/strings';
 import { moveTip } from '@/ui/tips';
 import { useTip } from '@/ui/tooltip';
 import styles from './MoveCard.module.css';
@@ -167,7 +167,7 @@ export function MoveCard({ play, selected, onClick, onHover, onPointerDown, inde
             {play.reason === 'owner-asleep' || play.reason === 'owner-frozen' ? <IconZzz size={16} /> : <IconLock size={16} />}
             <span className={styles.lockText}>
               <b className="display">{lockLabel?.title ?? 'Locked'}</b>
-              <small>{lockLabel?.sub ?? reasonText}</small>
+              <small>{play.lockedUntil !== undefined ? LOCK_UNTIL(play.lockedUntil) : lockLabel?.sub ?? reasonText}</small>
             </span>
           </span>
         )}

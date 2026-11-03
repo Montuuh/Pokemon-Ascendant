@@ -36,3 +36,8 @@
 .theirs .chip {
   border-color: var(--type-fire);
 }
+/* §5.2.3 — a hazard lying on a side is a threat to it, in the unit chips' amber (D10): whose side stays on the border. */
+.harm {
+  background: var(--accent-warning);
+  color: var(--ink-on-accent);
+}

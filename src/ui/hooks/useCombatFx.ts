@@ -5,7 +5,7 @@ import { getContent } from '@/content/registry';
 import { MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
-import { CATCH_BREAK_LINE, EFFECTIVENESS_LABEL, PHASE_TEXT, STATUS_LABEL } from '@/ui/strings';
+import { CATCH_BREAK_LINE, DAMAGE_CAUSE_LABEL, EFFECTIVENESS_LABEL, PHASE_TEXT, STATUS_LABEL } from '@/ui/strings';
 
 // Turns new sim events into transient visual effects (§9.9): floating numbers, hits weighed by what they did, lunges —
 // and, since v0.9.3, the series' own beats (§9.9.1): a Poké Ball thrown from a trainer's hand and a Pokémon coming out
@@ -565,7 +565,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           if (drawn !== undefined) m!.hitAt.delete(e.targetUid);
           const at = drawn ?? delay;
           const emphasis = e.crit ? 'crit' : e.effectiveness === 'double' || e.effectiveness === 'quad' ? 'super' : e.effectiveness === 'half' || e.effectiveness === 'quarter' ? 'weak' : e.effectiveness === 'immune' ? 'immune' : undefined;
-          const suffix = e.cause !== 'move' ? ` ${e.cause}` : '';
+          const suffix = e.cause !== 'move' ? ` ${DAMAGE_CAUSE_LABEL[e.cause]}` : '';
           addFloat({ uid: e.targetUid, kind: 'damage', text: e.amount === 0 && e.effectiveness === 'immune' ? 'immune' : `-${e.amount}${suffix}`, emphasis }, at);
           // §9.9 / D12 — weighted by what the hit did: the blow that faints is heavy, a super-effective or critical one
           // medium, the rest light.

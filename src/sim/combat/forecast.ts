@@ -2,6 +2,7 @@ import { current, isDraft } from 'immer';
 import { GameRng } from '../rng/gameRng';
 import type { CombatCtx, RunCtx } from './context';
 import { executeIntent } from './enemyTurn';
+import { sideHazardDamage } from './disruption';
 import { resolutionOrder, slotOccupant } from './slots';
 import type { CombatState, EnemyCombatant, Intent } from './state';
 
@@ -192,11 +193,13 @@ export function forecastIfLead(state: CombatState, ctx: CombatCtx, index: number
  * number stays hidden). `only` narrows it to one enemy action — the intent card's "If X led" line. The one place
  * both the bench chip and the intent card read, so the two can never disagree.
  */
-export function asLeadDamage(state: CombatState, ctx: CombatCtx, index: number, only?: { enemyUid: string; action: 0 | 1 }): { amount: number; ko: boolean } | null {
+export function asLeadDamage(state: CombatState, ctx: CombatCtx, index: number, only?: { enemyUid: string; action: 0 | 1 }): { amount: number; ko: boolean; entry?: { id: 'spikes' | 'stealth-rock'; amount: number }[] } | null {
   const f = forecastIfLead(state, ctx, index);
   const mon = state.player.team[index];
   if (!f || !mon) return null;
-  let amount = 0;
+  // §5.2.3 — a swap steps onto your side's hazards first: the bench's number counts them (not one intent's own line).
+  const entry = !only && index !== state.player.leadIndex ? sideHazardDamage(state, ctx, mon) : [];
+  let amount = entry.reduce((n, h) => n + h.amount, 0);
   for (const e of state.enemies) {
     for (const [action, intent] of [[0, e.intent], [1, e.second]] as const) {
       if (!intent || intent.hidden) continue;
@@ -204,5 +207,5 @@ export function asLeadDamage(state: CombatState, ctx: CombatCtx, index: number, 
       amount += forecastOn(f, e.uid, mon.uid, action);
     }
   }
-  return { amount, ko: amount >= mon.hp };
+  return { amount, ko: amount >= mon.hp, ...(entry.length ? { entry } : {}) };
 }

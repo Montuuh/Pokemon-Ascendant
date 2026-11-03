@@ -235,16 +235,16 @@
       "name": "Whirlwind",
       "type": "normal",
       "role": "utility",
-      "range": "melee",
+      "range": "ranged",
       "modifier": "none",
-      "apCost": 0,
+      "apCost": 1,
       "power": 0,
       "effects": [
         {
-          "kind": "draw",
-          "cards": 1
+          "kind": "force-swap"
         }
-      ]
+      ],
+      "cooldown": 2
     },
     {
       "id": "fly",
@@ -550,7 +550,7 @@
       "effects": [
         {
           "kind": "stage",
-          "target": "foe",
+          "target": "foe-side",
           "stat": "defense",
           "stages": -1
         }
@@ -622,7 +622,7 @@
       "effects": [
         {
           "kind": "stage",
-          "target": "foe",
+          "target": "foe-side",
           "stat": "defense",
           "stages": -1
         }
@@ -651,7 +651,7 @@
       "effects": [
         {
           "kind": "stage",
-          "target": "foe",
+          "target": "foe-side",
           "stat": "attack",
           "stages": -1
         }
@@ -668,18 +668,10 @@
       "power": 0,
       "effects": [
         {
-          "kind": "stage",
-          "target": "foe",
-          "stat": "attack",
-          "stages": -1
-        },
-        {
-          "kind": "stage",
-          "target": "foe",
-          "stat": "defense",
-          "stages": -1
+          "kind": "force-swap"
         }
-      ]
+      ],
+      "cooldown": 2
     },
     {
       "id": "sing",
@@ -737,10 +729,8 @@
       "power": 0,
       "effects": [
         {
-          "kind": "stage",
-          "target": "foe",
-          "stat": "attack",
-          "stages": -2
+          "kind": "disable",
+          "turns": 2
         }
       ]
     },
@@ -1095,9 +1085,9 @@
       "power": 0,
       "effects": [
         {
-          "kind": "status",
-          "status": "poison",
-          "chance": 0.9
+          "kind": "seed",
+          "percent": 0.125,
+          "heal": true
         }
       ]
     },
@@ -1781,7 +1771,7 @@
       "power": 0,
       "effects": [
         {
-          "kind": "team-cure"
+          "kind": "haze"
         }
       ]
     },
@@ -2157,11 +2147,16 @@
       "range": "ranged",
       "modifier": "none",
       "apCost": 2,
-      "power": 90,
+      "power": 45,
       "effects": [
         {
           "kind": "drain",
           "percentOfDamage": 0.5
+        },
+        {
+          "kind": "power-bonus",
+          "when": "target-asleep",
+          "multiplier": 2.2
         }
       ]
     },
@@ -6368,6 +6363,244 @@
           "target": "foe",
           "stat": "attack",
           "stages": -2
+        }
+      ]
+    },
+    {
+      "id": "taunt",
+      "name": "Taunt",
+      "type": "dark",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "taunt",
+          "turns": 1
+        }
+      ]
+    },
+    {
+      "id": "yawn",
+      "name": "Yawn",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "drowsy"
+        }
+      ]
+    },
+    {
+      "id": "perish-song",
+      "name": "Perish Song",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "perish",
+          "turns": 3
+        }
+      ]
+    },
+    {
+      "id": "mean-look",
+      "name": "Mean Look",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "trap",
+          "turns": 2
+        }
+      ]
+    },
+    {
+      "id": "spikes",
+      "name": "Spikes",
+      "type": "ground",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "hazard",
+          "hazard": "spikes"
+        }
+      ]
+    },
+    {
+      "id": "stealth-rock",
+      "name": "Stealth Rock",
+      "type": "rock",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "hazard",
+          "hazard": "stealth-rock"
+        }
+      ]
+    },
+    {
+      "id": "knock-off",
+      "name": "Knock Off",
+      "type": "dark",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "knock-off"
+        },
+        {
+          "kind": "power-bonus",
+          "when": "target-holds-item",
+          "multiplier": 1.5
+        }
+      ]
+    },
+    {
+      "id": "helping-hand",
+      "name": "Helping Hand",
+      "type": "normal",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "helping-hand",
+          "multiplier": 1.5
+        }
+      ]
+    },
+    {
+      "id": "curse",
+      "name": "Curse",
+      "type": "ghost",
+      "role": "utility",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 0,
+      "effects": [
+        {
+          "kind": "self-damage",
+          "percentOfMaxHp": 0.5
+        },
+        {
+          "kind": "seed",
+          "percent": 0.25,
+          "heal": false
+        }
+      ]
+    },
+    {
+      "id": "wake-up-slap",
+      "name": "Wake-Up Slap",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "target-asleep",
+          "multiplier": 1.8
+        }
+      ]
+    },
+    {
+      "id": "smelling-salts",
+      "name": "Smelling Salts",
+      "type": "normal",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 1,
+      "power": 40,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "target-paralyzed",
+          "multiplier": 1.8
+        }
+      ]
+    },
+    {
+      "id": "brine",
+      "name": "Brine",
+      "type": "water",
+      "role": "offensive",
+      "range": "ranged",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 55,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "target-below",
+          "multiplier": 1.6,
+          "below": 0.5
+        }
+      ]
+    },
+    {
+      "id": "revenge",
+      "name": "Revenge",
+      "type": "fighting",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "hurt-this-turn",
+          "multiplier": 2
+        }
+      ]
+    },
+    {
+      "id": "avalanche",
+      "name": "Avalanche",
+      "type": "ice",
+      "role": "offensive",
+      "range": "melee",
+      "modifier": "none",
+      "apCost": 2,
+      "power": 50,
+      "effects": [
+        {
+          "kind": "power-bonus",
+          "when": "hurt-this-turn",
+          "multiplier": 2
         }
       ]
     }

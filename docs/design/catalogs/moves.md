@@ -70,7 +70,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `razor-wind` | Razor Wind | Normal | Off | Ranged | — | 3 | 95 | backstrike | — |
 | `swords-dance` | Swords Dance | Normal | Util | Melee | — | 1 | — | — | self Atk +2 |
 | `cut` | Cut | Normal | Off | Melee | — | 1 | 50 | — | — |
-| `whirlwind` | Whirlwind | Normal | Util | Melee | — | 0 | — | — | draw 1 |
+| `whirlwind` | Whirlwind | Normal | Util | Ranged | — | 1 | — | CD 2 | drag the foe's Lead out (§5.2.3); on a foe, its raises blown away (v0.9.92) |
 | `bind` | Bind | Normal | Off | Melee | — | 1 | 40 | — | foe Def −1 |
 | `slam` | Slam | Normal | Off | Melee | — | 2 | 75 | — | — |
 | `stomp` | Stomp | Normal | Off | Melee | — | 2 | 70 | — | — |
@@ -85,15 +85,15 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `take-down` | Take Down | Normal | Off | Melee | — | 2 | 75 | — | recoil 25 % |
 | `thrash` | Thrash | Normal | Off | Melee | — | 2 | 60 | — | Rampage 2 |
 | `double-edge` | Double-Edge | Normal | Off | Melee | — | 3 | 120 | — | recoil 33 % |
-| `tail-whip` | Tail Whip | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
-| `leer` | Leer | Normal | Util | Ranged | — | 0 | — | — | foe Def −1 |
+| `tail-whip` | Tail Whip | Normal | Util | Ranged | — | 0 | — | — | every foe Def −1 (v0.9.92) |
+| `leer` | Leer | Normal | Util | Ranged | — | 0 | — | — | every foe Def −1 (v0.9.92) |
 | `bite` | Bite | Dark | Off | Melee | — | 1 | 50 | — | — |
-| `growl` | Growl | Normal | Util | Ranged | — | 0 | — | — | foe Atk −1 |
-| `roar` | Roar | Normal | Util | Ranged | — | 1 | — | — | foe Atk −1 · foe Def −1 |
+| `growl` | Growl | Normal | Util | Ranged | — | 0 | — | — | every foe Atk −1 (v0.9.92) |
+| `roar` | Roar | Normal | Util | Ranged | — | 1 | — | CD 2 | drag the foe's Lead out (§5.2.3); on a foe, its raises blown away (v0.9.92) |
 | `sing` | Sing | Normal | Util | Ranged | — | 1 | — | — | Sleep 55 % |
 | `supersonic` | Supersonic | Normal | Util | Ranged | — | 1 | — | — | Confusion 55 % |
 | `sonic-boom` | Sonic Boom | Normal | Off | Ranged | — | 1 | 50 | — | — |
-| `disable` | Disable | Normal | Util | Ranged | — | 1 | — | — | foe Atk −2 |
+| `disable` | Disable | Normal | Util | Ranged | — | 1 | — | — | Disable 2: the foe's strongest card, or the move a foe declared (§5.2.3, v0.9.92) |
 | `hyper-beam` | Hyper Beam | Normal | Off | Ranged | — | 3 | 150 | — | Recharge |
 | `substitute` | Substitute | Normal | Def | Ranged | — | 1 | — | — | Substitute 25 % |
 | `strength` | Strength | Normal | Off | Melee | — | 2 | 75 | — | — |
@@ -165,7 +165,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `ice-beam` | Ice Beam | Ice | Off | Ranged | — | 3 | 95 | — | Freeze 10 % |
 | `blizzard` | Blizzard | Ice | Off | Ranged | — | 3 | 120 | — | Freeze 10 % · −1 AP in Hail · Fatigue 1 |
 | `aurora-beam` | Aurora Beam | Ice | Off | Ranged | — | 2 | 65 | — | foe Atk −1 |
-| `haze` | Haze | Ice | Util | Ranged | — | 1 | — | — | cure the team |
+| `haze` | Haze | Ice | Util | Ranged | — | 1 | — | — | every stat change on the field washed away (§5.2.3, v0.9.92) |
 
 ### Electric
 
@@ -196,7 +196,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `vine-whip` | Vine Whip | Grass | Off | Ranged | — | 1 | 45 | — | — |
 | `absorb` | Absorb | Grass | Off | Ranged | — | 1 | 45 | — | drain 50 % |
 | `mega-drain` | Mega Drain | Grass | Off | Ranged | — | 2 | 70 | — | drain 50 % |
-| `leech-seed` | Leech Seed | Grass | Util | Ranged | — | 1 | — | — | Poison 90 % |
+| `leech-seed` | Leech Seed | Grass | Util | Ranged | — | 1 | — | — | seed: ⅛ a turn to the other side's Lead, until it leaves; not a Grass-type (§5.2.3, v0.9.92) |
 | `razor-leaf` | Razor Leaf | Grass | Off | Ranged | — | 2 | 65 | — | always crit |
 | `solar-beam` | Solar Beam | Grass | Off | Ranged | — | 2 | 100 | — | Charge (none in Sun) · ×0.5 in Rain |
 | `stun-spore` | Stun Spore | Grass | Util | Ranged | — | 1 | — | — | Paralysis 75 % |
@@ -267,7 +267,7 @@ Conversion raises both stats, Whirlwind and Teleport draw), and the rest are abs
 | `reflect` | Reflect | Psychic | Def | Ranged | — | 1 | — | — | Reflect 3 turns |
 | `amnesia` | Amnesia | Psychic | Def | Melee | — | 1 | — | — | self Def +2 |
 | `kinesis` | Kinesis | Psychic | Util | Ranged | — | 0 | — | — | foe Atk −1 |
-| `dream-eater` | Dream Eater | Psychic | Off | Ranged | — | 2 | 90 | — | drain 50 % |
+| `dream-eater` | Dream Eater | Psychic | Off | Ranged | — | 2 | 45 | — | drain 50 % · ×2.2 on a sleeper (§5.5.2, v0.9.92) |
 | `psywave` | Psywave | Psychic | Off | Ranged | — | 1 | 50 | — | — |
 | `rest` | Rest | Psychic | Def | Melee | — | 1 | — | — | heal 100 % · self Sleep · PP 1 |
 
@@ -459,6 +459,29 @@ elemental fangs and punches, the Ghost, Dragon, Bug and Poison moves Gen I lacke
 | `nasty-plot` | Nasty Plot | Dark | Util | Ranged | — | 1 | — | — | self Att +2 (Gen 4) |
 | `payback` | Payback | Dark | Off | Melee | — | 1 | 50 | — | — (Gen 4) |
 | `sucker-punch` | Sucker Punch | Dark | Off | Melee | — | 2 | 70 | — | — (Gen 4) |
+
+## 1e. Later moves — the utility that hurts and the finishers (v0.9.92)
+
+The enemies' disruption (§5.2.3) and the finishers a combo sets up (§5.5.2), `scripts/v0992-moves.mjs`. Enemies carry
+them through their kits' roles and their trainers' repertoires (§5.4.1); none is in a learnset yet. Each is read on the
+intent before it lands, and nearly each is answered by a swap. Reference data: `later-moves.json`, with the generation.
+
+| id | Name | Type | Role | Rng | Mod | AP | Pwr | Tgt/CD | Effect |
+|---|---|---|---|---|---|---|---|---|---|
+| `taunt` | Taunt | Dark | Util | Ranged | — | 1 | — | — | Taunt 1: no card of it that does no damage, next turn; a foe's declared set-up fizzles (Gen 3) |
+| `yawn` | Yawn | Normal | Util | Ranged | — | 1 | — | — | drowsy: asleep at the end of next turn if it still leads (Gen 3) |
+| `perish-song` | Perish Song | Normal | Util | Ranged | — | 1 | — | — | after 3 more turns, each side's Lead loses ½ its Max HP (Gen 2) |
+| `mean-look` | Mean Look | Normal | Util | Ranged | — | 1 | — | — | Trap 2: the Lead cannot be swapped out by hand (Gen 2) |
+| `spikes` | Spikes | Ground | Util | Ranged | — | 1 | — | — | the other side: ⅛ on entering the Lead, not a Flyer, for the fight (Gen 2) |
+| `stealth-rock` | Stealth Rock | Rock | Util | Ranged | — | 1 | — | — | the other side: ⅛ × Rock's effectiveness on entering the Lead, for the fight (Gen 4) |
+| `knock-off` | Knock Off | Dark | Off | Melee | — | 1 | 40 | — | ×1.5 while it holds an item; the item is gone for the fight (Gen 3) |
+| `helping-hand` | Helping Hand | Normal | Util | Ranged | — | 1 | — | — | its Lead's hits this turn ×1.5; an enemy's is up when declared (Gen 3) |
+| `curse` | Curse | Ghost | Util | Ranged | — | 1 | — | — | self ½ Max HP · the foe loses ¼ a turn until it leaves (Gen 2) |
+| `wake-up-slap` | Wake-Up Slap | Fighting | Off | Melee | — | 1 | 40 | — | ×1.8 on a sleeper (Gen 4) |
+| `smelling-salts` | Smelling Salts | Normal | Off | Melee | — | 1 | 40 | — | ×1.8 on a paralysed target (Gen 3) |
+| `brine` | Brine | Water | Off | Ranged | — | 2 | 55 | — | ×1.6 below half HP (Gen 4) |
+| `revenge` | Revenge | Fighting | Off | Melee | — | 2 | 50 | — | ×2 when a move hurt it since it last acted (Gen 3) |
+| `avalanche` | Avalanche | Ice | Off | Melee | — | 2 | 50 | — | ×2 when a move hurt it since it last acted (Gen 4) |
 
 ## 2. Made better (+)
 

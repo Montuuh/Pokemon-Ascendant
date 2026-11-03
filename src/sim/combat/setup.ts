@@ -93,6 +93,8 @@ export function makeEnemy(uid: string, setup: EnemySetup, ctx: CombatCtx): Enemy
     ...(setup.veiled ? { veiled: true } : {}),
     ...(setup.acts === 2 ? { acts: 2 as const, second: null } : {}),
     ...(setup.helpers?.length ? { helpers: setup.helpers.map((h) => ({ ...h })) } : {}),
+    // §5.5.2 — a combo only stands when both its moves are in the kit.
+    ...(setup.combo && setup.combo.every((m) => base.moveIds.includes(m)) ? { combo: [...setup.combo] as [string, string] } : {}),
     fieldTurns: 0,
   };
   // §5.8.3 — an encounter that starts below a threshold has that phase pending: it commits before the first Draw.

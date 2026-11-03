@@ -177,6 +177,8 @@ const SIDE_TEXT: Record<SideCondition['id'], string> = {
   safeguard: 'Safeguard',
   mist: 'Mist',
   wish: 'A wish',
+  spikes: 'Spikes',
+  'stealth-rock': 'Stealth Rock',
 };
 
 /**

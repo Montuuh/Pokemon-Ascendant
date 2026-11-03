@@ -100,6 +100,11 @@ const SCREENS = {
   // §3.11 — the move keywords on screen: Reflect and the rain on the top bar with their turns, Protect and Guard on the
   // Lead's corner, PP pips on Recover, Thunder priced by the rain, Hyper Beam's recharge in its text.
   'combat-keywords': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["reflect", "rain-dance", "protect", "withdraw", "recover", "hyper-beam", "thunder"])', 'dispatch({ type: "play-card", cardId: a.state().player.hand.find((c) => c.moveId === "reflect").id })', 'dispatch({ type: "play-card", cardId: a.state().player.hand.find((c) => c.moveId === "rain-dance").id })', 'dispatch({ type: "play-card", cardId: a.state().player.hand.find((c) => c.moveId === "protect").id })', 'dispatch({ type: "play-card", cardId: a.state().player.hand.find((c) => c.moveId === "withdraw").id })'], match: [/components\/(KeywordBadges|keywordChips|FieldChips|MoveCard)/] },
+  // §5.2.3 / §5.5.2 (v0.9.92) — a combo's set-up with its finisher under it; then the trap and Perish Song's count.
+  'combat-combo': { url: '/?scenario=trainer-gengar-perish&seed=7', ready: 'combat-screen', match: [/components\/(EnemyPanel|IntentChip)/, /ui\/intentTone/] },
+  'combat-perish': { url: '/?scenario=trainer-gengar-perish&seed=7', ready: 'combat-screen', setup: ['dispatch({ type: "end-turn" })', 'dispatch({ type: "end-turn" })'], settle: 6000, match: [/components\/(keywordChips|FieldChips)/] },
+  // §5.2.3 — Stealth Rock on your side, and the Lead Roar dragged onto it.
+  'combat-hazards': { url: '/?scenario=trainer-onix-rocks&seed=7', ready: 'combat-screen', setup: ['dispatch({ type: "end-turn" })'], settle: 6000, match: [/components\/SideChips/] },
   'combat-boss': { url: '/?scenario=wild-boss-3phase&seed=7', match: [/components\/EnemyPanel/, /combat\/boss/] },
   // §5.9.5 — a Gym under its Leader's rule, the Leader on stage behind a group.
   'combat-gym': { url: '/?scenario=gym-sabrina-rule&seed=3', match: [/components\/RuleChip/, /combat\/gymRules/] },
@@ -240,7 +245,7 @@ const EXPECTED_ROOT = {
   victory: 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
   menu: 'main-menu', about: 'about-screen', changelog: 'changelog-screen', settings: 'settings-screen',
   hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card',
-  starter: 'starter-select', 'starter-shelf': 'starter-select', 'starter-veteran': 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-keywords': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
+  starter: 'starter-select', 'starter-shelf': 'starter-select', 'starter-veteran': 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-keywords': 'combat-screen', 'combat-combo': 'combat-screen', 'combat-perish': 'combat-screen', 'combat-hazards': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
   'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
   map: 'map-screen', 'map-labels': 'map-screen', 'map-labels-end': 'map-screen', 'map-region-2-end': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',
   'map-hover-wild': 'map-screen', 'map-hover-trainer': 'map-screen', 'map-hover-service': 'map-screen', 'map-hover-locked': 'map-screen',
@@ -655,6 +660,8 @@ async function main() {
         await page.waitForTimeout(150);
       }
       if (s.setup?.length) await page.waitForTimeout(400);
+      // `settle`: a setup that ends a turn waits for the enemies' turn to finish playing out, so the capture is the next turn.
+      if (s.settle) await page.waitForTimeout(s.settle);
       for (const tid of s.clicks ?? []) {
         await page.getByTestId(tid).first().click();
         await page.waitForTimeout(250);

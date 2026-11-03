@@ -1540,6 +1540,30 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.92 — Enemies with intent  ✅ 2026-11-03
+
+**Shipped.** Last of the four versions of the user's rework of 2026-11-03 ("many more moves for the enemies, stronger and
+more useful non-damaging ones, more frequent double attacks, good combos in certain fights"). (1) **Kits by role**
+(§5.2.2, `combat/enemyKit.ts`): wild 4, a trainer's 5, a climax's 6 — the Auto four, then a heavy hit, a set-up, a
+disruption and a defence, from the fight's repertoire first (`TRAINER_REPERTOIRE`, `GYM_REPERTOIRE`, `ELITE_REPERTOIRE`,
+the League members'). (2) **Disruption** (§5.2.3, `combat/disruption.ts`): Disable, Taunt, Roar/Whirlwind (a free drag,
+CD 2), Mean Look, Yawn, Perish Song, Leech Seed, Curse, Spikes and Stealth Rock on a side for the fight, Knock Off, Haze,
+Helping Hand (a stance), team drops for Growl/Leer/Tail Whip; a `Disrupt` intent kind; a Taunt or Disable from your side
+fizzles a declared set-up. (3) **Weights** (§5.3.2): utility by what it does now, drops decaying as they stack,
+finishers scored with their bonus (Dream Eater ×2.2 on a sleeper, Wake-Up Slap, Smelling Salts, Brine, Revenge,
+Avalanche, budgeted on what they land). (4) **More double actions** (§5.6.1): a Gym's ace and the Elite's Lead from R1,
+a Rare from R1's eighth column, every trainer's ace and a Gym's first from R2, the League's aces and the Champion's last
+two; at most two; the 4-AP budget is an ace's. (5) **Combos** (§5.5.2): every Gym and League ace's authored set-up →
+finisher, the finisher shown as *Combo* (`enemy.next`), in one turn for a double actor; a quarter of its HP or a
+super-effective hit breaks it; two turns' rest after. (6) **Gym teams** re-cut to forms legal at their levels (Kabuto,
+Starmie, Nidoking…) with a test. 14 Gen II–IV moves (`scripts/v0992-moves.mjs`) with illustrations, 9 Gen I re-cuts,
+two fixtures (`trainer-gengar-perish`, `trainer-onix-rocks`). UI: the disrupt glyph, the Combo chip, Taunted/Trapped/
+Drowsy/Seeded/Disabled/Helped chips, hazard side chips, the Perish countdown. Balance, on the slower XP curve of 7e833b9: Region tier
+×0.49 / ×0.48 / ×0.60, Gyms ×0.8 / ×0.55 / ×0.58, R3 Elite ×1.0, League ×0.9 — R1 58 · R2|R1 46 · R3|R2 44 · League 71 ·
+run 8 % (harness).
+Goldens regenerated. **Not done:** the new moves in player learnsets or TMs, junk cards (Sand Attack), Spite, Follow Me,
+Elite Trainer combos.
+
 ### v0.9.91 — Moves that grow  ✅ 2026-11-03
 
 **Shipped.** Third of the four versions of the user's rework of 2026-11-03 ("more moves to learn, progressing like the

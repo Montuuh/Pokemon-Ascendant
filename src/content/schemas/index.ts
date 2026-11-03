@@ -16,7 +16,7 @@ const FieldIdSchema = z.enum(FIELD_IDS);
 
 export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('status'), status: StatusSchema, chance: z.number().min(0).max(1), self: z.boolean().optional(), escalating: z.boolean().optional() }),
-  z.object({ kind: z.literal('stage'), target: z.enum(['self', 'foe', 'bench']), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
+  z.object({ kind: z.literal('stage'), target: z.enum(['self', 'foe', 'bench', 'foe-side']), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
   z.object({ kind: z.literal('heal'), percentOfMaxHp: z.number().positive().max(1), durationTurns: z.number().int().positive().optional(), weatherScaled: z.boolean().optional(), target: z.literal('lead').optional() }),
   z.object({ kind: z.literal('draw'), cards: z.number().int().positive() }),
   z.object({ kind: z.literal('recoil'), percentOfDamage: z.number().positive().max(1) }),
@@ -25,7 +25,7 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   // §5.13.2 (v0.7.5) — the Mastery moves' conditions: more power when a named condition holds.
   z.object({
     kind: z.literal('power-bonus'),
-    when: z.enum(['target-poisoned', 'self-below', 'per-trauma', 'in-field', 'friendship']),
+    when: z.enum(['target-poisoned', 'self-below', 'per-trauma', 'in-field', 'friendship', 'target-asleep', 'target-paralyzed', 'target-below', 'hurt-this-turn', 'target-holds-item']),
     multiplier: z.number().positive().optional(),
     below: z.number().positive().max(1).optional(),
     perStack: z.number().positive().optional(),
@@ -57,6 +57,18 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('wish'), percentOfMaxHp: z.number().positive().max(1) }),
   z.object({ kind: z.literal('root') }),
   z.object({ kind: z.literal('baton-pass') }),
+  // §5.2.3 — the utility that hurts (v0.9.92).
+  z.object({ kind: z.literal('disable'), turns: z.number().int().min(1).max(4) }),
+  z.object({ kind: z.literal('taunt'), turns: z.number().int().min(1).max(4) }),
+  z.object({ kind: z.literal('force-swap') }),
+  z.object({ kind: z.literal('trap'), turns: z.number().int().min(1).max(4) }),
+  z.object({ kind: z.literal('drowsy') }),
+  z.object({ kind: z.literal('perish'), turns: z.number().int().min(1).max(4) }),
+  z.object({ kind: z.literal('seed'), percent: z.number().positive().max(0.5), heal: z.boolean() }),
+  z.object({ kind: z.literal('hazard'), hazard: z.enum(['spikes', 'stealth-rock']) }),
+  z.object({ kind: z.literal('knock-off') }),
+  z.object({ kind: z.literal('haze') }),
+  z.object({ kind: z.literal('helping-hand'), multiplier: z.number().positive() }),
 ]);
 
 export const MoveSchema = z.object({
@@ -297,12 +309,14 @@ const EnemySetupBase = z.object({
   phaseCount: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   hpPercent: z.number().min(1).max(100).optional(),
   status: StatusSchema.optional(),
-  moves: z.array(KebabId).min(1).max(5).optional(),
+  // §5.2.2 — a climax's six, and the Region's accent past them.
+  moves: z.array(KebabId).min(1).max(7).optional(),
   abilityId: KebabId.optional(),
   veiled: z.boolean().optional(),
   /** §5.14 — a wild Pokémon in its shiny palette. */
   shiny: z.boolean().optional(),
   acts: z.union([z.literal(1), z.literal(2)]).optional(),
+  combo: z.tuple([z.string(), z.string()]).optional(),
   /** §5.8.3 — a three-phase ace's authored signature. */
   signature: z.object({ move: KebabId, response: z.string().min(1) }).optional(),
 });

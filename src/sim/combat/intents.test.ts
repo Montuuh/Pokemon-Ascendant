@@ -17,7 +17,9 @@ describe('Enemy AI — §5', () => {
     expect(classifyMove(s, e, ctx.content.move('defense-curl'), ctx)!.kind).toBe('buff');
     expect(classifyMove(s, e, ctx.content.move('sleep-powder'), ctx)!.kind).toBe('status');
     expect(classifyMove(s, e, ctx.content.move('earthquake'), ctx)!.kind).toBe('cleave');
-    expect(classifyMove(s, e, ctx.content.move('whirlwind'), ctx)).toBeNull();
+    expect(classifyMove(s, e, ctx.content.move('splash'), ctx)).toBeNull();
+    // §5.2.3 — Roar and Whirlwind drag your Lead out: a disruption aimed at it.
+    expect(classifyMove(s, e, ctx.content.move('whirlwind'), ctx)!.kind).toBe('disrupt');
   });
 
   it('Score_NeverAttacksIntoImmunity', () => {

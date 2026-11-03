@@ -45,7 +45,8 @@ export function IntentArrows({ state, stage, focusUid, focusSlot, hidden }: { st
         if (!from) continue;
         ([enemy.intent, enemy.second] as const).forEach((intent, action) => {
           const tone = intentTone(intent);
-          if (!intent || !tone || tone === 'other') return;
+          // A broken action (your Taunt, your Disable, a break) will not land: no arrow for it.
+          if (!intent || intent.broken || !tone || tone === 'other') return;
           const ally = intent.targetEnemyUid ? intentRecipient(state, enemy, intent) : null;
           // Help for another of its side lands on that one; a buff or a heal on itself draws nothing.
           const ends: { sel: string; slot: SlotId | null }[] = intent.targetEnemyUid

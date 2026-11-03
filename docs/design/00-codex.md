@@ -98,8 +98,9 @@ Pokémon.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
   numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier on Attack only — an enemy's HP is
-  never scaled (v0.9.12; ×0.55 / ×0.70 / ×0.76 since v0.9.90's real evolution levels, divisor 5) — **Acting Twice** from R2 (§5.6.1: two intents on one 3-AP
-  budget, broken by a quarter of its HP or a super-effective hit; a Rare, an Ace Trainer, a Gym's ace, R3's Elite), and a
+  never scaled (v0.9.12; ×0.55 / ×0.70 / ×0.76 since v0.9.90's real evolution levels, divisor 5) — **Acting Twice** (§5.6.1: two intents on one 3-AP
+  budget, broken by a quarter of its HP or a super-effective hit; v0.9.92: a Gym's ace and the Elite's Lead from R1, a Rare from
+  R1's eighth column, every trainer's ace and a Gym's first from R2, the League's aces and the Champion's last two; at most two), and a
   curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.
 - **Region 2 (Coastal Cliffs) is its own content** since v0.7.3: Sea primary, Power Plant, River, Cave, rare
   Meadow; ten new lines plus Electabuzz, Hitmonchan, Lapras and Bellsprout's line; its own trainers, the Karate King
@@ -270,6 +271,12 @@ slot. **Randomness floor 12.5 %.**
 A hidden intent **still shows its kind glyph**. Reveal tiers: Witnessed → Scouted → Researched.
 **Counter-intel:** a fully-scouted boss deprioritises its top intent ×0.7 and loses the randomness floor.
 Standard enemies always play optimally.
+**Kits by role** (§5.2.2, v0.9.92): wild 4 moves, a trainer's 5, a climax's 6 — the four, then a heavy hit, a set-up, a
+disruption and a defence, from its trainer's repertoire first (a Hiker's rocks, a Hex Maniac's Curse). **Disruption**
+(§5.2.3): Disable, Taunt, Roar, Mean Look, Yawn, Perish Song, Leech Seed, Curse, Spikes and Stealth Rock on your side,
+Knock Off, Haze, Helping Hand, team drops — each on a `Disrupt` intent, most answered by a swap; weighed by what it does
+now, drops decaying as they stack (§5.3.2). **Combos** (§5.5.2): every Gym and League ace's authored set-up → finisher,
+the finisher shown as *Combo* under the set-up; a quarter of its HP or a super-effective hit breaks it.
 **The intent's number is the hit** — the Resolution run dry on a copy of the fight (every relic, item, ability,
 reduction and shield, and earlier intents of the same turn); only a chance rider is left out. 63 % → 100 % measured.
 
