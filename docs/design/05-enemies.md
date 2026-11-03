@@ -44,6 +44,17 @@ landed 63 % of the time and 34 % for a Cleave; the forecast matches 100 % (`bala
 member can be answered by moving someone sturdier into that slot — positioning becomes defensive as well as
 offensive.
 
+## §5.2.1 Stances — up the moment they are declared
+
+A **stance** is an enemy's keyword move that guards rather than strikes (§3.11): Protect and Detect, Endure, a Guard
+move, Substitute, Counter and Mirror Coat, a side condition, a field it sets. A stance **takes effect when it is
+declared**, in the Intent phase, not when the enemy acts: the Protect is up through your whole turn, and the Reflect is
+already in the number your cards print. That is what makes it telegraphed rather than reactive — an enemy that raised
+its Protect after your cards had landed would be an ambush (Pillar 1). Its intent chip names the stance; when its turn
+comes it only says so.
+
+---
+
 # §5.3 Intent scoring
 
 ```

@@ -34,6 +34,7 @@ import { enemySlotLabel } from './slots';
 import { fieldBlocksStatus, fieldDamageMultiplier, fieldsSuppressed, isGrounded, toxicSpikesSpare } from './fields';
 import { arenaBlocksStage, arenaBlocksStatus, arenaDamageMultiplier, playfulTakes, rekindles } from './arenaRules';
 import { markHurt, ruleDamageMultiplier, ruleEscalatesPoison, ruleHitCap, ruleMeltsDefence, shatterIce } from './gymRules';
+import { applyKeyword, counterReturn, fieldStands, keywordBlocksDrop, keywordBlocksStatus, screenMultiplier, weatherHealMultiplier } from './keywords';
 
 // Shared damage / effect pipeline used by player cards and enemy intents.
 
@@ -80,6 +81,8 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // §5.9.5 — and the Leader's rule, the last independent term: Swarm, Rollout and Close Quarters.
   // §2.12.2.1 — a Legendary's Barrier is one more, on the same footing.
   const ruleMul = state ? ruleDamageMultiplier(state, attacker, target, move, ctx.config) * arenaDamageMultiplier(state, target, ctx.config) : 1;
+  // §3.11.6 — Reflect or Light Screen over the target's side, one more independent term.
+  const screenMul = state ? screenMultiplier(state, target, move, ctx) : 1;
   if (state) {
     // §7.3.6 — relic, item, badge and field terms all multiply independently into the same formula.
     itemMul = itemAttackMultiplier(state, attacker, move, ctx.content, { typeMultiplier: raw.typeMultiplier });
@@ -94,9 +97,9 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   // intent's predicted damage (which has no state to read) shows the smaller number too (Pillar 1).
   const chill = attacker.chill ?? 1;
   // §5.13.2 — a Mastery move's condition is one more multiplier, before the one floor.
-  const bonus = powerBonus(attacker, target, move);
+  const bonus = powerBonus(attacker, target, move, state, ctx);
   // Ability and thaw multipliers are applied to the pre-floor value so a single floor remains (§4.1.1).
-  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul * ruleMul);
+  let final = Math.floor(raw.base * raw.critMultiplier * raw.stabMultiplier * raw.typeMultiplier * abilityMul * itemMul * defenceMul * frozenFire * chill * bonus * fieldMul * ruleMul * screenMul);
   // §5.13.2 Super Fang — a share of what the target has left, whatever the formula says. Immunity still wins.
   const fixed = move.effects.find((e) => e.kind === 'fixed-damage');
   if (fixed && fixed.kind === 'fixed-damage' && raw.typeMultiplier > 0) final = Math.max(1, Math.floor(target.hp * fixed.percentOfTargetHp));
@@ -108,10 +111,12 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
 }
 
 /** §5.13.2 — the product of a move's `power-bonus` conditions that hold right now; 1 when none do. */
-function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef): number {
+function powerBonus(attacker: Combatant, target: Combatant, move: MoveDef, state: CombatState | undefined, ctx: Pick<RunCtx, 'content'>): number {
   let m = 1;
   for (const fx of move.effects) {
     if (fx.kind !== 'power-bonus') continue;
+    // §4.3.15 — a move the field weakens or strengthens (Solar Beam in the rain).
+    if (fx.when === 'in-field' && fx.field && state && fieldStands(state, fx.field, ctx.content)) m *= fx.multiplier ?? 1;
     if (fx.when === 'target-poisoned' && target.status?.kind === 'poison') m *= fx.multiplier ?? 1;
     if (fx.when === 'self-below' && attacker.hp < attacker.maxHp * (fx.below ?? 0)) m *= fx.multiplier ?? 1;
     if (fx.when === 'per-trauma' && move.power > 0) m *= (move.power + (fx.perStack ?? 0) * attacker.traumaStacks) / move.power;
@@ -182,6 +187,12 @@ export function strike(
     log(state, 'enemy', `${target.name}'s defences melt.`);
   }
   riposte(state, ctx, attacker, target, move);
+  // §3.11.11 — a Counter of this hit's range returns it, multiplied, to the attacker.
+  const back = counterReturn(state, target, move, dealt);
+  if (back > 0 && attacker.hp > 0) {
+    log(state, 'system', `${target.name} strikes back!`);
+    dealDamage(state, ctx, target.uid, attacker, back, { crit: false, effectiveness: 'neutral', cause: 'move' });
+  }
   applyOnKill(state, ctx, attacker, move, target);
   applyRecoil(state, ctx, attacker, move, dealt);
   applyDrain(state, attacker, move, dealt, ctx);
@@ -317,6 +328,20 @@ export function dealDamage(
     if (first) state.player.spent.push(first.id);
   }
 
+  // §3.11.4 Guard, then §3.11.5 the Substitute: a move's damage goes through them first. A status tick or the weather does not.
+  if (meta.cause === 'move' && dmg > 0 && (target.guard ?? 0) > 0) {
+    const absorbed = Math.min(target.guard!, dmg);
+    target.guard! -= absorbed;
+    dmg -= absorbed;
+    log(state, 'system', `${target.name}'s guard absorbed ${absorbed}.`);
+  }
+  if (meta.cause === 'move' && dmg > 0 && (target.substitute ?? 0) > 0) {
+    const absorbed = Math.min(target.substitute!, dmg);
+    target.substitute! -= absorbed;
+    dmg -= absorbed;
+    log(state, 'system', target.substitute! > 0 ? `The substitute took ${absorbed}.` : `The substitute took ${absorbed} and faded.`);
+    if (target.substitute! <= 0) delete target.substitute;
+  }
   // §7.3.7 Battle Hardened — the shield eats damage before HP does, and never comes back.
   if (target.shield > 0 && dmg > 0) {
     const absorbed = Math.min(target.shield, dmg);
@@ -332,7 +357,12 @@ export function dealDamage(
   // would burn the once-per-run feather on a hit the free ability charge would have eaten.
   if (dmg >= target.hp && target.hp > 1) {
     const teamEndure = isPlayers(state, target) ? teamEndureRelic(state, ctx.content) : null;
-    if (target.sturdyAvailable && hasSturdy(target, ctx.content)) {
+    // §3.11.3 — Endure first: the card paid for this turn, before the free and the scarce rungs (§7.3.6).
+    if (target.volatile?.endureTurn === state.turn) {
+      dmg = target.hp - 1;
+      emit(state, { t: 'sturdy', uid: target.uid });
+      log(state, 'system', `${target.name} endured the hit!`);
+    } else if (target.sturdyAvailable && hasSturdy(target, ctx.content)) {
       dmg = target.hp - 1;
       target.sturdyAvailable = false;
       emit(state, { t: 'sturdy', uid: target.uid });
@@ -568,7 +598,8 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         const roll = fx.chance >= 1 || alwaysRider ? true : ctx.rng.chance(fx.chance);
         if (!roll) break;
         // §6.5.2 — an ability immunity reads exactly like a type immunity to the player; §4.3.3 so does the terrain.
-        if (abilityBlocksStatus(recipient, fx.status, ctx.content) || fieldBlocksStatus(state, recipient, fx.status, ctx.content) || arenaBlocksStatus(state, recipient, fx.status) || teamGuardBlocksStatus(state, recipient)) {
+        // §3.11.5 / §3.11.6 — a Substitute or a Safeguard keeps a foe's status off.
+        if (abilityBlocksStatus(recipient, fx.status, ctx.content) || fieldBlocksStatus(state, recipient, fx.status, ctx.content) || arenaBlocksStatus(state, recipient, fx.status) || keywordBlocksStatus(state, attacker, recipient) || teamGuardBlocksStatus(state, recipient)) {
           emit(state, { t: 'status-immune', targetUid: recipient.uid, status: fx.status });
           log(state, 'system', `${recipient.name} is immune to ${fx.status}.`);
           break;
@@ -612,6 +643,11 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
           break;
         }
         const recipient = fx.target === 'self' ? attacker : target;
+        // §3.11.5 / §3.11.6 — a Substitute or a Mist keeps a foe's stat drop off.
+        if (recipient && keywordBlocksDrop(state, attacker, recipient, fx.stages)) {
+          log(state, 'system', `${recipient.name}'s stats are protected.`);
+          break;
+        }
         if (recipient) changeStage(state, recipient, fx.stat, fx.stages);
         break;
       }
@@ -634,12 +670,16 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         break;
       }
       case 'heal': {
+        // §3.11.13 — Heal Pulse heals its side's Lead; Synthesis reads the weather.
+        const leadOfSide = isPlayers(state, attacker) ? state.player.team[state.player.leadIndex] : state.enemies.find((e) => e.hp > 0);
+        const recipient = fx.target === 'lead' && leadOfSide && leadOfSide.hp > 0 ? leadOfSide : attacker;
+        const share = fx.percentOfMaxHp * (fx.weatherScaled ? weatherHealMultiplier(state, ctx) : 1);
         if (fx.durationTurns && fx.durationTurns > 0) {
-          attacker.regen = { percentOfMaxHp: fx.percentOfMaxHp, turnsLeft: fx.durationTurns };
-          log(state, 'system', `${attacker.name} is surrounded by a healing veil.`);
+          recipient.regen = { percentOfMaxHp: share, turnsLeft: fx.durationTurns };
+          log(state, 'system', `${recipient.name} is surrounded by a healing veil.`);
         } else {
-          const amount = heal(state, attacker, attacker.maxHp * fx.percentOfMaxHp, 'move');
-          if (amount > 0) log(state, 'system', `${attacker.name} recovered ${amount} HP.`);
+          const amount = heal(state, recipient, recipient.maxHp * share, 'move');
+          if (amount > 0) log(state, 'system', `${recipient.name} recovered ${amount} HP.`);
         }
         break;
       }
@@ -667,6 +707,24 @@ export function applyMoveEffects(state: CombatState, ctx: RunCtx, attacker: Comb
         }
         break;
       }
+      // §3.11 — the keywords that act when the move is used; the rest resolve around the hit or at pricing.
+      case 'protect':
+      case 'endure':
+      case 'guard':
+      case 'substitute':
+      case 'side-condition':
+      case 'set-field':
+      case 'counter':
+      case 'wish':
+      case 'root':
+        applyKeyword(state, ctx, attacker, fx);
+        break;
+      case 'recharge':
+      case 'fatigue':
+      case 'rampage':
+      case 'charge':
+      case 'field-cost':
+      case 'baton-pass':
       case 'power-bonus':
       case 'fixed-damage':
       case 'recoil':

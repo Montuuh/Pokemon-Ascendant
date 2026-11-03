@@ -2,6 +2,7 @@ import { ARENA_RULE_IDS } from '@/sim/combat/arenaRules';
 import { GYM_RULE_IDS } from '@/sim/combat/gymRules';
 import { z } from 'zod';
 import { POKEMON_TYPES, PRIMARY_STATUSES } from '@/sim/types';
+import { FIELD_IDS } from '@/sim/combat/fields';
 
 // Zod schemas = the master content schema (§10.3.2 lineage). Everything under src/content/data is parsed
 // through these at load time and in `npm test`. The inferred types are checked against the sim's
@@ -11,11 +12,12 @@ export const PokemonTypeSchema = z.enum(POKEMON_TYPES);
 export const StatusSchema = z.enum([...PRIMARY_STATUSES, 'confusion']);
 export const StatSchema = z.enum(['attack', 'defense', 'speed']);
 const KebabId = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'kebab-case id');
+const FieldIdSchema = z.enum(FIELD_IDS);
 
 export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('status'), status: StatusSchema, chance: z.number().min(0).max(1), self: z.boolean().optional(), escalating: z.boolean().optional() }),
   z.object({ kind: z.literal('stage'), target: z.enum(['self', 'foe', 'bench']), stat: StatSchema, stages: z.number().int().min(-6).max(6) }),
-  z.object({ kind: z.literal('heal'), percentOfMaxHp: z.number().positive().max(1), durationTurns: z.number().int().positive().optional() }),
+  z.object({ kind: z.literal('heal'), percentOfMaxHp: z.number().positive().max(1), durationTurns: z.number().int().positive().optional(), weatherScaled: z.boolean().optional(), target: z.literal('lead').optional() }),
   z.object({ kind: z.literal('draw'), cards: z.number().int().positive() }),
   z.object({ kind: z.literal('recoil'), percentOfDamage: z.number().positive().max(1) }),
   // §4.1.6 — the attacker recovers a share of the damage it dealt: recoil's mirror.
@@ -23,10 +25,11 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   // §5.13.2 (v0.7.5) — the Mastery moves' conditions: more power when a named condition holds.
   z.object({
     kind: z.literal('power-bonus'),
-    when: z.enum(['target-poisoned', 'self-below', 'per-trauma']),
+    when: z.enum(['target-poisoned', 'self-below', 'per-trauma', 'in-field']),
     multiplier: z.number().positive().optional(),
     below: z.number().positive().max(1).optional(),
     perStack: z.number().positive().optional(),
+    field: FieldIdSchema.optional(),
   }),
   // §5.13.2 Super Fang — damage is a share of what the target has left, not a formula.
   z.object({ kind: z.literal('fixed-damage'), percentOfTargetHp: z.number().positive().max(1) }),
@@ -38,6 +41,22 @@ export const MoveEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('team-cure') }),
   z.object({ kind: z.literal('summon'), count: z.number().int().min(1).max(2) }),
   z.object({ kind: z.literal('cover') }),
+  // §3.11 — the move keywords (v0.9.89).
+  z.object({ kind: z.literal('protect') }),
+  z.object({ kind: z.literal('endure') }),
+  z.object({ kind: z.literal('guard'), power: z.number().int().positive().max(200) }),
+  z.object({ kind: z.literal('substitute'), percentOfMaxHp: z.number().positive().max(0.5) }),
+  z.object({ kind: z.literal('side-condition'), condition: z.enum(['reflect', 'light-screen', 'safeguard', 'mist']), turns: z.number().int().min(1).max(8) }),
+  z.object({ kind: z.literal('set-field'), field: FieldIdSchema, turns: z.number().int().min(1).max(8) }),
+  z.object({ kind: z.literal('field-cost'), field: FieldIdSchema, delta: z.number().int().min(-2).max(2) }),
+  z.object({ kind: z.literal('recharge') }),
+  z.object({ kind: z.literal('fatigue'), ap: z.number().int().min(1).max(2) }),
+  z.object({ kind: z.literal('rampage'), turns: z.number().int().min(1).max(3) }),
+  z.object({ kind: z.literal('charge'), skipIn: FieldIdSchema.optional(), outOfReach: z.boolean().optional() }),
+  z.object({ kind: z.literal('counter'), range: z.enum(['melee', 'ranged']), multiplier: z.number().positive().max(3) }),
+  z.object({ kind: z.literal('wish'), percentOfMaxHp: z.number().positive().max(1) }),
+  z.object({ kind: z.literal('root') }),
+  z.object({ kind: z.literal('baton-pass') }),
 ]);
 
 export const MoveSchema = z.object({
@@ -53,6 +72,10 @@ export const MoveSchema = z.object({
   ignoresDefenseStages: z.boolean().optional(),
   targeting: z.enum(['single', 'cleave', 'backstrike']).optional(),
   cooldown: z.number().int().min(0).optional(),
+  /** §3.11.1 — uses per fight. */
+  pp: z.number().int().min(1).max(3).optional(),
+  /** §3.11.12 — AP it may borrow from next turn. */
+  overexert: z.number().int().min(1).max(2).optional(),
   effects: z.array(MoveEffectSchema),
 });
 
@@ -125,6 +148,8 @@ export const ItemHookSchema = z.enum([
   'wild-rare',
   // v0.8.4 (§2.11.3, §4.3) — Field Surveyor: a wild fight's Battlefield follows your Lead.
   'battlefield-choice',
+  // v0.9.89 (§3.11.7) — the weather rocks: a field the wearer sets lasts longer.
+  'field-duration',
   'none',
 ]);
 const ItemParams = z.record(z.string(), z.union([z.string(), z.number(), z.boolean()]));

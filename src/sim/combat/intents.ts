@@ -7,7 +7,8 @@ import type { IntentKind, SlotId } from '../types';
 import type { BattleConfig } from './battleConfig';
 import type { CombatCtx } from './context';
 import { emit, log } from './context';
-import { breakdownFor } from './damageFlow';
+import { applyMoveEffects, breakdownFor } from './damageFlow';
+import { fieldApDelta, isStance, ppLeft, protectBlocked } from './keywords';
 import { teamRevealsIntents, abilityBlocksMove } from './abilities';
 import { relicsQueueIntents, relicsRevealIntents, relicsSkipFirstTurn } from './items';
 import { bossArchetype } from './boss';
@@ -22,6 +23,11 @@ import { typeMultiplier } from './typeChart';
 
 // §5 — enemy AI: candidate intents from the enemy's 4 moves, context-aware scoring, randomness floor,
 // slot targeting. Pure over (state, enemy, rng). Nothing here mutates HP.
+
+/** §3.2.4 / §4.3.15 — what a move costs an enemy now: printed, its Paralysis, and what the field adds or takes off. */
+export function enemyMoveCost(state: CombatState, enemy: EnemyCombatant, move: MoveDef, ctx: CombatCtx): number {
+  return Math.max(0, move.apCost + paralysisApBonus(enemy, ctx.config) + fieldApDelta(state, move, ctx.content));
+}
 
 export interface Candidate {
   intent: Intent;
@@ -48,6 +54,8 @@ export function classifyMove(state: CombatState, enemy: EnemyCombatant, move: Mo
     const leadEnemy = activeEnemy(state);
     return leadEnemy && leadEnemy.uid !== enemy.uid ? { kind: 'guard', moveId: move.id, targetSlot: null, hidden: false, targetEnemyUid: leadEnemy.uid } : null;
   }
+  // §5.2.1 — a stance guards its user: declared, it is up.
+  if (isStance(move)) return { kind: 'buff', moveId: move.id, targetSlot: null, hidden: false, stance: true };
   const status = move.effects.find((e) => e.kind === 'status' && !e.self);
   if (status) return { kind: 'status', moveId: move.id, targetSlot: 'lead', hidden: false };
   const debuff = move.effects.find((e) => e.kind === 'stage' && e.target === 'foe');
@@ -120,8 +128,10 @@ export function scoreIntent(state: CombatState, enemy: EnemyCombatant, cand: { i
 
   // CooldownGate — 0 while on cooldown.
   if (move.id !== waive && (enemy.cooldowns[move.id] ?? 0) > 0) return 0;
-  // §4.2.2.3 — a Paralysed enemy cannot afford its heaviest moves (+1 AP against a 3-AP budget).
-  if (move.apCost + paralysisApBonus(enemy, cfg) > cfg.baseApPerTurn) return 0;
+  // §4.2.2.3 — a Paralysed enemy cannot afford its heaviest moves (+1 AP against a 3-AP budget); §4.3.15 the field prices too.
+  if (enemyMoveCost(state, enemy, move, ctx) > cfg.baseApPerTurn) return 0;
+  // §3.11.1 — no PP left; §3.11.2 — no Protect two turns running.
+  if (ppLeft(enemy, move) === 0 || protectBlocked(state, enemy, move)) return 0;
 
   const occ = intent.targetSlot ? slotOccupant(state, intent.targetSlot) : null;
   if (intent.targetSlot && !occ) return 0; // never target an empty slot
@@ -216,7 +226,7 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
     // §5.6.1 — a second action is a different move from the first, and both fit the turn's AP budget.
     if (moveId === exclude) continue;
     const move = ctx.content.move(moveId);
-    if (move.apCost + paralysisApBonus(enemy, ctx.config) > maxAp) continue;
+    if (enemyMoveCost(state, enemy, move, ctx) > maxAp) continue;
     const intent = classifyMove(state, enemy, move, ctx);
     if (!intent) continue;
     cands.push({ intent, move, score: scoreIntent(state, enemy, { intent, move }, ctx, waive) });
@@ -243,6 +253,14 @@ export function chooseIntent(state: CombatState, enemy: EnemyCombatant, ctx: Com
   return pool[top]!.intent;
 }
 
+/** §3.11.9 / §3.11.10 — the intent a rampage or a waiting charge dictates, when one does. */
+function keywordIntent(state: CombatState, enemy: EnemyCombatant, ctx: CombatCtx): Intent | null {
+  const v = enemy.volatile;
+  const moveId = v?.charge && v.charge.turn < state.turn ? v.charge.moveId : v?.rampage && v.rampage.left > 0 ? v.rampage.moveId : null;
+  if (!moveId) return null;
+  return classifyMove(state, enemy, ctx.content.move(moveId), ctx);
+}
+
 /**
  * §5.5.1 — a queued plan is kept only while it is still a move the enemy may play: off cooldown, affordable, into a
  * legal target, and planned in the boss phase it is in now. Anything else and the enemy thinks again.
@@ -266,9 +284,12 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     enemy.second = null;
     enemy.stagger = 0;
   }
+  // §3.11.8 — last turn's Fatigue comes off this turn's budget.
+  const fatigue = enemy.volatile?.fatigue ?? 0;
+  if (enemy.volatile?.fatigue) delete enemy.volatile.fatigue;
   // §5.6.1 — a Pokémon that acts twice spends one budget on both actions: the first leaves room for the cheapest other.
-  const budget = enemy.acts === 2 ? doubleActionBudget(enemy, ctx) : Infinity;
-  const costOf = (id: string) => ctx.content.move(id).apCost + paralysisApBonus(enemy, ctx.config);
+  const budget = (enemy.acts === 2 ? doubleActionBudget(enemy, ctx) : ctx.config.baseApPerTurn) - fatigue;
+  const costOf = (id: string) => enemyMoveCost(state, enemy, ctx.content.move(id), ctx);
   const roomFor = (except: string | null) => Math.min(...enemy.moveIds.filter((m) => m !== except).map(costOf), Infinity);
   // §5.8.3 — an open signature opportunity: declared now as the first action, or the reason it waits is recorded (the
   // intent card shows it; it is never presented as this turn's action).
@@ -276,6 +297,13 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
   if (enemy.signature) delete enemy.signature.wait;
   if (sig && 'wait' in sig) enemy.signature!.wait = sig.wait;
   let veiled = false;
+  // §3.11.9 / §3.11.10 — a rampage replays its move, a charged hit is released: either is this turn's intent. Asleep or
+  // frozen, the charge is lost and the rampage broken off.
+  if (locked && enemy.volatile) {
+    delete enemy.volatile.charge;
+    delete enemy.volatile.rampage;
+  }
+  const keyworded = locked || spun ? null : keywordIntent(state, enemy, ctx);
   if (locked || spun) {
     enemy.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };
   } else {
@@ -290,7 +318,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     const open = !forced && sig && 'intent' in sig ? sig.intent : null;
     const confusedPick = open && enemy.confusionTurns > 0 ? chooseIntent(state, enemy, ctx, rng, undefined, Infinity, open.moveId ?? undefined) : null;
     const signature = open && enemy.confusionTurns <= 0 ? open : confusedPick && confusedPick.moveId === open?.moveId ? { ...confusedPick, signature: true } : null;
-    const intent = forced ?? signature ?? confusedPick ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, firstCap) ?? chooseIntent(state, enemy, ctx, rng);
+    const intent = forced ?? keyworded ?? signature ?? confusedPick ?? kept ?? chooseIntent(state, enemy, ctx, rng, undefined, Math.min(firstCap, budget)) ?? chooseIntent(state, enemy, ctx, rng, undefined, budget);
     if (signature) spendSignature(state, enemy);
     enemy.intent = intent ?? { kind: 'stall', moveId: null, targetSlot: null, hidden: false };
     // §5.5 (CL-011) — Elite/Gym enemies hide their first intent until they have fired a move.
@@ -315,6 +343,11 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     }
     // §4.1.3.1 — a full critical rhythm is declared here, on the hit that will spend it.
     markRhythm(enemy, ctx);
+    // §5.2.1 — a stance is up the moment it is declared: the cards you are about to play already meet it.
+    for (const i of [enemy.intent, enemy.second]) {
+      if (!i?.stance || !i.moveId) continue;
+      applyMoveEffects(state, { ...ctx, rng }, enemy, null, ctx.content.move(i.moveId));
+    }
   }
   // §5.5.1 Trainer's Instinct — plan the next turn now, from what the enemy can see now, and show it. It hides
   // exactly as much as this turn's intent does: seeing further ahead is not seeing through a veil.
@@ -386,6 +419,8 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
       // §9.2.5 — an area intent prints no single number: every target takes its own.
       return `winds up ${move?.name} → ALL SLOTS${crit}`;
     case 'buff':
+      // §5.2.1 — a stance is already up.
+      if (i.stance) return `raises ${move?.name} — it is up now.`;
       return ally && ally.uid !== enemy.uid ? `will power up ${ally.name} (${move?.name}).` : `is powering up (${move?.name}).`;
     case 'debuff':
       return `prepares ${move?.name} → ${slotText}`;
@@ -395,7 +430,7 @@ export function describeIntent(state: CombatState, enemy: EnemyCombatant, ctx: C
       if (ally && ally.uid !== enemy.uid && move) return `will heal ${ally.name} (${move.name}).`;
       return move ? `is recovering (${move.name}).` : 'is biding its time.';
     case 'incapacitated':
-      return enemy.status?.kind === 'sleep' ? 'is fast asleep.' : enemy.status?.kind === 'freeze' ? 'is frozen solid.' : 'is caught off guard (Time Spinner).';
+      return enemy.status?.kind === 'sleep' ? 'is fast asleep.' : enemy.status?.kind === 'freeze' ? 'is frozen solid.' : enemy.volatile?.recharge === 'active' ? 'must recharge.' : 'is caught off guard (Time Spinner).';
     case 'unknown':
       return 'is planning something…';
     case 'summon': {

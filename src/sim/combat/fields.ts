@@ -13,6 +13,9 @@ export type FieldId =
   | 'sandstorm' | 'toxic-spikes' | 'sticky-web';
 export type FieldCategory = 'weather' | 'terrain' | 'hazard';
 
+/** Every field id, for the content schema: a move sets one or reads one (§4.3.15). */
+export const FIELD_IDS = ['sunny-day', 'rain-dance', 'hail', 'electric-terrain', 'grassy-terrain', 'psychic-terrain', 'misty-terrain', 'sandstorm', 'toxic-spikes', 'sticky-web'] as const satisfies readonly FieldId[];
+
 export const FIELD_CATEGORY: Record<FieldId, FieldCategory> = {
   'sunny-day': 'weather',
   'rain-dance': 'weather',

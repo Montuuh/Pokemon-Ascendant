@@ -380,7 +380,7 @@ it stops being the smart one. Its clock advances once at the end of each active 
 
 # §4.3 Field effects
 
-A field is set at encounter start and lasts the whole combat unless overwritten. Every field carries an
+A field is set at encounter start and lasts the whole combat unless overwritten — by `defog`, or for a few turns by a move that sets one (§4.3.15). Every field carries an
 **owner**: `Neutral` (a **Battlefield** — symmetric, set by the biome a fight stands in, §2.6.1) or `Enemy` (a
 **Home Field** — one-sided, Gym and Elite fights). One engine, two classes. Every number below is a `BattleConfig`
 value (`weatherBoost`, `weatherDamp`, `electricTerrainBoost`, `sandstormPercent`, `homeFieldBoost`), and the
@@ -427,8 +427,8 @@ premium.)*
   for Fire, Rain for Water, Electric Terrain for Electric, Sandstorm for Rock, Ground or Fighting. You choose the
   ground by choosing who leads. *(v0.8.4: "you choose" was a picker screen before every wild fight; the Lead is a
   choice the player already makes on the map, so the modifier rides on it.)*
-- *Post-launch:* player field-setting moves that overwrite a Home Field with a neutral one, and a `weather-vane`
-  relic that flips ownership.
+- **Set your own** (§4.3.15): Rain Dance under a Fire Gym's Sun puts the Sun out for three turns. A Home Field is not a
+  Battlefield and stays. *Post-launch:* a `weather-vane` relic that flips ownership.
 
 Damage previews always account for the active field and its owner.
 
@@ -481,6 +481,27 @@ Gyms of one Region share one — so the fork is also a choice of ground.
 *(The user's call, 2026-10-04: every Gym with a field of its own. Ground takes Sun — Groudon's drought — rather than a
 second Sandstorm; Fighting keeps the storm its own types shrug off, which makes it a one-sided pressure to plan
 against. Measured on 360 runs: R1 69 % · R2|R1 61 % · R3|R2 55 % · run 23 %.)*
+
+## §4.3.15 Fields set by a move, and what they cost
+
+A move that sets a field (§3.11.7) puts it in its category for **3 turns** (`fieldMoveTurns`; 5 with the matching rock,
+§7.4) over whatever stood there, for both sides. The turns are counted at the end of each Resolution, the one it was set
+in first; when they run out the field the fight opened with comes back, or nothing. A second move-set field of the
+same category replaces the first and its clock. Sandstorm **stays a Hazard** (§4.3.4): moving it to the weather row
+would let a Rain Dance wash out the Rock and Fighting Gyms' storm, the one-sided pressure §4.3.14 measured.
+
+The field also changes what some cards **cost** — the series' "it never misses in the rain", translated to AP because
+nothing here misses (`field-cost` on the move, priced in the same ledger as everything else, §3.8, and on the enemy's
+budget too):
+
+| Field | Cheaper by 1 AP | Dearer by 1 AP | Other |
+|---|---|---|---|
+| Rain | Thunder | — | Solar Beam ×0.5 |
+| Sun | — | Thunder | Solar Beam needs no charge (§3.11.10) |
+| Hail | Blizzard | — | — |
+
+*(The user's idea, 2026-11-03: "Rain Dance makes Water and Electric moves stronger or cheaper". Water's ×1.5 was already
+there; Electric is the move the rain is famous for.)*
 
 ---
 

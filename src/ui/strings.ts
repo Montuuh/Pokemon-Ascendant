@@ -34,8 +34,8 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'out-of-reach': 'A Melee move only reaches the enemy Lead. Ranged and area moves reach its supports.',
   'target-fainted': 'That Pokémon has fainted.',
   'target-is-lead': 'Already the Lead.',
-  'target-frozen': 'Frozen Pokémon cannot swap.',
-  'lead-frozen': 'Your Lead is frozen in place.',
+  'target-frozen': 'That Pokémon cannot move from its place — frozen, recharging, rampaging or rooted.',
+  'lead-frozen': 'Your Lead cannot leave its place — frozen, recharging, rampaging or rooted.',
   'invalid-index': 'Invalid target.',
   'not-wild': 'You can only catch wild Pokémon.',
   guard: 'A guard is not for catching.',
@@ -44,6 +44,10 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'nothing-to-cure': 'Nothing to cure.',
   'choice-locked': 'Its held item will not let it play that.',
   'sealed': 'Mind Lock has sealed this card for the turn',
+  'no-pp': 'No PP left for this move this fight.',
+  'protect-again': 'Protect cannot go up two turns running.',
+  'target-protected': 'It is protected this turn — nothing aimed at it lands. An area move still hits the others.',
+  recharging: 'Recharging after its last move — its cards are offline this turn.',
 };
 
 /** §5.9.5 Ice Armour — the enemy panel's chip for the shield it wears. */
@@ -507,7 +511,7 @@ export const PHASE_TEXT = {
   waitingShort: 'Signature waiting',
   archetype: { entrenchment: 'Entrenchment', onslaught: 'Onslaught', 'status-siege': 'Status Siege', 'tempo-control': 'Tempo Control' } as const,
   fallback: (phase: number) => `Phase ${phase}`,
-  waitLabel: { asleep: 'Asleep', frozen: 'Frozen', paralysed: 'Paralysed', 'no-target': 'No target' } as const,
+  waitLabel: { asleep: 'Asleep', frozen: 'Frozen', recharging: 'Recharging', paralysed: 'Paralysed', 'no-target': 'No target' } as const,
   waiting: (reason: string) => `Signature waiting — ${reason}`,
   waitingBody: (move: string) => `${move} comes at its first action it can take: not this turn. A Sleep or Freeze card does not cancel an action already declared.`,
 };

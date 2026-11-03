@@ -318,7 +318,7 @@ Lead mechanic, the AI and relic effects.
 | **Consumable hand** | 2 | Each turn | Drawn from the per-combat pile |
 | **Swap counter** | 0 | Each turn | Manual swaps only |
 | **Skill deck** | 12 (→15) | Reshuffles when empty | 4 cards per Active Pokémon, +1 per Mastery |
-| **Card cost ceiling** | 3 standard, 4 ultimate | — | Caps single-card dominance |
+| **Card cost ceiling** | 3 | — | Caps single-card dominance; an ultimate is 3 AP with a drawback (§3.11.8) |
 
 Three AP against a five-card hand is the core squeeze: most turns you can play two or three things, and a swap
 costs one of them.
@@ -350,3 +350,117 @@ Inside a combat, every reference to a Pokémon's maximum HP resolves to **Effect
 - the HP bar's maximum.
 
 Stat-stage modifiers operate on Attack and Defence and are unaffected by Trauma.
+
+---
+
+# §3.11 Move keywords — the moves that are not just a hit
+
+A move can carry one or more **keywords**: a rule printed on the card that is not damage, a rider or a stat stage.
+Every keyword is deterministic, every one is in the number the intent and the card preview print (the forecast runs
+the same code, §5.2), and every one costs something — AP, PP or position — so none is strictly correct every turn
+(§6.3.6.5). Both sides use them: an enemy's keyword is telegraphed by its intent like anything else (§5.2.1).
+*(The user's call, 2026-11-03: healing, protection, shields, timed passives and ultimates with a drawback, after
+Slay the Spire, Across the Obelisk, Temtem and the series itself. The references are named per keyword.)*
+
+## §3.11.1 PP — uses per fight
+
+A card with **PP** can be played that many times in one fight (1–3), shown as pips on the card. The last use
+**exhausts** it: the card leaves the deck for the rest of the fight instead of going to the discard. PP belongs to the
+Pokémon and its move, so a copy of the card (Hive Badge, Crown of Echoes) spends the same pool. Every heal and every
+Protect carries PP: HP persists between fights (§2.4), so a heal without a limit would let a won fight be stretched
+until the team stood at full — PP is the series' own answer, and Slay the Spire's Exhaust is the same one.
+
+## §3.11.2 Protect — nothing lands this turn
+
+**Protect** (Detect is the Fighting twin): the user takes nothing from the enemy's intents this Resolution — no
+damage, no status, no stage. It cannot be played two turns running. On the Lead it blanks every single-target intent;
+a Cleave still reaches the bench. It is the answer to a telegraphed hit you cannot take (Pillar 1). An enemy's Protect
+is a **stance** (§5.2.1): declared, it is up at once, so the cards you would have aimed at it say so.
+
+## §3.11.3 Endure — one hit at 1 HP
+
+**Endure**: this turn, a hit that would knock the user out leaves it at 1 HP instead. It is the first rung of the
+faint-prevention ladder (§7.3.6) — paid for with a card, so it is spent before the free and the scarce ones.
+
+## §3.11.4 Guard — HP for a turn
+
+**Guard** is HP that does not last: a Withdraw, a Harden, a Defense Curl gives the user Guard, absorbed before HP by every
+hit from a move, and gone at the start of the next turn. Burn, Poison and the weather go straight past it. The amount is
+a hit of the move's printed guard power — `power ÷ divisor`, the way §4.1.1 prices a hit — times the species' base
+Defence over `guardReferenceDefence` (70, the roster's mean) and times its Defence stage. It is level-free because the
+hits it stops are (§4.1.1 has no level in it): a Guard that grew with the level would outgrow every hit by Region 3. It
+is Slay the Spire's Block, sized by the Pokémon so a Cloyster's shell is thicker than a Caterpie's. It stays on the
+Pokémon: guarding the Lead and then swapping it out guards the bench.
+
+## §3.11.5 Substitute — a decoy paid for in HP
+
+**Substitute**: the user pays a quarter of its max HP (never the last point) and stands behind a decoy with that much
+HP. The decoy absorbs every hit from a move before the user's own HP, and while it stands no foe's status or stat drop
+reaches the user. It lasts until it breaks or the fight ends.
+
+## §3.11.6 Side conditions — Reflect, Light Screen, Safeguard, Mist
+
+A **side condition** covers one side of the field for a number of turns (counted at the end of each Resolution,
+starting with the one it was played in):
+
+| Condition | Effect on its side | Turns |
+|---|---|---|
+| **Reflect** | Melee damage taken ×`screenMultiplier` (0.66) | 3 |
+| **Light Screen** | Ranged damage taken ×`screenMultiplier` | 3 |
+| **Safeguard** | No status can be applied | 3 |
+| **Mist** | No stat stage can be lowered by the other side | 3 |
+
+Playing one again refreshes its turns. The screen is one more independent term in the damage formula (§4.1.1), so the
+number on the intent drops the moment Reflect goes up. *(Until v0.9.89 Reflect was +1 Defence, Light Screen softened one
+Cleave and Safeguard blocked one status for the fight; and an enemy's Reflect raised your team's Defence, a bug.)*
+
+## §3.11.7 Fields set by a move
+
+Rain Dance, Sunny Day, Hail and Sandstorm (and the four Terrains) set their field for **3 turns** — 5 with the matching
+rock held (Damp, Heat, Icy, Smooth Rock) — over whatever stood in its category, for both sides; when the time is up the
+field the fight opened with returns (§4.3.15).
+
+## §3.11.8 Recharge — the ultimate and the turn after
+
+**No card costs more than 3 AP printed** (§3.7): the ultimates the series gave a turn of recharge are 3 AP at the top
+of their band, and pay after. **Recharge** (Hyper Beam, Giga Impact, Blast Burn, Hydro Cannon, Frenzy Plant): through
+the whole of the user's next turn its cards cannot be played and it cannot be swapped out. Its teammates' cards still
+can — the shared hand is what makes the recharge a puzzle rather than a lost turn. On the enemy side the next turn's
+intent is *Recharging* — your window.
+
+## §3.11.9 Rampage
+
+**Rampage** (Thrash, Petal Dance, Outrage): the move comes back to your hand free at the start of each of the user's
+next two turns, and through them the user cannot be swapped out; when the rampage ends, it is Confused. An enemy on a
+rampage declares the same move for its next two turns.
+
+## §3.11.10 Charge and out of reach
+
+**Charge** (Solar Beam, Sky Attack, Skull Bash): played now, the hit lands at the start of your next turn, on the foe it
+was aimed at (the enemy Lead if that one has gone). Under Sun, Solar Beam needs no charge. **Out of reach** (Fly, Dig,
+Dive) is a charge with a shield: until the hit lands, every intent aimed at the user hits nothing. An enemy's charge is
+telegraphed twice — *charging* this turn, the hit as next turn's intent.
+
+## §3.11.11 Counter
+
+**Counter** (Melee) and **Mirror Coat** (Ranged): for the rest of the turn, every hit of that range the user takes is
+returned ×`counterMultiplier` (1.5) to the attacker. An enemy's Counter is a stance: a Melee card into it costs you.
+
+## §3.11.12 Overexert — AP you do not have yet
+
+A card that **overexerts** can be played with up to its printed number of AP that you do not have; the shortfall comes
+off next turn's refill (Temtem's overexertion, Across the Obelisk's Fatigue). The debt is shown on the AP capsule.
+
+## §3.11.13 Heals that read the field and the slot
+
+- **Weather-scaled** heals (Synthesis, Moonlight, Morning Sun) restore their share ×2 under Sun and ×0.5 under any
+  other weather.
+- **Wish** heals whoever stands in the user's place at the end of the *next* Resolution — swap a hurt one in to take it.
+- **Ingrain** roots the user: it regenerates every turn and cannot be swapped out for the rest of the fight. Aqua Ring
+  regenerates without the roots.
+- **Heal Pulse** heals the Lead.
+
+## §3.11.14 Baton Pass
+
+**Baton Pass** is a Step-Backward (§3.3.3) that hands the user's stat stages and its Substitute to the Pokémon that
+takes the Lead.

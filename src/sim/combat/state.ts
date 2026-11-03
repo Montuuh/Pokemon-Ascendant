@@ -4,7 +4,7 @@ import type { IntentKind, PokemonType, PrimaryStatus, SlotId, Stat, StatusCondit
 import type { Effectiveness } from './typeChart';
 import type { FieldState } from './fields';
 import type { ArenaRuleId } from './arenaRules';
-import type { FieldId } from './fields';
+import type { FieldCategory, FieldId } from './fields';
 import type { GymRuleId } from './gymRules';
 
 // Plain, JSON-serialisable combat state. Everything the UI shows, the save writes and a replay compares is here.
@@ -78,6 +78,49 @@ export interface Combatant {
    * by that attack. Absent (the usual case) is 1.
    */
   chill?: number;
+  /** §3.11.1 — PP spent this fight, by move. Absent until a move with PP is used. */
+  ppUsed?: Record<string, number>;
+  /** §3.11.4 — Guard: HP that lasts until the next turn starts. */
+  guard?: number;
+  /** §3.11.5 — the decoy's HP, while it stands. */
+  substitute?: number;
+  /** §3.11 — what the move keywords leave on the Pokémon between plays. Absent until one is used. */
+  volatile?: Volatile;
+}
+
+/**
+ * §3.11 — a keyword's state on its user. Recharge and the rampage go `pending → active` at the next turn's start, so
+ * the turn they were used in is not the turn they bind.
+ */
+export interface Volatile {
+  /** §3.11.2 — the turn its Protect is up. */
+  protectTurn?: number;
+  /** §3.11.2 — the last turn it raised one, so it cannot raise the next. */
+  protectedLast?: number;
+  /** §3.11.3 — the turn its Endure holds. */
+  endureTurn?: number;
+  /** §3.11.8 — recharging after an ultimate. */
+  recharge?: 'pending' | 'active';
+  /** §3.11.8 — an enemy's Fatigue: AP its next turn's budget is short. Yours is the player's AP debt instead. */
+  fatigue?: number;
+  /** §3.11.9 — the rampaging move and how many free returns are left. */
+  rampage?: { moveId: string; left: number; active: boolean };
+  /** §3.11.10 — a charged hit waiting to land next turn, at the foe it was aimed at; `outOfReach` meanwhile. */
+  charge?: { moveId: string; targetUid: string | null; outOfReach: boolean; turn: number };
+  /** §3.11.11 — this turn's Counter: hits of `range` are returned ×`multiplier`. */
+  counter?: { range: 'melee' | 'ranged'; multiplier: number; turn: number };
+  /** §3.11.13 Ingrain — it cannot be swapped out for the rest of the fight. */
+  rooted?: true;
+}
+
+/** §3.11.6 / §3.11.13 — a condition over one side, counted down at the end of each Resolution. Wish names its place. */
+export interface SideCondition {
+  id: 'reflect' | 'light-screen' | 'safeguard' | 'mist' | 'wish';
+  side: 'player' | 'enemy';
+  turnsLeft: number;
+  /** Wish — the place it heals (a team index for the player, an enemy uid for the enemy) and how much. */
+  place?: number | string;
+  amount?: number;
 }
 
 export interface EnemyCombatant extends Combatant {
@@ -113,7 +156,7 @@ export interface EnemyCombatant extends Combatant {
 }
 
 /** §5.8.3 — why an open signature opportunity is not this turn's action. */
-export type SignatureWait = 'asleep' | 'frozen' | 'paralysed' | 'no-target';
+export type SignatureWait = 'asleep' | 'frozen' | 'recharging' | 'paralysed' | 'no-target';
 
 /**
  * §5.8.3 — `locked` until Phase 3 commits, `ready` from then until it is declared (or KO'd), then `spent`. `wait` says why
@@ -147,6 +190,8 @@ export interface Intent {
   crit?: boolean;
   /** §5.8.3 — the ace's signature, declared: always shown, whatever veils its other intents. */
   signature?: boolean;
+  /** §5.2.1 — a stance: its effects went up when it was declared, so its turn only says so. */
+  stance?: true;
 }
 
 export interface SkillCard {
@@ -160,6 +205,8 @@ export interface SkillCard {
    * every card in every other run; a card with it set is inert and only there to pad the reshuffle.
    */
   echoUntilTurn?: number;
+  /** §3.11.9 — a rampage's free return: played or not, it leaves at the turn's end and never reaches the discard. */
+  temp?: true;
 }
 
 export interface ConsumableCard {
@@ -259,6 +306,10 @@ export interface PlayerState {
    * mid-draw, and a card pushed into a hand that is still being drawn would be drawn over.
    */
   queuedCards: { moveId: string; ownerUid: string }[];
+  /** §3.11.1 — cards whose PP ran out: out of the deck for the rest of the fight. */
+  exhausted?: SkillCard[];
+  /** §3.11.12 — AP borrowed this turn by an overexerting card, owed by next turn's refill. */
+  apDebt?: number;
 }
 
 /**
@@ -307,6 +358,8 @@ export type CombatEvent = { seq: number; turn: number } & (
   | { t: 'field'; fields: FieldState }
   /** §2.12.2.1 Playful — a Legendary took the type of the move that hit it. */
   | { t: 'type-change'; targetUid: string; types: PokemonType[] }
+  /** §3.11 — a keyword went up on a Pokémon (or, `blocked`, it stopped something), for the animation. */
+  | { t: 'keyword'; uid: string; keyword: 'protect' | 'endure' | 'guard' | 'substitute' | 'recharge' | 'rampage' | 'charge' | 'counter' | 'blocked'; amount?: number }
 );
 
 export interface CombatState {
@@ -339,6 +392,13 @@ export interface CombatState {
   pairFrom?: number;
   /** §4.3 — the Battlefield and any Home Field standing. Empty when the fight has none. */
   fields: FieldState;
+  /**
+   * §4.3.15 — a field a move set, by category: the Resolutions it has left, and the field the fight opened with,
+   * which comes back when they run out.
+   */
+  fieldTimers?: Partial<Record<FieldCategory, { turnsLeft: number; restore: FieldId | null }>>;
+  /** §3.11.6 — Reflect, Light Screen, Safeguard, Mist and Wish, on either side. */
+  sides?: SideCondition[];
   /** §5.9.5 — the Gym Leader's rule, for the whole fight. Absent in every fight but a Gym. */
   gymRule?: GymRuleId;
   /** §2.12.2.1 — a Legendary's arena rule, for the whole fight. Absent in every fight but a Legendary's. */
@@ -408,4 +468,12 @@ export type RejectReason =
   /** §7.4.5 — a held item forbids this card: Choice Band's Ranged lock, or Choice Scarf's one-a-turn. */
   | 'choice-locked'
   /** §5.9.5 Mind Lock — Sabrina sealed this card at the draw. */
-  | 'sealed';
+  | 'sealed'
+  /** §3.11.1 — its PP for this fight is spent. */
+  | 'no-pp'
+  /** §3.11.2 — Protect cannot be raised two turns running. */
+  | 'protect-again'
+  /** §3.11.2 / §3.11.10 — the target is behind its Protect, or out of reach. */
+  | 'target-protected'
+  /** §3.11.8 — the owner is recharging. */
+  | 'recharging';

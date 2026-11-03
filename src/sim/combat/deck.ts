@@ -70,7 +70,8 @@ export function sweepEchoes(state: CombatState): number {
 /** End of Resolution — alive owners' hand cards go to the discard; fainted owners' cards are dropped (§3.4). */
 export function discardHand(state: CombatState, isOwnerAlive: (uid: string) => boolean): void {
   const p = state.player;
-  for (const card of p.hand) if (isOwnerAlive(card.ownerUid)) p.discard.push(card);
+  // §3.11.9 — a rampage's free return leaves with the turn; it was never part of the deck.
+  for (const card of p.hand) if (isOwnerAlive(card.ownerUid) && !card.temp) p.discard.push(card);
   p.hand = [];
 }
 

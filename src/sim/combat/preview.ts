@@ -11,6 +11,7 @@ import { cardsLocked, isPositionLocked, paralysisApBonus } from './status';
 import { DEFAULT_BATTLE_CONFIG, type BattleConfig } from './battleConfig';
 import { outspeeds } from './stats';
 import { rhythmReady, spendsRhythm } from './rhythm';
+import { fieldApDelta, isShielded, ppLeft, protectBlocked } from './keywords';
 
 // Read-only selectors the UI (and the auto-player) use to know what is legal and what it would do.
 // Every rule here mirrors the reducer's validation — keep them in lockstep (tests assert agreement).
@@ -86,6 +87,14 @@ export function apCostDetails(state: CombatState, move: MoveDef, owner: Combatan
   const details = [`base ${cost}`];
   const paralysis = paralysisApBonus(owner, ctx.config);
   if (paralysis) { cost += paralysis; details.push(`${owner.name}'s Paralysis +${paralysis}`); }
+  // §4.3.15 — the field makes some cards cheaper or dearer (Thunder in the rain).
+  const field = fieldApDelta(state, move, ctx.content);
+  if (field) { cost += field; details.push(`Field ${field >= 0 ? '+' : '−'}${Math.abs(field)}`); }
+  // §3.11.9 — a rampage's free return.
+  if (owner.volatile?.rampage?.active && owner.volatile.rampage.moveId === move.id) {
+    details.push('Rampage: free');
+    return { cost: 0, details };
+  }
   if (move.role === 'defensive' && state.player.defensiveDiscount) {
     const discount = Math.min(cost, 1);
     cost -= discount;
@@ -130,6 +139,11 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (owner.hp <= 0) reason = 'owner-fainted';
   else if (cardsLocked(owner) === 'sleep') reason = 'owner-asleep';
   else if (cardsLocked(owner) === 'freeze') reason = 'owner-frozen';
+  // §3.11.8 — recharging after an ultimate.
+  else if (cardsLocked(owner) === 'recharge') reason = 'recharging';
+  // §3.11.1 — its PP for the fight is spent; §3.11.2 — Protect cannot go up two turns running.
+  else if (ppLeft(owner, move) === 0) reason = 'no-pp';
+  else if (protectBlocked(state, owner, move)) reason = 'protect-again';
   // §5.9.5 Mind Lock — the card Sabrina sealed at the draw, shown sealed and never hidden.
   else if (isSealed(state, card.id)) reason = 'sealed';
   else if (move.range === 'melee' && !isLead && move.modifier !== 'step-forward') reason = 'melee-needs-lead';
@@ -137,17 +151,20 @@ export function cardPlayability(state: CombatState, cardId: string, ctx: CombatC
   else if (choiceLockBlocks(state, owner, move, ctx.content)) reason = 'choice-locked';
   else if (stepsForward && isPositionLocked(owner)) reason = 'owner-frozen';
   else if (stepsForward && lead(state) && isPositionLocked(lead(state)!)) reason = 'lead-frozen';
-  else if (apCost > state.player.ap) reason = 'not-enough-ap';
+  // §3.11.12 — an overexerting card may borrow from next turn.
+  else if (apCost > state.player.ap + (move.overexert ?? 0)) reason = 'not-enough-ap';
   else if (move.power > 0 && !enemy) reason = 'no-enemy';
   else if (targetUid !== undefined && foe && !enemy) reason = 'no-enemy';
   else if (foe && enemy && !canReach(state, move, enemy)) reason = 'out-of-reach';
+  // §3.11.2 / §3.11.10 — behind its Protect, or out of reach in the air: an area card still lands on the others.
+  else if (foe && enemy && move.targeting !== 'cleave' && isShielded(state, enemy)) reason = 'target-protected';
 
   // §4.1.3.1 — a full rhythm is a certain crit, so the preview prints it.
   const crit = !!move.alwaysCrit || state.player.critChance >= 1 || (spendsRhythm(move) && rhythmReady(owner));
   const damage = move.power > 0 && enemy ? breakdownFor(owner, enemy, move, crit, ctx, state) : null;
   const targets = state.enemies
     .filter((e) => e.hp > 0)
-    .map((e) => ({ uid: e.uid, reachable: foe && canReach(state, move, e), damage: move.power > 0 ? breakdownFor(owner, e, move, crit, ctx, state) : null }));
+    .map((e) => ({ uid: e.uid, reachable: foe && canReach(state, move, e) && !isShielded(state, e), damage: move.power > 0 ? breakdownFor(owner, e, move, crit, ctx, state) : null }));
   return {
     card,
     move,

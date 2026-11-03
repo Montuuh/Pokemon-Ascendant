@@ -6,6 +6,7 @@ import { stepRhythm } from './rhythm';
 import { makeEnemy } from './setup';
 import { slotOccupant } from './slots';
 import type { Combatant, CombatState, EnemyCombatant, Intent } from './state';
+import { afterUse, isShielded, spendPp, startsCharge } from './keywords';
 
 // §3.2.5 — an enemy executes its telegraphed intent against whoever occupies the targeted slot NOW.
 
@@ -40,6 +41,20 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
 
   enemy.witnessed = true; // §5.5 — Witnessed tier
   if (move.cooldown && move.cooldown > 0) enemy.cooldowns[move.id] = move.cooldown;
+  // §3.11.1 — its PP for the fight.
+  spendPp(enemy, move);
+
+  // §5.2.1 — a stance went up when it was declared; its turn only says so.
+  if (intent.stance) {
+    emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled: false });
+    log(state, 'enemy', `${enemy.name} holds its ${move.name}.`);
+    return;
+  }
+  // §3.11.10 — a charge move only charges this turn; the hit is next turn's intent.
+  if (startsCharge(state, ctx, enemy, move, null)) {
+    emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled: false });
+    return;
+  }
 
   if (intent.kind === 'summon') {
     emit(state, { t: 'enemy-action', enemyUid: enemy.uid, intent: { ...intent }, fizzled: false });
@@ -86,11 +101,19 @@ export function executeIntent(state: CombatState, enemy: EnemyCombatant, ctx: Ru
   for (const target of targets) {
     if (target.hp <= 0) continue;
     log(state, 'enemy', `${enemy.name} used ${move.name} on ${target.name}!`);
+    // §3.11.2 / §3.11.10 — behind its Protect, or out of reach: nothing lands on it.
+    if (isShielded(state, target)) {
+      emit(state, { t: 'keyword', uid: target.uid, keyword: 'blocked' });
+      log(state, 'enemy', `${target.name} protected itself!`);
+      continue;
+    }
     if (absorbedByAbility(state, ctx, target, move)) continue;
     // §4.1.3.1 — a rhythm crit was declared with the intent and printed on its chip.
     if (move.power > 0) strike(state, ctx, enemy, target, move, !!move.alwaysCrit || !!intent.crit);
     if (target.hp > 0 || move.power === 0) applyMoveEffects(state, ctx, enemy, target, move);
   }
+  // §3.11.8 / §3.11.9 — an ultimate leaves it recharging; a rampage begins or counts down.
+  afterUse(state, enemy, move);
 }
 
 /**

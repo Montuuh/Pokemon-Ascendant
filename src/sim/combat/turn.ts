@@ -14,6 +14,7 @@ import { executeTurn } from './enemyTurn';
 import { fieldDrawBonus, fieldsSuppressed, hailImmune, isGrounded, sandstormImmune } from './fields';
 import { arenaTurnEnd, armourLead, ruleTurnEnd, ruleTurnStart, sealStrongest } from './ruleTurn';
 import { objectiveTurnEnd } from './objective';
+import { keywordTurnEnd, keywordTurnStart, rampageReturns } from './keywordTurn';
 
 // §3.2 — the five-phase loop. `beginTurn` = Draw + Intent (lands in Action); `resolveTurn` = Resolution → next turn.
 
@@ -31,8 +32,16 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   // §5.8.3 — the commit boundary: before the Draw and the AP refill, every standing enemy enters the phase it latched,
   // so the refill below already pays Tempo Control's tax and the intents read the new phase.
   commitPhases(state, ctx);
+  // §3.11 — Guard falls away, a recharge binds, a rampage returns or ends, your charged hits land.
+  keywordTurnStart(state, ctx);
+  if (checkOutcome(state)) return finish(state);
   if (p.ap > 0) changeAp(state, -p.ap, 'Unused AP expires before the new turn');
   changeAp(state, ctx.config.baseApPerTurn, 'Base turn refill', ctx.config.maxApPerTurn);
+  // §3.11.12 — what an overexerting card borrowed comes off the refill.
+  if (p.apDebt) {
+    changeAp(state, -p.apDebt, 'Overexerted last turn');
+    p.apDebt = 0;
+  }
   const tax = tempoApTax(state, ctx.config);
   if (tax > 0) changeAp(state, -tax, 'Enemy Tempo Control');
   for (const entry of itemApSources(state, ctx.content, true)) changeAp(state, entry.amount, entry.source, ctx.config.maxApPerTurn);
@@ -80,6 +89,8 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
     log(state, 'system', `The Hive Badge buzzes: a free ${ctx.content.move(q.moveId).name}.`);
   }
   p.queuedCards = [];
+  // §3.11.9 — a rampaging Pokémon's move comes back, free, on top of the draw.
+  rampageReturns(state);
 
   // §5.10.1 — and this turn's cycle, if there was one, queues the next. Rolled here rather than inside the
   // draw so the RNG is spent in one place per turn whatever the deck did.
@@ -240,6 +251,8 @@ export function resolveTurn(state: CombatState, ctx: RunCtx): void {
       if (e.cooldowns[id] === 0) delete e.cooldowns[id];
     }
   }
+  // §3.11 — side conditions, Wish and the move-set fields count down; a recharge is over.
+  keywordTurnEnd(state);
 
   // §3.2.5 — hand to discard (fainted owners' cards dropped), unused consumables back to the pool.
   // §7.3 — bank the AP a relic earned this turn before the turn's bookkeeping is cleared.

@@ -69,7 +69,7 @@ export function signatureIntent(state: CombatState, enemy: EnemyCombatant, ctx: 
   const sig = enemy.signature;
   if (!sig || sig.state !== 'ready') return null;
   const locked = cardsLocked(enemy);
-  if (locked) return { wait: locked === 'sleep' ? 'asleep' : 'frozen' };
+  if (locked) return { wait: locked === 'sleep' ? 'asleep' : locked === 'freeze' ? 'frozen' : 'recharging' };
   const move = ctx.content.move(sig.moveId);
   if (move.apCost + paralysisApBonus(enemy, ctx.config) > ctx.config.baseApPerTurn) return { wait: 'paralysed' };
   const intent = classifyMove(state, enemy, move, ctx);

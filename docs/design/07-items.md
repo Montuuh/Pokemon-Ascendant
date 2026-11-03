@@ -270,9 +270,9 @@ Every Tier-3 relic changes *how a run works*, never how hard it hits.
 ## §7.3.6 Conflicts and ordering
 
 - **Choice Band and Choice Specs** can both be held. Each tracks its own first-move-of-type discount.
-- **Faint prevention resolves in this order:** Sturdy (ability) → Last Stand (Legendary) → Focus Sash (held
-  item) → Phoenix Feather (relic). Ability first, then the run-long pick, then the equipped item, then the
-  consumed relic as the true last resort.
+- **Faint prevention resolves in this order:** Endure (the move, §3.11.3) → Sturdy (ability) → Last Stand (Legendary)
+  → Focus Sash (held item) → Phoenix Feather (relic). The card you paid for this turn first, then the ability, then the
+  run-long pick, then the equipped item, then the consumed relic as the true last resort.
 - **Trauma Salve** (relic) and **Trauma Salve Cache** (Hub upgrade) are independent: the upgrade guarantees one
   in a shop, the relic is the item itself.
 - **Type-boost relics, Held Items, Badges and fields** are each independent multiplicative terms in the damage

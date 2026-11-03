@@ -11,10 +11,11 @@ import { rhythmReady, spendsRhythm, stepRhythm } from './rhythm';
 import { apCostDetails, cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
 import { rngFromState } from './setup';
 import { activeEnemy, lead, setLead } from './slots';
-import type { CombatAction, CombatState, RejectReason } from './state';
+import type { CombatAction, Combatant, CombatState, RejectReason } from './state';
 import { cureStatus } from './status';
 import { beginTurn, checkOutcome, finish, flee, resolveTurn } from './turn';
 import { isPositionLocked } from './status';
+import { afterUse, hasEffect, isShielded, spendPp, startsCharge } from './keywords';
 
 // The combat reducer: (state, action, ctx) → state. Pure over state (RNG cursor lives in the state).
 // Illegal actions return the SAME state object plus a reason via `validate` so UIs never dispatch blind.
@@ -105,7 +106,10 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
 
   // Pay AP; §3.3.1 — the defensive discount is consumed by the first Defensive card after a manual swap.
   const price = apCostDetails(state, move, owner, ctx);
-  changeAp(state, -p.apCost, `${owner.name}: ${move.name} (${price.details.join('; ')})`);
+  // §3.11.12 — an overexerting card borrows what the turn does not have from the next turn's refill.
+  const debt = Math.max(0, p.apCost - player.ap);
+  if (debt > 0) player.apDebt = (player.apDebt ?? 0) + debt;
+  changeAp(state, -p.apCost, `${owner.name}: ${move.name} (${price.details.join('; ')})${debt > 0 ? `; ${debt} borrowed from next turn` : ''}`);
   if (move.role === 'defensive' && player.defensiveDiscount) player.defensiveDiscount = false;
 
   // §7.3.4 — the turn's play record, *after* the cost is priced off it and before anything else reads it.
@@ -130,7 +134,11 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
 
   // Remove from hand → discard (before effects so a draw effect cannot redraw it mid-resolution).
   player.hand = player.hand.filter((c) => c.id !== card.id);
-  player.discard.push(card);
+  // §3.11.1 — the last PP exhausts the card for the fight; §3.11.9 — a rampage's free return never reaches the discard.
+  if (spendPp(owner, move)) {
+    (player.exhausted ??= []).push(card);
+    log(state, 'system', `${move.name} is out of PP for this fight.`);
+  } else if (!card.temp) player.discard.push(card);
 
   // §3.3.2 — Step-Forward: the owner becomes Lead before the effect. No swap-counter increment, no discount.
   if (p.stepsForward) {
@@ -153,11 +161,21 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   const rhythmCrit = spendsRhythm(move) && rhythmReady(owner);
   if (rhythmCrit) log(state, 'player', `${owner.name} is in rhythm!`);
 
-  if (move.power > 0) {
+  // §3.11.10 — a charge move only charges now: the hit lands at the start of your next turn (`keywordTurn`).
+  const charging = startsCharge(state, ctx, owner, move, enemy?.uid ?? null);
+  if (charging) {
+    // Nothing lands this turn.
+  } else if (move.power > 0) {
     const several = victims.length > 1;
     for (const victim of victims) {
       // A victim an earlier hit of this same card already knocked out is skipped.
       if (victim.hp <= 0) continue;
+      // §3.11.2 / §3.11.10 — behind its Protect or out of reach: an area card passes it by.
+      if (isShielded(state, victim)) {
+        emit(state, { t: 'keyword', uid: victim.uid, keyword: 'blocked' });
+        log(state, 'player', `${victim.name} protected itself!`);
+        continue;
+      }
       // §6.5.2 — the hit was swallowed whole: no damage, no rider, nothing to check.
       if (absorbedByAbility(state, ctx, victim, move)) continue;
       const crit = !!move.alwaysCrit || rhythmCrit || (player.critChance > 0 && ctx.rng.chance(player.critChance));
@@ -181,6 +199,8 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
   } else {
     applyMoveEffects(state, ctx, owner, enemy, move);
   }
+  // §3.11.8 / §3.11.9 — an ultimate leaves its user recharging; a rampage begins.
+  if (!charging) afterUse(state, owner, move);
   // §4.1.3.1 — the card is worth its *printed* AP: a discount, a free swap or Paralysis changes what it costs, not what it feeds.
   stepRhythm(owner, ctx.config, rhythmCrit, move.apCost);
 
@@ -203,12 +223,25 @@ function playCard(state: CombatState, cardId: string, stepBackTo: number | undef
       emit(state, { t: 'swap', fromIndex: from, toIndex: dest, kind: 'step-backward', apCost: 0 });
       changeAp(state, 0, `${owner.name}: Step Backward — free movement`);
       log(state, 'player', `${owner.name} steps back; ${player.team[dest]!.name} takes the Lead.`);
+      // §3.11.14 Baton Pass — the stages and the Substitute go with the baton.
+      if (hasEffect(move, 'baton-pass')) passBaton(state, owner, player.team[dest]!);
       onEnterLead(state, ctx, dest);
       stepDraw(state, ctx);
     }
   }
 
   if (checkOutcome(state)) finish(state);
+}
+
+/** §3.11.14 — hand the user's stat stages and its Substitute to the Pokémon that took the Lead. */
+function passBaton(state: CombatState, from: Combatant, to: Combatant): void {
+  to.stages = { ...from.stages };
+  from.stages = { attack: 0, defense: 0, speed: 0 };
+  if ((from.substitute ?? 0) > 0) {
+    to.substitute = from.substitute;
+    delete from.substitute;
+  }
+  log(state, 'player', `${from.name} passes the baton to ${to.name}.`);
 }
 
 function applyConsumable(state: CombatState, cardId: string, targetIndex: number | undefined, targetUid: string | undefined, ctx: RunCtx): void {

@@ -119,6 +119,17 @@ export interface BattleConfig {
   grassyHealPercent: number;
   /** §4.3.13 — Sticky Web: the Speed stages a Pokémon loses stepping into the Lead. */
   stickyWebStages: number;
+  /** §3.11 — the move keywords' numbers that are not on the move itself. */
+  keywords: {
+    /** §3.11.6 — Reflect and Light Screen: damage of their range into their side is multiplied by this. */
+    screenMultiplier: number;
+    /** §3.11.7 — the turns a matching rock adds to a field a move sets (Damp, Heat, Icy, Smooth Rock). */
+    rockExtraTurns: number;
+    /** §3.11.13 — a weather-scaled heal: ×`sun` under Sun, ×`other` under any other weather. */
+    weatherHeal: { sun: number; other: number };
+    /** §3.11.4 — the base Defence at which a Guard move's power blocks a hit of that power one for one. */
+    guardReferenceDefence: number;
+  };
   /** §5.9.5 — the Gym Leaders' rules. */
   gymRules: GymRuleConfig;
   /** §2.12.2.1 — the Legendaries' arena rules. */
@@ -199,6 +210,10 @@ export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
   typeTerrainBoost: 1.3,
   grassyHealPercent: 0.03,
   stickyWebStages: 1,
+  // §3.11 — the series' 0.66 for a screen in a double battle (this game's three-a-side field is closer to doubles than
+  // singles' 0.5), and its two extra turns for a rock: 3 + 2 is the series' own 5 + 3 scaled to these longer turns.
+  // Guard's reference is the roster's mean base Defence, so an average wall's Withdraw blocks the hit its power names.
+  keywords: { screenMultiplier: 0.66, rockExtraTurns: 2, weatherHeal: { sun: 2, other: 0.5 }, guardReferenceDefence: 70 },
   // §5.9.5 — the Leaders' rules, measured on the whole-run harness with every Gym (v0.9.13).
   gymRules: {
     rockSolidCap: 0.5,

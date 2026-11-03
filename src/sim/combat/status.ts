@@ -95,16 +95,21 @@ export function cureStatus(target: Combatant, which: StatusCondition | 'all'): S
   return removed;
 }
 
-/** §4.2.2.4 / §4.2.2.5 — the Pokémon's own cards are unplayable while Asleep or Frozen. */
-export function cardsLocked(c: Combatant): 'sleep' | 'freeze' | null {
+/** §4.2.2.4 / §4.2.2.5 — the Pokémon's own cards are unplayable while Asleep or Frozen; §3.11.8 — or recharging. */
+export function cardsLocked(c: Combatant): 'sleep' | 'freeze' | 'recharge' | null {
   if (c.status?.kind === 'sleep') return 'sleep';
   if (c.status?.kind === 'freeze') return 'freeze';
+  if (c.volatile?.recharge === 'active') return 'recharge';
   return null;
 }
 
-/** §4.2.2.5 — Freeze position-locks (no manual swap in/out, no Step-Backward destination). */
+/**
+ * §4.2.2.5 — Freeze position-locks (no manual swap in/out, no Step-Backward destination); §3.11.8 / §3.11.9 / §3.11.13 —
+ * so do a recharge, a rampage and Ingrain's roots.
+ */
 export function isPositionLocked(c: Combatant): boolean {
-  return c.hp > 0 && c.status?.kind === 'freeze';
+  if (c.hp <= 0) return false;
+  return c.status?.kind === 'freeze' || c.volatile?.recharge === 'active' || !!c.volatile?.rampage?.active || !!c.volatile?.rooted;
 }
 
 /** §4.2.2.3 — Paralysis adds +1 AP to that Pokémon's moves. */

@@ -1,4 +1,5 @@
 import type { ArenaRuleId } from '../combat/arenaRules';
+import type { FieldId } from '../combat/fields';
 import type { GymRuleId } from '../combat/gymRules';
 import type {
   BranchArchetype,
@@ -26,8 +27,11 @@ export type MoveEffect =
   | { kind: 'status'; status: StatusCondition; chance: number; self?: boolean; escalating?: boolean }
   /** §4.2.6 — stat stage change on self or foe. */
   | { kind: 'stage'; target: 'self' | 'foe' | 'bench'; stat: Stat; stages: number }
-  /** Heal self by a fraction of EffectiveMaxHP; with `durationTurns` it becomes a regen (Aqua Ring). */
-  | { kind: 'heal'; percentOfMaxHp: number; durationTurns?: number }
+  /**
+   * Heal self by a fraction of EffectiveMaxHP; with `durationTurns` it becomes a regen (Aqua Ring). §3.11.13 —
+   * `weatherScaled` reads the weather (Synthesis), `target: 'lead'` heals the Lead instead of the user (Heal Pulse).
+   */
+  | { kind: 'heal'; percentOfMaxHp: number; durationTurns?: number; weatherScaled?: boolean; target?: 'lead' }
   /** Draw extra skill cards immediately (Tailwind). */
   | { kind: 'draw'; cards: number }
   // ── v0.4. Each one is a simulation change the v0.3 branch payloads were waiting on (§6.10).
@@ -36,7 +40,7 @@ export type MoveEffect =
   /** §4.1.6 — heal a share of the damage this move actually dealt (Absorb, Mega Drain, Leech Life). */
   | { kind: 'drain'; percentOfDamage: number }
   /** §5.13.2 — more power while a condition holds: a Poisoned target, the user below a share of its HP, per Trauma stack. */
-  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma'; multiplier?: number; below?: number; perStack?: number }
+  | { kind: 'power-bonus'; when: 'target-poisoned' | 'self-below' | 'per-trauma' | 'in-field'; multiplier?: number; below?: number; perStack?: number; field?: FieldId }
   /** §5.13.2 Super Fang — the hit takes a share of the target's current HP. */
   | { kind: 'fixed-damage'; percentOfTargetHp: number }
   /** §5.13.2 Belly Drum — the user pays a share of its max HP, never below 1. */
@@ -55,7 +59,41 @@ export type MoveEffect =
   /** §5.6.2 — Call for Help: brings `count` of the caller's waiting companions onto the field. Enemy-only. */
   | { kind: 'summon'; count: number }
   /** §5.6 — Cover: the user steps in front of its Lead and becomes the enemy Lead (enemy-only, v0.8.6). */
-  | { kind: 'cover' };
+  | { kind: 'cover' }
+  // ── §3.11 — the move keywords (v0.9.89).
+  /** §3.11.2 Protect — nothing from the other side lands on the user this turn; never two turns running. */
+  | { kind: 'protect' }
+  /** §3.11.3 Endure — this turn, a knockout hit leaves the user at 1 HP. */
+  | { kind: 'endure' }
+  /** §3.11.4 Guard — HP for a turn: a hit of `power`, sized by the user's base Defence and its Defence stage. */
+  | { kind: 'guard'; power: number }
+  /** §3.11.5 Substitute — pay a share of max HP for a decoy that soaks hits, statuses and stat drops. */
+  | { kind: 'substitute'; percentOfMaxHp: number }
+  /** §3.11.6 — a side condition over the user's side for `turns`. */
+  | { kind: 'side-condition'; condition: SideConditionId; turns: number }
+  /** §3.11.7 / §4.3.15 — set a field for `turns` (more with the matching rock held). */
+  | { kind: 'set-field'; field: FieldId; turns: number }
+  /** §4.3.15 — the card costs `delta` AP more (or less) while `field` stands. */
+  | { kind: 'field-cost'; field: FieldId; delta: number }
+  /** §3.11.8 Recharge — the user's next turn: its cards locked, its place fixed. */
+  | { kind: 'recharge' }
+  /** §3.11.8 Fatigue — the user's side starts its next turn `ap` AP short. */
+  | { kind: 'fatigue'; ap: number }
+  /** §3.11.9 Rampage — the move returns free for `turns` turns, the user fixed in place, then Confused. */
+  | { kind: 'rampage'; turns: number }
+  /** §3.11.10 Charge — the hit lands next turn (at once under `skipIn`); `outOfReach` hides the user meanwhile (Fly). */
+  | { kind: 'charge'; skipIn?: FieldId; outOfReach?: boolean }
+  /** §3.11.11 Counter / Mirror Coat — hits of `range` taken this turn are returned ×`multiplier`. */
+  | { kind: 'counter'; range: MoveRange; multiplier: number }
+  /** §3.11.13 Wish — whoever stands in the user's place at the end of the next Resolution is healed. */
+  | { kind: 'wish'; percentOfMaxHp: number }
+  /** §3.11.13 Ingrain — the user cannot be swapped out for the rest of the fight. */
+  | { kind: 'root' }
+  /** §3.11.14 Baton Pass — the Step-Backward hands the user's stages and Substitute to the new Lead. */
+  | { kind: 'baton-pass' };
+
+/** §3.11.6 — the side conditions. */
+export type SideConditionId = 'reflect' | 'light-screen' | 'safeguard' | 'mist';
 
 export interface MoveDef {
   id: string;
@@ -72,6 +110,10 @@ export interface MoveDef {
   targeting?: MoveTargeting;
   /** §5.3 CooldownGate — turns an enemy must wait before re-using it (0 = none). */
   cooldown?: number;
+  /** §3.11.1 — uses per fight; the last one exhausts the card. Absent: unlimited. */
+  pp?: number;
+  /** §3.11.12 — it can be played with up to this many AP you do not have, the debt paid from next turn's refill. */
+  overexert?: number;
   effects: MoveEffect[];
 }
 
@@ -218,6 +260,8 @@ export type ItemHook =
   | 'box-capacity'
   /** §5.10.3 Glacier Badge — a status that lands on an enemy multiplies its next attack by `multiplier`. */
   | 'status-chill'
+  /** §3.11.7 Damp, Heat, Icy, Smooth Rock — a `field` the wearer sets lasts `rockExtraTurns` longer. */
+  | 'field-duration'
   /** §2.11.3 / §4.3 Field Surveyor — a wild fight opens under the Battlefield its Lead's type favours. Run layer. */
   | 'battlefield-choice'
   // ── v0.7.5 (§5.5.1)
