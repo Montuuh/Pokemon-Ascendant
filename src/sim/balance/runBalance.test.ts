@@ -130,7 +130,9 @@ describe('Run pacing — §2.1, §3.7', () => {
     // balance failure it is not. The budget scales with the sample size instead. 700 ms a seed since v0.8.2: the
     // harness reads the dry-run forecast (§9.2.5) on every decision, and 400 ms left no room on a busy machine.
     // 1.5 s since v0.8.7: a route is twenty columns now, and GitHub's runner timed this out at 700 ms.
-    { timeout: 2_000 + AB_SEEDS * 1_500 },
+    // 3 s since v0.9.92, as the curve's: a level-up's HP and the slower XP curve make runs go deeper, and one case
+    // took 118 s alone and 173 s after the other — past the old 122 s, on this machine and on GitHub's runner.
+    { timeout: 2_000 + AB_SEEDS * 3_000 },
     (_label, skip) => {
       for (const starter of STARTER_IDS) {
         const taking = simulate(starter, DEFAULT_RUN_POLICY, AB_SEEDS);
