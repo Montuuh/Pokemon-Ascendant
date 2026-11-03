@@ -9,6 +9,12 @@ async function settle(page: Page) {
   await page.waitForTimeout(500);
 }
 
+/** The fixture's hand is a seeded draw from the learnsets, which move with the content: put the two cards these tests aim in it. */
+async function aimCards(page: Page) {
+  await page.waitForFunction(() => !!(window as unknown as { __ascendant?: { state: () => unknown } }).__ascendant?.state());
+  await page.evaluate(() => (window as unknown as { __ascendant: { hand: (ids: string[]) => void } }).__ascendant.hand(['vine-whip', 'scratch']));
+}
+
 const hpOf = async (page: Page, uid: string) =>
   page.evaluate((u) => {
     const s = (window as unknown as { __ascendant: { dump: () => { enemies: { uid: string; hp: number }[] } } }).__ascendant.dump();
@@ -17,7 +23,7 @@ const hpOf = async (page: Page, uid: string) =>
 
 test.describe('Group fights — §5.6', () => {
   test('a flock of three stands together, each with its intent and its place — no role (v0.9.10)', async ({ page }) => {
-    await page.goto('/?scenario=group-wild-flock');
+    await page.goto('/?scenario=group-wild-flock&seed=7');
     const screen = page.getByTestId('combat-screen');
     await expect(screen).toHaveAttribute('data-enemies', '3');
     await expect(page.getByTestId('foe-panel')).toHaveCount(3);
@@ -57,8 +63,9 @@ test.describe('Group fights — §5.6', () => {
   });
 
   test('a Ranged card prints its number on every enemy; a Melee card stops at the Lead', async ({ page }) => {
-    await page.goto('/?scenario=group-wild-flock');
+    await page.goto('/?scenario=group-wild-flock&seed=7');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await aimCards(page);
     await page.getByTestId('card-vine-whip').hover();
     await expect(page.getByTestId('target-preview')).toHaveCount(3);
     await settle(page);
@@ -71,8 +78,9 @@ test.describe('Group fights — §5.6', () => {
   });
 
   test('a card dragged onto a support lands on that support', async ({ page }) => {
-    await page.goto('/?scenario=group-wild-flock');
+    await page.goto('/?scenario=group-wild-flock&seed=7');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await aimCards(page);
     await settle(page);
     const card = page.getByTestId('card-vine-whip');
     const target = page.locator('[data-testid="foe-panel"][data-enemy-uid="e2"] [data-testid^="enemy-"]');
@@ -91,8 +99,9 @@ test.describe('Group fights — §5.6', () => {
   });
 
   test('click the card, then the enemy: it is aimed there; a Melee card at a support is refused', async ({ page }) => {
-    await page.goto('/?scenario=group-wild-flock');
+    await page.goto('/?scenario=group-wild-flock&seed=7');
     await expect(page.getByTestId('combat-screen')).toBeVisible();
+    await aimCards(page);
     const support = page.locator('[data-testid="foe-panel"][data-enemy-uid="e1"] [data-testid^="enemy-"]');
     await page.getByTestId('card-scratch').click();
     await support.click();
