@@ -691,6 +691,15 @@ great, not an invented one, and a content test keeps it out of every path the ki
   it already had (`scripts/v0991-learnsets.mjs`; the source is `scripts/data/learnsets-gen4.json`) — about six a stage,
   fourteen at most, so a Pokémon learns something every few levels all run. A move the line gets another way is never
   added by level: its Mastery tiers, its branches' payloads, its tutor and egg lists.
+- **A base form learns at the series' levels** (2026-11-03, the user's call: "at first most Pokémon only have Normal
+  moves"). Every row of a base form that the series teaches by level takes its Gen IV level, and the level-1 pair is
+  the series' first hit and first trick — Tackle and Growl, not Vine Whip: a starter's Ember arrives at 7, Bubble at 7,
+  Vine Whip at 9. A move of the Pokémon's own type sits at Lv 1 only where the series puts it there (Pikachu's Thunder
+  Shock, Vulpix's Ember, Oddish's Absorb) or where the line has no other hit (Cubone's Bone Club, Abra's Confusion —
+  a Teleport alone is no card). Where the series' Lv 1 hit was missing from the kit it is added and grown by a track
+  (Ponyta and Slowpoke's Tackle, into Stomp and Headbutt). A species that never evolves keeps its authored rows past
+  Lv 25, and the Legendaries keep theirs: both are met high, with the kit their encounter was tuned for
+  (`scripts/early-learnsets.mjs`).
 - **Deck contribution = `min(known, 4)`.** The active-4 cap never changes, and Mastery remains the 5th.
 - **One met already evolved** — a wild Ivysaur, a Gym's Venusaur, a recruit caught above its threshold — took its
   stage's first branch at every step, and its forms' learnsets up to its level, so it holds the kit a player's would.

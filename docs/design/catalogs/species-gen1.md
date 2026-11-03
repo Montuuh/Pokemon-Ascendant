@@ -60,7 +60,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `sandshrew` | 27 | basic | Ground | 50/75/85/30/40 | 75/58 | common | **L22** → `sandslash` | 1 `scratch` · 1 `defense-curl` · 5 `sand-attack` · 9 `poison-sting` · 14 `dig` (← `scratch`) |
+| `sandshrew` | 27 | basic | Ground | 50/75/85/30/40 | 75/58 | common | **L22** → `sandslash` | 1 `scratch` · 1 `defense-curl` · 7 `sand-attack` · 9 `poison-sting` · 14 `dig` (← `scratch`) |
 | `sandslash` | 28 | stage1 | Ground | 75/100/110/55/65 | 100/83 | — | — | 22 `crush-claw` · 25 `iron-defense` (← `defense-curl`) · 26 `scary-face` (← `sand-attack`) · 28 `fury-cutter` · 30 `slash` · 39 `swift` · 52 `sandstorm` |
 
 **Abilities** `sand-veil` `iron-shell` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Sandshrew: — · Sandslash: `rock-slide`
@@ -73,7 +73,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `nidoran-f` | 29 | basic | Poison | 55/47/52/40/41 | 47/46 | uncommon | **L16** → `nidorina` | 1 `growl` · 1 `scratch` · 5 `tail-whip` · 11 `poison-sting` |
+| `nidoran-f` | 29 | basic | Poison | 55/47/52/40/41 | 47/46 | uncommon | **L16** → `nidorina` | 1 `growl` · 1 `scratch` · 7 `tail-whip` · 13 `poison-sting` |
 | `nidorina` | 30 | stage1 | Poison | 70/62/67/55/56 | 62/61 | — | **Moon Stone** (from L25) → `nidoqueen`; trainers field it from L36 | 19 `scary-face` (← `growl`) · 20 `screech` (← `tail-whip`) · 22 `bite` (← `scratch`) · 28 `sludge` |
 | `nidoqueen` | 31 | stage2 | Poison/Ground | 90/82/87/75/76 | 82/81 | — | — | 39 `body-slam` · 43 `earth-power` · 44 `earthquake` · 58 `superpower` (← `body-slam`) |
 
@@ -88,7 +88,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `nidoran-m` | 32 | basic | Poison | 46/57/40/40/50 | 57/40 | uncommon | **L16** → `nidorino` | 1 `leer` · 1 `tackle` · 5 `horn-attack` · 11 `poison-sting` |
+| `nidoran-m` | 32 | basic | Poison | 46/57/40/40/50 | 57/40 | uncommon | **L16** → `nidorino` | 1 `leer` · 1 `tackle` · 13 `poison-sting` · 15 `horn-attack` |
 | `nidorino` | 33 | stage1 | Poison | 61/72/57/55/65 | 72/56 | — | **Moon Stone** (from L25) → `nidoking`; trainers field it from L36 | 19 `screech` (← `leer`) · 20 `fury-attack` · 28 `sludge` (← `poison-sting`) · 33 `double-kick` (← `tackle`) |
 | `nidoking` | 34 | stage2 | Poison/Ground | 81/92/77/75/85 | 92/76 | — | — | 39 `thrash` (← `fury-attack`) · 43 `earth-power` · 44 `earthquake` (← `thrash`) · 58 `megahorn` (← `horn-attack`) |
 
@@ -103,7 +103,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `meowth` | 52 | basic | Normal | 40/45/35/40/90 | 45/38 | common | **L28** → `persian` | 1 `scratch` · 1 `growl` · 5 `bite` (← `scratch`) · 11 `pay-day` · 14 `fury-swipes` |
+| `meowth` | 52 | basic | Normal | 40/45/35/40/90 | 45/38 | common | **L28** → `persian` | 1 `scratch` · 1 `growl` · 6 `bite` (← `scratch`) · 14 `fury-swipes` · 27 `pay-day` |
 | `persian` | 53 | stage1 | Normal | 65/70/60/65/115 | 70/63 | — | — | 28 `slash` · 31 `charm` (← `growl`) · 32 `power-gem` (← `pay-day`) · 36 `swift` · 44 `body-slam` (← `slash`) · 44 `nasty-plot` · 61 `night-slash` (← `bite`) |
 
 **Abilities** `run-down` `tough-claws` `moxie` (the last is hidden, §6.8.3) · **Tutor** Meowth: `quick-attack` · Persian: `thunderbolt` `slam`
@@ -116,7 +116,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | 80/35 | uncommon | **L28** → `primeape` | 1 `scratch` · 1 `leer` · 3 `focus-energy` · 5 `low-kick` (← `scratch`) · 11 `karate-chop` · 21 `screech` (← `leer`) |
+| `mankey` | 56 | basic | Fighting | 40/80/35/35/70 | 80/35 | uncommon | **L28** → `primeape` | 1 `scratch` · 1 `leer` · 3 `focus-energy` · 5 `low-kick` (← `scratch`) · 13 `karate-chop` · 21 `screech` (← `leer`) |
 | `primeape` | 57 | stage1 | Fighting | 65/105/60/60/95 | 105/60 | — | — | 28 `seismic-toss` · 30 `rock-slide` · 39 `submission` (← `seismic-toss`) · 41 `cross-chop` · 47 `thrash` · 59 `close-combat` (← `submission`) |
 
 **Abilities** `vital-spirit` `guts` (the last is hidden, §6.8.3) · **Tutor** Mankey: `meditate` `rolling-kick` · Primeape: —
@@ -129,7 +129,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `doduo` | 84 | basic | Normal/Flying | 35/85/45/35/75 | 85/40 | uncommon | **L31** → `dodrio` | 1 `peck` · 1 `growl` · 5 `fury-attack` · 5 `quick-attack` · 19 `pursuit` |
+| `doduo` | 84 | basic | Normal/Flying | 35/85/45/35/75 | 85/40 | uncommon | **L31** → `dodrio` | 1 `peck` · 1 `growl` · 5 `quick-attack` · 14 `fury-attack` · 19 `pursuit` |
 | `dodrio` | 85 | stage1 | Normal/Flying | 60/110/70/60/100 | 110/65 | — | — | 31 `swift` · 34 `tri-attack` · 35 `feather-dance` (← `growl`) · 36 `drill-peck` (← `peck`) |
 
 **Abilities** `keen-eye` `tangled-feet` `run-down` (the last is hidden, §6.8.3) · **Tutor** Doduo: `double-kick` · Dodrio: `double-edge`
@@ -158,7 +158,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `kangaskhan` | 115 | basic | Normal | 105/95/80/40/90 | 95/60 | rare | — | 1 `comet-punch` · 1 `rage` · 10 `tail-whip` · 11 `bite` · 16 `swift` · 19 `mega-punch` (← `rage`) · 24 `screech` (← `tail-whip`) · 25 `dizzy-punch` (← `comet-punch`) · 28 `body-slam` (← `dizzy-punch`) · 31 `crunch` (← `mega-punch`) · 39 `earthquake` · 43 `double-hit` · 46 `sucker-punch` |
+| `kangaskhan` | 115 | basic | Normal | 105/95/80/40/90 | 95/60 | rare | — | 1 `comet-punch` · 1 `tail-whip` · 13 `bite` · 16 `swift` · 22 `rage` · 23 `mega-punch` (← `rage`) · 24 `screech` (← `tail-whip`) · 25 `dizzy-punch` (← `comet-punch`) · 28 `body-slam` (← `dizzy-punch`) · 31 `crunch` (← `mega-punch`) · 39 `earthquake` · 43 `double-hit` · 46 `sucker-punch` |
 
 **Abilities** `inner-focus` `guts` · **Tutor** Kangaskhan: `thunderbolt` `fire-punch` · **Archetype** vanguard
 
@@ -166,7 +166,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `lickitung` | 108 | basic | Normal | 90/55/75/60/30 | 60/68 | rare | — | 1 `wrap` · 1 `supersonic` · 11 `stomp` (← `wrap`) · 16 `lick` · 22 `disable` · 28 `body-slam` · 29 `slam` · 39 `swift` · 45 `screech` · 47 `earthquake` (← `stomp`) · 49 `power-whip` |
+| `lickitung` | 108 | basic | Normal | 90/55/75/60/30 | 60/68 | rare | — | 1 `supersonic` · 1 `lick` · 17 `wrap` · 21 `stomp` (← `wrap`) · 25 `disable` · 28 `body-slam` · 29 `slam` · 39 `swift` · 45 `screech` · 47 `earthquake` (← `stomp`) · 49 `power-whip` |
 
 **Abilities** `own-tempo` `cloud-nine` · **Tutor** Lickitung: `ice-beam` `thunderbolt` · **Archetype** support
 
@@ -176,7 +176,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `clefairy` | 35 | basic | Normal | 70/45/48/60/35 | 60/54 | uncommon | **Moon Stone** (from L11) → `clefable`; trainers field it from L36 | 1 `pound` · 1 `growl` · 5 `sing` · 10 `double-slap` |
+| `clefairy` | 35 | basic | Normal | 70/45/48/60/35 | 60/54 | uncommon | **Moon Stone** (from L11) → `clefable`; trainers field it from L36 | 1 `pound` · 1 `growl` · 7 `sing` · 10 `double-slap` |
 | `clefable` | 36 | stage1 | Normal | 95/70/73/85/60 | 85/79 | — | — | 36 `swift` · 36 `body-slam` · 39 `headbutt` (← `pound`) · 40 `charm` (← `growl`) · 42 `psychic` · 50 `double-edge` (← `body-slam`) |
 
 **Abilities** `cute-charm` `solid-rock` `healer` (the last is hidden, §6.8.3) · **Tutor** Clefairy: — · Clefable: `ice-beam` `thunderbolt`
@@ -189,7 +189,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `jigglypuff` | 39 | basic | Normal | 115/45/20/25/20 | 45/23 | common | **Moon Stone** (from L11) → `wigglytuff`; trainers field it from L36 | 1 `sing` · 1 `pound` · 5 `defense-curl` · 11 `double-slap` |
+| `jigglypuff` | 39 | basic | Normal | 115/45/20/25/20 | 45/23 | common | **Moon Stone** (from L11) → `wigglytuff`; trainers field it from L36 | 1 `sing` · 1 `pound` · 5 `defense-curl` · 21 `double-slap` |
 | `wigglytuff` | 40 | stage1 | Normal | 140/70/45/50/45 | 70/48 | — | — | 36 `swift` · 36 `body-slam` · 39 `headbutt` (← `pound`) · 40 `iron-defense` (← `defense-curl`) · 42 `double-edge` (← `body-slam`) |
 
 **Abilities** `cute-charm` `iron-shell` `healer` (the last is hidden, §6.8.3) · **Tutor** Jigglypuff: `growl` · Wigglytuff: `ice-beam` `psychic`
@@ -202,7 +202,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `paras` | 46 | basic | Bug/Grass | 35/70/55/55/25 | 70/55 | common | **L24** → `parasect` | 1 `scratch` · 1 `stun-spore` · 5 `leech-life` · 6 `poison-powder` · 11 `absorb` |
+| `paras` | 46 | basic | Bug/Grass | 35/70/55/55/25 | 70/55 | common | **L24** → `parasect` | 1 `scratch` · 1 `stun-spore` · 6 `poison-powder` · 11 `leech-life` · 11 `absorb` |
 | `parasect` | 47 | stage1 | Bug/Grass | 60/95/80/80/30 | 95/80 | — | — | 25 `mega-drain` · 33 `pin-missile` · 39 `giga-drain` (← `absorb`) · 42 `razor-leaf` · 47 `aromatherapy` · 50 `solar-beam` (← `giga-drain`) · 55 `x-scissor` (← `scratch`) |
 
 **Abilities** `effect-spore` `swarm` `damp` (the last is hidden, §6.8.3) · **Tutor** Paras: `fury-swipes` · Parasect: —
@@ -228,7 +228,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `exeggcute` | 102 | basic | Grass/Psychic | 60/40/80/60/40 | 60/70 | uncommon | **Leaf Stone** (from L11) → `exeggutor`; trainers field it from L32 | 1 `barrage` · 1 `hypnosis` · 5 `reflect` · 11 `leech-seed` · 14 `confusion` · 17 `bullet-seed` · 21 `poison-powder` |
+| `exeggcute` | 102 | basic | Grass/Psychic | 60/40/80/60/40 | 60/70 | uncommon | **Leaf Stone** (from L11) → `exeggutor`; trainers field it from L32 | 1 `barrage` · 1 `hypnosis` · 7 `reflect` · 11 `leech-seed` · 17 `bullet-seed` · 21 `poison-powder` · 27 `confusion` |
 | `exeggutor` | 103 | stage1 | Grass/Psychic | 95/95/85/125/55 | 125/105 | — | — | 32 `razor-leaf` · 36 `psychic` · 37 `wood-hammer` · 44 `solar-beam` (← `razor-leaf`) · 47 `leaf-storm` (← `bullet-seed`) |
 
 **Abilities** `chlorophyll` `healer` · **Tutor** Exeggcute: `absorb` `mega-drain` · Exeggutor: `mega-drain` `psybeam`
@@ -241,7 +241,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `tangela` | 114 | basic | Grass | 65/55/115/100/60 | 100/108 | uncommon | — | 1 `constrict` · 1 `bind` · 8 `absorb` · 12 `growth` · 15 `poison-powder` · 16 `vine-whip` · 26 `mega-drain` (← `absorb`) · 29 `stun-spore` · 33 `ancient-power` · 39 `slam` (← `constrict`) · 47 `solar-beam` (← `vine-whip`) · 54 `power-whip` |
+| `tangela` | 114 | basic | Grass | 65/55/115/100/60 | 100/108 | uncommon | — | 1 `constrict` · 1 `growth` · 8 `absorb` · 15 `poison-powder` · 19 `vine-whip` · 22 `bind` · 26 `mega-drain` (← `absorb`) · 29 `stun-spore` · 33 `ancient-power` · 39 `slam` (← `constrict`) · 47 `solar-beam` (← `vine-whip`) · 54 `power-whip` |
 
 **Abilities** `chlorophyll` `healer` · **Tutor** Tangela: `sleep-powder` `rock-slide` · **Archetype** support
 
@@ -273,7 +273,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `vulpix` | 37 | basic | Fire | 38/41/40/65/65 | 65/53 | common | **Fire Stone** (from L11) → `ninetales`; trainers field it from L32 | 1 `ember` · 1 `tail-whip` · 5 `quick-attack` · 7 `roar` (← `tail-whip`) · 14 `will-o-wisp` · 27 `safeguard` · 31 `payback` |
+| `vulpix` | 37 | basic | Fire | 38/41/40/65/65 | 65/53 | common | **Fire Stone** (from L11) → `ninetales`; trainers field it from L32 | 1 `ember` · 1 `tail-whip` · 7 `roar` (← `tail-whip`) · 11 `quick-attack` · 14 `will-o-wisp` · 27 `safeguard` · 31 `payback` |
 | `ninetales` | 38 | stage1 | Fire | 73/76/75/100/100 | 100/88 | — | — | 32 `fire-spin` · 32 `flamethrower` (← `fire-spin`) |
 
 **Abilities** `flash-fire` `flame-body` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Vulpix: `agility` `swift` · Ninetales: `solar-beam` `psychic`
@@ -286,7 +286,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `ponyta` | 77 | basic | Fire | 50/85/55/65/90 | 85/60 | common | **L40** → `rapidash` | 1 `ember` · 1 `tail-whip` · 5 `stomp` · 11 `growl` · 15 `flame-wheel` |
+| `ponyta` | 77 | basic | Fire | 50/85/55/65/90 | 85/60 | common | **L40** → `rapidash` | 1 `growl` · 1 `tackle` · 6 `tail-whip` · 10 `ember` · 15 `flame-wheel` · 19 `stomp` (← `tackle`) |
 | `rapidash` | 78 | stage1 | Fire | 65/100/70/80/105 | 100/75 | — | — | 40 `fire-spin` · 40 `flamethrower` (← `fire-spin`) · 40 `fury-attack` · 43 `screech` (← `tail-whip`) · 44 `scary-face` (← `growl`) · 56 `flare-blitz` (← `flame-wheel`) |
 
 **Abilities** `flash-fire` `flame-body` `run-down` (the last is hidden, §6.8.3) · **Tutor** Ponyta: `double-kick` `quick-attack` · Rapidash: `dig` `solar-beam`
@@ -299,7 +299,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `magmar` | 126 | basic | Fire | 65/95/57/85/93 | 95/71 | uncommon | — | 1 `ember` · 1 `leer` · 3 `smog` · 10 `smokescreen` · 11 `confuse-ray` · 16 `fire-spin` · 16 `feint-attack` · 22 `fire-punch` · 24 `screech` (← `leer`) · 36 `lava-plume` (← `ember`) · 42 `fire-blast` (← `fire-spin`) · 49 `sunny-day` |
+| `magmar` | 126 | basic | Fire | 65/95/57/85/93 | 95/71 | uncommon | — | 1 `ember` · 1 `leer` · 3 `smog` · 10 `smokescreen` · 16 `feint-attack` · 19 `fire-spin` · 22 `fire-punch` · 24 `screech` (← `leer`) · 25 `confuse-ray` · 36 `lava-plume` (← `ember`) · 42 `fire-blast` (← `fire-spin`) · 49 `sunny-day` |
 
 **Abilities** `flame-body` `vital-spirit` · **Tutor** Magmar: `thunder-punch` `psychic` · **Archetype** specialist
 
@@ -307,7 +307,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `slowpoke` | 79 | basic | Water/Psychic | 90/65/65/40/15 | 65/53 | common | **L37** → `slowbro` | 1 `confusion` · 1 `disable` · 5 `headbutt` · 6 `growl` · 29 `water-pulse` · 34 `zen-headbutt` |
+| `slowpoke` | 79 | basic | Water/Psychic | 90/65/65/40/15 | 65/53 | common | **L37** → `slowbro` | 1 `growl` · 1 `tackle` · 15 `confusion` · 20 `disable` · 25 `headbutt` (← `tackle`) · 29 `water-pulse` · 34 `zen-headbutt` |
 | `slowbro` | 80 | stage1 | Water/Psychic | 95/75/110/80/30 | 80/95 | — | — | 37 `water-gun` · 37 `surf` (← `water-gun`) · 37 `psychic` · 40 `charm` (← `growl`) · 44 `hydro-pump` (← `water-pulse`) · 61 `rain-dance` |
 
 **Abilities** `own-tempo` `healer` `solid-rock` (the last is hidden, §6.8.3) · **Tutor** Slowpoke: `bubble-beam` `body-slam` · Slowbro: `ice-beam` `flamethrower`
@@ -320,7 +320,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `goldeen` | 118 | basic | Water | 45/67/60/50/63 | 67/55 | common | **L33** → `seaking` | 1 `peck` · 1 `tail-whip` · 5 `supersonic` · 8 `water-gun` · 11 `horn-attack` · 17 `water-pulse` · 21 `flail` · 27 `aqua-ring` |
+| `goldeen` | 118 | basic | Water | 45/67/60/50/63 | 67/55 | common | **L33** → `seaking` | 1 `peck` · 1 `tail-whip` · 7 `supersonic` · 8 `water-gun` · 11 `horn-attack` · 17 `water-pulse` · 21 `flail` · 27 `aqua-ring` |
 | `seaking` | 119 | stage1 | Water | 80/92/65/80/68 | 92/73 | — | — | 33 `waterfall` (← `flail`) · 33 `bubble-beam` (← `water-gun`) · 36 `wing-attack` (← `peck`) · 37 `screech` (← `tail-whip`) · 39 `surf` · 63 `megahorn` (← `horn-attack`) |
 
 **Abilities** `water-veil` `swift-swim` `snipe` (the last is hidden, §6.8.3) · **Tutor** Goldeen: `bubble` `rage` · Seaking: `ice-beam` `blizzard`
@@ -333,7 +333,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `omanyte` | 138 | basic | Rock/Water | 35/40/100/90/35 | 90/95 | rare | **L40** → `omastar` | 1 `water-gun` · 1 `withdraw` · 3 `constrict` · 5 `horn-attack` · 7 `bite` · 11 `leer` · 25 `mud-shot` · 34 `protect` · 37 `ancient-power` |
+| `omanyte` | 138 | basic | Rock/Water | 35/40/100/90/35 | 90/95 | rare | **L40** → `omastar` | 1 `withdraw` · 1 `constrict` · 5 `horn-attack` · 7 `bite` · 10 `water-gun` · 19 `leer` · 25 `mud-shot` · 34 `protect` · 37 `ancient-power` |
 | `omastar` | 139 | stage1 | Rock/Water | 70/60/125/115/55 | 115/120 | — | — | 40 `bubble-beam` (← `water-gun`) · 40 `rock-slide` (← `ancient-power`) · 40 `hydro-pump` (← `bubble-beam`) · 40 `spike-cannon` · 43 `iron-defense` (← `withdraw`) · 48 `tickle` (← `leer`) · 56 `rock-blast` (← `spike-cannon`) |
 
 **Abilities** `shell-armor` `swift-swim` · **Tutor** Omanyte: `sand-attack` `aurora-beam` · Omastar: `earthquake`
@@ -346,7 +346,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `kabuto` | 140 | basic | Rock/Water | 30/80/90/45/55 | 80/68 | rare | **L40** → `kabutops` | 1 `scratch` · 1 `harden` · 5 `absorb` · 8 `water-gun` · 11 `leer` · 14 `rock-throw` · 16 `mud-shot` · 26 `endure` · 31 `aqua-jet` |
+| `kabuto` | 140 | basic | Rock/Water | 30/80/90/45/55 | 80/68 | rare | **L40** → `kabutops` | 1 `scratch` · 1 `harden` · 6 `absorb` · 8 `water-gun` · 11 `leer` · 14 `rock-throw` · 16 `mud-shot` · 26 `endure` · 31 `aqua-jet` |
 | `kabutops` | 141 | stage1 | Rock/Water | 60/115/105/70/80 | 115/88 | — | — | 40 `slash` (← `scratch`) · 40 `rock-slide` (← `rock-throw`) · 40 `surf` (← `water-gun`) · 43 `screech` (← `leer`) · 45 `metal-sound` (← `harden`) · 47 `hydro-pump` (← `surf`) · 54 `ancient-power` |
 
 **Abilities** `battle-armor` `swift-swim` · **Tutor** Kabuto: `sand-attack` `bubble-beam` · Kabutops: `waterfall`
@@ -359,7 +359,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `dratini` | 147 | basic | Dragon | 41/64/45/50/50 | 64/48 | rare | **L30** → `dragonair` | 1 `wrap` · 1 `leer` · 5 `thunder-wave` · 8 `dragon-rage` · 11 `agility` · 11 `twister` |
+| `dratini` | 147 | basic | Dragon | 41/64/45/50/50 | 64/48 | rare | **L30** → `dragonair` | 1 `wrap` · 1 `leer` · 5 `thunder-wave` · 11 `twister` · 15 `dragon-rage` · 25 `agility` |
 | `dragonair` | 148 | stage1 | Dragon | 61/84/65/70/70 | 84/68 | — | **L55** → `dragonite` | 30 `slam` (← `wrap`) · 30 `bubble-beam` · 33 `aqua-tail` (← `slam`) · 34 `screech` (← `leer`) · 47 `safeguard` · 53 `dragon-dance` |
 | `dragonite` | 149 | stage2 | Dragon/Flying | 91/134/95/100/80 | 134/98 | — | — | 55 `wing-attack` · 55 `fly` (← `wing-attack`) · 55 `hyper-beam` · 64 `outrage` |
 
@@ -391,7 +391,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `drowzee` | 96 | basic | Psychic | 60/48/45/90/42 | 90/68 | uncommon | **L26** → `hypno` | 1 `pound` · 1 `hypnosis` · 5 `disable` · 9 `confusion` · 18 `poison-gas` |
+| `drowzee` | 96 | basic | Psychic | 60/48/45/90/42 | 90/68 | uncommon | **L26** → `hypno` | 1 `pound` · 1 `hypnosis` · 7 `disable` · 9 `confusion` · 18 `poison-gas` |
 | `hypno` | 97 | stage1 | Psychic | 85/73/70/115/67 | 115/93 | — | — | 26 `psybeam` · 33 `psychic` · 38 `headbutt` (← `pound`) · 55 `nasty-plot` · 64 `zen-headbutt` |
 
 **Abilities** `insomnia` `inner-focus` `anticipation` (the last is hidden, §6.8.3) · **Tutor** Drowzee: `kinesis` `swift` · Hypno: `ice-punch` `thunder-punch`
@@ -404,7 +404,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `mr-mime` | 122 | basic | Psychic | 40/45/65/100/90 | 100/83 | rare | — | 1 `confusion` · 1 `barrier` · 8 `meditate` · 11 `light-screen` · 15 `double-slap` · 16 `psywave` · 22 `reflect` · 28 `psychic` · 29 `substitute` · 39 `seismic-toss` (← `double-slap`) · 46 `baton-pass` · 50 `safeguard` |
+| `mr-mime` | 122 | basic | Psychic | 40/45/65/100/90 | 100/83 | rare | — | 1 `confusion` · 1 `barrier` · 8 `meditate` · 15 `double-slap` · 16 `psywave` · 22 `light-screen` · 22 `reflect` · 28 `psychic` · 29 `substitute` · 39 `seismic-toss` (← `double-slap`) · 46 `baton-pass` · 50 `safeguard` |
 
 **Abilities** `solid-rock` `inner-focus` · **Tutor** Mr. Mime: `thunder-wave` `hypnosis` · **Archetype** support
 
@@ -420,7 +420,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `gastly` | 92 | basic | Ghost/Poison | 30/35/30/100/80 | 100/65 | common | **L25** → `haunter` | 1 `lick` · 1 `confuse-ray` · 5 `night-shade` · 11 `hypnosis` · 22 `sucker-punch` |
+| `gastly` | 92 | basic | Ghost/Poison | 30/35/30/100/80 | 100/65 | common | **L25** → `haunter` | 1 `lick` · 1 `hypnosis` · 15 `night-shade` · 19 `confuse-ray` · 22 `sucker-punch` |
 | `haunter` | 93 | stage1 | Ghost/Poison | 45/50/45/115/95 | 115/80 | — | **a level-up holding `spell-tag`** (Spell Tag) → `gengar`; trainers field it from L40 | 25 `shadow-punch` · 28 `sludge` · 28 `payback` · 33 `shadow-ball` (← `night-shade`) |
 | `gengar` | 94 | stage2 | Ghost/Poison | 60/65/60/130/110 | 130/95 | — | — | 44 `psychic` · 44 `dark-pulse` |
 
@@ -435,7 +435,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `grimer` | 88 | basic | Poison | 80/80/50/40/25 | 80/45 | common | **L38** → `muk` | 1 `pound` · 1 `poison-gas` · 5 `disable` · 11 `sludge` · 23 `mud-bomb` · 36 `sludge-bomb` |
+| `grimer` | 88 | basic | Poison | 80/80/50/40/25 | 80/45 | common | **L38** → `muk` | 1 `pound` · 1 `poison-gas` · 12 `disable` · 20 `sludge` · 23 `mud-bomb` · 36 `sludge-bomb` |
 | `muk` | 89 | stage1 | Poison | 105/105/75/65/50 | 105/70 | — | — | 41 `poison-jab` (← `pound`) · 47 `thunderbolt` · 54 `gunk-shot` (← `sludge`) |
 
 **Abilities** `poison-point` `guts` `iron-shell` (the last is hidden, §6.8.3) · **Tutor** Grimer: `sand-attack` · Muk: `fire-punch` `thunder-punch`
@@ -450,7 +450,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `cubone` | 104 | basic | Ground | 50/50/95/40/35 | 50/68 | rare | **L28** → `marowak` | 1 `bone-club` · 1 `growl` · 3 `tail-whip` · 11 `leer` · 11 `headbutt` · 23 `rage` |
+| `cubone` | 104 | basic | Ground | 50/50/95/40/35 | 50/68 | rare | **L28** → `marowak` | 1 `bone-club` · 1 `growl` · 3 `tail-whip` · 11 `headbutt` · 13 `leer` · 23 `rage` |
 | `marowak` | 105 | stage1 | Ground | 60/80/110/50/45 | 80/80 | — | — | 31 `scary-face` (← `growl`) · 32 `screech` (← `tail-whip`) · 33 `tickle` (← `leer`) · 39 `earthquake` · 47 `rock-slide` · 53 `double-edge` (← `headbutt`) |
 
 **Abilities** `rock-head` `battle-armor` (the last is hidden, §6.8.3) · **Tutor** Cubone: `sand-attack` · Marowak: `swords-dance`
@@ -463,7 +463,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `rhyhorn` | 111 | basic | Ground/Rock | 80/85/95/30/25 | 85/63 | uncommon | **L42** → `rhydon` | 1 `horn-attack` · 1 `tail-whip` · 5 `stomp` · 11 `rock-throw` · 13 `fury-attack` · 21 `scary-face` · 25 `rock-blast` (← `rock-throw`) |
+| `rhyhorn` | 111 | basic | Ground/Rock | 80/85/95/30/25 | 85/63 | uncommon | **L42** → `rhydon` | 1 `horn-attack` · 1 `tail-whip` · 9 `stomp` · 11 `rock-throw` · 13 `fury-attack` · 21 `scary-face` · 25 `rock-blast` (← `rock-throw`) |
 | `rhydon` | 112 | stage1 | Ground/Rock | 105/130/120/45/40 | 130/83 | — | — | 42 `rock-slide` · 42 `dig` (← `fury-attack`) · 45 `stone-edge` (← `rock-blast`) · 46 `screech` (← `tail-whip`) · 57 `megahorn` (← `horn-attack`) |
 
 **Abilities** `rock-head` `solid-rock` · **Tutor** Rhyhorn: `slam` · Rhydon: `surf` `thunderbolt`
@@ -476,7 +476,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `aerodactyl` | 142 | basic | Rock/Flying | 80/105/65/60/130 | 105/63 | rare | — | 1 `wing-attack` · 1 `agility` · 3 `fire-fang` · 5 `ice-fang` · 11 `supersonic` · 16 `rock-throw` · 22 `bite` · 33 `take-down` · 33 `crunch` (← `take-down`) · 39 `fly` (← `wing-attack`) · 47 `hyper-beam` · 49 `iron-head` |
+| `aerodactyl` | 142 | basic | Rock/Flying | 80/105/65/60/130 | 105/63 | rare | — | 1 `wing-attack` · 1 `supersonic` · 3 `fire-fang` · 5 `ice-fang` · 16 `rock-throw` · 17 `agility` · 22 `bite` · 33 `take-down` · 34 `crunch` (← `take-down`) · 39 `fly` (← `wing-attack`) · 47 `hyper-beam` · 49 `iron-head` |
 
 **Abilities** `rock-head` `tough-claws` (the last is hidden, §6.8.3) · **Tutor** Aerodactyl: `earthquake` `fire-punch` · **Archetype** vanguard
 
@@ -496,7 +496,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `chansey` | 113 | basic | Normal | 250/5/5/105/50 | 105/55 | rare | — | 1 `pound` · 1 `double-slap` · 11 `sing` · 12 `soft-boiled` · 16 `body-slam` · 20 `minimize` · 22 `growl` · 24 `charm` (← `growl`) · 28 `egg-bomb` · 34 `light-screen` · 39 `seismic-toss` (← `pound`) · 46 `double-edge` (← `body-slam`) · 47 `psychic` |
+| `chansey` | 113 | basic | Normal | 250/5/5/105/50 | 105/55 | rare | — | 1 `pound` · 1 `growl` · 12 `soft-boiled` · 16 `double-slap` · 16 `body-slam` · 20 `minimize` · 23 `sing` · 24 `charm` (← `growl`) · 28 `egg-bomb` · 34 `light-screen` · 39 `seismic-toss` (← `pound`) · 46 `double-edge` (← `body-slam`) · 47 `psychic` |
 
 **Abilities** `healer` · **Tutor** Chansey: `ice-beam` `thunderbolt` · **Archetype** support
 

@@ -349,7 +349,8 @@ the Pokédex's shiny collection. Cosmetic, as in the series.
 Level-ups between nodes. Curve `12 + (L−1)×4`. Single-stage species get +25 % growth.
 
 **Learnset** — a base form knows **2 moves at level 1** and **4 by its evolution level**; every stage learns its own by
-level, cut from the series' Gen IV learnsets (v0.9.91, §6.9). A move **grows**: a learnset row can replace an earlier
+level, cut from the series' Gen IV learnsets (v0.9.91, §6.9), at the series' levels — a base form opens on Normal
+moves (Tackle and Growl; a starter's Ember at 7, Vine Whip at 9) unless the series gives it its type at Lv 1. A move **grows**: a learnset row can replace an earlier
 one in its slot — Scratch → Fire Fang, Fire Spin → Flamethrower (§6.9.1) — no final form keeps a level-1 filler, and
 the **Move Reminder** in the Move Manager gives a replaced move back, free (§6.9.2). Deck contribution is
 `min(known, 4)`. A run opens with a **two-card deck** and thickens as you recruit and level. **Every move is a Gen I

@@ -24,7 +24,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `tentacool` | 72 | basic | Water/Poison | 40/40/35/100/70 | 100/68 | common | **L30** → `tentacruel` | 1 `acid` · 1 `supersonic` · 5 `wrap` · 8 `constrict` · 11 `poison-sting` · 29 `water-pulse` |
+| `tentacool` | 72 | basic | Water/Poison | 40/40/35/100/70 | 100/68 | common | **L30** → `tentacruel` | 1 `supersonic` · 1 `poison-sting` · 8 `constrict` · 12 `acid` · 22 `wrap` · 29 `water-pulse` |
 | `tentacruel` | 73 | stage1 | Water/Poison | 80/70/65/120/100 | 120/93 | — | — | 30 `bubble-beam` · 30 `sludge` (← `acid`) · 36 `poison-jab` (← `wrap`) · 47 `hydro-pump` (← `water-pulse`) |
 
 **Abilities** `poison-point` `water-absorb` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Tentacool: `rest` · Tentacruel: —
@@ -37,7 +37,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `shellder` | 90 | basic | Water | 30/65/100/45/40 | 65/73 | common | **Water Stone** (from L11) → `cloyster`; trainers field it from L30 | 1 `tackle` · 1 `withdraw` · 5 `supersonic` · 11 `clamp` · 14 `water-gun` · 16 `protect` · 28 `ice-shard` |
+| `shellder` | 90 | basic | Water | 30/65/100/45/40 | 65/73 | common | **Water Stone** (from L11) → `cloyster`; trainers field it from L30 | 1 `tackle` · 1 `withdraw` · 8 `supersonic` · 14 `water-gun` · 16 `protect` · 25 `clamp` · 28 `ice-shard` |
 | `cloyster` | 91 | stage1 | Water/Ice | 50/95/180/85/70 | 95/133 | — | — | 30 `aurora-beam` (← `ice-shard`) · 33 `waterfall` (← `tackle`) · 34 `iron-defense` (← `withdraw`) · 39 `ice-beam` (← `aurora-beam`) · 47 `surf` (← `water-gun`) |
 
 **Abilities** `shell-armor` `iron-shell` `sturdy` (the third is hidden, §6.8.3) · **Tutor** Shellder: `bubble-beam` `harden` · Cloyster: `hydro-pump` `blizzard`
@@ -50,7 +50,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `horsea` | 116 | basic | Water | 30/40/70/70/60 | 70/70 | common | **L32** → `seadra` | 1 `bubble` · 1 `smokescreen` · 5 `leer` · 11 `water-gun` · 14 `focus-energy` · 26 `twister` |
+| `horsea` | 116 | basic | Water | 30/40/70/70/60 | 70/70 | common | **L32** → `seadra` | 1 `bubble` · 1 `smokescreen` · 8 `leer` · 11 `water-gun` · 14 `focus-energy` · 26 `twister` |
 | `seadra` | 117 | stage1 | Water | 55/65/95/95/85 | 95/95 | — | — | 32 `bubble-beam` · 32 `surf` (← `bubble`) · 35 `screech` (← `leer`) · 40 `hydro-pump` (← `bubble-beam`) · 48 `dragon-dance` (← `focus-energy`) · 57 `dragon-pulse` |
 
 **Abilities** `snipe` `damp` `swift-swim` (the third is hidden, §6.8.3) · **Tutor** Horsea: `swift` · Seadra: `blizzard`
@@ -63,7 +63,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `staryu` | 120 | basic | Water | 30/45/55/70/85 | 70/63 | uncommon | **Water Stone** (from L11) → `starmie`; trainers field it from L24 | 1 `tackle` · 1 `harden` · 5 `water-gun` · 11 `swift` |
+| `staryu` | 120 | basic | Water | 30/45/55/70/85 | 70/63 | uncommon | **Water Stone** (from L11) → `starmie`; trainers field it from L24 | 1 `tackle` · 1 `harden` · 6 `water-gun` · 23 `swift` |
 | `starmie` | 121 | stage1 | Water/Psychic | 60/75/85/100/115 | 100/93 | — | — | 27 `waterfall` (← `tackle`) · 28 `surf` · 28 `confuse-ray` · 29 `iron-defense` (← `harden`) · 36 `psychic` · 44 `bubble-beam-plus` (← `water-gun`) |
 
 **Abilities** `healer` `anticipation` `adaptability` (the third is hidden, §6.8.3) · **Tutor** Staryu: `agility` · Starmie: `ice-beam`
@@ -76,7 +76,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `seel` | 86 | basic | Water | 65/45/55/70/45 | 70/63 | uncommon | **L34** → `dewgong` | 1 `headbutt` · 1 `growl` · 5 `aurora-beam` · 11 `water-gun` · 17 `ice-shard` · 23 `aqua-ring` · 31 `aqua-jet` |
+| `seel` | 86 | basic | Water | 65/45/55/70/45 | 70/63 | uncommon | **L34** → `dewgong` | 1 `headbutt` · 1 `growl` · 11 `water-gun` · 17 `ice-shard` · 23 `aqua-ring` · 27 `aurora-beam` · 31 `aqua-jet` |
 | `dewgong` | 87 | stage1 | Water/Ice | 90/70/80/95/70 | 95/88 | — | — | 34 `surf` (← `water-gun`) · 37 `charm` (← `growl`) · 42 `blizzard` (← `aurora-beam`) · 43 `aqua-tail` (← `headbutt`) · 51 `safeguard` |
 
 **Abilities** `thick-fat` `iron-shell` `healer` (the third is hidden, §6.8.3) · **Tutor** Seel: — · Dewgong: `hydro-pump`
@@ -91,7 +91,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `voltorb` | 100 | basic | Electric | 40/30/50/55/100 | 55/53 | common | **L30** → `electrode` | 1 `tackle` · 1 `screech` · 5 `sonic-boom` · 11 `thunder-shock` · 12 `spark` (← `tackle`) |
+| `voltorb` | 100 | basic | Electric | 40/30/50/55/100 | 55/53 | common | **L30** → `electrode` | 1 `tackle` · 1 `screech` · 8 `sonic-boom` · 11 `thunder-shock` · 12 `spark` (← `tackle`) |
 | `electrode` | 101 | stage1 | Electric | 60/50/70/80/140 | 80/75 | — | — | 30 `thunderbolt` · 33 `swift` · 57 `mirror-coat` |
 
 **Abilities** `static` `run-down` `speed-boost` (the third is hidden, §6.8.3) · **Tutor** Voltorb: `thunder-wave` `defense-curl` · Electrode: `thunder` `tri-attack`
@@ -104,7 +104,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `magnemite` | 81 | basic | Electric/Steel | 25/35/70/95/45 | 95/83 | common | **L30** → `magneton` | 1 `tackle` · 1 `sonic-boom` · 3 `metal-sound` · 5 `thunder-shock` · 11 `supersonic` · 22 `spark` (← `tackle`) |
+| `magnemite` | 81 | basic | Electric/Steel | 25/35/70/95/45 | 95/83 | common | **L30** → `magneton` | 1 `tackle` · 1 `metal-sound` · 6 `thunder-shock` · 11 `supersonic` · 14 `sonic-boom` · 22 `spark` (← `tackle`) |
 | `magneton` | 82 | stage1 | Electric/Steel | 50/60/95/120/70 | 120/108 | — | **Thunder Stone** (from L25) → `magnezone`; trainers field it from L40 | 30 `thunderbolt` · 30 `swift` |
 | `magnezone` | 462 | stage2 (final) | Electric/Steel | 70/70/115/130·90/60 | 130/103 | rare | — | 40 `magnet-bomb` · 40 `discharge` (← `thunder-shock`) · 46 `iron-head` · 54 `flash-cannon` (← `magnet-bomb`) · 60 `zap-cannon` (← `discharge`) |
 
@@ -119,7 +119,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `pikachu` | 25 | basic | Electric | 35/55/30/50/90 | 55/40 | uncommon | **Thunder Stone** (from L11) → `raichu`; trainers field it from L26 | 1 `thunder-shock` · 1 `growl` · 5 `quick-attack` · 10 `thunder-wave` |
+| `pikachu` | 25 | basic | Electric | 35/55/30/50/90 | 55/40 | uncommon | **Thunder Stone** (from L11) → `raichu`; trainers field it from L26 | 1 `thunder-shock` · 1 `growl` · 10 `thunder-wave` · 13 `quick-attack` |
 | `raichu` | 26 | stage1 | Electric | 60/90/55/90/100 | 90/73 | — | — | 26 `thunder-punch` · 28 `thunderbolt` · 29 `charm` (← `growl`) · 42 `swift` |
 
 **Abilities** `static` `run-down` `volt-absorb` (the third is hidden, §6.8.3) · **Tutor** Pikachu: `surf` · Raichu: `body-slam`
@@ -142,7 +142,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `growlithe` | 58 | basic | Fire | 55/70/45/50/60 | 70/48 | uncommon | **Fire Stone** (from L11) → `arcanine`; trainers field it from L32 | 1 `bite` · 1 `roar` · 5 `ember` · 9 `leer` · 20 `flame-wheel` · 25 `reversal` · 28 `fire-fang` |
+| `growlithe` | 58 | basic | Fire | 55/70/45/50/60 | 70/48 | uncommon | **Fire Stone** (from L11) → `arcanine`; trainers field it from L32 | 1 `bite` · 1 `roar` · 6 `ember` · 9 `leer` · 20 `flame-wheel` · 25 `reversal` · 28 `fire-fang` |
 | `arcanine` | 59 | stage1 | Fire | 90/110/80/80/95 | 110/80 | — | — | 32 `take-down` · 32 `fire-spin` (← `ember`) · 35 `screech` (← `leer`) · 42 `flamethrower` (← `fire-spin`) |
 
 **Abilities** `intimidate` `flash-fire` `steadfast` (the third is hidden, §6.8.3) · **Tutor** Growlithe: `confuse-ray` `agility` · Arcanine: `slam`
@@ -155,7 +155,7 @@
 
 | id | dex | Stage | Types | Gen I HP/Atk/Def/Spc/Spd | Atk/Def (derived) | Rarity | Evolves | Learnset |
 |---|---|---|---|---|---|---|---|---|
-| `koffing` | 109 | basic | Poison | 40/65/95/60/35 | 65/78 | common | **L35** → `weezing` | 1 `tackle` · 1 `smog` · 5 `smokescreen` · 11 `self-destruct` |
+| `koffing` | 109 | basic | Poison | 40/65/95/60/35 | 65/78 | common | **L35** → `weezing` | 1 `tackle` · 1 `smokescreen` · 6 `smog` · 19 `self-destruct` |
 | `weezing` | 110 | stage1 | Poison | 65/90/120/85/60 | 90/103 | — | — | 35 `smog-plus` · 38 `poison-jab` (← `tackle`) · 39 `thunderbolt` · 47 `fire-blast` · 48 `sludge-bomb` |
 
 **Abilities** `poison-point` `cloud-nine` · **Tutor** Koffing: `acid-armor` `screech` · Weezing: `flamethrower` `thunder`

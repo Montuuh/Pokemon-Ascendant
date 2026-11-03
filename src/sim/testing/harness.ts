@@ -184,9 +184,10 @@ export const eventsOf = (state: CombatState, t: string) => state.events.filter((
 
 // Common builds
 export const STARTERS: TeamMemberSetup[] = [
-  { species: 'charmander', level: 11 },
-  { species: 'squirtle', level: 11 },
-  { species: 'bulbasaur', level: 11 },
+  // Lv 13: the first level all three know four moves since they learn at the series' levels (Squirtle's Water Gun, §6.9).
+  { species: 'charmander', level: 13 },
+  { species: 'squirtle', level: 13 },
+  { species: 'bulbasaur', level: 13 },
 ];
 
 /**

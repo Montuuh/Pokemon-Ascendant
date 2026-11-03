@@ -99,7 +99,8 @@ describe('Relics — §7.3', () => {
     // before the faint event, and without it there is no status event at all.
     const team = teamWithKit(['ember'], 'charmander', 14);
     const build = (relics: string[]) =>
-      tweak(start(plain({ team, enemies: [GEODUDE], relics }), 9), (d) => { d.enemies[0]!.hp = 1; });
+      // An attacking Geodude: at Lv 9 it knows Defense Curl, whose Guard would soak the Ember (§6.9).
+      tweak(start(plain({ team, enemies: [{ ...GEODUDE, moves: ['tackle', 'rock-throw'] }], relics }), 9), (d) => { d.enemies[0]!.hp = 1; });
 
     const bare = withHand(build([]), ['ember']);
     const lens = withHand(build(['wide-lens']), ['ember']);

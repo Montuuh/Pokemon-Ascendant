@@ -4,7 +4,7 @@
   "actions": [
     {
       "type": "play-card",
-      "cardId": "c10"
+      "cardId": "c9"
     },
     {
       "type": "play-card",
@@ -12,7 +12,7 @@
     },
     {
       "type": "play-card",
-      "cardId": "c9"
+      "cardId": "c10"
     },
     {
       "type": "play-card",

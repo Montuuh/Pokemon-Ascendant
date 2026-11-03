@@ -348,6 +348,12 @@
           "level": 26,
           "tier": "boss",
           "phaseCount": 3,
+          "moves": [
+            "rock-slide-plus",
+            "rock-polish",
+            "explosion",
+            "harden"
+          ],
           "signature": {
             "move": "rock-slide",
             "response": "Rock-resistant Lead or damage reduction; natural Sturdy is shown on its own."

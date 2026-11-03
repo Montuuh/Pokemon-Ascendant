@@ -7,6 +7,9 @@ evolution levels and methods, Friendship. ✅ v0.9.91 progressive learnsets (tra
 form, 76 Gen II–IV moves). Next **v0.9.92** enemy kits by role,
 disruption effects, more double actions, telegraphed combos per Gym/Elite/League, and the Gym teams re-cut to forms legal
 at their real levels. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
+**Pushed 2026-11-03 (no version):** base forms learn at the series' levels (`scripts/early-learnsets.mjs`, §6.9): 55 species
+retimed, Lv 1 pair = first hit + first trick (starters Tackle/Scratch + Growl; Ember 7, Vine Whip 9). Leech Seed is in the
+v0.9.92 WIP (`seed`, disruption.ts) — check Grass immunity and the seeded chip when it lands.
 **Shipped 2026-11-03 (v0.9.91):** stage learnsets from Gen IV (`scripts/v0991-learnsets.mjs`), 269 tracks and 79 filler
 upgrades (§6.9.1), Move Reminder (§6.9.2), 76 moves (`scripts/v0991-moves.mjs`); Region tier ×0.50 / ×0.64 / ×0.67, Ring
 ×2.05. Harness R1 63 · R2|R1 48 · R3|R2 47 · League 59 · run 8 %.
