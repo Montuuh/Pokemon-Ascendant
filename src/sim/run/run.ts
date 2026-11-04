@@ -674,11 +674,12 @@ export function arriveAtCity(draft: RunState, ctx: RunCtx): void {
   const id = cityAfter(draft.regionIndex) ?? 'pallet-town';
   const rng = encounterRng(draft);
   const shop = rollShopStock(rng, ctx.content, draft, CITIES[id].shop === 'department-store' ? 'department-store' : 'city');
-  // §8.4.2 Trauma Salve Cache — the first City's shelf always has a Salve. It takes the Uncommon relic's slot
-  // (the Salve is an Uncommon), so the shelf keeps its eight; a run already holding one gets the roll instead.
+  // §8.4.2 Trauma Salve Cache — the first City's shelf always has a Salve. It takes the slot of the Salve's own rarity
+  // (a Common since v0.9.98's re-tier), so the shelf keeps its eight; a run already holding one gets the roll instead.
   if (draft.perks.salveCache && draft.regionIndex === 0 && !draft.relics.includes('trauma-salve') && !shop.slots.some((s) => s.id === 'trauma-salve')) {
-    const i = shop.slots.findIndex((s) => s.kind === 'relic' && ctx.content.relic(s.id).rarity === 'uncommon');
-    const slot: ShopSlot = { kind: 'relic', id: 'trauma-salve', price: priceFor(draft, ctx.content, Math.round(PRICES.relic.uncommon * PRICES.cityMarkup)), sold: false };
+    const salveRarity = ctx.content.relic('trauma-salve').rarity;
+    const i = shop.slots.findIndex((s) => s.kind === 'relic' && ctx.content.relic(s.id).rarity === salveRarity);
+    const slot: ShopSlot = { kind: 'relic', id: 'trauma-salve', price: priceFor(draft, ctx.content, Math.round(PRICES.relic[salveRarity] * PRICES.cityMarkup)), sold: false };
     if (i >= 0) shop.slots[i] = { ...slot, ...(shop.slots[i]!.floor ? { floor: shop.slots[i]!.floor } : {}) };
     else shop.slots.push(slot);
   }

@@ -361,7 +361,7 @@
     {
       "id": "wide-lens",
       "name": "Wide Lens",
-      "rarity": "common",
+      "rarity": "uncommon",
       "categories": [
         "combat"
       ],
@@ -540,7 +540,7 @@
     {
       "id": "tacticians-coin",
       "name": "Tactician's Coin",
-      "rarity": "uncommon",
+      "rarity": "common",
       "categories": [
         "lead"
       ],
@@ -572,7 +572,7 @@
     {
       "id": "status-lance",
       "name": "Status Lance",
-      "rarity": "uncommon",
+      "rarity": "common",
       "categories": [
         "status"
       ],
@@ -591,7 +591,7 @@
     {
       "id": "healers-kit",
       "name": "Healer's Kit",
-      "rarity": "uncommon",
+      "rarity": "common",
       "categories": [
         "status"
       ],
@@ -691,7 +691,7 @@
     {
       "id": "trauma-salve",
       "name": "Trauma Salve",
-      "rarity": "uncommon",
+      "rarity": "common",
       "categories": [
         "meta"
       ],
@@ -704,7 +704,7 @@
     {
       "id": "hand-off-pouch",
       "name": "Hand-Off Pouch",
-      "rarity": "uncommon",
+      "rarity": "common",
       "categories": [
         "card"
       ],
@@ -720,7 +720,7 @@
     {
       "id": "battle-tracker",
       "name": "Battle Tracker",
-      "rarity": "uncommon",
+      "rarity": "common",
       "categories": [
         "meta"
       ],
@@ -751,7 +751,7 @@
     {
       "id": "phoenix-feather",
       "name": "Phoenix Feather",
-      "rarity": "rare",
+      "rarity": "uncommon",
       "categories": [
         "combat"
       ],
@@ -793,7 +793,7 @@
     {
       "id": "crown-of-echoes",
       "name": "Crown of Echoes",
-      "rarity": "rare",
+      "rarity": "uncommon",
       "categories": [
         "combat"
       ],
@@ -807,7 +807,7 @@
     {
       "id": "time-spinner",
       "name": "Time Spinner",
-      "rarity": "rare",
+      "rarity": "uncommon",
       "categories": [
         "combat"
       ],
@@ -847,7 +847,7 @@
     {
       "id": "last-stand",
       "name": "Last Stand",
-      "rarity": "legendary",
+      "rarity": "rare",
       "categories": [
         "combat"
       ],
@@ -874,7 +874,7 @@
     {
       "id": "clear-mind",
       "name": "Clear Mind",
-      "rarity": "legendary",
+      "rarity": "rare",
       "categories": [
         "combat"
       ],
@@ -887,7 +887,7 @@
     {
       "id": "evolutions-edge",
       "name": "Evolution's Edge",
-      "rarity": "legendary",
+      "rarity": "rare",
       "categories": [
         "combat"
       ],
@@ -941,7 +941,7 @@
     {
       "id": "unbreakable-will",
       "name": "Unbreakable Will",
-      "rarity": "legendary",
+      "rarity": "rare",
       "categories": [
         "status"
       ],
@@ -1004,7 +1004,7 @@
     {
       "id": "trainers-instinct",
       "name": "Trainer's Instinct",
-      "rarity": "rare",
+      "rarity": "uncommon",
       "categories": [
         "combat"
       ],
@@ -1030,7 +1030,7 @@
     {
       "id": "box-expander",
       "name": "Box Expander",
-      "rarity": "rare",
+      "rarity": "uncommon",
       "categories": [
         "meta"
       ],

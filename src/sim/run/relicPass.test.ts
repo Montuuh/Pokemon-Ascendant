@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
-import { arriveAtCity, createRun, defaultRunCtx, offerPool, runReducer, startingRelicFits, type RunAction, type RunState } from '@/sim';
+import { arriveAtCity, createRun, defaultRunCtx, LEGENDARY_CAP, offerPool, runReducer, startingRelicFits, type RunAction, type RunState } from '@/sim';
 import { carriedRelics } from './encounter';
 import { STARTERS, dispatch, scenario, start as startFight } from '../testing/harness';
 
@@ -72,5 +72,20 @@ describe("Healer's Kit — the swap cure (§7.3)", () => {
     expect(bare.player.team[0]!.status?.kind).toBe('poison');
     expect(kit.player.team[0]!.status).toBeFalsy();
     expect(kit.player.team[0]!.hp).toBe(bare.player.team[0]!.hp + 8);
+  });
+});
+
+describe('Rarity re-tiered by power — §7.3.1 (v0.9.98)', () => {
+  it('LegendaryPool_StillFillsAPickOfThree_WhileTheRunIsUnderTheCap', () => {
+    // Six Legendaries after the re-tier: a run holding one less than the cap must still see three it does not hold.
+    const legendaries = content.allRelics().filter((r) => r.rarity === 'legendary').length;
+    expect(legendaries - (LEGENDARY_CAP - 1)).toBeGreaterThanOrEqual(3);
+  });
+
+  it('TheFormerLegendaries_AreTierOneRares_OpenFromRunOne', () => {
+    for (const id of ['last-stand', 'clear-mind', 'unbreakable-will', 'evolutions-edge']) {
+      expect(content.relic(id).rarity).toBe('rare');
+      expect(content.relic(id).tier ?? 1).toBe(1);
+    }
   });
 });

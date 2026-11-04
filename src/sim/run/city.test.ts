@@ -184,8 +184,9 @@ describe('The Challenge Ring — §2.9.4.1', () => {
   });
 
   it('TheTopRung_OnAnAccountWithNoRaresOpen_StillHoldsThree_FromTheRarityBelow', () => {
-    // §8.6.2 — a fresh account's pool is Tier 1 and the Legendaries; every Rare is Tier 2 or 3.
-    const fresh = content.allRelics().filter((r) => (r.tier ?? 1) === 1 || r.rarity === 'legendary').map((r) => r.id);
+    // §8.6.2 — an account with no Rare open: Tier 1 and the Legendaries, less the Tier-1 Rares (the four former
+    // Legendaries v0.9.98 re-tiered, which a fresh account holds from run 1 as it held them before).
+    const fresh = content.allRelics().filter((r) => ((r.tier ?? 1) === 1 || r.rarity === 'legendary') && r.rarity !== 'rare').map((r) => r.id);
     let s = onLadder(produce(inCity(0, 1000), (d) => { d.perks.relicPool = fresh; }));
     for (let i = 0; i < 2; i++) {
       s = apply(s, { type: 'ring-fight' });

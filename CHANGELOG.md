@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.98 — Rarity by power · 2026-11-04
+
+A relic's rarity now matches how strong it is.
+
+- **Down a rarity.** 6 Uncommons to Common, 5 Rares to Uncommon, 4 Legendaries to Rare.
+- **Wide Lens up.** The strongest Common is an Uncommon now.
+- **Six Legendaries.** A Gym's pick is now only the strongest relics in the game.
+- **Prices follow.** Shops and the Black Market price each relic by its new rarity.
+
 ### v0.9.97 — Relics rebalanced · 2026-11-04
 
 Every relic works as written, and its rarity says how strong it is.

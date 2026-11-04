@@ -1,6 +1,8 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-04 · **Version:** v0.9.97 (*Relics rebalanced*).
+**Date:** 2026-11-04 · **Version:** v0.9.98 (*Rarity by power*).
+**Shipped 2026-11-04 (v0.9.98):** rarities re-tiered by v0.9.97's probe — 6 U→C, 5 R→U, 4 L→R (Tier 1), Wide Lens C→U;
+32/18/9/6. **Waiting on verdict.**
 **Shipped 2026-11-04 (v0.9.97), for the user to playtest:** relic balance pass (§7.3.1 power bands, measured by a
 temporary combat probe — each relic alone, auto-player, every fixture, 30 seeds; not a suite). Five relics fixed
 (Steady Aim, Recycle Tag, Cycle Cell, Grandmaster's Tempo, Phoenix per fight), outliers cut (Choice −1 floor 1, Sage

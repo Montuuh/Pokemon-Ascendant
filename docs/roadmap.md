@@ -1540,6 +1540,15 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.98 — Rarity by power  ✅ 2026-11-04
+
+**Shipped to be played** (the user, 2026-11-04: "the weak relics go down a rarity, and so on progressively"). Every
+relic a band below its rarity on v0.9.97's probe moved down one (§7.3.1): Hand-Off Pouch, Healer's Kit, Status Lance,
+Tactician's Coin, Battle Tracker and Trauma Salve to Common; Crown of Echoes, Time Spinner, Phoenix Feather, Trainer's
+Instinct and Box Expander to Uncommon; Last Stand, Clear Mind, Unbreakable Will and Evolution's Edge to Rare (Tier 1,
+open from run 1 as before). Wide Lens up to Uncommon. 32 / 18 / 9 / 6. Prices, drop weight and the Black Market's
+values follow rarity; the Trauma Salve Cache takes the Salve's own slot. **Next:** the user's playtest.
+
 ### v0.9.97 — Relics rebalanced  ✅ 2026-11-04
 
 **Shipped to be played** (the user, 2026-11-04: "I don't think the relics are balanced" — an analysis of every relic,

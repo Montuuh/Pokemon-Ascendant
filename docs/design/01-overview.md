@@ -104,7 +104,7 @@ emotional beats.**
 | Evolution lines | ~30 | 41 (24 Region 1 + 17 reserved) | 6 |
 | Moves | — | ~150 | 56 |
 | Abilities | ~30 | 38 | 12 |
-| Relics | 50 + 10 Legendary | 60 | 0 |
+| Relics | 50 + 10 Legendary | 65 (59 + 6 Legendary since v0.9.98) | 0 |
 | Consumables | 24 | 28 | 11 |
 | Held Items | 18 | 19 | 0 |
 | TMs | 15 | 15 | 0 |
