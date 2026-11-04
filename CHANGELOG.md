@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.97 — Relics rebalanced · 2026-11-04
+
+Every relic works as written, and its rarity says how strong it is.
+
+- **Relics fixed.** Steady Aim, Recycle Tag, Cycle Cell and Tempo now work as written.
+- **Toned down.** Choice items cost 1 less, not 0; Sage's Tome draws one card fewer.
+- **Stronger Legendaries.** Most hit harder; Clear Mind sees a turn ahead; weak relics reworked.
+- **Fairer offers.** Gems only for your team's types; Phoenix Feather once per Region.
+
 ### v0.9.96 — The series' formulas · 2026-11-04
 
 Stats and damage follow the games' formulas; the start gets more cards.

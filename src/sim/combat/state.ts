@@ -313,6 +313,11 @@ export interface PlayerState {
   bankedApSources?: { source: string; amount: number }[];
   /** Set when the deck reshuffled this turn, so a reshuffle relic can pay out next turn. */
   reshuffled: boolean;
+  /**
+   * §7.3 Recycle Tag / Cycle Cell — the turn the deck last reshuffled. `reshuffled` is cleared at the top of every
+   * turn, right after the turn-start draw that most often sets it, so those relics read this instead (v0.9.97).
+   */
+  reshuffledTurn?: number;
   /** Relic charges spent once per combat: pinch-heal, first-hit reduction, lead-low. */
   spent: string[];
   /** §8.8 Faint Echo — true while the discard pile is holding dead cards, so the sweep can skip otherwise. */

@@ -1,7 +1,7 @@
 import type { ContentRegistry } from '../content/defs';
 import { GameRng } from '../rng/gameRng';
 import { fmix32, fnv1a } from '../rng/rngStreams';
-import { ownedItems, rollHeldItem, rollRelic } from './economy';
+import { offerPool, ownedItems, rollHeldItem, rollRelic } from './economy';
 import { WILD_TIER_ODDS, WILD_TIERS, type WildTier } from './region';
 import type { FindGot, FindPrize, FindTile, MapNode, RegionMap, RunState } from './types';
 
@@ -174,7 +174,7 @@ export function spinReel(run: RunState, node: MapNode, content: ContentRegistry)
     return { won, got: id ? { heldItem: id } : { money: fallback } };
   }
   if (prize.kind === 'relic') {
-    const id = rollRelic(rng, content, run.relics, prize.rarity, run.perks?.relicPool ?? null);
+    const id = rollRelic(rng, content, run.relics, prize.rarity, offerPool(run, content));
     return { won, got: id ? { relic: id } : { money: fallback } };
   }
   return { won, got: {} };

@@ -406,6 +406,10 @@ have unlocked. Unlocking more relics never makes the good ones rarer.
 The 1-of-3 (or 1-of-4) Starting Relic offer is drawn from **Common and Uncommon only** — never Rare, never
 Legendary. A Starting Relic sets a direction; it does not decide the build.
 
+It also has to **do something from the first node** (`startingRelicFits`, v0.9.97): never a relic spent the moment it
+is picked up (Trauma Salve, with no Trauma yet to clear), and a Type Gem only for a type one of the starters has.
+Before it, an offer could hold a relic that did nothing for the whole first Region.
+
 ---
 
 # §8.7 Achievements

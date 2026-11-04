@@ -1540,6 +1540,22 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.97 — Relics rebalanced  ✅ 2026-11-04
+
+**Shipped to be played** (the user, 2026-11-04: "I don't think the relics are balanced" — an analysis of every relic,
+then "yes, start it"). A combat probe — each relic alone, the auto-player over every fixture, 30 seeds — rated the 65.
+(1) Five never fired as written: Steady Aim (the crit term never read it), Recycle Tag and Cycle Cell (the reshuffle
+flag was cleared before either looked; now `reshuffledTurn`), Grandmaster's Tempo's free card, and Phoenix Feather,
+back every combat because a fight never saw it spent (`carriedRelics`). (2) Out of band: Choice Band/Specs (free →
+−1, floor 1), Sage's Tome (+2 cards → −1), Cycle Cell (first three reshuffles). (3) Dead weight reworked: Perfect
+Recall keeps two cards, Healer's Kit cures on a swap, Move Echo needs two moves, Barrier Charm halves, Hiker's Coat
+covers the team, Defense Curl every second swap, Adrenal Surge +2, Phoenix once per Region. (4) Legendaries raised
+above the Rares: Battle Hardened 15 %, Type Mastery ×1.3, Evolution's Edge +20 %, Apex Predator +50 %, Clear Mind
+adds the intent queue, Unbreakable Will per turn. (5) Offers: a Gem only for a type the Box uses (`offerPool`); a
+Starting Relic must work from the first node (`startingRelicFits`). **Measured** (win-rate pts + ½ HP pts): Common ≤ 2,
+Uncommon 2–6, Rare 3–9, Legendary 4+ (Grandmaster's Tempo 16). Run-level harness not re-measured. **Next:** the
+user's playtest.
+
 ### v0.9.96 — The series' formulas  ✅ 2026-11-04
 
 **Shipped to be played** (the user's playtest, 2026-11-04: "the stats are very unbalanced between Pokémon — Diglett and

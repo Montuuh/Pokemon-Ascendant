@@ -1,7 +1,7 @@
 import type { ContentRegistry, RelicRarity } from '../content/defs';
 import type { GameRng } from '../rng/gameRng';
 import type { BlackMarketState, RunState } from './types';
-import { rollRelic, rollRelicOffer } from './economy';
+import { offerPool, rollRelic, rollRelicOffer } from './economy';
 import { rollLegendary } from './legendaries';
 import { priceFor } from './regionModifiers';
 
@@ -76,7 +76,7 @@ export function showcaseLevel(run: Pick<RunState, 'box'>, giveUids: readonly str
  * Legendary Pokémon the Box does not hold — every visit (user, 2026-09-28): never sold out, never shut by a cap.
  */
 export function rollBlackMarket(rng: GameRng, content: ContentRegistry, run: RunState): BlackMarketState {
-  const pool = run.perks?.relicPool ?? null;
+  const pool = offerPool(run, content);
   const trades: string[] = [];
   const bag = BLACK_MARKET.tradePool.filter((id) => content.hasSpecies(id));
   while (trades.length < BLACK_MARKET.tradeOffers && bag.length) trades.push(bag.splice(rng.range(0, bag.length), 1)[0]!);

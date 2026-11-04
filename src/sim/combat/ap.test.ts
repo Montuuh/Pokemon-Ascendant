@@ -39,7 +39,7 @@ describe('AP provenance — §3.8', () => {
     let state = start(scenario({ team: [{ species: 'snorlax', level: 84, moves: ['tackle', 'growl', 'defense-curl'] }], enemies: [{ species: 'caterpie', level: 84, tier: 'wild', phaseCount: 1 }], relics: ['sages-tome', 'cycle-cell', 'move-echo'] }));
     state = withHand(state, ['tackle', 'growl', 'defense-curl']);
     for (const move of ['tackle', 'growl', 'defense-curl']) state = dispatch(state, { type: 'play-card', cardId: handCard(state, move).id });
-    state = tweak(state, (d) => { d.player.reshuffled = true; });
+    state = tweak(state, (d) => { d.player.reshuffled = true; d.player.reshuffledTurn = d.turn; });
     state = dispatch(state, { type: 'end-turn' });
     expect(state.player.ap).toBe(6); expect(state.player.bankedAp).toBe(0);
     expect(state.log.filter((l) => l.ap?.kind === 'bank').map((l) => l.ap!.source)).toEqual(['Cycle Cell', 'Move Echo']);
@@ -49,7 +49,7 @@ describe('AP provenance — §3.8', () => {
   });
 
   it('FreeCostsNameTheRelicAndCondition_AndPreviewsNeverWriteToTheLog', () => {
-    let state = start(scenario({ team: [{ species: 'snorlax', level: 84, moves: ['tackle', 'water-gun'], status: 'paralysis' }], enemies: [{ species: 'caterpie', level: 84, tier: 'wild', phaseCount: 1 }], relics: ['choice-specs'] }));
+    let state = start(scenario({ team: [{ species: 'snorlax', level: 84, moves: ['tackle', 'water-gun'], status: 'paralysis' }], enemies: [{ species: 'caterpie', level: 84, tier: 'wild', phaseCount: 1 }], relics: ['grandmasters-tempo'] }));
     state = withHand(state, ['water-gun']);
     const before = state.log;
     const card = handCard(state, 'water-gun');
@@ -57,7 +57,7 @@ describe('AP provenance — §3.8', () => {
     expect(state.log).toBe(before);
     const after = dispatch(state, { type: 'play-card', cardId: card.id });
     const entry = after.log.findLast((l) => l.ap?.source.includes('Water Gun'))!;
-    expect(entry.text).toContain('Paralysis'); expect(entry.text).toContain('Choice Specs: free');
+    expect(entry.text).toContain('Paralysis'); expect(entry.text).toContain("Grandmaster's Tempo: free");
     expect(entry.ap!.before).toBe(entry.ap!.after);
     expect(entry.text).not.toContain('99');
   });
@@ -86,7 +86,7 @@ describe('AP provenance — §3.8', () => {
 
   it('ASecondBankSourceDoesNotOverwriteUnlabelledLegacyCredits', () => {
     let state = start(scenario({ team: [{ species: 'snorlax', level: 84 }], enemies: [{ species: 'caterpie', level: 1, tier: 'wild', phaseCount: 1 }], relics: ['cycle-cell'] }));
-    state = tweak(state, (d) => { d.player.bankedAp = 2; delete d.player.bankedApSources; d.player.reshuffled = true; });
+    state = tweak(state, (d) => { d.player.bankedAp = 2; delete d.player.bankedApSources; d.player.reshuffled = true; d.player.reshuffledTurn = d.turn; });
     state = dispatch(state, { type: 'end-turn' });
     expect(state.player.ap).toBe(6);
     expect(state.log.filter((l) => l.turn === 2 && l.ap?.source.includes('stored last turn')).map((l) => l.ap!.requested)).toEqual([2, 1]);

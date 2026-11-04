@@ -25,7 +25,7 @@ import {
   hasSturdy,
   ridersAlwaysApply,
 } from './abilities';
-import { statusApplyDrawBonus, statusChillMultiplier, firstHitRelic, itemAttackMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
+import { statusApplyDrawBonus, statusChillMultiplier, firstHitRelic, itemAttackMultiplier, itemCritMultiplier, itemCureHeal, itemDefenceMultiplier, itemEndures, itemFlatReduction, itemHealMultiplier, itemPinchHeal, itemReactiveStages, itemStatusExtraTurns, teamEndureRelic, type ReactiveStage } from './items';
 import type { Combatant, CombatState, DamageCause, EnemyCombatant } from './state';
 import { effectiveAttack, effectiveDefense } from './stats';
 import { applyStatus, cureStatus } from './status';
@@ -55,6 +55,10 @@ export function hitsOf(move: MoveDef): number {
 export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveDef, crit: boolean, ctx: Pick<RunCtx, 'content' | 'config'>, state?: CombatState): DamageBreakdown {
   const abilityMul = abilityAttackMultiplier(attacker, move, ctx.content, ctx.config);
   const frozenFire = target.status?.kind === 'freeze' && move.type === 'fire' ? ctx.config.freezeFireDamageMultiplier : 1;
+  // Per §7.3 Steady Aim — the player's crits use the relic's multiplier; an enemy's never do.
+  const config = state && isPlayers(state, attacker)
+    ? { ...ctx.config, critMultiplier: itemCritMultiplier(state, ctx.content, ctx.config.critMultiplier) }
+    : ctx.config;
   const raw = computeDamage(
     {
       power: move.power,
@@ -74,7 +78,7 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
       crit,
       ...(move.alwaysCrit ? { alwaysCrit: true } : {}),
     },
-    ctx.config,
+    config,
   );
   let defenceMul = abilityDefenceMultiplier(target, raw.typeMultiplier, ctx.content) * abilityConditionalReduction(target, move, ctx.content);
   let itemMul = 1;

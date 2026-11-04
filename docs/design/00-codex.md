@@ -11,6 +11,7 @@
 ---
 
 > **Rewards/status digest refreshed 2026-10-30:** Safari first-catch equipment gift, useful equipment access and bounded control (§2.11.6, §7.4.1, §4.2).
+> **Relic digest refreshed 2026-11-04:** the relic balance pass — power bands, Gem curation, five relics that never fired (§7.3, §8.6.3) in v0.9.97.
 > **Combat digest refreshed 2026-11-03:** the move keywords and the 3-AP ceiling (§3.11, §4.3.15, §5.2.1) in v0.9.89.
 > **Enemy/Gym digest refreshed 2026-11-02:** irreversible phases and declared ace signatures (§5.8.3,
 > §9.2.2.3) implemented in v0.9.87; twelve authored Gym teams (§5.9.3–§5.9.4) and their guest exception (§2.7.3)
@@ -401,10 +402,11 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   Potions → Super → Hyper), a wild node ~30 % leaves 1–2 Poké Balls, the Elite and the Gym add a prize, the nurse
   and a City's Center hand over a pair, shops sell **bundles** (Potion ×3 / ×5, Balls ×3 / ×5, 10 % off), and three
   Mystery Events are supplies.
-- **62 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 27 Common (12 of them the +10 % party Elemental
-  Gems) / 18 Uncommon / 7 Rare / **10 Legendary**. A trainer drops a Common 15 % of the time; the Elite Trainer
+- **65 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 27 Common (12 of them the +10 % party Elemental
+  Gems, offered only for a type the Box can use) / 18 Uncommon / 10 Rare / **10 Legendary**. Rarity is a measured
+  power band (v0.9.97, measured on the combat probe: Common up to ~2, Uncommon ~2–6, Rare ~3–9, Legendary ~4 and up). A trainer drops none; the Elite Trainer
   offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym the same mix, 1-of-3**,
-  later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run** (at the cap: two Rares and an Uncommon). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +25 %
+  later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run** (at the cap: two Rares and an Uncommon). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +50 %
   of list per relic bought this run.
 - **35 held items.** Trainer drops 50 %, Elite guaranteed, merchant always stocked, Mart two choices, Department Store four; typed bonuses match learned attacks. 12 unique type boosts (+20 % wearer-only) · 16 Type Plates (+10 % wearer, +5 % Lead Aura for the bench) · Leftovers, Eviolite, Focus
   Sash · Power Bracer, Choice Scarf · Thick Club, Light Ball.

@@ -4,7 +4,7 @@ import { entryRunSeed, useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
+import { BOND_RANK_NAME, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicFits, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { moveArt, spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
@@ -43,14 +43,14 @@ const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
 const MAGIKARP_LEAN = ['water-gem', 'barrier-charm', 'berry-pouch', 'hikers-coat', 'vital-pendant', 'brave-charm'];
 
 /** §8.6.3 — the offer is Common and Uncommon only, from the account's pool, seeded off the run seed. */
-function relicOffer(seed: number, count: number, account: AccountState, lean: readonly string[] = []): string[] {
+function relicOffer(seed: number, count: number, account: AccountState, starters: readonly string[], lean: readonly string[] = []): string[] {
   const content = getContent();
   const accountPool = relicPoolFor(account, content);
   const pool = content
     .allRelics()
     // §7.7 — same rule as every other offer: a relic whose system does not exist is not on the menu.
     // §8.6.2 — and a Tier-2 or Tier-3 relic the account has not opened is not in the pool at all.
-    .filter((r) => isOfferable(r) && inPool(r, accountPool) && (r.rarity === 'common' || r.rarity === 'uncommon'));
+    .filter((r) => isOfferable(r) && inPool(r, accountPool) && (r.rarity === 'common' || r.rarity === 'uncommon') && startingRelicFits(r, starters, content));
   // A tiny deterministic shuffle: the offer has to be stable across re-renders, and seeding it off the run
   // seed means a shared seed reproduces the whole pre-run, not just the map.
   const out: string[] = [];
@@ -113,7 +113,7 @@ export function StarterSelect() {
   const [relic, setRelic] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
 
-  const offer = useMemo(() => relicOffer(seed, startingRelicOffers(account), account, pick === 'magikarp' ? MAGIKARP_LEAN : []), [seed, account, pick]);
+  const offer = useMemo(() => relicOffer(seed, startingRelicOffers(account), account, second ? [pick, second] : [pick], pick === 'magikarp' ? MAGIKARP_LEAN : []), [seed, account, pick, second]);
   // §2.11.3 — three of the seventeen, weighted. At run start there is no team to weight against yet, which
   // is the honest shape of the choice here: it is a direction, not a response.
   const regionOffer = useMemo(() => regionModifierOffer(seed ^ 0x5f3a, content, [], RUN_START.money), [seed, content]);

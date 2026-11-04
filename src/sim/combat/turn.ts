@@ -7,7 +7,7 @@ import { declareIntent } from './intents';
 import { aliveTeam, benchIndices, lead, resolutionOrder } from './slots';
 import type { Combatant, CombatState, EnemyCombatant } from './state';
 import { abilityTurnStartApSources, turnEndBenchHeal, abilityLeadTrapDivisor } from './abilities';
-import { itemApSources, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemFreeSwapSources, itemTurnStartLeadHeal, recallsDiscard, reshuffleCopies, relicsRedrawConfusion } from './items';
+import { itemApSources, itemConsumableDrawBonus, itemDrawBonus, itemRetainCards, itemTurnEndHeal, itemFreeSwapSources, itemTurnStartLeadHeal, itemTurnStatusWard, reshuffleCopies, relicsRedrawConfusion } from './items';
 import { bankAp, changeAp } from './ap';
 import { dotDamage, statusActiveThisTurn } from './status';
 import { executeTurn } from './enemyTurn';
@@ -56,6 +56,10 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   p.turnFreeSwapSources = itemFreeSwapSources(state, ctx.content, true);
   p.turnFreeSwaps = p.turnFreeSwapSources.reduce((sum, s) => sum + s.remaining, 0);
   p.itemsUsed = 0;
+  // Per §7.3.7 Unbreakable Will — a per-turn status ward comes back each turn (the combat's opening one is set up in
+  // `setup.ts`); topped up, never stacked, so an unspent ward does not pile into an immunity.
+  const ward = itemTurnStatusWard(state, ctx.content);
+  if (ward > p.guards.status) p.guards.status = ward;
   p.defensiveDiscount = false;
   p.playedThisTurn = [];
   // §8.4.3 — whoever starts the turn as Lead gets the turn on their record.
@@ -67,17 +71,8 @@ export function beginTurn(state: CombatState, ctx: RunCtx): void {
   const bloom = itemTurnStartLeadHeal(state, ctx.content);
   if (bloom > 0 && leadNow && leadNow.hp > 0 && leadNow.hp < leadNow.maxHp) heal(state, leadNow, bloom, 'ability');
 
-  // §8.6.1 Perfect Recall — once per fight, a deck about to run short takes its discard back *before* the
-  // draw, so the turn is drawn from a full deck rather than a reshuffle mid-draw. It is not a reshuffle: the
-  // relics that pay on one do not fire, which is what keeps it a Tier-3 convenience and not a Cycle Cell engine.
   // §6.5 Swift Swim, Chlorophyll — the weather's own draw on turn 1.
   const want = ctx.config.baseSkillCardsPerTurn + itemDrawBonus(state, state.turn, ctx.content) + fieldDrawBonus(state, ctx.content);
-  if (recallsDiscard(state, ctx.content) && p.deck.length < want && p.discard.length > 0) {
-    p.deck = ctx.rng.shuffle([...p.deck, ...p.discard.filter((c) => c.echoUntilTurn === undefined)]);
-    p.discard = p.discard.filter((c) => c.echoUntilTurn !== undefined);
-    p.spent.push('perfect-recall');
-    log(state, 'system', 'Perfect Recall: the discard pile returns to the deck.');
-  }
   // §7.3 — relics that add cards do it here, so the extra card is in hand before the intent is read.
   const drawn = drawSkillCards(state, want, ctx.rng);
 

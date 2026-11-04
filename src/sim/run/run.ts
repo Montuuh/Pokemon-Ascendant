@@ -8,7 +8,7 @@ import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
-import { AID_HEAL_PCT, slotPrice, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
+import { AID_HEAL_PCT, slotPrice, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, offerPool, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { GROUP_BREATHER } from './groups';
 import { applyFieldItem, fieldUseRefusal } from './fieldItems';
 import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, serviceGift, drawSupplies, supplyLabel, pokeBalls } from './rewards';
@@ -530,9 +530,9 @@ function resolveRing(draft: RunState, won: boolean, ctx: RunCtx): void {
   lootRng.cursor = draft.cursors.LootRNG ?? lootRng.cursor;
   // Rares first. An account that has not opened three Rares yet (§8.6.2) is topped up the way every relic roll
   // falls back (§7.3): the top of the ladder always holds a pick, never a silent nothing.
-  const pick = rollRelicOffer(lootRng, ctx.content, draft.relics, 'rare', RING.pickCount, draft.perks.relicPool);
+  const pick = rollRelicOffer(lootRng, ctx.content, draft.relics, 'rare', RING.pickCount, offerPool(draft, ctx.content));
   while (pick.length < RING.pickCount) {
-    const id = rollRelic(lootRng, ctx.content, [...draft.relics, ...pick], 'rare', draft.perks.relicPool);
+    const id = rollRelic(lootRng, ctx.content, [...draft.relics, ...pick], 'rare', offerPool(draft, ctx.content));
     if (!id) break;
     pick.push(id);
   }
@@ -759,7 +759,7 @@ function leaveNode(draft: RunState, nodeId: string, ctx: RunCtx): void {
     // Its own cursor on the loot stream, so a reload offers the same three (§10.8.6).
     const pickRng = new RngStreams(draft.seed).get('LootRNG');
     pickRng.cursor = draft.cursors.LootRNG ?? pickRng.cursor;
-    const offer = gymRelicOffer(pickRng, ctx.content, draft.relics, draft.regionIndex, draft.perks.relicPool);
+    const offer = gymRelicOffer(pickRng, ctx.content, draft.relics, draft.regionIndex, offerPool(draft, ctx.content));
     draft.cursors.LootRNG = pickRng.cursor;
     if (offer.length) {
       draft.pendingLegendary = offer;
@@ -836,7 +836,7 @@ function resolveEventOutcome(draft: RunState, outcome: EventOutcome, ctx: RunCtx
       break;
     }
     case 'relic': {
-      const id = rollRelic(rng, ctx.content, draft.relics, outcome.rarity, draft.perks.relicPool);
+      const id = rollRelic(rng, ctx.content, draft.relics, outcome.rarity, offerPool(draft, ctx.content));
       if (id) acquireRelic(draft, id, ctx.content);
       break;
     }
@@ -1002,7 +1002,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           }
           const pickRng = new RngStreams(draft.seed).get('LootRNG');
           pickRng.cursor = draft.cursors.LootRNG ?? pickRng.cursor;
-          draft.pendingSummit = { relics: gymRelicOffer(pickRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, draft.perks.relicPool) };
+          draft.pendingSummit = { relics: gymRelicOffer(pickRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, offerPool(draft, ctx.content)) };
           draft.cursors.LootRNG = pickRng.cursor;
           say(draft, 'The Summit. Everyone is healed in full.');
           draft.phase = 'summit';
@@ -1297,19 +1297,19 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         let relicDrop: string | null = null;
         let relicPick: string[] | null = null;
         if (node.kind === 'trainer' && lootRng.chance(RELIC_REWARD.trainerChance)) {
-          relicDrop = rollRelic(lootRng, ctx.content, draft.relics, RELIC_REWARD.trainerRarity, draft.perks.relicPool);
+          relicDrop = rollRelic(lootRng, ctx.content, draft.relics, RELIC_REWARD.trainerRarity, offerPool(draft, ctx.content));
         } else if (beatTheEliteWild) {
-          relicDrop = rollRelic(lootRng, ctx.content, draft.relics, RELIC_REWARD.eliteWild, draft.perks.relicPool);
+          relicDrop = rollRelic(lootRng, ctx.content, draft.relics, RELIC_REWARD.eliteWild, offerPool(draft, ctx.content));
         } else if (node.kind === 'elite') {
-          relicPick = rollMixedOffer(lootRng, ctx.content, draft.relics, RELIC_REWARD.elitePick, draft.perks.relicPool);
+          relicPick = rollMixedOffer(lootRng, ctx.content, draft.relics, RELIC_REWARD.elitePick, offerPool(draft, ctx.content));
           if (!relicPick.length) relicPick = null;
         } else if (node.kind === 'apex' && report.outcome !== 'caught') {
           // §2.12.2 — the Apex is catch-or-defeat (§2.8.2): beaten, it pays a Legendary relic pick; caught, itself.
-          relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, draft.perks.relicPool);
+          relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, VICTORY_ROAD.regionIndex, offerPool(draft, ctx.content));
           if (!relicPick.length) relicPick = null;
         } else if (node.kind === 'gauntlet') {
           // §2.12.1 — a Gauntlet's reward: one of three Rare relics, taken on the fight's result.
-          relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, 0, draft.perks.relicPool);
+          relicPick = gymRelicOffer(lootRng, ctx.content, draft.relics, 0, offerPool(draft, ctx.content));
           if (!relicPick.length) relicPick = null;
           // §2.12.6 — a Perfect Clear: nobody fainted, and the Badge of a Gym the run passed by is yours.
           if (report.outcome === 'victory' && report.team.every((t) => !t.fainted)) {
@@ -1348,7 +1348,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           draft.money += find.money;
           const prize = objective.prize;
           if (prize.kind === 'relic') {
-            relicDrop = rollRelic(lootRng, ctx.content, draft.relics, prize.rarity, draft.perks.relicPool);
+            relicDrop = rollRelic(lootRng, ctx.content, draft.relics, prize.rarity, offerPool(draft, ctx.content));
             if (relicDrop) acquireRelic(draft, relicDrop, ctx.content);
           } else if (prize.kind === 'held-item') {
             itemDrop = rollHeldItem(lootRng, ctx.content, ownedItems(draft));
@@ -2013,6 +2013,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         draft.regionModifier = action.modifierId ?? null;
         draft.city = null;
         draft.regionIndex += 1;
+        // Per §7.3 Phoenix Feather (v0.9.97) — a charge marked `rearmEachRegion` comes back with the new Region.
+        draft.spentRelics = draft.spentRelics.filter((id) => !ctx.content.allRelics().find((r) => r.id === id)?.params?.rearmEachRegion);
         const mapRng = new RngStreams(draft.seed).get('MapRNG');
         mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
         // §2.1 placeholder — a Gym whose Badge you hold is not drawn again (Region 3 still draws Region 1's pool).

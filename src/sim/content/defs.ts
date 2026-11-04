@@ -287,12 +287,12 @@ export type ItemHook =
   /** Bargain Hunter — Shop and Dojo prices scale. Run layer. */
   | 'price-multiplier'
   // ── v0.6 (§8.6.1), the Tier-3 Mastery lane
-  /** Perfect Recall — once per combat, a short deck takes its discard back before the draw. */
-  | 'recall-discard'
   /** Evolution Catalyst — once per run, an evolution threshold is met `levels` early. Run layer. */
   | 'early-evolution'
   /** Box Expander — `bonus` more Box slots for the run. Run layer. */
   | 'box-capacity'
+  /** §7.3 Healer's Kit — a Pokémon swapped out of the Lead is cured of its status (v0.9.97). */
+  | 'swap-cure'
   /** §5.10.3 Glacier Badge — a status that lands on an enemy multiplies its next attack by `multiplier`. */
   | 'status-chill'
   /** §3.11.7 Damp, Heat, Icy, Smooth Rock — a `field` the wearer sets lasts `rockExtraTurns` longer. */

@@ -283,6 +283,13 @@ export function itemApAdjustments(state: CombatState, owner: Combatant, move: Mo
       const priorOfRange = played.filter((x) => content.move(x.moveId).range === p.range).length;
       if (move.range !== p.range) continue;
       if (priorOfRange === 0 && p.freeFirst) return [{ source: relic.name, amount: -99, free: true }]; // free, and nothing else can make it cheaper
+      // Per §7.3 Choice Band / Specs (v0.9.97) — the first of the range is 1 cheaper, never below `minCost`: free was a
+      // whole extra card a turn on a 3-AP refill, worth a Rare from an Uncommon that could be a Starting Relic, and a
+      // plain −1 still was (a 1-AP card went free). The floor keeps it on the big hits a Choice item is for.
+      if (priorOfRange === 0 && p.firstDelta) {
+        const delta = Math.max(num(p.firstDelta, 0), num(p.minCost, 0) - move.apCost);
+        if (delta < 0) changes.push({ source: relic.name, amount: delta });
+      }
       if (priorOfRange > 0) changes.push({ source: relic.name, amount: num(p.laterDelta, 0) });
       continue;
     }
@@ -298,6 +305,9 @@ export function itemApAdjustments(state: CombatState, owner: Combatant, move: Mo
       continue;
     }
     if (p.firstEachTurn && played.length > 0) continue;
+    // Per §7.3.7 Grandmaster's Tempo — the turn's first card, of any range, is free. Until v0.9.97 this fell through
+    // to a `delta` it does not have, so the relic's second clause was a 0 AP change and never fired.
+    if (p.firstEachTurn && p.freeFirst) return [{ source: relic.name, amount: -99, free: true }];
     // §7.3.2 Quick Claw Charm — the opening card of the fight, and nothing after it.
     if (p.firstOfCombat && (state.turn > 1 || played.length > 0)) continue;
     changes.push({ source: relic.name, amount: num(p.delta, 0) });
@@ -340,7 +350,8 @@ export function itemDrawBonus(state: CombatState, turn: number, content: Content
     // Lucky Draw draws from the consumable pile, not the skill deck; it is counted by its own query.
     if (p.consumables) continue;
     if (p.turn !== undefined && p.turn !== turn) continue;
-    if (p.onReshuffle && !state.player.reshuffled) continue;
+    // Per §7.3 Recycle Tag — "the turn after the deck reshuffles": read at the top of the turn, before its draw.
+    if (p.onReshuffle && state.player.reshuffledTurn !== turn - 1) continue;
     extra += num(p.cards, 0);
   }
   return extra;
@@ -394,7 +405,8 @@ export function itemRetainCards(state: CombatState, content: ContentRegistry): n
   let keep = 0;
   for (const relic of relicsOf(state, content)) {
     // Battle Hat pays you for *not* swapping, which is the counterweight to a swap-tempo build.
-    if (relic.hook === 'retain-card' && state.player.swapCounter === 0) keep += num(relic.params?.cards, 0);
+    // Per §8.6.1 Perfect Recall (v0.9.97) — `always`: kept whether you swapped or not.
+    if (relic.hook === 'retain-card' && (relic.params?.always || state.player.swapCounter === 0)) keep += num(relic.params?.cards, 0);
   }
   return keep;
 }
@@ -408,14 +420,20 @@ export function itemApSources(state: CombatState, content: ContentRegistry, recu
     if ((on === 'always') !== recurring) continue;
     const add = () => entries.push({ source: relic.name, amount: num(relic.params?.ap, 0) });
     if (on === 'always') add();
-    if (on === 'reshuffle' && state.player.reshuffled) add();
+    // Per §7.3 Cycle Cell — banked at the end of the turn the deck reshuffled in, the turn-start draw included.
+    // `limit` (v0.9.97): only the combat's first `limit` reshuffles pay — every one was +8 win-rate points on the
+    // probe, almost all of it in the long fights, and only the first was +0.6.
+    if (on === 'reshuffle' && state.player.reshuffledTurn === state.turn && (relic.params?.limit === undefined || state.player.tally.reshuffles <= num(relic.params.limit, 0))) add();
     if (on === 'three-from-one') {
       const byOwner = new Map<string, Set<string>>();
       for (const x of state.player.playedThisTurn) {
         if (!byOwner.has(x.ownerUid)) byOwner.set(x.ownerUid, new Set());
         byOwner.get(x.ownerUid)!.add(x.moveId);
       }
-      if ([...byOwner.values()].some((s) => s.size >= 3)) add();
+      // Per §7.3 Move Echo — `distinct` different moves from one Pokémon (2 since v0.9.97: three of a three-AP turn
+      // almost never happened).
+      const need = num(relic.params?.distinct, 3);
+      if ([...byOwner.values()].some((s) => s.size >= need)) add();
     }
   }
   return entries.filter((entry) => entry.amount !== 0);
@@ -436,6 +454,10 @@ export const itemFreeSwaps = (state: CombatState, content: ContentRegistry): num
 /** §7.3.7 Flow State — free swaps granted afresh at the start of every turn. */
 export const itemTurnFreeSwaps = (state: CombatState, content: ContentRegistry): number =>
   relicsOf(state, content).reduce((n, r) => n + (r.hook === 'free-swap' && r.params?.perTurn ? num(r.params?.swaps, 0) : 0), 0);
+
+/** §7.3.7 Unbreakable Will — the status ward a `perTurn` shield tops back up to at the start of every turn (v0.9.97). */
+export const itemTurnStatusWard = (state: CombatState, content: ContentRegistry): number =>
+  relicsOf(state, content).reduce((n, r) => n + (r.hook === 'status-shield' && r.params?.perTurn ? num(r.params?.charges, 0) : 0), 0);
 
 export const itemStatusShield = (state: CombatState, content: ContentRegistry): number =>
   relicsOf(state, content).reduce((n, r) => n + (r.hook === 'status-shield' ? num(r.params?.charges, 0) : 0), 0);
@@ -530,9 +552,9 @@ export function statusChillMultiplier(state: CombatState, content: ContentRegist
   return m;
 }
 
-/** §8.6.1 Perfect Recall — is the once-per-fight discard recall still available? */
-export const recallsDiscard = (state: CombatState, content: ContentRegistry): boolean =>
-  !state.player.spent.includes('perfect-recall') && relicsOf(state, content).some((r) => r.hook === 'recall-discard');
+/** §7.3 Healer's Kit — does a Pokémon swapped out of the Lead leave its status behind (Natural Cure, as a relic)? */
+export const itemSwapCures = (state: CombatState, content: ContentRegistry): boolean =>
+  relicsOf(state, content).some((r) => r.hook === 'swap-cure');
 
 /** §7.3.5 Crown of Echoes — does a relic copy the combat's first card back into your hand? */
 export const echoesFirstCard = (state: CombatState, content: ContentRegistry): boolean =>

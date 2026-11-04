@@ -36,6 +36,12 @@ const ARCHETYPE_BIOMES: Readonly<Record<string, readonly BiomeId[]>> = {
  * the same biome its wilds come from. In the trunk before the fork, specialist trainer archetypes stand on their
  * natural terrain in that Region and generalists stand on the Region's trunk stage.
  */
+/**
+ * Per §7.3.6 — the relics a fight carries: every one the run holds but the charges spent for the run (Phoenix Feather).
+ * A fight starts with an empty `spent`, so until v0.9.97 a once-per-run feather was back in every combat.
+ */
+export const carriedRelics = (run: Pick<RunState, 'relics' | 'spentRelics'>): string[] => run.relics.filter((id) => !run.spentRelics.includes(id));
+
 function stageFor(node: MapNode, run: RunState, archetype?: string): string {
   // §2.12 — a node that names its own ground (Victory Road) is fought there.
   if (node.preview.stage) return node.preview.stage;
@@ -142,7 +148,7 @@ export function buildWildScenario(node: MapNode, run: RunState, content: Content
       // §7.2.5 — the balls are in the bag (v0.8.6); `balls` is only the fixtures' extra stock.
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -183,7 +189,7 @@ export function buildGuardScenario(node: MapNode, run: RunState, content: Conten
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -212,7 +218,7 @@ export function buildGauntletScenario(node: MapNode, run: RunState, content: Con
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -241,7 +247,7 @@ export function buildApexScenario(node: MapNode, run: RunState, content: Content
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -272,7 +278,7 @@ export function buildLeagueScenario(node: MapNode, run: RunState, content: Conte
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -302,7 +308,7 @@ export function buildTrainerScenario(node: MapNode, run: RunState, content: Cont
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -331,7 +337,7 @@ export function buildEliteScenario(node: MapNode, run: RunState, content: Conten
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -365,7 +371,7 @@ export function buildEliteWildScenario(node: MapNode, run: RunState, content: Co
       // §7.2.5 — the balls are in the bag (v0.8.6); `balls` is only the fixtures' extra stock.
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -392,7 +398,7 @@ export function buildGymScenario(node: MapNode, run: RunState, content: ContentR
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },
@@ -496,7 +502,7 @@ export function buildRingScenario(run: RunState, rung: RingRung, index: number, 
       leadIndex: 0,
       consumables: [...run.consumables],
       balls: 0,
-      relics: [...run.relics],
+      relics: carriedRelics(run),
       badges: [...run.badges],
       ...(run.regionModifier ? { regionModifier: run.regionModifier } : {}),
     },

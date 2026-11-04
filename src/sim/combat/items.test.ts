@@ -155,15 +155,17 @@ describe('Held items — §7.4', () => {
     expect(hard).toBeGreaterThan(soft);
   });
 
-  it('ChoiceBandRelic_FirstMeleeMoveEachTurnIsFree_LaterMeleeMovesCostPlusOne_§7.3.4', () => {
+  it('ChoiceBandRelic_FirstMeleeMoveEachTurnCostsOneLessNeverBelowOne_LaterMeleeMovesCostPlusOne_§7.3.4', () => {
+    // v0.9.97 — was free: a whole extra card a turn on a 3-AP refill. Now −1 with a floor of 1, so a 1-AP jab gains nothing.
     let s = withHand(
-      start(scenario({ team: teamWithKit(['tackle', 'scratch', 'ember'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 42 }], relics: ['choice-band'] })),
-      ['tackle', 'scratch', 'ember'],
+      start(scenario({ team: teamWithKit(['slash', 'tackle', 'scratch', 'ember'], 'charmander', 20), enemies: [{ ...PIDGEY, level: 42 }], relics: ['choice-band'] })),
+      ['slash', 'tackle', 'scratch', 'ember'],
     );
     const cost = (id: string) => effectiveApCost(s, ctx.content.move(id), leadOf(s), ctx);
-    expect(cost('tackle')).toBe(0);
+    expect(cost('slash')).toBe(1);
+    expect(cost('tackle')).toBe(1);
     expect(cost('ember')).toBe(1);
-    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'tackle').id });
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'slash').id });
     expect(cost('scratch')).toBe(2);
   });
 
@@ -397,7 +399,7 @@ describe('The last inert relics, made passive — §7.3', () => {
     const move = content.move('scratch');
     // The multiplier itself: a 10 % step on a small hit can vanish in the one floor at the end (§4.1.1).
     const mul = (st: typeof s, i: number) => itemAttackMultiplier(st, st.player.team[i]!, move, content);
-    expect(mul(s, 0)).toBeCloseTo(1.1);
+    expect(mul(s, 0)).toBeCloseTo(1.15);
     expect(mul(plain, 0)).toBe(1);
     expect(mul(s, 2)).toBe(1);
     const alone = tweak(s, (d) => {
@@ -408,5 +410,65 @@ describe('The last inert relics, made passive — §7.3', () => {
 
   it('NoRelicIsInertAnyMore', () => {
     expect(content.allRelics().filter((r) => r.pending || r.hook === 'none').map((r) => r.id)).toEqual([]);
+  });
+});
+
+// §7.3 — four relics that shipped and never fired (found by the v0.9.97 relic probe). Each test plays the fight the way
+// a player would — no hand-set flags — because the bug in two of them was a flag a test had been setting by hand.
+describe('Relics that never fired — §7.3 (v0.9.97)', () => {
+  // Three Pokémon of four moves: a twelve-card deck, five a turn, so the turn-3 draw runs dry and reshuffles.
+  const deckOf12 = [{ species: 'snorlax', level: 60 }, { species: 'snorlax', level: 60 }, { species: 'snorlax', level: 60 }];
+  const CATERPIE = { species: 'caterpie', level: 2, tier: 'wild' as const, phaseCount: 1 as const };
+  const toTurn = (relics: string[], turn: number) => {
+    let s = start(scenario({ team: deckOf12, enemies: [CATERPIE], relics }), 3);
+    while (s.turn < turn) s = dispatch(s, { type: 'end-turn' });
+    return s;
+  };
+
+  it('RecycleTag_DrawsOneMore_TheTurnAfterTheDrawReshuffled', () => {
+    const at3 = toTurn([], 3);
+    expect(at3.player.reshuffledTurn).toBe(3);
+    expect(toTurn(['recycle-tag'], 4).player.hand.length).toBe(toTurn([], 4).player.hand.length + 1);
+    // And only then: turn 3 itself draws the plain five.
+    expect(toTurn(['recycle-tag'], 3).player.hand.length).toBe(at3.player.hand.length);
+  });
+
+  it('CycleCell_BanksOneAp_OnTheTurnTheDeckReshuffled', () => {
+    expect(toTurn(['cycle-cell'], 4).player.ap).toBe(toTurn([], 4).player.ap + 1);
+    expect(toTurn(['cycle-cell'], 3).player.ap).toBe(toTurn([], 3).player.ap);
+  });
+
+  it('SteadyAim_RaisesThePlayersCritMultiplier_NeverTheEnemys', () => {
+    const team = teamWithKit(['water-gun', 'tackle'], 'squirtle', 40);
+    const aim = start(plain({ team, enemies: [PIDGEY], relics: ['steady-aim'] }));
+    const bare = start(plain({ team, enemies: [PIDGEY] }));
+    const move = content.move('water-gun');
+    expect(breakdownFor(leadOf(aim), enemyOf(aim), move, true, ctx, aim).critMultiplier).toBe(1.75);
+    expect(breakdownFor(leadOf(bare), enemyOf(bare), move, true, ctx, bare).critMultiplier).toBe(1.5);
+    expect(breakdownFor(enemyOf(aim), leadOf(aim), content.move('tackle'), true, ctx, aim).critMultiplier).toBe(1.5);
+  });
+
+  it('CycleCell_PaysForTheFirstThreeReshufflesOnly', () => {
+    const at = (relics: string[], reshuffles: number) => {
+      const s = tweak(toTurn(relics, 3), (d) => { d.player.tally.reshuffles = reshuffles; });
+      return dispatch(s, { type: 'end-turn' }).player.ap;
+    };
+    expect(at(['cycle-cell'], 3)).toBe(at([], 3) + 1);
+    expect(at(['cycle-cell'], 4)).toBe(at([], 4));
+  });
+
+  it('UnbreakableWill_TheStatusWardComesBackEveryTurn_CleanseTagsDoesNot', () => {
+    const spentThenNext = (relics: string[]) =>
+      dispatch(tweak(toTurn(relics, 1), (d) => { d.player.guards.status = 0; }), { type: 'end-turn' }).player.guards.status;
+    expect(spentThenNext(['unbreakable-will'])).toBe(1);
+    expect(spentThenNext(['cleanse-tag'])).toBe(0);
+  });
+
+  it('GrandmastersTempo_TheTurnsFirstCardIsFree_TheSecondIsNot', () => {
+    let s = withHand(start(scenario({ team: teamWithKit(['flamethrower', 'ember'], 'charmander', 30), enemies: [{ ...PIDGEY, level: 42 }], relics: ['grandmasters-tempo'] })), ['flamethrower', 'ember']);
+    const cost = (id: string) => effectiveApCost(s, ctx.content.move(id), leadOf(s), ctx);
+    expect(cost('flamethrower')).toBe(0);
+    s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'flamethrower').id });
+    expect(cost('ember')).toBe(content.move('ember').apCost);
   });
 });

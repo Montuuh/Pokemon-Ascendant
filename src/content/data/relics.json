@@ -176,11 +176,11 @@
       "categories": [
         "combat"
       ],
-      "description": "The first enemy hit of each combat deals 20 % less.",
+      "description": "The first enemy hit of each combat deals half damage.",
       "hook": "damage-taken",
       "params": {
         "firstHit": true,
-        "multiplier": 0.8
+        "multiplier": 0.5
       },
       "tier": 2,
       "discovery": {
@@ -315,12 +315,11 @@
       "categories": [
         "combat"
       ],
-      "description": "Your Lead takes 10 % less from Cleave attacks.",
+      "description": "Your team takes 25 % less from Cleave attacks.",
       "hook": "damage-taken",
       "params": {
         "cleaveOnly": true,
-        "leadOnly": true,
-        "multiplier": 0.9
+        "multiplier": 0.75
       }
     },
     {
@@ -330,11 +329,11 @@
       "categories": [
         "combat"
       ],
-      "description": "Every third manual swap, the incoming Lead gains Defence +1.",
+      "description": "Every second manual swap, the incoming Lead gains Defence +1.",
       "hook": "reactive-stage",
       "params": {
         "on": "swap-count",
-        "every": 3,
+        "every": 2,
         "target": "lead",
         "stat": "defense",
         "stages": 1
@@ -345,7 +344,7 @@
       "name": "Soothe Bell",
       "rarity": "common",
       "categories": [
-        "combat"
+        "meta"
       ],
       "description": "Your Pokémon grow fond of you twice as fast.",
       "hook": "friendship-multiplier",
@@ -409,13 +408,14 @@
       "categories": [
         "card"
       ],
-      "description": "Your first Ranged move each turn is free; later Ranged moves cost 1 more.",
+      "description": "Your first Ranged move each turn costs 1 less, never below 1; later Ranged moves cost 1 more.",
       "hook": "ap-cost",
       "params": {
         "range": "ranged",
         "firstEachTurn": true,
-        "freeFirst": true,
-        "laterDelta": 1
+        "firstDelta": -1,
+        "laterDelta": 1,
+        "minCost": 1
       }
     },
     {
@@ -425,13 +425,14 @@
       "categories": [
         "card"
       ],
-      "description": "Your first Melee move each turn is free; later Melee moves cost 1 more.",
+      "description": "Your first Melee move each turn costs 1 less, never below 1; later Melee moves cost 1 more.",
       "hook": "ap-cost",
       "params": {
         "range": "melee",
         "firstEachTurn": true,
-        "freeFirst": true,
-        "laterDelta": 1
+        "firstDelta": -1,
+        "laterDelta": 1,
+        "minCost": 1
       }
     },
     {
@@ -461,13 +462,13 @@
       "categories": [
         "combat"
       ],
-      "description": "When one of your Pokémon faints, the rest of the Active Team gains Attack +1.",
+      "description": "When one of your Pokémon faints, the rest of the Active Team gains Attack +2.",
       "hook": "reactive-stage",
       "params": {
         "on": "faint",
         "target": "team",
         "stat": "attack",
-        "stages": 1
+        "stages": 2
       },
       "tier": 2,
       "discovery": {
@@ -594,16 +595,19 @@
       "categories": [
         "status"
       ],
-      "description": "Curing a status also restores 8 HP.",
-      "hook": "heal-bonus",
-      "params": {
-        "flatOnCure": 8
-      },
+      "description": "A Pokémon you swap out of the Lead is cured of its status, and every cure also restores 8 HP.",
+      "hook": "swap-cure",
       "tier": 2,
       "discovery": {
         "counter": "statuses-cured",
         "goal": 15,
         "text": "Cure 15 statuses"
+      },
+      "also": {
+        "hook": "heal-bonus",
+        "params": {
+          "flatOnCure": 8
+        }
       }
     },
     {
@@ -655,11 +659,12 @@
       "categories": [
         "card"
       ],
-      "description": "When your deck reshuffles, you gain 1 AP the next turn.",
+      "description": "The first three times your deck reshuffles each combat, you gain 1 AP the next turn.",
       "hook": "banked-ap",
       "params": {
         "on": "reshuffle",
-        "ap": 1
+        "ap": 1,
+        "limit": 3
       },
       "tier": 2,
       "discovery": {
@@ -675,11 +680,12 @@
       "categories": [
         "card"
       ],
-      "description": "Play three different moves from one Pokémon in a turn and gain 1 AP the next turn.",
+      "description": "Play two different moves from one Pokémon in a turn and gain 1 AP the next turn.",
       "hook": "banked-ap",
       "params": {
         "on": "three-from-one",
-        "ap": 1
+        "ap": 1,
+        "distinct": 2
       }
     },
     {
@@ -749,11 +755,12 @@
       "categories": [
         "combat"
       ],
-      "description": "Once per run, the first Pokémon that would faint survives at 1 HP. The feather is spent.",
+      "description": "Once per Region, the first Pokémon that would faint survives at 1 HP. The feather regrows with each new Region.",
       "hook": "endure",
       "params": {
         "scope": "team",
-        "oncePerRun": true
+        "oncePerRun": true,
+        "rearmEachRegion": true
       },
       "tier": 2,
       "discovery": {
@@ -769,10 +776,10 @@
       "categories": [
         "card"
       ],
-      "description": "Draw 2 more cards and gain 1 extra AP at the start of every turn, including the first. The AP limit stays 6.",
+      "description": "Gain 1 extra AP at the start of every turn, including the first, but draw 1 card fewer. The AP limit stays 6.",
       "hook": "draw",
       "params": {
-        "cards": 2
+        "cards": -1
       },
       "also": {
         "hook": "banked-ap",
@@ -815,12 +822,12 @@
       "categories": [
         "combat"
       ],
-      "description": "The two Pokémon that have travelled with you longest each deal 10 % more while both are standing in a fight.",
+      "description": "The two Pokémon that have travelled with you longest each deal 15 % more while both are standing in a fight.",
       "hook": "damage-dealt",
       "tier": 3,
       "params": {
         "soulLink": true,
-        "multiplier": 1.1
+        "multiplier": 1.15
       }
     },
     {
@@ -857,11 +864,11 @@
       "categories": [
         "combat"
       ],
-      "description": "Super-effective moves hit 15 % harder still.",
+      "description": "Super-effective moves hit 30 % harder still.",
       "hook": "damage-dealt",
       "params": {
         "superEffective": true,
-        "multiplier": 1.15
+        "multiplier": 1.3
       }
     },
     {
@@ -871,8 +878,11 @@
       "categories": [
         "combat"
       ],
-      "description": "No enemy intent is ever hidden from you.",
-      "hook": "reveal-intents"
+      "description": "No enemy intent is ever hidden from you, and you see each one a turn ahead. It commits to it unless it can no longer play it.",
+      "hook": "reveal-intents",
+      "also": {
+        "hook": "intent-queue"
+      }
     },
     {
       "id": "evolutions-edge",
@@ -881,11 +891,11 @@
       "categories": [
         "combat"
       ],
-      "description": "Fully-evolved Pokémon deal 10 % more.",
+      "description": "Fully-evolved Pokémon deal 20 % more.",
       "hook": "damage-dealt",
       "params": {
         "fullyEvolved": true,
-        "multiplier": 1.1
+        "multiplier": 1.2
       }
     },
     {
@@ -935,10 +945,11 @@
       "categories": [
         "status"
       ],
-      "description": "Shrug off the first status each combat, and the ones you inflict last a turn longer.",
+      "description": "Shrug off the first status each turn, and the ones you inflict last a turn longer.",
       "hook": "status-shield",
       "params": {
-        "charges": 1
+        "charges": 1,
+        "perTurn": true
       },
       "also": {
         "hook": "status-duration",
@@ -954,12 +965,12 @@
       "categories": [
         "combat"
       ],
-      "description": "While your Lead is untouched it deals 20 % more. One scratch and that stops until it is healed.",
+      "description": "While your Lead is untouched it deals 50 % more. One scratch and that stops until it is healed.",
       "hook": "damage-dealt",
       "params": {
         "atFullHp": true,
         "leadOnly": true,
-        "multiplier": 1.2
+        "multiplier": 1.5
       }
     },
     {
@@ -969,10 +980,10 @@
       "categories": [
         "combat"
       ],
-      "description": "Every Pokémon starts each combat behind a shield worth a tenth of its health.",
+      "description": "Every Pokémon starts each combat behind a shield worth 15 % of its health.",
       "hook": "start-shield",
       "params": {
-        "percentOfMaxHp": 0.1
+        "percentOfMaxHp": 0.15
       }
     },
     {
@@ -982,9 +993,13 @@
       "categories": [
         "card"
       ],
-      "description": "Once per fight, when the deck would run short at the start of a turn, the discard pile is shuffled back in before you draw.",
-      "hook": "recall-discard",
-      "tier": 3
+      "description": "At the end of each turn, keep two unplayed cards for the next one, swap or not.",
+      "hook": "retain-card",
+      "tier": 3,
+      "params": {
+        "cards": 2,
+        "always": true
+      }
     },
     {
       "id": "trainers-instinct",

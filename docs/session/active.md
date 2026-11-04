@@ -1,13 +1,13 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-04 · **Version:** v0.9.96 (*The series' formulas*).
-**Shipped 2026-11-04 (v0.9.96), for the user to playtest:** Gen III stat formula (`STAT_FORMULA`, §6.2.3), series damage
-(level term, +2, divisor 100, §4.1.1), rhythm reads base Speed (`baseOfStat`; v0.9.93 had slowed it), Guard × level
-term, starters' 3rd move at Lv 3 + early own-type hits (`scripts/v0996-early-hits.mjs`), sure first catch (§2.6.4.5),
-Super/Hyper 40/90, Pallet Ring +0/+2, save v25. Fixtures' lengths held; harness R1 9 % (floors). **Waiting on verdict.**
-**Shipped 2026-11-04 (v0.9.95):** enemies ×1 everywhere, lower enemy levels, XP 22/24, lone-
-starter counter guard, auto-player fixes + optional lookahead. Harness R1 10 % · R2 0 %: bands are floors. **Waiting on
-the user's verdict**; if Gyms wall, cut structure (R1 Gyms of 4, no R1 ace double action).
+**Date:** 2026-11-04 · **Version:** v0.9.97 (*Relics rebalanced*).
+**Shipped 2026-11-04 (v0.9.97), for the user to playtest:** relic balance pass (§7.3.1 power bands, measured by a
+temporary combat probe — each relic alone, auto-player, every fixture, 30 seeds; not a suite). Five relics fixed
+(Steady Aim, Recycle Tag, Cycle Cell, Grandmaster's Tempo, Phoenix per fight), outliers cut (Choice −1 floor 1, Sage
+−1 card, Cycle Cell ×3), dead ones reworked, Legendaries raised, Gem curation `offerPool`, `startingRelicFits`.
+Run-level harness not re-measured. **Waiting on verdict.**
+**Shipped 2026-11-04 (v0.9.96 / v0.9.95):** Gen III stat and damage formulas, starters' 3rd move, sure first catch;
+enemies ×1, lower levels, less XP. Harness R1 9 % (floors). **Waiting on verdict**; if Gyms wall, cut structure.
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords. ✅ v0.9.90 real
 evolution levels and methods, Friendship. ✅ v0.9.91 progressive learnsets (tracks, Move Reminder, no filler on a final

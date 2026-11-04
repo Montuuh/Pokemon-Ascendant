@@ -4,7 +4,7 @@ import { emit, log } from './context';
 import { changeAp } from './ap';
 import { absorbedByAbility, applyMoveEffects, breakdownFor, changeStage, heal, onEnterLead, strike } from './damageFlow';
 import { buildSkillDeck, drawSkillCards } from './deck';
-import { echoesFirstCard, itemCureHeal, itemRidersFirst, stepDrawBonus, swapDrawBonus, swapHealAmount } from './items';
+import { echoesFirstCard, itemCureHeal, itemRidersFirst, itemSwapCures, stepDrawBonus, swapDrawBonus, swapHealAmount } from './items';
 import { catchOdds, firstCatch, SHAKE_CHECKS, shakeChecks } from './catch';
 import { declareIntent } from './intents';
 import { rhythmReady, spendsRhythm, stepRhythm } from './rhythm';
@@ -378,6 +378,17 @@ function manualSwap(state: CombatState, benchIndex: number, ctx: RunCtx): void {
   player.defensiveDiscount = true;
   setLead(state, benchIndex);
   emit(state, { t: 'swap', fromIndex: from, toIndex: benchIndex, kind: 'manual', apCost: cost });
+  // Per §7.3 Healer's Kit (v0.9.97) — the Pokémon you swap out leaves its status behind, and the cure mends it.
+  const outgoing = player.team[from];
+  if (outgoing && outgoing.hp > 0 && itemSwapCures(state, ctx.content)) {
+    const removed = cureStatus(outgoing, 'all');
+    for (const s of removed) emit(state, { t: 'status-cleared', targetUid: outgoing.uid, status: s, cause: 'cured' });
+    if (removed.length) {
+      log(state, 'system', `The Healer's Kit cures ${outgoing.name} of ${removed.join(', ')} on the way out.`);
+      const bonus = itemCureHeal(state, ctx.content);
+      if (bonus > 0) heal(state, outgoing, bonus, 'consumable');
+    }
+  }
   log(state, 'player', `${player.team[benchIndex]!.name} ${opt?.quick ? 'darts into' : 'takes'} the Lead (${cost} AP${opt?.quick ? ', quick swap' : ''}).`);
 
   // §2.11.3 Swap Fuel — and the Pokémon stepping up gets a little back for stepping up.

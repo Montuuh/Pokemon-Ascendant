@@ -107,6 +107,32 @@ export function rollLegendaryOffer(rng: GameRng, content: ContentRegistry, held:
  */
 export const isOfferable = (row: { pending?: string }): boolean => !row.pending;
 
+/**
+ * Per §7.3.1 — a Type Gem is offered only when someone in the Box can use it: a member of that type, or one with a move of
+ * it in its pool (v0.9.97). Twelve of the Commons are Gems, so without this almost half of every Common roll was a Gem,
+ * most of them for a type nobody carried.
+ */
+export function gemFits(r: { params?: Record<string, unknown> }, box: readonly Pick<PartyMon, 'speciesId' | 'pool'>[], content: ContentRegistry): boolean {
+  const type = r.params?.type;
+  if (typeof type !== 'string') return true;
+  return box.some((m) => content.species(m.speciesId).types.includes(type as never) || m.pool.some((id) => content.move(id).type === type));
+}
+
+/**
+ * Per §8.6.3 — a Starting Relic has to do something from the first node (v0.9.97): never one spent the moment it is
+ * picked up (Trauma Salve, with no Trauma yet to clear), and a Type Gem only for a type a starter has.
+ */
+export function startingRelicFits(r: { hook: string; params?: Record<string, unknown> }, starters: readonly string[], content: ContentRegistry): boolean {
+  if (r.hook === 'on-acquire') return false;
+  const type = r.params?.type;
+  if (typeof type !== 'string' || !starters.length) return true;
+  return starters.some((id) => content.species(id).types.includes(type as never));
+}
+
+/** §8.6.2 + §7.3.1 — the run's offer pool: the account's pool, less the Gems the Box has no use for. */
+export const offerPool = (run: Pick<RunState, 'box' | 'perks'>, content: ContentRegistry): string[] =>
+  content.allRelics().filter((r) => inPool(r, run.perks?.relicPool ?? null) && gemFits(r, run.box, content)).map((r) => r.id);
+
 /** §8.6.2 — is the relic in this account's pool? `null` is "no account": the whole catalogue. */
 export const inPool = (r: { id: string }, accountPool: readonly string[] | null | undefined): boolean => !accountPool || accountPool.includes(r.id);
 
@@ -274,7 +300,7 @@ export function rarePickOpen(content: ContentRegistry, held: readonly string[], 
  * consumables in bundles and halves the relic floors — relics are scarce, consumables are spent.)*
  */
 function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor: StoreFloor, held: string[]): ShopSlot[] {
-  const pool = run.perks?.relicPool ?? null;
+  const pool = offerPool(run, content);
   const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t && c.id !== 'potion');
   const consumable = (t: number, n: number): ShopSlot[] => drawDistinct(rng, tier(t), n).map(bundleOf);
   const relics = (rarity: RelicRarity, n: number): ShopSlot[] => {
@@ -318,7 +344,7 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
  */
 export function floorRestockable(run: RunState, floor: StoreFloor, content: ContentRegistry): boolean {
   const shown = new Set((run.pendingShop?.slots ?? []).filter((s) => s.floor === floor && !s.sold).map((s) => s.id));
-  const pool = run.perks?.relicPool ?? null;
+  const pool = offerPool(run, content);
   const consumables = (...tiers: number[]) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && tiers.includes(c.tier)).map((c) => c.id);
   const relics = (...rarities: RelicRarity[]) => {
     const eligible = content.allRelics().filter((r) => isOfferable(r) && inPool(r, pool) && r.rarity !== 'legendary' && !run.relics.includes(r.id));
@@ -367,7 +393,7 @@ export function rollShopStock(
   floors: readonly StoreFloor[] = ['consumables', 'tms', 'held-items', 'relics', 'rare'],
 ): ShopStock {
   const slots: ShopSlot[] = [];
-  const pool = run.perks?.relicPool ?? null;
+  const pool = offerPool(run, content);
   const tier = (t: number) => content.allConsumables().filter((c) => c.effect.kind !== 'catch' && c.tier === t);
 
   // v0.8.6 — Potions have their own slot, so the other consumable slots draw from everything else.

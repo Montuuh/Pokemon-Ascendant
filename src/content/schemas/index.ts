@@ -156,7 +156,9 @@ export const ItemHookSchema = z.enum([
   // v0.5 (§2.11.3) — the Region Modifier pool.
   'swap-heal', 'trauma-relief', 'victory-heal', 'price-multiplier',
   // v0.6 (§8.6.1) — the Tier-3 Mastery lane.
-  'recall-discard', 'early-evolution', 'box-capacity',
+  'early-evolution', 'box-capacity',
+  // v0.9.97 (§7.3) — Healer's Kit: a Pokémon swapped out of the Lead is cured.
+  'swap-cure',
   // v0.7.4 (§5.10.3) — the Glacier Badge: a status on an enemy blunts its next attack.
   'status-chill',
   // v0.7.5 (§5.5.1) — the intent queue, and a run's own scouting.

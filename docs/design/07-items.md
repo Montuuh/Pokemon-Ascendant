@@ -149,15 +149,15 @@ own item.
 
 # §7.3 Relics
 
-Sixty-two relics: **52 in the drop pool** (Common, Uncommon, Rare) plus **10 choice-only Legendaries**.
+Sixty-five relics: **55 in the drop pool** (27 Common, 18 Uncommon, 10 Rare) plus **10 choice-only Legendaries**.
 
 ## §7.3.1 Rarity
 
 | Rarity | Count | Drop weight | Typical source |
 |---|---|---|---|
-| Common | 27 | 60 % | A trainer now and then (15 %), the merchant's wildcard, City Shops, a rare event |
+| Common | 27 | 60 % | A Starting Relic, the merchant's wildcard (one visit in five), City Shops, a find, a rare event |
 | Uncommon | 18 | 30 % | The Elite Trainer's pick, the first Gym's pick, City Shops, a rare event |
-| Rare | 7 | 10 % | One of the Elite Trainer's three, one of the first Gym's three, the beaten Elite Wild, the Ring, a rare Gamble event |
+| Rare | 10 | 10 % | One of the Elite Trainer's three, one of the first Gym's three, the beaten Elite Wild, the Ring, the Gambler, a rare Gamble event |
 | **Legendary** | 10 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and a beaten Apex (§7.3.7) |
 
 **Relics are scarce** (the user's call, 2026-09-30, v0.8.6). Before it a whole run ended holding about sixteen:
@@ -169,10 +169,26 @@ over, the big fights hand over a *choice*, and shop relics carry the collector's
 2 / 3 and holds **1.6 / 5.7 / 10.0** walking into each Gym; a won run ends with **~11**, the average run with ~4.7.
 By source: shops 30 %, trainers 29 %, the Legendary pick 24 %, the Elite 11 %, mysteries 4 %, the Elite Wild 2 %.
 The pace is even — no Region floods the team — and a doubled collector's premium (0.5) moved it by under half a
-relic, so the premium stays at 0.25: money is not what limits a buyer.
+relic: money is not what limits a buyer. v0.9.10 doubled it anyway (the user's call: a run held ~11 relics at its end), so
+each relic bought makes the next half again dearer.
 
 Rarity is **drop weight**. Meta tier (§8.6.1) is **pool membership**. They are orthogonal and conflating them is
 the single easiest mistake to make in this system.
+
+**Rarity is also a power band** (the relic balance pass, v0.9.97). With a 3-AP refill and a 1.7-AP average card, a
+relic that hands over AP or a free card outweighs any percentage, so the bands are measured, not guessed: each relic
+alone, the auto-player over every combat fixture (30 seeds), against the same fights with none, read as win-rate points plus half the HP points. The bands that came out are **Common up to ~2,
+Uncommon ~2–6, Rare ~3–9, Legendary ~4 and up** — the probe saturates near the top (the fixtures are won 86 % of the
+time bare) and barely sees status, information or run-layer relics (XP, money, the Box), which are judged by what they
+buy instead. The pass found Choice Band and Specs — Uncommons a
+Starting Relic could be — level with Sage's Tome at +9.5, every Legendary below them, five relics that never fired as
+written (Steady Aim, Recycle Tag, Cycle Cell, half of Grandmaster's Tempo, and a Phoenix Feather that came back every
+combat) and a Common pool that was nearly half Gems.
+
+**A Type Gem is offered only for a type the Box can use** — a member of that type, or one with a move of it in its
+pool (`offerPool`). Every source draws through this: drops, picks, shelves, finds, events and the Gambler. *Why:*
+twelve of the twenty-seven Commons are Gems, so before v0.9.97 almost half of every Common roll was a Gem, most of
+them for a type nobody carried.
 
 **How a rarity looks** (the user's ladder, 2026-10-19): a gem whose shape and colour both name it — Common a **green
 square**, Uncommon a **blue pentagon**, Rare a **red star**, Legendary a **gold crown** (`RarityGem`, the
@@ -206,7 +222,7 @@ The other fifteen shape a turn rather than a type:
 
 | Relic | Category | Effect |
 |---|---|---|
-| **Barrier Charm** | Combat | The first enemy attack of the first combat each Region deals −20 % |
+| **Barrier Charm** | Combat | The first enemy hit of each combat deals half damage (was −20 %, which the probe could not tell from noise) |
 | **Quick Claw Charm** | Card | The first card you play in each fight costs 1 AP less |
 | **Berry Pouch** | Combat | Healing consumables restore +20 % |
 | **Soothe Bell** | Meta | Every Friendship gain ×2 (§6.3.9; v0.9.90) |
@@ -214,26 +230,26 @@ The other fifteen shape a turn rather than a type:
 | **Cleanse Tag** | Status | The first status applied to your side each combat is blocked |
 | **Lucky Egg Token** | Meta | In-run XP ×1.15 |
 | **Exp Share** | Meta | Benched Box Pokémon earn 100 % XP instead of 75 % |
-| **Defense Curl Charm** | Combat | Every 3 manual swaps, the new Lead gains Defence +1 |
+| **Defense Curl Charm** | Combat | Every second manual swap, the incoming Lead gains Defence +1 (was every third, which a fight almost never reached) |
 | **Quick Draw** | Card | Turn 1 of each combat: draw +1 skill card |
 | **Brave Charm** | Combat | Pokémon below 50 % HP deal +10 % |
 | **Battle Hat** | Card | At turn end, if you made no manual swap, retain 1 skill card |
-| **Recycle Tag** | Card | The first discard reshuffle each combat draws +1 |
-| **Hiker's Coat** | Combat | The Lead takes −10 % from Cleave intents |
+| **Recycle Tag** | Card | The turn after the deck reshuffles, draw 1 more card |
+| **Hiker's Coat** | Combat | Your whole team takes −25 % from Cleave intents (was the Lead only, −10 %) |
 | **Wide Lens** | Combat | Status riders resolve **before** damage, so a faint never eats the rider |
 
 ## §7.3.4 Uncommon relics (18)
 
 | Relic | Category | Effect |
 |---|---|---|
-| **Choice Specs** | Card | The first Ranged move each turn costs 0 AP; later Ranged moves cost +1 |
+| **Choice Specs** | Card | The first Ranged move each turn costs 1 AP less, never below 1; later Ranged moves cost +1. Free until v0.9.97 — a whole extra card a turn, the strongest relic in the game from an Uncommon; a plain −1 was still +9 on the probe, so the floor keeps it on the big hits a Choice item is for, and the +1 is the lock |
 | **Choice Band** | Card | The same for Melee |
-| **Move Echo** | Card | Play 3 different moves from one Pokémon in a turn → +1 AP next turn |
+| **Move Echo** | Card | Play 2 different moves from one Pokémon in a turn → +1 AP next turn (three of a 3-AP turn almost never happened) |
 | **Type Resonance** | Combat | Active members sharing a primary type buff each other's matching moves +10 % per shared member |
-| **Adrenal Surge** | Combat | When a Pokémon faints, the rest of the Active Team gains Attack +1 |
-| **Reactor Core** | Card | Max hand size +1 skill card |
+| **Adrenal Surge** | Combat | When a Pokémon faints, the rest of the Active Team gains Attack +2 |
+| **Reactor Core** | Card | Draw 1 more skill card every turn (the hand is discarded whole, so this is max hand +1) |
 | **Hand-Off Pouch** | Card | A card Confusion knocks out of your hand is replaced from the deck |
-| **Cycle Cell** | Card | When the skill deck reshuffles, +1 AP next turn |
+| **Cycle Cell** | Card | The first three times the skill deck reshuffles each combat, +1 AP next turn (unlimited was +8 on the probe, almost all of it in long fights; only the first was +0.6) |
 | **Status Lance** | Status | Statuses you apply last +1 turn (Sleep and Freeze unaffected) |
 | **Pressure Plate** | Combat | After a 3+ AP move, the next move that turn costs −1 AP |
 | **Vital Pendant** | Combat | Once per combat below 25 % HP, heal to 50 % Effective Max HP |
@@ -241,8 +257,8 @@ The other fifteen shape a turn rather than a type:
 | **Tactician's Coin** | Lead | The first manual swap each combat costs 0 AP |
 | **Steady Aim** | Combat | Crit multiplier 1.5 → 1.75 |
 | **Lure Module** | Meta | Wild Areas roll their rarity twice and keep the rarer (§2.6.2) |
-| **Battle Tracker** | Meta | After defeating an enemy, +5 % Witnessed reveal rate on similar species this run |
-| **Healer's Kit** | Status | Status cures also restore +8 HP |
+| **Battle Tracker** | Meta | A species already fought this run never hides its first intent again (§5.5.1) |
+| **Healer's Kit** | Status | A Pokémon you swap out of the Lead is cured of its status, and every cure also restores 8 HP — Natural Cure as a relic, so a status becomes a reason to swap (Pillar 2). Was only the +8 HP, on cures that rarely happen |
 | **Bond Bracelet** | Combat | The first time the Lead drops below 50 %, the whole bench gains Defence +1 |
 
 ## §7.3.5 Rare relics (7)
@@ -251,10 +267,10 @@ The other fifteen shape a turn rather than a type:
 |---|---|---|
 | **Champion's Crest** | Combat | Each enemy a Pokémon defeats grants it +5 % damage this run, capped at +25 % |
 | **Time Spinner** | Combat | Every enemy but a boss loses its first turn of the fight |
-| **Phoenix Feather** | Combat | Once per run: prevent a faint and restore to 1 HP. Consumed |
-| **Sage's Tome** | Card | Draw 2 extra cards; +1 AP at the start of every turn, including turn 1; cap stays 6 |
+| **Phoenix Feather** | Combat | Once per Region: the first Pokémon that would faint survives at 1 HP; the feather regrows with each new Region. Was once per run — weaker than an Uncommon Vital Pendant — and, through a bug, came back every combat |
+| **Sage's Tome** | Card | +1 AP at the start of every turn, including turn 1, but draw 1 card fewer; cap stays 6. Until v0.9.97 it also drew 2 more, and was stronger than any Legendary; −2 cards was a trap. The AP a turn is the strongest effect in the game, so the Tome pays for it with the hand |
 | **Crown of Echoes** | Combat | The first move each combat is copied free into your hand on turn 2 |
-| **Soul Link** | Combat | The two Pokémon that have travelled longest in your Box each deal +10 % while both stand in a fight |
+| **Soul Link** | Combat | The two Pokémon that have travelled longest in your Box each deal +15 % while both stand in a fight |
 
 *Passive, not activated (v0.7.5).* Four relics were authored as buttons — replay a card, discard to draw, skip a
 turn, pick a partner — and waited three versions for a combat UI that never needed one otherwise. Each was
@@ -263,9 +279,10 @@ Spinner's lost enemy turn (telegraphed, and never a boss's, so no climax is skip
 pair that started the journey. A relic you have to remember to click is a tax on attention; the hand is where the
 decisions are.
 
-Four further relics fill the Tier-3 Mastery lane to ten (§8.6.1): **Perfect Recall** (once per combat, shuffle
-the discard back at turn start), **Trainer's Instinct** (see each enemy's intent one turn further ahead),
-**Evolution Catalyst** (one Pokémon may evolve 4 levels early) and **Box Expander** (+2 Box capacity this run).
+Four further relics fill the Tier-3 Mastery lane to ten (§8.6.1): **Perfect Recall** (keep two unplayed cards at
+every turn's end, swap or not — until v0.9.97 a once-a-fight discard recall that changed almost nothing),
+**Trainer's Instinct** (see each enemy's intent one turn further ahead), **Evolution Catalyst** (one Pokémon may
+evolve 6 levels early) and **Box Expander** (+2 Box capacity this run).
 Every Tier-3 relic changes *how a run works*, never how hard it hits.
 
 ## §7.3.6 Conflicts and ordering
@@ -291,20 +308,20 @@ the relic system and retuned for permanent scope.
 | **Hold cap** | **Maximum 2 per run**. At the cap, a pick-moment offers two Rares and an Uncommon instead, or a skip |
 | **Never** | Not in Starting Relics, not in shop random stock, not in the drop pool |
 | **Meta status** | Available from run 1 — Legendary is a rarity class, not a meta tier |
-| **Power** | The six ported Boons were retuned to about **two-thirds** strength, because they now last a whole run instead of five League fights |
+| **Power** | Above every Rare (§7.3.1's bands). The six ported Boons were first cut to about two-thirds strength for lasting a whole run; v0.9.97 found that left most of them below an Uncommon and raised them back |
 
 | Legendary | Category | Effect |
 |---|---|---|
-| **Battle Hardened** | Combat | Every Active Pokémon starts each combat with a Shield equal to 10 % of its max HP — drawn as the pale blue end of its HP bar and a *Shield N* chip on its card, the rule in its bubble (the user's note, 2026-10-19: it had no picture) |
+| **Battle Hardened** | Combat | Every Active Pokémon starts each combat with a Shield equal to 15 % of its max HP — drawn as the pale blue end of its HP bar and a *Shield N* chip on its card, the rule in its bubble (the user's note, 2026-10-19: it had no picture) |
 | **Flow State** | Lead | The first manual swap of **every turn** costs 0 AP. (It was word for word the Tactician's Coin, an Uncommon, until v0.9.80; the Coin keeps one per combat and the two stack, the turn's own spent first) |
 | **Last Stand** | Combat | Once per combat, the first Pokémon that would faint survives at 1 HP |
-| **Type Mastery** | Combat | Super-effective moves deal an extra +0.15× |
-| **Clear Mind** | Combat | Every Unknown intent is revealed, in every combat |
-| **Evolution's Edge** | Combat | Fully-evolved Pokémon deal +10 % |
-| **Grandmaster's Tempo** | Card | +1 max hand size, and the first skill card each turn costs 0 AP |
+| **Type Mastery** | Combat | Super-effective moves deal ×1.3 more |
+| **Clear Mind** | Combat | Every Unknown intent is revealed, and you see each enemy's intent a turn ahead, committed (Trainer's Instinct's queue, §5.5.1) — perfect information. Reveal alone was a Battle Tracker for every species |
+| **Evolution's Edge** | Combat | Fully-evolved Pokémon deal +20 % |
+| **Grandmaster's Tempo** | Card | Draw 1 more card each turn, and the first skill card each turn costs 0 AP (the free card never fired until v0.9.97) |
 | **Living Legend** | Meta | In-run XP ×1.3; recruits arrive +2 levels with 0 Trauma |
-| **Unbreakable Will** | Status | Immune to the first status each combat; your statuses last +1 turn |
-| **Apex Predator** | Combat | While the Lead is at full HP its moves deal +20 %; any damage disables this until it is healed back to full |
+| **Unbreakable Will** | Status | Immune to the first status each **turn**; your statuses last +1 turn (one a combat was Cleanse Tag and Status Lance stapled together) |
+| **Apex Predator** | Combat | While the Lead is at full HP its moves deal +50 %; any damage disables this until it is healed back to full |
 
 The 2-per-run cap is what keeps these a deliberate apex sculpt rather than a snowball (Pillar 3).
 

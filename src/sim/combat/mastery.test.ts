@@ -57,21 +57,21 @@ describe('Familiar and Insight — §5.13.1, §8.4.2', () => {
 });
 
 describe('Perfect Recall — §8.6.1', () => {
-  it('AShortDeck_TakesItsDiscardBack_BeforeTheDraw_OncePerFight', () => {
-    let s = start(scenario({ team: STARTERS, enemies: [{ ...PIDGEY, level: 1, hpPercent: 100 }], relics: ['perfect-recall'] }));
-    // Empty the deck into the discard by hand, so the next turn's draw would run short.
-    s = tweak(s, (d) => {
-      d.player.discard.push(...d.player.deck);
-      d.player.deck = [];
-    });
-    const discardBefore = s.player.discard.length;
-    expect(discardBefore).toBeGreaterThan(0);
-    s = dispatch(s, { type: 'end-turn' });
+  // v0.9.97 — was a once-a-fight discard recall that changed almost nothing; now it keeps two cards, swap or not.
+  it('KeepsTwoUnplayedCards_EvenOnATurnThatSwapped', () => {
+    const fight = (relics: string[]) => {
+      let s = start(scenario({ team: STARTERS, enemies: [{ ...PIDGEY, level: 1, hpPercent: 100 }], relics }));
+      s = dispatch(s, { type: 'swap', benchIndex: 1 });
+      const kept = s.player.hand.slice(0, 2).map((c) => c.id);
+      s = dispatch(s, { type: 'end-turn' });
+      return { s, kept };
+    };
+    const { s, kept } = fight(['perfect-recall']);
     if (s.outcome !== 'in-progress') return;
-    expect(s.player.spent).toContain('perfect-recall');
-    // Not a reshuffle: the relics that pay on one do not see one.
-    expect(s.player.tally.reshuffles).toBe(0);
-    expect(s.player.hand).toHaveLength(5);
+    for (const id of kept) expect(s.player.hand.map((c) => c.id)).toContain(id);
+    expect(s.player.hand.length).toBe(fight([]).s.player.hand.length + 2);
+    // Battle Hat keeps nothing on a turn that swapped.
+    expect(fight(['battle-hat']).s.player.hand.length).toBe(fight([]).s.player.hand.length);
   });
 });
 

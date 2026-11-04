@@ -27,6 +27,7 @@ export function drawSkillCards(state: CombatState, count: number, rng: GameRng):
       p.discard = [];
       // §7.3 — Recycle Tag and Cycle Cell both pay out on a reshuffle; flag it once, read it twice.
       p.reshuffled = true;
+      p.reshuffledTurn = state.turn;
       p.tally.reshuffles += 1;
     }
     const card = p.deck.pop()!;
