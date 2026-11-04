@@ -2,36 +2,42 @@ import type { Box } from '@/ui/components/PixelRoom';
 
 export type MarketCounter = 'trader' | 'fence' | 'gambler' | 'showcase';
 export const MARKET_COUNTERS: readonly MarketCounter[] = ['trader', 'fence', 'gambler', 'showcase'];
-export const MARKET_ROOM = { w: 320, h: 256 } as const;
-/** All anchors use the new room's native pixels, matching scripts/build-black-market-art.mjs. */
-export const MARKET_SPOTS: Record<MarketCounter, { person: Box; boxes: readonly Box[] }> = {
+/** The Hideout B1F office, cropped whole by scripts/build-black-market-art.mjs: every anchor is in its native pixels. */
+export const MARKET_ROOM = { w: 272, h: 232 } as const;
+export const MARKET_SPOTS: Record<MarketCounter, { person: Box; boxes: readonly Box[]; plate?: 'raised' }> = {
+  // The crates and the orange shutters along the north-east wall; she stands beside her stock.
   trader: {
-    person: [72, 80, 16, 32],
+    person: [192, 40, 16, 32],
     boxes: [
-      [32, 112, 96, 48],
-      [72, 80, 16, 32],
+      [208, 24, 64, 48],
+      [192, 40, 16, 32],
     ],
   },
+  // The desk with the terminal, at the foot of the office.
   fence: {
-    person: [240, 128, 16, 32],
+    person: [112, 112, 16, 32],
     boxes: [
-      [224, 160, 48, 32],
-      [240, 128, 16, 32],
+      [48, 148, 96, 44],
+      [112, 112, 16, 32],
     ],
   },
+  // The den in the south-east nook, at the Game Corner's own table.
   gambler: {
-    person: [88, 176, 16, 32],
+    person: [216, 152, 16, 32],
     boxes: [
-      [64, 208, 64, 30],
-      [88, 176, 16, 32],
+      [192, 184, 64, 30],
+      [216, 152, 16, 32],
     ],
   },
+  // The boss's desk under the north wall, beside the plant.
   showcase: {
-    person: [240, 32, 16, 32],
+    // The plate rides up into the desk: hung below it, it would sit on the Fence standing at the south desk.
+    plate: 'raised',
+    person: [64, 32, 16, 32],
     boxes: [
-      [208, 64, 80, 48],
-      [240, 32, 16, 32],
+      [48, 68, 96, 44],
+      [64, 32, 16, 32],
     ],
   },
 };
-export const MARKET_STAIRS: Box = [16, 24, 40, 48];
+export const MARKET_STAIRS: Box = [0, 8, 40, 64];

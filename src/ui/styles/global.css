@@ -45,7 +45,8 @@ button:disabled {
 :where(button:active:not(:disabled):not([aria-disabled='true']):not(:has(.pixel, img[src*='/art/']))) {
   scale: 0.97;
 }
-button:focus-visible {
+button:focus-visible,
+[tabindex='0']:focus-visible {
   outline: 3px solid var(--accent-action);
   outline-offset: 2px;
 }

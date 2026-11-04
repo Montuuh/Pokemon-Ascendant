@@ -1,121 +1,18 @@
 {
-  "description": "A18 / B14 Black Market: quiet slate circulation, warm service bays, native ball stock, separate office and readable stairs.",
+  "description": "Black Market: the Rocket Hideout B1F south-west office cropped whole, with the up-staircase, crate stock, a plant and the Game Corner table moved in on the 16 px grid.",
   "rights": "Pokémon artwork © Nintendo / Creatures / GAME FREAK; non-commercial fan use. Maps: Bulbagarden Archives. NPC extraction: pret/pokefirered.",
   "processing": {
     "script": "scripts/build-black-market-art.mjs",
     "resampling": "none",
     "grid": 16,
-    "npcAlpha": "exact palette-zero RGB key",
-    "floorPalette": [
-      {
-        "source": [
-          160,
-          160,
-          96
-        ],
-        "aisle": [
-          80,
-          96,
-          104
-        ],
-        "bay": [
-          128,
-          128,
-          88
-        ]
-      },
-      {
-        "source": [
-          192,
-          192,
-          152
-        ],
-        "aisle": [
-          88,
-          104,
-          112
-        ],
-        "bay": [
-          144,
-          144,
-          112
-        ]
-      },
-      {
-        "source": [
-          128,
-          128,
-          80
-        ],
-        "aisle": [
-          72,
-          88,
-          96
-        ],
-        "bay": [
-          112,
-          112,
-          72
-        ]
-      }
-    ],
-    "serviceBays": [
-      {
-        "counter": "trader",
-        "box": [
-          32,
-          80,
-          128,
-          80
-        ]
-      },
-      {
-        "counter": "showcase",
-        "box": [
-          184,
-          24,
-          136,
-          80
-        ]
-      },
-      {
-        "counter": "fence",
-        "box": [
-          224,
-          128,
-          80,
-          64
-        ]
-      },
-      {
-        "counter": "gambler",
-        "box": [
-          16,
-          176,
-          112,
-          64
-        ]
-      }
-    ],
-    "stock": {
-      "box": [
-        32,
-        256,
-        16,
-        16
-      ],
-      "at": [
-        [
-          48,
-          120
-        ],
-        [
-          96,
-          120
-        ]
-      ],
-      "alpha": "exact source floor RGB key"
+    "room": {
+      "x": 16,
+      "y": 312,
+      "w": 272,
+      "h": 232
     },
+    "npcAlpha": "exact palette-zero RGB key",
+    "plantAlpha": "exact source floor RGB key",
     "sharp": "0.35.4"
   },
   "sources": [
@@ -190,27 +87,27 @@
     {
       "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
       "box": [
-        192,
-        176,
         16,
-        16
+        312,
+        272,
+        232
       ]
     },
     {
       "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
       "box": [
-        208,
-        8,
-        48,
-        24
+        176,
+        320,
+        80,
+        32
       ]
     },
     {
       "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
       "box": [
-        8,
-        336,
-        8,
+        192,
+        352,
+        64,
         16
       ]
     },
@@ -218,45 +115,9 @@
       "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
       "box": [
         160,
-        16,
+        0,
         40,
-        48
-      ]
-    },
-    {
-      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
-      "box": [
-        320,
-        224,
-        96,
-        48
-      ]
-    },
-    {
-      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
-      "box": [
-        32,
-        256,
-        16,
-        16
-      ]
-    },
-    {
-      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
-      "box": [
-        64,
-        384,
-        80,
-        48
-      ]
-    },
-    {
-      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
-      "box": [
-        48,
-        240,
-        48,
-        32
+        64
       ]
     },
     {
@@ -271,9 +132,18 @@
     {
       "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
       "box": [
+        224,
+        448,
         16,
-        336,
-        48,
+        96
+      ]
+    },
+    {
+      "source": "public/art/black-market/sources/rocket-hideout-b1f.png",
+      "box": [
+        256,
+        192,
+        16,
         32
       ]
     }
@@ -305,9 +175,9 @@
     },
     {
       "file": "room.png",
-      "width": 320,
-      "height": 256,
-      "sha256": "c281c091089c3a8588b67ff8e16253d690db8035834d3535dbdfdc53adf73d9e"
+      "width": 272,
+      "height": 232,
+      "sha256": "299965355a4fbce2ddaacd3d6c63872615385d5406b5fc8dbdfd94a2ad0a1c10"
     }
   ]
 }

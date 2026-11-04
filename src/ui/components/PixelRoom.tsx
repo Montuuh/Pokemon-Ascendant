@@ -51,6 +51,8 @@ export interface RoomExit {
   label: string;
   /** The plate's text, when shorter than the name. */
   plate?: string;
+  /** `start`: the plate hangs from the piece's left edge, for a way out against the room's west wall. */
+  plateAlign?: 'start';
   tip: ReactNode;
   testId: string;
 }
@@ -203,7 +205,7 @@ function ExitSpot<Id extends string>({ exit, style, onHover, onFocus }: { exit: 
   const tip = useTip(exit.tip);
   return (
     <button type="button" className={`${styles.spot} ${styles.exit}`} style={style} onClick={exit.onExit} aria-label={exit.label} data-testid={exit.testId} {...tip} {...lightOn(tip, 'exit' as const, onHover, onFocus)}>
-      <span className={styles.plate}>
+      <span className={`${styles.plate} ${exit.plateAlign === 'start' ? styles.plateStart : ''}`}>
         <IconArrowLeft size={14} aria-hidden="true" /> {exit.plate ?? exit.label}
       </span>
     </button>

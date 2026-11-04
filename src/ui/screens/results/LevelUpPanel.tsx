@@ -3,6 +3,8 @@ import type { Place } from './results';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { getContent } from '@/content/registry';
 import { RESULT_TEXT, REWARD_TEXT, STAT_LONG } from '@/ui/strings';
+import { moveDefTip } from '@/ui/tips';
+import { Tipped } from '@/ui/tooltip';
 import styles from './LevelUpPanel.module.css';
 
 const STATS = ['hp', 'attack', 'defense', 'speed'] as const;
@@ -25,7 +27,7 @@ const FOLD_AT = 0.93;
  *
  * v0.9.80 (the user): a small ring at its top right drains for as long as the panel will stay; a level that teaches a move
  * lights the panel up, keeps the ring full and stops the clock (`held`) until a click, so the move is read, not missed. One panel
- * per level: `up` is the news of a single level.
+ * per level: `up` is the news of a single level. Each move it names opens its own bubble on hover or focus, as a card does.
  */
 export function LevelUpPanel({
   name,
@@ -58,9 +60,22 @@ export function LevelUpPanel({
       data-testid={`levelup-panel-${up.uid}`}
     >
       {variant === 'stage' && (
-        <svg className={styles.timer} viewBox="0 0 24 24" aria-hidden="true" data-testid="levelup-timer" data-held={held || undefined}>
+        <svg
+          className={styles.timer}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          data-testid="levelup-timer"
+          data-held={held || undefined}
+        >
           <circle className={styles.timerTrack} cx="12" cy="12" r="9" />
-          <circle className={styles.timerArc} cx="12" cy="12" r="9" pathLength={1} strokeDasharray={`${held ? 1 : left} 1`} />
+          <circle
+            className={styles.timerArc}
+            cx="12"
+            cy="12"
+            r="9"
+            pathLength={1}
+            strokeDasharray={`${held ? 1 : left} 1`}
+          />
         </svg>
       )}
       <span className={`${styles.head} display`}>{RESULT_TEXT.grew(name, up.to)}</span>
@@ -83,27 +98,40 @@ export function LevelUpPanel({
         const move = content.move(id);
         const pooled = !up.activated.includes(id);
         return (
-          <span key={id} className={styles.move} data-testid={`learned-${id}`}>
+          <Tipped key={id} tip={moveDefTip(move)} className={styles.move} data-testid={`learned-${id}`}>
             <span className={styles.new}>{RESULT_TEXT.learned}</span>
             <TypeLabel type={move.type} size={12} />
             <span className={`${styles.moveName} display`}>{move.name}</span>
             {pooled && <span className={styles.pool}>{REWARD_TEXT.inPool}</span>}
-          </span>
+          </Tipped>
         );
       })}
       {/* §6.9.1 — a track's step: the card it replaced, struck, and the one now in its slot (the Move Reminder keeps the old). */}
       {(up.upgraded ?? []).map(({ from, to }) => {
         const move = content.move(to);
         return (
-          <span key={to} className={styles.move} data-testid={`upgraded-${to}`}>
+          <Tipped
+            key={to}
+            tip={moveDefTip(move, { replaces: from })}
+            className={styles.move}
+            data-testid={`upgraded-${to}`}
+          >
             {/* A live region reads the sentence, not the struck picture of it. */}
             <span className="sr-only">{RESULT_TEXT.grewInto(content.move(from).name, move.name)}</span>
-            <span className={styles.new} aria-hidden="true">{RESULT_TEXT.upgraded}</span>
-            <s className={styles.old} aria-hidden="true">{content.move(from).name}</s>
+            <span className={styles.new} aria-hidden="true">
+              {RESULT_TEXT.upgraded}
+            </span>
+            <s className={styles.old} aria-hidden="true">
+              {content.move(from).name}
+            </s>
             <span aria-hidden="true">→</span>
-            <span aria-hidden="true"><TypeLabel type={move.type} size={12} /></span>
-            <span className={`${styles.moveName} display`} aria-hidden="true">{move.name}</span>
-          </span>
+            <span aria-hidden="true">
+              <TypeLabel type={move.type} size={12} />
+            </span>
+            <span className={`${styles.moveName} display`} aria-hidden="true">
+              {move.name}
+            </span>
+          </Tipped>
         );
       })}
       {held && <span className={styles.resume}>{RESULT_TEXT.clickOn}</span>}

@@ -9,15 +9,34 @@ import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import { ItemCard } from '@/ui/components/ItemCard';
 import type { SfxId } from '@/ui/audio/sfx';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
-import { badgeTip, elitePrizeTip, gauntletPrizeTip, gymRelicTip, levelGainTip, partyMonTip, xpGainTip } from '@/ui/tips';
+import {
+  badgeTip,
+  elitePrizeTip,
+  gauntletPrizeTip,
+  gymRelicTip,
+  levelGainTip,
+  partyMonTip,
+  xpGainTip,
+} from '@/ui/tips';
 import { OBJECTIVE_TEXT, RESULT_TEXT, VICTORY_TEXT } from '@/ui/strings';
-import { InfoDot, Tipped } from '@/ui/tooltip';
+import { InfoDot, Tipped, useTipStore } from '@/ui/tooltip';
 import combat from '../CombatScreen.module.css';
 import { LevelUpPanel } from './LevelUpPanel';
 import { ProgressDoor } from './ProgressDoor';
 import { ResultUnit } from './ResultUnit';
 import { SpoilCard } from './SpoilCard';
-import { levelNews, monAt, progress, RESULT_MS, resultMons, revealPlan, ribbonTone, spoilsOf, type Beat, type ResultMon } from './results';
+import {
+  levelNews,
+  monAt,
+  progress,
+  RESULT_MS,
+  resultMons,
+  revealPlan,
+  ribbonTone,
+  spoilsOf,
+  type Beat,
+  type ResultMon,
+} from './results';
 import { useReveal, useRevealSounds } from './useReveal';
 import styles from './FightResults.module.css';
 
@@ -69,7 +88,10 @@ export function FightResults() {
   const mons = useMemo(() => resultMons(run, content), [run, content]);
   const spoils = useMemo(() => (gymPick ? [] : spoilsOf(run)), [run, gymPick]);
   const badgeId = rec?.badge ?? (gymPick ? run.badges[run.badges.length - 1] : undefined) ?? null;
-  const plan = useMemo(() => revealPlan(mons, spoils.length, { badge: !!badgeId && !gymPick }), [mons, spoils.length, badgeId, gymPick]);
+  const plan = useMemo(
+    () => revealPlan(mons, spoils.length, { badge: !!badgeId && !gymPick }),
+    [mons, spoils.length, badgeId, gymPick],
+  );
   const { t, done, held: waiting, advance, skip } = useReveal(plan, motion && !gymPick);
   const moneyFirst = spoils[0]?.kind === 'money';
   const sound = useCallback((b: Beat) => soundFor(b, moneyFirst), [moneyFirst]);
@@ -84,19 +106,37 @@ export function FightResults() {
   const caught = reward?.caught ? content.species(reward.caught.speciesId) : null;
 
   const ribbon =
-    outcome === 'caught' ? RESULT_TEXT.ribbon.caught
-    : outcome === 'defeat' ? (ended ? RESULT_TEXT.ribbon.defeat : RESULT_TEXT.ribbon.beaten)
-    : outcome === 'escaped' ? RESULT_TEXT.ribbon.escaped
-    : outcome === 'fled' ? RESULT_TEXT.fled(foe?.name ?? 'It')
-    : held ? RESULT_TEXT.ribbon.held : RESULT_TEXT.ribbon.victory;
+    outcome === 'caught'
+      ? RESULT_TEXT.ribbon.caught
+      : outcome === 'defeat'
+        ? ended
+          ? RESULT_TEXT.ribbon.defeat
+          : RESULT_TEXT.ribbon.beaten
+        : outcome === 'escaped'
+          ? RESULT_TEXT.ribbon.escaped
+          : outcome === 'fled'
+            ? RESULT_TEXT.fled(foe?.name ?? 'It')
+            : held
+              ? RESULT_TEXT.ribbon.held
+              : RESULT_TEXT.ribbon.victory;
   const voice =
-    outcome === 'caught' && caught ? `${RESULT_TEXT.voice.caught(caught.name)}${run.pendingRecruit ? ` ${RESULT_TEXT.voice.boxFull}` : ''}`
-    : outcome === 'defeat' ? (ended ? RESULT_TEXT.voice.defeat : RESULT_TEXT.voice.ringLost)
-    : outcome === 'escaped' ? RESULT_TEXT.voice.escaped(trainer ? trainer.name : RESULT_TEXT.wildFoe(foe?.name ?? 'Pokémon'))
-    : outcome === 'fled' ? RESULT_TEXT.voice.fled(foe?.name ?? 'It')
-    : held ? OBJECTIVE_TEXT.heldBody
-    : trainer ? `${RESULT_TEXT.voice.trainer(trainer.name)}${badge ? ` ${RESULT_TEXT.voice.badge(badge.name)}` : ''}`
-    : (rec?.foes.length ?? 1) > 1 ? RESULT_TEXT.voice.wilds : RESULT_TEXT.voice.wild(foe?.name ?? 'Pokémon');
+    outcome === 'caught' && caught
+      ? `${RESULT_TEXT.voice.caught(caught.name)}${run.pendingRecruit ? ` ${RESULT_TEXT.voice.boxFull}` : ''}`
+      : outcome === 'defeat'
+        ? ended
+          ? RESULT_TEXT.voice.defeat
+          : RESULT_TEXT.voice.ringLost
+        : outcome === 'escaped'
+          ? RESULT_TEXT.voice.escaped(trainer ? trainer.name : RESULT_TEXT.wildFoe(foe?.name ?? 'Pokémon'))
+          : outcome === 'fled'
+            ? RESULT_TEXT.voice.fled(foe?.name ?? 'It')
+            : held
+              ? OBJECTIVE_TEXT.heldBody
+              : trainer
+                ? `${RESULT_TEXT.voice.trainer(trainer.name)}${badge ? ` ${RESULT_TEXT.voice.badge(badge.name)}` : ''}`
+                : (rec?.foes.length ?? 1) > 1
+                  ? RESULT_TEXT.voice.wilds
+                  : RESULT_TEXT.voice.wild(foe?.name ?? 'Pokémon');
   const title = trainer ? trainer.name : foe ? `Wild ${foe.name}` : ribbon;
 
   // ── The way on ────────────────────────────────────────────────────────────────────────────────────────────
@@ -124,6 +164,9 @@ export function FightResults() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
+        // A bubble open on a learned move closes first: Escape closes what is open, a second one skips (D8).
+        const tips = useTipStore.getState();
+        if (tips.anchor) return tips.hide();
         skip();
       } else if (waiting && (e.key === ' ' || e.key === 'Enter')) {
         e.preventDefault();
@@ -169,19 +212,43 @@ export function FightResults() {
   const box = mons.filter((m) => !m.place && m.xp);
   // §9.4.5 — one level-up panel in reserved ground beside the Lead; the Pokémon whose news it is glows. One panel per level
   // gained (v0.9.80), the next arriving as the last goes.
-  const levelling = field.map((m) => ({ m, panel: monAt(m, plan, t).panel })).find((x) => x.panel !== null && x.m.steps[x.panel.step]) ?? null;
+  const levelling =
+    field
+      .map((m) => ({ m, panel: monAt(m, plan, t).panel }))
+      .find((x) => x.panel !== null && x.m.steps[x.panel.step]) ?? null;
   const stage = rec?.stage ?? run.pendingScenario?.stage ?? 'gym';
-  const pickTip = gymPick ? gymRelicTip(offer.some((id) => content.relic(id).rarity === 'legendary'), false) : rec?.kind === 'gauntlet' ? gauntletPrizeTip() : elitePrizeTip();
-  const pickHead = gymPick ? RESULT_TEXT.gymPrize : rec?.kind === 'gauntlet' ? VICTORY_TEXT.gauntletPrize : RESULT_TEXT.elitePrize;
+  const pickTip = gymPick
+    ? gymRelicTip(
+        offer.some((id) => content.relic(id).rarity === 'legendary'),
+        false,
+      )
+    : rec?.kind === 'gauntlet'
+      ? gauntletPrizeTip()
+      : elitePrizeTip();
+  const pickHead = gymPick
+    ? RESULT_TEXT.gymPrize
+    : rec?.kind === 'gauntlet'
+      ? VICTORY_TEXT.gauntletPrize
+      : RESULT_TEXT.elitePrize;
 
   return (
-    <main className={`${combat.root} ${styles.root} theme-stage`} data-testid="fight-results" data-outcome={outcome} data-done={done || undefined}>
+    <main
+      className={`${combat.root} ${styles.root} theme-stage`}
+      data-testid="fight-results"
+      data-outcome={outcome}
+      data-done={done || undefined}
+    >
       <header className={combat.topbar}>
         <div className={combat.chips}>
           <span className={`${combat.chip} ${combat.chipStrong}`}>{title}</span>
         </div>
         <div className={styles.pickHead}>
-          {offer.length > 0 && <><span className="display">{pickHead}</span><InfoDot tip={pickTip} /></>}
+          {offer.length > 0 && (
+            <>
+              <span className="display">{pickHead}</span>
+              <InfoDot tip={pickTip} />
+            </>
+          )}
         </div>
         {/* The account's news waits for the reveal to land (D8), then its door. */}
         <div className={`${combat.chips} ${styles.door}`}>{!gymPick && done && <ProgressDoor />}</div>
@@ -189,125 +256,199 @@ export function FightResults() {
 
       {/* The live fight's own frame round its stage (§9.2.1), so every card stands where it stood. */}
       <div className={combat.stageFrame}>
-      <section className={`${combat.stage} ${styles.stage}`} onClick={() => !done && advance()}>
-        <div className={`${styles.backdrop} ${tone === 'amber' ? styles.grey : ''}`} style={{ backgroundImage: `url(${stageBackdrop(stage)})` }} aria-hidden="true" />
-        <div className={combat.stageTint} aria-hidden="true" />
-        {tone === 'gold' || tone === 'red' ? <div className={styles.lights} aria-hidden="true" /> : null}
+        <section className={`${combat.stage} ${styles.stage}`} onClick={() => !done && advance()}>
+          <div
+            className={`${styles.backdrop} ${tone === 'amber' ? styles.grey : ''}`}
+            style={{ backgroundImage: `url(${stageBackdrop(stage)})` }}
+            aria-hidden="true"
+          />
+          <div className={combat.stageTint} aria-hidden="true" />
+          {tone === 'gold' || tone === 'red' ? <div className={styles.lights} aria-hidden="true" /> : null}
 
-        {/* The series' word on its ribbon, and one line in its voice. */}
-        <div className={styles.headline} aria-live="polite">
-          <span className={`${styles.ribbon} display`} data-tone={tone} style={{ opacity: Math.min(1, ribbonP * 2), transform: `translateY(${(1 - ease(ribbonP)) * -40}px)` }} data-testid="results-ribbon">
-            {ribbon}
-          </span>
-          <span className={styles.voice} style={{ opacity: ease(Math.max(0, ribbonP * 1.6 - 0.6)) }} data-testid="results-voice">
-            {voice}
-          </span>
-        </div>
+          {/* The series' word on its ribbon, and one line in its voice. */}
+          <div className={styles.headline} aria-live="polite">
+            <span
+              className={`${styles.ribbon} display`}
+              data-tone={tone}
+              style={{
+                opacity: Math.min(1, ribbonP * 2),
+                transform: `translateY(${(1 - ease(ribbonP)) * -40}px)`,
+              }}
+              data-testid="results-ribbon"
+            >
+              {ribbon}
+            </span>
+            <span
+              className={styles.voice}
+              style={{ opacity: ease(Math.max(0, ribbonP * 1.6 - 0.6)) }}
+              data-testid="results-voice"
+            >
+              {voice}
+            </span>
+          </div>
 
-        {/* Your side: the formation where the fight left it. */}
-        <div className={`${combat.formation} ${combat.squadSide}`}>
-          {field.map((m) => {
-            const at = monAt(m, plan, t);
-            const species = content.species(m.mon.speciesId);
-            const up = m.up;
-            const news = up ? levelNews(up, content) : null;
-            return (
-              <div key={m.mon.uid} className={`${PLACE_SLOT[m.place]} ${styles.slot}`}>
-                <ResultUnit
-                  side="ours"
-                  speciesId={species.id}
-                  name={species.name}
-                  types={species.types}
-                  shiny={!!m.mon.shiny}
-                  level={at.level}
-                  grew={!!up && at.level > (up.from ?? at.level)}
-                  levelTip={up && done ? levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, news?.learned, news?.grew) : undefined}
-                  tag={PLACE_TAG[m.place]}
-                  lead={m.place === 'lead'}
-                  hp={{ now: at.hp, max: at.maxHp }}
-                  xp={m.xp ? { was: at.was, fill: at.fill, gain: m.xp.gain, tip: xpGainTip(m.xp.gain, false, Math.max(0, xpToNext(m.mon.level) - m.mon.xp)) } : null}
-                  trauma={m.mon.traumaStacks}
-                  fainted={at.hp <= 0}
-                  levelling={levelling?.m === m}
-                  testId={`result-${species.id}`}
+          {/* Your side: the formation where the fight left it. */}
+          <div className={`${combat.formation} ${combat.squadSide}`}>
+            {field.map((m) => {
+              const at = monAt(m, plan, t);
+              const species = content.species(m.mon.speciesId);
+              const up = m.up;
+              const news = up ? levelNews(up, content) : null;
+              return (
+                <div key={m.mon.uid} className={`${PLACE_SLOT[m.place]} ${styles.slot}`}>
+                  <ResultUnit
+                    side="ours"
+                    speciesId={species.id}
+                    name={species.name}
+                    types={species.types}
+                    shiny={!!m.mon.shiny}
+                    level={at.level}
+                    grew={!!up && at.level > (up.from ?? at.level)}
+                    levelTip={
+                      up && done
+                        ? levelGainTip(
+                            species.name,
+                            up.from,
+                            up.to,
+                            up.gains ?? {},
+                            up.statsAt,
+                            news?.learned,
+                            news?.grew,
+                          )
+                        : undefined
+                    }
+                    tag={PLACE_TAG[m.place]}
+                    lead={m.place === 'lead'}
+                    hp={{ now: at.hp, max: at.maxHp }}
+                    xp={
+                      m.xp
+                        ? {
+                            was: at.was,
+                            fill: at.fill,
+                            gain: m.xp.gain,
+                            tip: xpGainTip(m.xp.gain, false, Math.max(0, xpToNext(m.mon.level) - m.mon.xp)),
+                          }
+                        : null
+                    }
+                    trauma={m.mon.traumaStacks}
+                    fainted={at.hp <= 0}
+                    levelling={levelling?.m === m}
+                    testId={`result-${species.id}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* The open ground: a Gym's Badge in its case. */}
+          <div className={`${combat.middle} ${styles.middle}`}>
+            {levelling && (
+              <div className={styles.levelNews}>
+                <LevelUpPanel
+                  key={`${levelling.m.mon.uid}-${levelling.panel!.step}`}
+                  name={content.species(levelling.m.mon.speciesId).name}
+                  up={levelling.m.steps[levelling.panel!.step]!}
+                  p={levelling.panel!.p}
+                  place={levelling.m.place}
+                  held={waiting}
                 />
               </div>
-            );
-          })}
-        </div>
+            )}
+            {badge && (
+              <Tipped
+                tip={badgeTip(badge.name, badge.description)}
+                className={styles.case}
+                style={
+                  {
+                    opacity: Math.min(1, badgeP * 2),
+                    transform: `translate(-50%, -50%) scale(${0.6 + 0.4 * spring(badgeP)})`,
+                  } as CSSProperties
+                }
+                data-testid="badge-award"
+              >
+                <span className={styles.caseLabel}>{RESULT_TEXT.received}</span>
+                <img
+                  className={styles.badgeArt}
+                  src={nodeBadge(`gym-${badge.type}`)}
+                  alt=""
+                  draggable={false}
+                />
+                <span className={`${styles.badgeName} display`}>{badge.name}</span>
+                <Sparkles n={5} />
+              </Tipped>
+            )}
+          </div>
 
-        {/* The open ground: a Gym's Badge in its case. */}
-        <div className={`${combat.middle} ${styles.middle}`}>
-          {levelling && (
-            <div className={styles.levelNews}>
-              <LevelUpPanel
-                key={`${levelling.m.mon.uid}-${levelling.panel!.step}`}
-                name={content.species(levelling.m.mon.speciesId).name}
-                up={levelling.m.steps[levelling.panel!.step]!}
-                p={levelling.panel!.p}
-                place={levelling.m.place}
-                held={waiting}
-              />
-            </div>
-          )}
-          {badge && (
-            <Tipped
-              tip={badgeTip(badge.name, badge.description)}
-              className={styles.case}
-              style={{ opacity: Math.min(1, badgeP * 2), transform: `translate(-50%, -50%) scale(${0.6 + 0.4 * spring(badgeP)})` } as CSSProperties}
-              data-testid="badge-award"
-            >
-              <span className={styles.caseLabel}>{RESULT_TEXT.received}</span>
-              <img className={styles.badgeArt} src={nodeBadge(`gym-${badge.type}`)} alt="" draggable={false} />
-              <span className={`${styles.badgeName} display`}>{badge.name}</span>
-              <Sparkles n={5} />
-            </Tipped>
-          )}
-        </div>
-
-        {/* Their side: who you beat, what you caught, where it went. */}
-        <div className={`${combat.formation} ${combat.foeSolo} ${styles.foeSide}`} style={{ opacity: foeP, transform: `translateX(${(1 - ease(foeP)) * 60}px)` }}>
-          {caught && reward?.caught ? (
-            <div className={`${combat.slotSolo} ${styles.slot}`}>
-              <ResultUnit side="foe" speciesId={caught.id} name={caught.name} types={caught.types} shiny={!!reward.caught.shiny} level={reward.caught.level} tag={run.pendingRecruit ? RESULT_TEXT.boxFull : RESULT_TEXT.newCatch} look="new" testId="reward-catch" />
-              <Sparkles n={4} around />
-            </div>
-          ) : outcome === 'fled' ? (
-            <div className={`${combat.slotSolo} ${styles.slot} ${styles.poof}`}>
-              <Sparkles n={7} />
-            </div>
-          ) : trainer ? (
-            <div className={`${combat.slotSolo} ${styles.trainer}`}>
-              <ArenaSprite src={trainerSprite(trainer.sprite)} className={styles.trainerBox} />
-              {rec && rec.foes.length > 0 && (
-                <span className={styles.party}>
-                  {/* The team as the series' party icons: a Leader's six fit one row at the trainer's feet; each names itself. */}
-                  {rec.foes.map((f, i) => (
-                    <Tipped key={`${f.speciesId}-${i}`} tip={partyMonTip(content.species(f.speciesId).name, f.level, outcome === 'victory')} className={`${styles.partyMon} ${outcome === 'victory' ? styles.beaten : ''}`}>
-                      <img className="pixel" src={iconOf({ speciesId: f.speciesId })} alt={content.species(f.speciesId).name} draggable={false} />
-                    </Tipped>
-                  ))}
-                </span>
-              )}
-            </div>
-          ) : foe && rec ? (
-            <div className={`${combat.slotSolo} ${styles.slot}`}>
-              <ResultUnit
-                side="foe"
-                speciesId={foe.id}
-                name={foe.name}
-                types={foe.types}
-                shiny={!!rec.foes[0]!.shiny}
-                level={rec.foes[0]!.level}
-                tag={outcome === 'victory' ? RESULT_TEXT.fainted : outcome === 'escaped' ? RESULT_TEXT.stillThere : PLACE_TAG.lead}
-                lead={outcome !== 'victory'}
-                look={outcome === 'victory' ? 'ghost' : outcome === 'escaped' ? 'faded' : undefined}
-              />
-            </div>
-          ) : null}
-        </div>
-
-      </section>
+          {/* Their side: who you beat, what you caught, where it went. */}
+          <div
+            className={`${combat.formation} ${combat.foeSolo} ${styles.foeSide}`}
+            style={{ opacity: foeP, transform: `translateX(${(1 - ease(foeP)) * 60}px)` }}
+          >
+            {caught && reward?.caught ? (
+              <div className={`${combat.slotSolo} ${styles.slot}`}>
+                <ResultUnit
+                  side="foe"
+                  speciesId={caught.id}
+                  name={caught.name}
+                  types={caught.types}
+                  shiny={!!reward.caught.shiny}
+                  level={reward.caught.level}
+                  tag={run.pendingRecruit ? RESULT_TEXT.boxFull : RESULT_TEXT.newCatch}
+                  look="new"
+                  testId="reward-catch"
+                />
+                <Sparkles n={4} around />
+              </div>
+            ) : outcome === 'fled' ? (
+              <div className={`${combat.slotSolo} ${styles.slot} ${styles.poof}`}>
+                <Sparkles n={7} />
+              </div>
+            ) : trainer ? (
+              <div className={`${combat.slotSolo} ${styles.trainer}`}>
+                <ArenaSprite src={trainerSprite(trainer.sprite)} className={styles.trainerBox} />
+                {rec && rec.foes.length > 0 && (
+                  <span className={styles.party}>
+                    {/* The team as the series' party icons: a Leader's six fit one row at the trainer's feet; each names itself. */}
+                    {rec.foes.map((f, i) => (
+                      <Tipped
+                        key={`${f.speciesId}-${i}`}
+                        tip={partyMonTip(content.species(f.speciesId).name, f.level, outcome === 'victory')}
+                        className={`${styles.partyMon} ${outcome === 'victory' ? styles.beaten : ''}`}
+                      >
+                        <img
+                          className="pixel"
+                          src={iconOf({ speciesId: f.speciesId })}
+                          alt={content.species(f.speciesId).name}
+                          draggable={false}
+                        />
+                      </Tipped>
+                    ))}
+                  </span>
+                )}
+              </div>
+            ) : foe && rec ? (
+              <div className={`${combat.slotSolo} ${styles.slot}`}>
+                <ResultUnit
+                  side="foe"
+                  speciesId={foe.id}
+                  name={foe.name}
+                  types={foe.types}
+                  shiny={!!rec.foes[0]!.shiny}
+                  level={rec.foes[0]!.level}
+                  tag={
+                    outcome === 'victory'
+                      ? RESULT_TEXT.fainted
+                      : outcome === 'escaped'
+                        ? RESULT_TEXT.stillThere
+                        : PLACE_TAG.lead
+                  }
+                  lead={outcome !== 'victory'}
+                  look={outcome === 'victory' ? 'ghost' : outcome === 'escaped' ? 'faded' : undefined}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
       </div>
 
       <footer className={`${combat.tray} ${styles.tray}`}>
@@ -320,7 +461,22 @@ export function FightResults() {
             return (
               <Tipped
                 key={m.mon.uid}
-                tip={up ? (() => { const news = levelNews(up, content); return levelGainTip(species.name, up.from, up.to, up.gains ?? {}, up.statsAt, news.learned, news.grew); })() : xpGainTip(m.xp!.gain, true, Math.max(0, xpToNext(m.mon.level) - m.mon.xp))}
+                tip={
+                  up
+                    ? (() => {
+                        const news = levelNews(up, content);
+                        return levelGainTip(
+                          species.name,
+                          up.from,
+                          up.to,
+                          up.gains ?? {},
+                          up.statsAt,
+                          news.learned,
+                          news.grew,
+                        );
+                      })()
+                    : xpGainTip(m.xp!.gain, true, Math.max(0, xpToNext(m.mon.level) - m.mon.xp))
+                }
                 className={styles.boxMon}
                 data-testid={`xp-${species.id}`}
               >
@@ -333,37 +489,47 @@ export function FightResults() {
         </div>
 
         <div className={styles.spoils}>
-          <div className={styles.cards} data-testid={offer.length ? (gymPick ? 'gym-relic-pick' : 'elite-relic-pick') : 'reward-spoils'}>
-          {offer.length > 0
-            ? offer.map((id) => {
-                const r = content.relic(id);
-                return (
-                  <div key={id} className={styles.relic}>
-                    <ItemCard
-                      id={id}
-                      kind="relic"
-                      name={r.name}
-                      description={r.description}
-                      rarity={r.rarity}
-                      {...(r.pending ? { pending: r.pending } : {})}
-                      selected={chosen === id}
-                      onClick={() => setChosen(chosen === id ? null : id)}
-                      testId={`${gymPick ? 'legendary-offer-' : 'elite-offer-'}${id}`}
+          <div
+            className={styles.cards}
+            data-testid={offer.length ? (gymPick ? 'gym-relic-pick' : 'elite-relic-pick') : 'reward-spoils'}
+          >
+            {offer.length > 0
+              ? offer.map((id) => {
+                  const r = content.relic(id);
+                  return (
+                    <div key={id} className={styles.relic}>
+                      <ItemCard
+                        id={id}
+                        kind="relic"
+                        name={r.name}
+                        description={r.description}
+                        rarity={r.rarity}
+                        {...(r.pending ? { pending: r.pending } : {})}
+                        selected={chosen === id}
+                        onClick={() => setChosen(chosen === id ? null : id)}
+                        testId={`${gymPick ? 'legendary-offer-' : 'elite-offer-'}${id}`}
+                      />
+                    </div>
+                  );
+                })
+              : spoils.map((s, i) => {
+                  const p = spoilP(i);
+                  return (
+                    <SpoilCard
+                      key={i}
+                      spoil={s}
+                      style={{
+                        opacity: Math.min(1, p * 2),
+                        transform: `translateY(${(1 - ease(p)) * 70}px) rotate(${(1 - ease(p)) * -6}deg)`,
+                      }}
+                      {...(s.kind === 'money'
+                        ? { testId: 'reward-money' }
+                        : s.kind === 'toll-money'
+                          ? { testId: 'results-toll' }
+                          : {})}
                     />
-                  </div>
-                );
-              })
-            : spoils.map((s, i) => {
-                const p = spoilP(i);
-                return (
-                  <SpoilCard
-                    key={i}
-                    spoil={s}
-                    style={{ opacity: Math.min(1, p * 2), transform: `translateY(${(1 - ease(p)) * 70}px) rotate(${(1 - ease(p)) * -6}deg)` }}
-                    {...(s.kind === 'money' ? { testId: 'reward-money' } : s.kind === 'toll-money' ? { testId: 'results-toll' } : {})}
-                  />
-                );
-              })}
+                  );
+                })}
           </div>
           {!offer.length && !spoils.length && (
             <span className={styles.note} style={{ opacity: done ? 1 : 0 }}>
@@ -373,7 +539,11 @@ export function FightResults() {
                   <span className={styles.pill}>{RESULT_TEXT.noToll}</span>
                 </>
               )}
-              {outcome === 'caught' && <span className={styles.pill}>{RESULT_TEXT.box} {Math.min(run.box.length, boxCapacity(run))} / {boxCapacity(run)}</span>}
+              {outcome === 'caught' && (
+                <span className={styles.pill}>
+                  {RESULT_TEXT.box} {Math.min(run.box.length, boxCapacity(run))} / {boxCapacity(run)}
+                </span>
+              )}
             </span>
           )}
           {/* §5.6.5 — what the fight's other objective paid, a line each. */}
@@ -390,7 +560,13 @@ export function FightResults() {
 
         <div className={`${combat.turnPanel} ${styles.way}`}>
           {!done ? (
-            <button type="button" ref={main} className={styles.skip} onClick={skip} data-testid="btn-skip-results">
+            <button
+              type="button"
+              ref={main}
+              className={styles.skip}
+              onClick={skip}
+              data-testid="btn-skip-results"
+            >
               {RESULT_TEXT.skip} <IconPlayerTrackNext size={16} />
             </button>
           ) : offer.length > 0 ? (
@@ -407,14 +583,29 @@ export function FightResults() {
               >
                 {chosen ? RESULT_TEXT.takeIt : RESULT_TEXT.pickOne}
               </button>
-              <button type="button" className={styles.skip} onClick={(e) => armed(e) && onTake(null)} data-testid={gymPick ? 'btn-decline-legendary' : 'btn-decline-elite-relic'}>
+              <button
+                type="button"
+                className={styles.skip}
+                onClick={(e) => armed(e) && onTake(null)}
+                data-testid={gymPick ? 'btn-decline-legendary' : 'btn-decline-elite-relic'}
+              >
                 {RESULT_TEXT.leave}
               </button>
             </>
           ) : (
-            <button type="button" ref={main} className={`${combat.endTurn} ${styles.go} display`} onClick={(e) => armed(e) && onContinue()} data-testid="btn-claim">
+            <button
+              type="button"
+              ref={main}
+              className={`${combat.endTurn} ${styles.go} display`}
+              onClick={(e) => armed(e) && onContinue()}
+              data-testid="btn-claim"
+            >
               {/* §7.3.7 — a Gym's pick follows its result (after any evolution), so its Continue says what comes. */}
-              {reward?.relicPick || (badge && run.phase === 'reward') ? RESULT_TEXT.chooseRelic : ended ? RESULT_TEXT.runEnd : RESULT_TEXT.continue}
+              {reward?.relicPick || (badge && run.phase === 'reward')
+                ? RESULT_TEXT.chooseRelic
+                : ended
+                  ? RESULT_TEXT.runEnd
+                  : RESULT_TEXT.continue}
             </button>
           )}
         </div>
@@ -425,8 +616,21 @@ export function FightResults() {
 
 /** Where sparkles stand: over an open patch of ground, or just outside a card's edges so they never cover its words. */
 const SPARKLE_SPOTS = {
-  inside: [[8, 10], [88, 18], [16, 82], [82, 74], [50, -6], [30, 46], [70, 40]],
-  around: [[-5, 10], [105, 22], [-4, 86], [104, 80]],
+  inside: [
+    [8, 10],
+    [88, 18],
+    [16, 82],
+    [82, 74],
+    [50, -6],
+    [30, 46],
+    [70, 40],
+  ],
+  around: [
+    [-5, 10],
+    [105, 22],
+    [-4, 86],
+    [104, 80],
+  ],
 } as const;
 
 /** A few four-point sparkles around what they decorate; still under reduced motion (the CSS gates the twinkle). */

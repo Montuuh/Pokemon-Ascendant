@@ -124,7 +124,7 @@
     background var(--motion-fast) ease,
     transform var(--motion-fast) ease;
 }
-.move:hover:not(:disabled) {
+.move:hover:not(:disabled, [aria-disabled='true']) {
   border-color: var(--border-strong);
   transform: translateX(2px);
 }

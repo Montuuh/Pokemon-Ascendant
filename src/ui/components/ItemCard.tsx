@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { Tip, useTip } from '@/ui/tooltip';
 import { RARITY_LABEL } from '@/ui/strings';
+import { tmTip } from '@/ui/tips';
 import { RarityGem } from './RarityGem';
 import { PixelSprite } from './PixelSprite';
 import styles from './ItemCard.module.css';
@@ -42,28 +43,75 @@ export interface ItemCardProps {
   expanded?: boolean;
 }
 
-const KIND_LABEL: Record<ItemKind, string> = { consumable: 'Item · single use', relic: 'Relic · whole run', 'held-item': 'Held item · one Pokémon', tm: 'TM · teaches a move', ball: 'Poké Ball', stone: 'Evolution Item · evolves early' };
+/** A TM's bubble is `tmTip` (the move it teaches), so it has no row here. */
+const KIND_LABEL: Record<Exclude<ItemKind, 'tm'>, string> = {
+  consumable: 'Item · single use',
+  relic: 'Relic · whole run',
+  'held-item': 'Held item · one Pokémon',
+  ball: 'Poké Ball',
+  stone: 'Evolution Item · evolves early',
+};
 
 export function ItemCard(props: ItemCardProps) {
-  const { id, kind, name, description, rarity, tag, pending, footer, selected, disabled, dim, onClick, testId, tipNote, expanded } = props;
+  const {
+    id,
+    kind,
+    name,
+    description,
+    rarity,
+    tag,
+    pending,
+    footer,
+    selected,
+    disabled,
+    dim,
+    onClick,
+    testId,
+    tipNote,
+    expanded,
+  } = props;
   const interactive = !!onClick;
   const Tag = interactive ? 'button' : 'div';
   // Every card explains itself the same way: what it is, how rare, what it does, and whether it works yet.
   // The card's own face stays short; this is where the sentence lives.
   const tip = useTip(
-    <Tip
-      icon={<PixelSprite src={kind === 'tm' ? tmIcon(id) : itemIcon(id)} alt="" width={22} height={22} onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
-      title={name}
-      meta={[rarity ? RARITY_LABEL[rarity] : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
-      body={description}
-      footer={pending ? `Not working yet: ${pending}` : tipNote ?? (kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined)}
-    />,
+    kind === 'tm' ? (
+      tmTip(id, pending ? `Not working yet: ${pending}` : tipNote)
+    ) : (
+      <Tip
+        icon={
+          <PixelSprite
+            src={itemIcon(id)}
+            alt=""
+            width={22}
+            height={22}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        }
+        title={name}
+        meta={[rarity ? RARITY_LABEL[rarity] : null, KIND_LABEL[kind]].filter((m): m is string => !!m)}
+        body={description}
+        footer={
+          pending
+            ? `Not working yet: ${pending}`
+            : (tipNote ??
+              (kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined))
+        }
+      />
+    ),
   );
 
   return (
     <Tag
       type={interactive ? 'button' : undefined}
-      className={[styles.card, selected && styles.selected, dim && styles.dim, interactive && styles.interactive]
+      className={[
+        styles.card,
+        selected && styles.selected,
+        dim && styles.dim,
+        interactive && styles.interactive,
+      ]
         .filter(Boolean)
         .join(' ')}
       data-rarity={rarity}

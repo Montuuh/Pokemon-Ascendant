@@ -6,7 +6,7 @@ import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
-import { itemIcon, statusGlyph, typeGlyph } from '@/ui/art';
+import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
 import { describeMoveDef, disruptRule } from '@/ui/moveText';
 import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
 import { COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
@@ -225,6 +225,13 @@ export function moveTip(play: CardPlayability): ReactNode {
  */
 export function moveDefTip(move: MoveDef, opts: { replaces?: string; footer?: string } = {}): ReactNode {
   const { replaces } = opts;
+  const { meta, lines } = moveDefParts(move);
+  const footer = opts.footer ?? (replaces ? `Learned in ${getContent().move(replaces).name}'s slot. The Move Reminder gives ${getContent().move(replaces).name} back.` : undefined);
+  return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
+}
+
+/** What a move is and does, outside a fight: the meta strip and the body lines every move bubble shares. */
+function moveDefParts(move: MoveDef): { meta: ReactNode[]; lines: ReactNode[] } {
   const meta: ReactNode[] = [typeName(move.type), move.range === 'melee' ? 'Melee' : 'Ranged', `${move.apCost} AP`];
   if (move.power > 0) meta.push(`${move.power} power`);
   if (move.pp) meta.push(`PP ${move.pp}`);
@@ -232,8 +239,26 @@ export function moveDefTip(move: MoveDef, opts: { replaces?: string; footer?: st
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
   if (move.power > 0) lines.push(attackChart(move.type));
-  const footer = opts.footer ?? (replaces ? `Learned in ${getContent().move(replaces).name}'s slot. The Move Reminder gives ${getContent().move(replaces).name} back.` : undefined);
-  return <Tip icon={<img src={typeGlyph(move.type)} alt="" height={18} style={{ imageRendering: 'pixelated' }} />} title={move.name} meta={meta} body={lines.map((l, i) => <div key={i}>{l}</div>)} footer={footer} />;
+  return { meta, lines };
+}
+
+/**
+ * §6.4.1 — a TM, wherever it is shown (shop, bag, spoils, Move Manager): the disc, and the whole of the move it teaches,
+ * as the move's own bubble explains it — a TM's one-line blurb alone left "a normal technique for 1 AP" unexplained.
+ */
+export function tmTip(tmId: string, footer?: string): ReactNode {
+  const tm = getContent().tm(tmId);
+  const move = getContent().move(tm.move);
+  const { meta, lines } = moveDefParts(move);
+  return (
+    <Tip
+      icon={<img src={tmIcon(tmId)} alt="" width={22} height={22} style={{ imageRendering: 'pixelated' }} />}
+      title={tm.name}
+      meta={['TM · teaches a move', ...meta]}
+      body={lines.map((l, i) => <div key={i}>{l}</div>)}
+      footer={footer}
+    />
+  );
 }
 
 // ── Intents ──────────────────────────────────────────────────────────────────────────────────────────────

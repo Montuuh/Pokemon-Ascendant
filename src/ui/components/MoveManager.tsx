@@ -7,7 +7,7 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { ARCHETYPE_LABEL, MOVE_MANAGER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
-import { masteryCardTip, moveDefTip, reminderTip } from '@/ui/tips';
+import { masteryCardTip, moveDefTip, reminderTip, tmTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './MoveManager.module.css';
 
@@ -34,7 +34,8 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
   const mon = run.box.find((m) => m.uid === uid);
 
   const tms = useMemo(
-    () => run.tms.map((id) => content.tm(id)).filter((tm, i, all) => all.findIndex((t) => t.id === tm.id) === i),
+    () =>
+      run.tms.map((id) => content.tm(id)).filter((tm, i, all) => all.findIndex((t) => t.id === tm.id) === i),
     [run.tms, content],
   );
 
@@ -45,24 +46,34 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
     return run.stones
       .filter((id, i, all) => all.indexOf(id) === i)
       .map((id) => ({ stone: content.evolutionItem(id), use: stoneUse(id, speciesId, content) }))
-      .sort((a, b) => Number(!!b.use && level >= b.use.fromLevel) - Number(!!a.use && level >= a.use.fromLevel));
+      .sort(
+        (a, b) => Number(!!b.use && level >= b.use.fromLevel) - Number(!!a.use && level >= a.use.fromLevel),
+      );
   }, [run.stones, run.box, uid, content]);
 
   if (!mon) return null;
   const species = content.species(mon.speciesId);
   const active = mon.moveIds;
   // §5.13.2 — the fifth slot, read off the run's snapshot of the account. Shown, never editable.
-  const mastery = masteryMoveFor(mon.speciesId, run.perks?.mastery[content.lineBase(mon.speciesId)] ?? 0, content);
+  const mastery = masteryMoveFor(
+    mon.speciesId,
+    run.perks?.mastery[content.lineBase(mon.speciesId)] ?? 0,
+    content,
+  );
   const benched = mon.pool.filter((m) => !active.includes(m));
   // §6.9.2 — the Move Reminder: what a track or an evolution took out of the pool, free to have back.
   const forgotten = reminderOptions(mon.pool, mon.speciesId, mon.level, content);
 
-  function say(reason: string | undefined) {
-    setToast(RUN_REJECT_TEXT[reason ?? ''] ?? 'Not now.');
+  function note(text: string) {
+    setToast(text);
     window.setTimeout(() => setToast(null), 2400);
   }
+  function say(reason: string | undefined) {
+    note(RUN_REJECT_TEXT[reason ?? ''] ?? 'Not now.');
+  }
   function setMoves(next: string[]) {
-    if (!dispatch({ type: 'set-moves', uid, moveIds: next })) say(useRunStore.getState().lastRejected?.reason);
+    if (!dispatch({ type: 'set-moves', uid, moveIds: next }))
+      say(useRunStore.getState().lastRejected?.reason);
   }
 
   const row = (moveId: string, inKit: boolean, mon_: PartyMon) => {
@@ -70,15 +81,20 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
     const full = mon_.moveIds.length >= 4;
     const last = inKit && mon_.moveIds.length === 1;
     const blocked = (!inKit && full) || last;
+    const why = last ? MOVE_MANAGER_TEXT.lastCard : MOVE_MANAGER_TEXT.fourFull;
     return (
       <li key={moveId}>
         <Tipped
           as="button"
           type="button"
-          tip={moveDefTip(move)}
+          tip={moveDefTip(move, { footer: blocked ? why : undefined })}
           className={`${styles.move} ${inKit ? styles.inKit : ''} ${blocked ? styles.blocked : ''}`}
-          onClick={() => setMoves(inKit ? active.filter((m) => m !== moveId) : [...active, moveId])}
-          disabled={blocked}
+          // aria-disabled, not disabled: a disabled button gets no pointer events, so a pool card with the four full
+          // lost its bubble — the one moment the player is weighing it against the four.
+          onClick={() =>
+            blocked ? note(why) : setMoves(inKit ? active.filter((m) => m !== moveId) : [...active, moveId])
+          }
+          aria-disabled={blocked || undefined}
           data-testid={`move-${moveId}`}
           data-in-kit={inKit}
           aria-label={[
@@ -90,7 +106,13 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
             move.power > 0 ? `${move.power} power` : 'no damage',
             move.modifier !== 'none' ? move.modifier.replace('-', ' ') : null,
             inKit ? 'in the active 4' : 'in the pool',
-            blocked ? (last ? 'cannot remove the last card' : 'the active 4 is full') : inKit ? 'press to bench' : 'press to equip',
+            blocked
+              ? last
+                ? 'cannot remove the last card'
+                : 'the active 4 is full'
+              : inKit
+                ? 'press to bench'
+                : 'press to equip',
           ]
             .filter(Boolean)
             .join(', ')}
@@ -131,7 +153,12 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
         <Tipped
           as="button"
           type="button"
-          tip={<Tip title="Auto-pick" body="Keeps the two strongest attacks, always one Ranged card, and fills the rest with the newest moves. The same rule the game uses when you do not choose." />}
+          tip={
+            <Tip
+              title="Auto-pick"
+              body="Keeps the two strongest attacks, always one Ranged card, and fills the rest with the newest moves. The same rule the game uses when you do not choose."
+            />
+          }
           className={styles.auto}
           onClick={() => setMoves(autoPickMoves(mon.pool, content, 4, content.species(mon.speciesId).types))}
           data-testid="btn-auto-pick"
@@ -145,9 +172,17 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           Active 4 <span className={`${styles.count} tabular`}>{active.length}/4</span>
         </h4>
         <ul className={styles.list}>{active.map((m) => row(m, true, mon))}</ul>
-        {active.length < 4 && <p className={styles.slotHint}>{4 - active.length} slot{active.length === 3 ? '' : 's'} free.</p>}
+        {active.length < 4 && (
+          <p className={styles.slotHint}>
+            {4 - active.length} slot{active.length === 3 ? '' : 's'} free.
+          </p>
+        )}
         {mastery && (
-          <Tipped tip={masteryCardTip(content.move(mastery), species.name)} className={styles.masteryRow} data-testid="mastery-slot">
+          <Tipped
+            tip={masteryCardTip(content.move(mastery), species.name)}
+            className={styles.masteryRow}
+            data-testid="mastery-slot"
+          >
             <TypeBadge type={content.move(mastery).type} size={18} mode="attack" />
             <span className={styles.masteryName}>★ {content.move(mastery).name}</span>
             <span className={styles.masteryTag}>Mastery · fixed</span>
@@ -162,14 +197,17 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
         {benched.length ? (
           <ul className={styles.list}>{benched.map((m) => row(m, false, mon))}</ul>
         ) : (
-          <p className={styles.empty}>Everything it knows is in the deck. Level up, evolve, teach a TM or visit the Dojo.</p>
+          <p className={styles.empty}>
+            Everything it knows is in the deck. Level up, evolve, teach a TM or visit the Dojo.
+          </p>
         )}
       </section>
 
       {forgotten.length > 0 && (
         <section className={styles.column} aria-label={MOVE_MANAGER_TEXT.reminder}>
           <h4 className={styles.colTitle}>
-            {MOVE_MANAGER_TEXT.reminder} <span className={`${styles.count} tabular`}>{forgotten.length}</span> <InfoDot tip={reminderTip()} />
+            {MOVE_MANAGER_TEXT.reminder} <span className={`${styles.count} tabular`}>{forgotten.length}</span>{' '}
+            <InfoDot tip={reminderTip()} />
           </h4>
           <ul className={styles.list}>
             {forgotten.map(({ move: moveId, by }) => {
@@ -182,9 +220,13 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
                     tip={moveDefTip(move, { footer: MOVE_MANAGER_TEXT.tookSlot(content.move(by).name) })}
                     className={styles.move}
                     onClick={() => {
-                      if (!dispatch({ type: 'remind-move', uid, moveId })) say(useRunStore.getState().lastRejected?.reason);
+                      if (!dispatch({ type: 'remind-move', uid, moveId }))
+                        say(useRunStore.getState().lastRejected?.reason);
                       // The remembered card is in the pool now: the focus goes with it, not to the page.
-                      else requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-testid="move-${moveId}"]`)?.focus());
+                      else
+                        requestAnimationFrame(() =>
+                          document.querySelector<HTMLElement>(`[data-testid="move-${moveId}"]`)?.focus(),
+                        );
                     }}
                     data-testid={`remind-${moveId}`}
                     aria-label={MOVE_MANAGER_TEXT.remindLabel(move.name)}
@@ -192,7 +234,9 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
                     <TypeBadge type={move.type} size={18} mode="attack" />
                     <span className={styles.moveBody}>
                       <span className={`${styles.moveName} display`}>{move.name}</span>
-                      <span className={styles.moveMeta}>{move.range} · {move.role}</span>
+                      <span className={styles.moveMeta}>
+                        {move.range} · {move.role}
+                      </span>
                     </span>
                     <span className={`${styles.stat} tabular`}>{move.power > 0 ? move.power : '—'}</span>
                     <span className={`${styles.ap} tabular`}>{move.apCost} AP</span>
@@ -215,17 +259,24 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
               const compatible = tm.compatibleSpecies.includes(mon.speciesId);
               const known = mon.pool.includes(tm.move);
               const move = content.move(tm.move);
+              const tmFooter = known
+                ? `${species.name} already knows ${move.name}.`
+                : compatible
+                  ? 'Teaches the move into the pool; put it in the four from there.'
+                  : `${tm.name} does not work on ${species.name}.`;
               return (
                 <li key={tm.id}>
                   {/* §6.4.1 — an incompatible target is greyed, never hidden. */}
                   <Tipped
                     as="button"
                     type="button"
-                    tip={<Tip icon={<img src={tmIcon(tm.id)} alt="" width={22} height={22} />} title={tm.name} meta={[move.name, move.type.charAt(0).toUpperCase() + move.type.slice(1), `${move.apCost} AP`]} body={tm.description} footer={known ? `${species.name} already knows ${move.name}.` : compatible ? 'Single use. Teaches the move into the pool; put it in the four from there.' : `${tm.name} does not work on ${species.name}.`} />}
+                    tip={tmTip(tm.id, tmFooter)}
                     className={`${styles.move} ${styles.tm} ${!compatible || known ? styles.blocked : ''}`}
-                    disabled={!compatible || known}
+                    aria-disabled={!compatible || known || undefined}
                     onClick={() => {
-                      if (!dispatch({ type: 'use-tm', uid, tmId: tm.id })) say(useRunStore.getState().lastRejected?.reason);
+                      if (!compatible || known) return note(tmFooter);
+                      if (!dispatch({ type: 'use-tm', uid, tmId: tm.id }))
+                        say(useRunStore.getState().lastRejected?.reason);
                     }}
                     data-testid={`tm-${tm.id}`}
                   >
@@ -258,8 +309,16 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
               const early = !!use && mon.level < use.fromLevel;
               const usable = !!use && !early;
               const into = use?.branch ? content.species(content.branch(use.branch).to).name : null;
-              const why = !use ? null : early ? `works from Lv ${use.fromLevel}` : into ? `evolves it into ${into}` : 'evolves it now';
-              const takers = run.box.filter((m) => stoneUse(stone.id, m.speciesId, content)).map((m) => content.species(m.speciesId).name);
+              const why = !use
+                ? null
+                : early
+                  ? `works from Lv ${use.fromLevel}`
+                  : into
+                    ? `evolves it into ${into}`
+                    : 'evolves it now';
+              const takers = run.box
+                .filter((m) => stoneUse(stone.id, m.speciesId, content))
+                .map((m) => content.species(m.speciesId).name);
               const footer = usable
                 ? 'Single use. Opens the Evolution screen now, before the level would.'
                 : early
@@ -272,11 +331,19 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
                   <Tipped
                     as="button"
                     type="button"
-                    tip={<Tip icon={<img src={itemIcon(stone.id)} alt="" width={22} height={22} />} title={stone.name} body={stone.description} footer={footer} />}
+                    tip={
+                      <Tip
+                        icon={<img src={itemIcon(stone.id)} alt="" width={22} height={22} />}
+                        title={stone.name}
+                        body={stone.description}
+                        footer={footer}
+                      />
+                    }
                     className={`${styles.move} ${styles.tm} ${usable ? '' : styles.blocked}`}
                     aria-disabled={!usable}
                     onClick={() => {
-                      if (!dispatch({ type: 'use-stone', uid, stoneId: stone.id })) say(useRunStore.getState().lastRejected?.reason);
+                      if (!dispatch({ type: 'use-stone', uid, stoneId: stone.id }))
+                        say(useRunStore.getState().lastRejected?.reason);
                       else onClose();
                     }}
                     data-testid={`stone-${stone.id}`}
@@ -308,9 +375,21 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
   if (embedded) return body;
 
   return (
-    <div className={styles.scrim} role="dialog" aria-modal="true" aria-label={`${species.name}'s moves`} data-testid="move-manager-overlay">
+    <div
+      className={styles.scrim}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${species.name}'s moves`}
+      data-testid="move-manager-overlay"
+    >
       <div className={styles.panel}>
-        <button type="button" className={styles.close} onClick={onClose} data-testid="btn-close-moves" aria-label="Close the Move Manager">
+        <button
+          type="button"
+          className={styles.close}
+          onClick={onClose}
+          data-testid="btn-close-moves"
+          aria-label="Close the Move Manager"
+        >
           <IconX size={20} />
         </button>
         {body}

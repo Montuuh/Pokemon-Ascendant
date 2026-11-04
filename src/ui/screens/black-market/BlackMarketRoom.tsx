@@ -39,10 +39,13 @@ export function BlackMarketRoom({
         ariaLabel: `${MARKET_TEXT[id].name}${dealt[id] ? `, ${MARKET_TEXT.dealt}` : ''}`,
         tip: marketCounterTip(MARKET_TEXT[id].name, MARKET_TEXT[id].line, dealt[id]),
         testId: `market-${id}`,
+        plate: MARKET_SPOTS[id].plate,
       }))}
       exit={{
         box: MARKET_STAIRS,
         label: MARKET_TEXT.up,
+        plate: MARKET_TEXT.upShort,
+        plateAlign: 'start',
         tip: marketExitTip(),
         testId: 'market-stairs',
         onExit,

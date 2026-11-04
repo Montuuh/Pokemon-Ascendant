@@ -88,6 +88,7 @@
 /* A plate that would crowd the one under the shelf beside it: lifted a little, into the bottom of its piece. */
 .plateRaised { transform: translate(-50%, -120%); }
 .plateRaisedRight { left: auto; right: 0; transform: translate(0, -120%); }
+.plateStart { left: 0; transform: translate(0, 50%); }
 
 /* The way out: the doormat or the stairs down, marked with an arrow. */
 .exit .plate { display: inline-flex; align-items: center; gap: var(--sp-1); }

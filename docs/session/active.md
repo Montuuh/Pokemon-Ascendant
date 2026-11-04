@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
 **Date:** 2026-11-04 · **Version:** v0.9.99 (*Commons first*).
+**Fixed 2026-11-05 (no version):** Black Market redrawn as the real Hideout B1F office (272×224, `build-black-market-art.mjs`); TM bubbles explain the move (`tmTip`), locked Move Manager rows and level-up move rows have bubbles.
 **Fixed 2026-11-05 (no version):** series Potions 20/60/120; level-up and evolution HP add the Max HP gained, shown on the level tick (no heal beat). Harness R1 9 % → 20 %.
 **Shipped 2026-11-04 (v0.9.99 / v0.9.98):** Common-heavy sources (trainers 20 % C, picks C/U/U, Elite Wild U, weights
 70/25/5, Starting Relic C) and relic unlocks off (`RELIC_UNLOCKS_ON`; rework in backlog); rarities re-tiered by

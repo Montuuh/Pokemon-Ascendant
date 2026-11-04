@@ -3,7 +3,7 @@ import { getContent } from '@/content/registry';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { PokeDollar } from '@/ui/components/Money';
 import { RarityGem } from '@/ui/components/RarityGem';
-import { lootHow, lootTip, rewardMoneyTip, tollTip } from '@/ui/tips';
+import { lootHow, lootTip, rewardMoneyTip, tmTip, tollTip } from '@/ui/tips';
 import { RESULT_TEXT } from '@/ui/strings';
 import { Tipped } from '@/ui/tooltip';
 import type { Spoil } from './results';
@@ -59,7 +59,7 @@ export function SpoilCard({ spoil, style, testId }: { spoil: Spoil; style?: CSSP
   const rarity = item === 'relic' ? content.relic(spoil.id).rarity : null;
   return (
     <Tipped
-      tip={lootTip(row.name, RESULT_TEXT.kind[item], row.description, lost ? RESULT_TEXT.leftBehind : lootHow[item])}
+      tip={item === 'tm' ? tmTip(spoil.id, lost ? RESULT_TEXT.leftBehind : lootHow.tm) : lootTip(row.name, RESULT_TEXT.kind[item], row.description, lost ? RESULT_TEXT.leftBehind : lootHow[item])}
       className={`${styles.card} ${lost ? styles.toll : ''}`}
       style={style}
       data-testid={testId}

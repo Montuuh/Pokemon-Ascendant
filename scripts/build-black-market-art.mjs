@@ -1,4 +1,4 @@
-// A18 / §2.11.6 — an authored Rocket basement, assembled from native FRLG tiles and people.
+// A18 / §2.11.6 — the Rocket basement: a real FRLG Hideout room and its people.
 // node scripts/build-black-market-art.mjs [--fetch]
 import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
@@ -83,104 +83,66 @@ for (const [id, file] of [
   outputs.push({ file: `${id}.png`, width: 16, height: 32, sha256: sha(bytes) });
 }
 
+// The room is the Hideout's own: B1F's south-west office, cropped whole (walls, authentic floor, trim). Four native
+// pieces are moved in on the 16 px grid (same floor phase, no keying): the stairwell's up-staircase over the console
+// bank, two crate stacks beside the office's orange shutters (the Trader), the Game Corner's table in the nook in
+// place of its down-staircase (the Gambler), and a corridor plant by the boss's desk.
+// x 16–288: inside the office's west and east walls, so the screen's frame is the only border; y from 312, so the north
+// wall shows the same black top above its cap as the nook's wall does (the frame is never a wall's cap).
+const ROOM = { x: 16, y: 312, w: 272, h: 232 };
 const layers = [];
-const put = (input, left, top) => layers.push({ input, left, top });
-const floor = await crop([192, 176, 16, 16]);
-// B14 / D9 — quiet circulation, warm service bays. Exact palette substitution preserves
-// the native tile geometry; furniture and NPC pixels keep their original colours.
-const floorPalette = [
-  { source: [160, 160, 96], aisle: [80, 96, 104], bay: [128, 128, 88] },
-  { source: [192, 192, 152], aisle: [88, 104, 112], bay: [144, 144, 112] },
-  { source: [128, 128, 80], aisle: [72, 88, 96], bay: [112, 112, 72] },
+const put = (input, left, top) => layers.push({ input, left: left - ROOM.x, top: top - ROOM.y });
+const floorRgb = [
+  [160, 160, 96],
+  [192, 192, 152],
+  [128, 128, 80],
 ];
-const serviceBays = [
-  { counter: 'trader', box: [32, 80, 128, 80] },
-  { counter: 'showcase', box: [184, 24, 136, 80] },
-  { counter: 'fence', box: [224, 128, 80, 64] },
-  { counter: 'gambler', box: [16, 176, 112, 64] },
-];
-for (let y = 0; y < 256; y += 16) for (let x = 0; x < 320; x += 16) put(floor, x, y);
-const wall = await crop([208, 8, 48, 24]);
-for (let x = 0; x < 288; x += 48) put(wall, x, 0);
-put(await sharp(wall).extract({ left: 0, top: 0, width: 32, height: 24 }).png().toBuffer(), 288, 0);
-// An office behind an L-shaped partition, rather than the Hub's lobby plan.
-const partition = await crop([8, 336, 8, 16]);
-for (let y = 24; y < 104; y += 16) put(partition, 176, y);
-// A one-tile aisle stays open beside the office desk; the back room is physically connected.
-put(await sharp(wall).extract({ left: 0, top: 0, width: 16, height: 24 }).png().toBuffer(), 176, 104);
-for (const x of [224, 272]) put(wall, x, 104);
-// The entrance is separate from all four counters and remains a usable way upstairs.
-put(await crop([160, 16, 40, 48]), 16, 24);
-// Cargo pens for the Trader, a working desk for the Executive, and the Fence's goods.
-put(await crop([320, 224, 96, 48]), 32, 112);
-// The Hideout's own ball stands make the Trader's stock visible before opening a sheet.
-const stockCrop = await crop([32, 256, 16, 16]);
-const { data: stockData, info: stockInfo } = await sharp(stockCrop)
-  .ensureAlpha()
-  .raw()
-  .toBuffer({ resolveWithObject: true });
-for (let i = 0; i < stockData.length; i += 4)
-  if (floorPalette.some(({ source }) => source.every((value, channel) => stockData[i + channel] === value)))
-    stockData[i + 3] = 0;
-const stock = await sharp(stockData, { raw: stockInfo }).png().toBuffer();
-for (const x of [48, 96]) put(stock, x, 120);
-put(await crop([64, 384, 80, 48]), 208, 64);
-put(await crop([48, 240, 48, 32]), 224, 160);
-const cabinet = await crop([112, 208, 16, 32]);
-for (const [x, y] of [
-  [136, 96],
-  [136, 128],
-  [288, 160],
-  [288, 208],
-])
-  put(cabinet, x, y);
-// The Gambler has a physical table and the Hideout's own console bank beside it.
-put(await crop([16, 336, 48, 32]), 16, 192);
-put(roulette.bytes, 64, 208);
-const { data: roomData, info: roomInfo } = await sharp({
-  create: { width: 320, height: 256, channels: 4, background: '#00000000' },
+async function keyed(box) {
+  // A piece lifted from a differently shaded floor row keeps only its own pixels.
+  const { data, info } = await sharp(await crop(box)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  for (let i = 0; i < data.length; i += 4)
+    if (floorRgb.some((c) => c.every((v, k) => data[i + k] === v))) data[i + 3] = 0;
+  return sharp(data, { raw: info }).png().toBuffer();
+}
+put(await crop([ROOM.x, ROOM.y, ROOM.w, ROOM.h]), ROOM.x, ROOM.y);
+// The way up: the console bank's wall is repainted with the plain wall beside it, then the stairwell's staircase
+// (hall wall top y 0 = office wall top y 320, hall left wall x 160 = office x 16).
+put(await crop([176, 320, 80, 32]), 16, 320);
+// The bank's feet stand on the floor's top row: that row, outside the shaded west column, is repainted too.
+put(await crop([192, 352, 64, 16]), 32, 352);
+put(await crop([160, 0, 40, 64]), 16, 320);
+// The Trader's stock: two crate stacks from the west room, against the wall beside the orange shutters.
+const crates = await crop([112, 208, 16, 32]);
+for (const x of [224, 240]) put(crates, x, 352);
+// The Gambler's den: the nook's stairs are covered by the nook's own wall and floor, and the table goes in.
+const nook = await crop([224, 448, 16, 96]);
+for (const x of [240, 256, 272]) put(nook, x, 448);
+put(roulette.bytes, 208, 496);
+// The boss's end of the room.
+put(await keyed([256, 192, 16, 32]), 176, 352);
+const room = await sharp({
+  create: { width: ROOM.w, height: ROOM.h, channels: 4, background: '#000000ff' },
 })
   .composite(layers)
-  .raw()
-  .toBuffer({ resolveWithObject: true });
-for (let y = 24; y < roomInfo.height; y++)
-  for (let x = 0; x < roomInfo.width; x++) {
-    const i = (y * roomInfo.width + x) * 4;
-    const entry = floorPalette.find(({ source }) =>
-      source.every((value, channel) => roomData[i + channel] === value),
-    );
-    if (!entry) continue;
-    const inBay = serviceBays.some(
-      ({ box: [left, top, width, height] }) => x >= left && x < left + width && y >= top && y < top + height,
-    );
-    roomData.set(inBay ? entry.bay : entry.aisle, i);
-  }
-const room = await sharp(roomData, { raw: roomInfo }).png({ palette: true, dither: 0 }).toBuffer();
+  .png({ palette: true, dither: 0 })
+  .toBuffer();
 await writeFile(resolve(out, 'room.png'), room);
-outputs.push({ file: 'room.png', width: 320, height: 256, sha256: sha(room) });
+outputs.push({ file: 'room.png', width: ROOM.w, height: ROOM.h, sha256: sha(room) });
 await writeFile(
   resolve(out, 'room-manifest.json'),
   `${JSON.stringify(
     {
       description:
-        'A18 / B14 Black Market: quiet slate circulation, warm service bays, native ball stock, separate office and readable stairs.',
+        'Black Market: the Rocket Hideout B1F south-west office cropped whole, with the up-staircase, crate stock, a plant and the Game Corner table moved in on the 16 px grid.',
       rights:
         'Pokémon artwork © Nintendo / Creatures / GAME FREAK; non-commercial fan use. Maps: Bulbagarden Archives. NPC extraction: pret/pokefirered.',
       processing: {
         script: 'scripts/build-black-market-art.mjs',
         resampling: 'none',
         grid: 16,
+        room: ROOM,
         npcAlpha: 'exact palette-zero RGB key',
-        floorPalette,
-        serviceBays,
-        stock: {
-          box: [32, 256, 16, 16],
-          at: [
-            [48, 120],
-            [96, 120],
-          ],
-          alpha: 'exact source floor RGB key',
-        },
+        plantAlpha: 'exact source floor RGB key',
         sharp: sharp.versions.sharp,
       },
       sources,
@@ -191,4 +153,4 @@ await writeFile(
     2,
   )}\n`,
 );
-console.log('Wrote the native 320×256 Black Market and four authentic FRLG people.');
+console.log('Wrote the native 272×232 Black Market and four authentic FRLG people.');

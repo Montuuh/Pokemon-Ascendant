@@ -729,6 +729,8 @@ export const MOVE_MANAGER_TEXT = {
   reminder: 'Move Reminder',
   remindLabel: (move: string) => `Remember ${move}: back into the pool`,
   tookSlot: (by: string) => `${by} took its slot. Remembering is free, and keeps both.`,
+  fourFull: 'The active 4 is full: bench one of them first.',
+  lastCard: 'The last card in the four stays: a Pokémon always has a move.',
 };
 
 /** §2.3 / §9.12 — the Team screen (`TeamScreen`): the formation, the Box and the selected Pokémon's sheet. */
@@ -828,6 +830,7 @@ export const MARKET_TEXT = {
   hatch: 'A locked steel hatch',
   hatchTitle: 'A locked steel hatch',
   up: 'Back upstairs',
+  upShort: 'Upstairs',
   counters: 'The counters',
   dealt: 'Dealt this visit',
   trader: { name: 'The Trader', line: 'Fresh stock, no questions asked.' },
