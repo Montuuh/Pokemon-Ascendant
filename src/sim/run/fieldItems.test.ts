@@ -27,7 +27,7 @@ describe('Bag items out of a fight — §7.2.1', () => {
     });
     const uid = s.box[0]!.uid;
     s = apply(s, { type: 'use-item', consumableId: 'potion', uid });
-    expect(s.box[0]!.hp).toBe(Math.min(effectiveMax(s, s.box[0]!, content), 15));
+    expect(s.box[0]!.hp).toBe(Math.min(effectiveMax(s, s.box[0]!, content), 25));
     expect(s.consumables).toEqual([]);
   });
 

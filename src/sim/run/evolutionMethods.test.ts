@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
-  arriveAtCity, createRun, DEFAULT_PROGRESSION, defaultRunCtx, deserialiseRun, evolveItemsForBox, friendshipScale, maxHpOf, newPartyMon,
+  applyBranch, arriveAtCity, createRun, DEFAULT_PROGRESSION, defaultRunCtx, deserialiseRun, evolveItemsForBox, friendshipScale, maxHpOf, newPartyMon,
   readyBranches, rollShopStock, runReducer, serialiseRun, xpToNext, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -132,5 +132,15 @@ describe('The v25 save — §6.2.3, §10.8.3', () => {
     const max = maxHpOf(mon, content);
     expect(max).toBe(51); // (2·44 + 15)·20/100 + 20 + 10 = 50.6
     expect(mon.hp).toBe(Math.round((20 / 39) * max));
+  });
+});
+
+describe('Evolution HP — §6.2.2', () => {
+  it('ApplyBranch_AddsTheMaxHpDifference_TheDamageTakenStays', () => {
+    const mon = produce(createRun('squirtle', 7, ctx), (d) => { d.box[0]!.level = 16; }).box[0]!;
+    const branch = content.species(mon.speciesId).branches[0]!;
+    const before = { ...mon, pool: [...mon.pool], moveIds: [...mon.moveIds], hp: maxHpOf(mon, content) - 12 };
+    applyBranch(before, branch.id, content);
+    expect(maxHpOf(before, content) - before.hp).toBe(12);
   });
 });

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
-import { arriveAtCity, createRun, defaultRunCtx, deserialiseRun, effectiveMax, evolutionResume, newPartyMon, runReducer, serialiseRun, therapyPrice, type RunAction, type RunState } from '@/sim';
+import { arriveAtCity, createRun, defaultRunCtx, deserialiseRun, effectiveMax, evolutionResume, maxHpOf, newPartyMon, runReducer, serialiseRun, therapyPrice, type RunAction, type RunState } from '@/sim';
 
 const content = buildRegistry();
 const ctx = defaultRunCtx(content);
@@ -105,9 +105,11 @@ describe('Postponed evolution — §6.3.1', () => {
     expect(state.phase).toBe('center'); expect(state.pendingEvolutions).toEqual([]);
     state = apply(state, { type: 'resume-evolution', uid });
     expect(state.phase).toBe('evolution'); expect(state.pendingEvolutions[0]!.uid).toBe(uid);
+    const missing = maxHpOf(state.box[0]!, content) - state.box[0]!.hp;
     state = apply(state, { type: 'choose-branch', uid, branchId: state.pendingEvolutions[0]!.branchIds[0]! });
     expect(state.phase).toBe('center'); expect(state.box[0]!.deferredEvolutionFrom).toBeUndefined();
-    expect(state.box[0]!.hp).toBe(1); // Evolution in the Center must not bypass the nurse.
+    // Evolution in the Center must not bypass the nurse: it adds its Max HP, the damage taken stays (§6.2.2).
+    expect(maxHpOf(state.box[0]!, content) - state.box[0]!.hp).toBe(missing);
   });
 
   it('StoneIsRetainedOnOpenPostponeAndReload_AndSpentOnlyOnConfirmation', () => {

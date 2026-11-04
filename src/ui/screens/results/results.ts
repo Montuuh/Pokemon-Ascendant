@@ -21,7 +21,11 @@ export interface ResultMon {
   mon: PartyMon;
   /** Where it stood on the field; null for a Pokémon that stayed in the Box (it still took its share of XP). */
   place: Place | null;
-  hp: { from: number; to: number; max: number };
+  /**
+   * `healTo` is where the heal beat leaves it — `to` without the Max HP its levels added (§6.2.2): that share rises with
+   * the level tag, so 23/54 gaining 3 reads 26/57 on the tick and never as a heal ahead of it.
+   */
+  hp: { from: number; to: number; max: number; healTo: number; levelGain: number };
   xp: { gain: number; segments: XpSegment[] } | null;
   /** What its levels gave, when it gained any. */
   up: LevelUp | null;
@@ -98,14 +102,19 @@ export function resultMons(run: RunState, content: Content): ResultMon[] {
     const max = maxHpOf(mon, content);
     const gain = reward?.xpAwarded.find((a) => a.uid === uid)?.amount ?? 0;
     const up = reward?.levelUps.find((l) => l.uid === uid) ?? null;
+    const maxHpAt = up ? maxHpByLevel(mon, up.from, up.to, content) : {};
+    const from = Math.min(max, before?.hp ?? mon.hp);
+    const to = Math.min(max, mon.hp);
+    // §6.2.2 — a level's Max HP is added to current HP by the sim after the fight's heal; a fainted one gains none.
+    const levelGain = up && to > 0 ? Math.max(0, Math.min(to - from, (maxHpAt[up.to] ?? max) - (maxHpAt[up.from] ?? max))) : 0;
     out.push({
       mon,
       place: at >= 0 && at < PLACES.length ? PLACES[at]! : null,
-      hp: { from: Math.min(max, before?.hp ?? mon.hp), to: Math.min(max, mon.hp), max },
+      hp: { from, to, max, healTo: to - levelGain, levelGain },
       xp: reward && gain > 0 ? { gain, segments: xpSegments(before ?? { level: mon.level, xp: mon.xp }, mon) } : null,
       up,
       steps: up ? levelSteps(mon, up, content) : [],
-      maxHpAt: up ? maxHpByLevel(mon, up.from, up.to, content) : {},
+      maxHpAt,
     });
   }
   return out;
@@ -217,7 +226,7 @@ export function revealPlan(mons: readonly ResultMon[], spoils: number, opts: { b
   const holds: number[] = [];
   if (opts.badge) beats.push({ kind: 'badge', at: 260, dur: RESULT_MS.foe });
   let t = 520;
-  if (mons.some((m) => m.place && m.hp.to > m.hp.from)) {
+  if (mons.some((m) => m.place && m.hp.healTo > m.hp.from)) {
     beats.push({ kind: 'heal', at: 420, dur: RESULT_MS.heal });
     t = 420 + RESULT_MS.heal + 100;
   }
@@ -259,7 +268,7 @@ export function progress(beat: { at: number; dur: number }, t: number): number {
 /** What the screen draws for one Pokémon at `t`: its HP, the bar's level and fill, and whether its panel is up. */
 export function monAt(m: ResultMon, plan: RevealPlan, t: number): { hp: number; maxHp: number; level: number; fill: number; was: number; panel: { step: number; p: number } | null } {
   const heal = plan.beats.find((b) => b.kind === 'heal');
-  const hpNow = !m.place || !heal ? m.hp.to : Math.round(m.hp.from + (m.hp.to - m.hp.from) * progress(heal, t));
+  const healed = !m.place || !heal ? m.hp.healTo : Math.round(m.hp.from + (m.hp.healTo - m.hp.from) * progress(heal, t));
   const segs = m.xp?.segments ?? [];
   const mine = plan.beats.filter((b): b is Extract<Beat, { kind: 'xp' }> => b.kind === 'xp' && b.uid === m.mon.uid);
   const levels = plan.beats.filter((b): b is Extract<Beat, { kind: 'level' }> => b.kind === 'level' && b.uid === m.mon.uid);
@@ -287,6 +296,9 @@ export function monAt(m: ResultMon, plan: RevealPlan, t: number): { hp: number; 
   // v0.9.80 — the bar's ceiling is the level shown's, so Max HP (and with it the HP the card reads) rises with the tag and
   // the panel, never ahead of the news. The victory heal fills what it can of it.
   const maxHp = m.maxHpAt[shownLevel] ?? m.hp.max;
+  // §6.2.2 — the HP a level adds arrives with the level, as the Max HP does: current and max rise together.
+  const gained = m.hp.levelGain > 0 && m.up ? Math.min(m.hp.levelGain, maxHp - (m.maxHpAt[m.up.from] ?? maxHp)) : 0;
+  const hpNow = healed + Math.max(0, gained);
   return { hp: Math.min(hpNow, maxHp), maxHp, level: shownLevel, fill, was: s && seg === 0 ? s.from : 0, panel };
 }
 

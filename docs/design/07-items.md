@@ -49,9 +49,9 @@ Duplicates stack as a count, and the pile offers distinct entries first so three
 
 | Item | Tier | AP | Effect | Price |
 |---|---|---|---|---|
-| **Potion** | 1 | 1 | Restore **10 HP** | 30 ₽ |
-| **Super Potion** | 2 | 1 | Restore **40 HP** | 70 ₽ |
-| **Hyper Potion** | 3 | 1 | Restore **90 HP** | 150 ₽ |
+| **Potion** | 1 | 1 | Restore **20 HP** | 30 ₽ |
+| **Super Potion** | 2 | 1 | Restore **60 HP** | 70 ₽ |
+| **Hyper Potion** | 3 | 1 | Restore **120 HP** | 150 ₽ |
 | **Max Potion** | 4 | 1 | Restore to full Effective Max HP | 300 ₽ |
 | **Revive** | — | 2 | Revive a fainted Pokémon at 50 % Effective Max HP | 400 ₽, rare stock |
 
@@ -64,10 +64,10 @@ a health bar against it; "25 % of Effective Max HP" has to be computed, and it c
 on every Pokémon in the party. The franchise's own numbers are a shared vocabulary, and trading that for a
 tuning convenience is the wrong trade.
 
-The scaling problem is real and is solved by the **upgrade chain** instead (§7.2.6): 10 → 40 → 90 → full is
-exactly how the games keep healing relevant across a campaign (v0.9.96: HP is the series' own formula now, §6.2.3, and a
-turn here plays several hits, so each step is the share of a bar the series' 20 / 60 / 120 was before the rescale), and it makes each upgrade a visible jump rather
-than a correction. Region 3 is Hyper Potion territory the same way it is in the games.
+The scaling problem is real and is solved by the **upgrade chain** instead (§7.2.6): 20 → 60 → 120 → full is
+exactly how the games keep healing relevant across a campaign, and it makes each upgrade a visible jump rather
+than a correction. *(2026-11-05, the user: the series' own numbers. The 10 / 40 / 90 rescale was cut for bars that
+ran smaller than the series'; since v0.9.96 HP is the series' formula (§6.2.3), so the series' Potions fit it again.)* Region 3 is Hyper Potion territory the same way it is in the games.
 
 **Revive** is the single exception to "no in-combat revival" (§2.4.3). It is deliberately expensive in both money
 and AP.

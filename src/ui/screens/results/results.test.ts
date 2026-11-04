@@ -80,6 +80,27 @@ describe('The result screen — §9.4.5', () => {
     expect(monAt(lead, plan, level.at + 10).panel).not.toBeNull();
   });
 
+  it('monAt_ALevelsMaxHp_RisesWithTheTag_NeverAsAHeal_§6.2.2', () => {
+    const s = won('trainer', 10);
+    const mons = resultMons(s, content);
+    const lead = mons[0]!;
+    expect(lead.up).not.toBeNull();
+    const gain = lead.hp.to - 10;
+    expect(gain).toBeGreaterThan(0); // the level added its Max HP to current HP
+    expect(lead.hp.levelGain).toBe(gain);
+    const plan = revealPlan(mons, 0);
+    // Nothing healed: the level's HP is not a heal beat.
+    expect(plan.beats.some((b) => b.kind === 'heal')).toBe(false);
+    const level = plan.beats.find((b) => b.kind === 'level')!;
+    // Until the tag ticks over, the fight's HP over the old Max HP; on it, both rise together.
+    const before = monAt(lead, plan, level.at - 1);
+    expect(before.hp).toBe(10);
+    expect(before.maxHp).toBe(lead.maxHpAt[lead.up!.from]);
+    const after = monAt(lead, plan, plan.total);
+    expect(after.hp).toBe(lead.hp.to);
+    expect(after.maxHp - after.hp).toBe(before.maxHp - before.hp);
+  });
+
   it('revealPlan_SeveralLevels_OnePanelEach_AndAMoveHoldsTheClock_v0.9.80', () => {
     const s = won('trainer');
     const lead = resultMons(s, content)[0]!;

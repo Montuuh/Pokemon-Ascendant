@@ -346,6 +346,7 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   delete mon.deferredEvolutionStone;
   delete mon.deferredEvolutionForced;
   delete mon.evolutionPrimed;
+  const maxBefore = maxHpOf(mon, content);
   mon.speciesId = branch.to;
   mon.archetype = branch.archetype;
 
@@ -378,6 +379,8 @@ export function applyBranch(mon: PartyMon, branchId: string, content: ContentReg
   // names its own, which is how an archetype expresses itself beyond its moves.
   const granted = branch.abilityId ?? content.species(branch.to).availableAbilities[0] ?? null;
   if (branch.abilityId || mon.abilityId === null) mon.abilityId = granted;
+  // §6.2.2 — as with a level, the Max HP an evolution adds is added to current HP: the damage taken stays the same.
+  if (mon.hp > 0) mon.hp = Math.max(1, Math.min(maxHpOf(mon, content), mon.hp + maxHpOf(mon, content) - maxBefore));
 }
 
 /** §6.3 — what one branch does, read off the content alone (v0.9.9, for the Pokédex): no Pokémon needed. */

@@ -12,9 +12,9 @@
 
 | id | Tier | AP | Target | Effect | Price ₽ | Status |
 |---|---|---|---|---|---|---|
-| `potion` | 1 | 1 | ally | heal **10 HP** | 30 | ✅ v0.4 |
-| `super-potion` | 2 | 1 | ally | heal **40 HP** | 70 | ✅ v0.4 |
-| `hyper-potion` | 3 | 1 | ally | heal **90 HP** | 150 | ✅ v0.4 |
+| `potion` | 1 | 1 | ally | heal **20 HP** | 30 | ✅ v0.4 |
+| `super-potion` | 2 | 1 | ally | heal **60 HP** | 70 | ✅ v0.4 |
+| `hyper-potion` | 3 | 1 | ally | heal **120 HP** | 150 | ✅ v0.4 |
 | `max-potion` | 4 | 1 | ally | heal to full Effective Max HP | 300 | ✅ v0.4 |
 | `revive` | — | 2 | fainted ally | revive at 50 % Effective Max HP — the **only** in-combat revival (§2.4.3) | 400 · rare stock | ✅ v0.4 |
 

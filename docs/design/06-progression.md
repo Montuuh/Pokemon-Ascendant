@@ -83,7 +83,9 @@ Multipliers stack multiplicatively: `lucky-egg-token` ×1.15, the `quick-study` 
 
 Level-ups are processed **between nodes**, never mid-combat. The fight's result (§9.4.5) shows the XP bar
 fill, applies the stat increase immediately — the Max HP a level adds is added to current HP as well, as in the series,
-so a wounded Pokémon is not left further from full by levelling (a fainted one stays fainted) — and **offers evolution to any Pokémon that crossed its threshold** (§6.2.4) — as
+so a wounded Pokémon is not left further from full by levelling (a fainted one stays fainted): 23/54 that gains 3 Max HP
+is 26/57, never a heal. The screen raises both numbers together on the level tick; the heal beat before the XP bars
+shows only real healing (a group's breather, Pocket Healer). An evolution does the same with its Max HP difference — and **offers evolution to any Pokémon that crossed its threshold** (§6.2.4) — as
 the series' surprise, on Continue: nothing on the result says one is coming.
 
 Evolution can be **postponed** (§6.3.1; user decision, 2026-10-30). The current form keeps its existing stats and
@@ -112,7 +114,7 @@ The base is the species' own (§4.1.5.1: Attack the higher of Gen I's Attack and
 final form stands above its pre-evolution at the same level and a single stage or a Legendary carries its higher
 total, with no bonus on top. The damage formula took the series' shape with it (§4.1.1): the level term in front, the
 +2 behind, so a fight lasts as many turns at Lv 40 as at Lv 10. Every flat HP amount is read against these numbers —
-a Potion's 10 is a third of a Lv 10 bar (§7.2.2) — and a level-free reading (the rhythm's Speed, §4.1.3.1) runs the
+a Potion's 20 is most of a Lv 10 bar and a sip at Lv 40, as in the series (§7.2.2) — and a level-free reading (the rhythm's Speed, §4.1.3.1) runs the
 formula backwards (`baseOfStat`). *(v0.9.93–v0.9.95 printed the proportional curve at half scale; v0.9.10–v0.9.92 at
 full scale; until v0.9.10 each line had a flat growth per level.)*
 

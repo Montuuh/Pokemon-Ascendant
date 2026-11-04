@@ -205,7 +205,9 @@ describe('Run pacing — §2.1, §3.7', () => {
     const r1 = inRegion(0);
     const r2 = inRegion(1);
     // v0.9.95 — at ×1 the harness rarely reaches Region 2; the measure waits for a sample (see the curve's note).
-    if (r2.length < 100) return console.log(`region 2: ${r2.length} fights — too few to measure the accent`);
+    // 300, not 100 (2026-11-05, series Potions): at ~0.1 a status a fight, 100 fights carry a standard error near 0.03 —
+    // the whole ×1.15 margin — so a hundred-fight sample reads noise, not the accent.
+    if (r2.length < 300) return console.log(`region 2: ${r2.length} fights — too few to measure the accent`);
     const statused = (list: FightTrace[]) => list.filter((f) => f.team.some((m) => m.status)).length / Math.max(1, list.length);
     console.log(`region 2: fights leaving a status ${statused(r2).toFixed(2)} (R1 ${statused(r1).toFixed(2)})`);
     // ×1.15 since v0.9.10 (×1.5 before): the Pokémon behind a Region 1 Lead are whole and play their own status moves too, so Region 1
