@@ -44,6 +44,8 @@ describe('A Starting Relic does something from the first node — §8.6.3', () =
     expect(fits('fire-gem', ['squirtle'])).toBe(false);
     expect(fits('fire-gem', ['squirtle', 'charmander'])).toBe(true);
     expect(fits('coin-pouch', ['squirtle'])).toBe(true);
+    // v0.9.99 — Commons only.
+    expect(fits('choice-band', ['squirtle'])).toBe(false);
   });
 });
 

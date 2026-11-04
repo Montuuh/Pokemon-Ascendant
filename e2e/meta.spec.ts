@@ -224,11 +224,8 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('pc-tab-medals').click();
     await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
 
-    // §8.6.1 — the discoveries, on the PC Terminal beside the rest of what the account knows.
-    await page.getByTestId('pc-tab-relics').click();
-    await expect(page.getByTestId('discovery-barrier-charm')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('discovery-lucky-egg-token')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('discovery-steady-aim')).toHaveAttribute('data-state', 'locked');
+    // §8.6.1 — relic unlocks are off (v0.9.99): every relic is in the pool, so the PC has no discoveries tab.
+    await expect(page.getByTestId('pc-tab-relics')).toHaveCount(0);
     await page.screenshot({ path: 'playtest/hub-pc.png' });
 
     // A reload is the real test: the account lives in its own key, beside the run save and not inside it.
@@ -242,23 +239,25 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('dex-stat-kos')).toContainText('303');
   });
 
-  test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, the Mastery lane from 6', async ({ page }) => {
+  test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, Hub upgrades from 4', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
     await openKiosk(page, 'mart');
     // Level 1: the Trainer's Corner is open, the other three shelves are tabs that say their level, and a
     // closed shelf is still readable — priced, with a banner that says what opens it.
     await expect(page.getByTestId('mart-tab-corner')).toHaveAttribute('data-open', 'true');
-    await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'false');
-    await expect(page.getByTestId('mart-tab-mastery')).toContainText('Lv 6');
+    // §8.6.1 — no Mastery lane while relic unlocks are off (v0.9.99): no relic is sold for Tokens.
+    await expect(page.getByTestId('mart-tab-mastery')).toHaveCount(0);
+    await expect(page.getByTestId('mart-tab-hub')).toHaveAttribute('data-open', 'false');
+    await expect(page.getByTestId('mart-tab-hub')).toContainText('Lv 4');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
     await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-price-title-veteran')).toHaveAttribute('aria-disabled', 'true');
-    await page.getByTestId('mart-tab-mastery').click();
+    await page.getByTestId('mart-tab-hub').click();
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 6');
-    await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-price-sages-tome')).toHaveAttribute('aria-label', /Opens at Level 6/);
+    await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 4');
+    await expect(page.getByTestId('mart-expanded-box')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('mart-price-expanded-box')).toHaveAttribute('aria-label', /Opens at Level 4/);
     await page.screenshot({ path: 'playtest/hub-mart-locked.png' });
     // §8.9.2 — a starter never met is the Pokédex's silhouette on the shelf too: no name, no blurb.
     await page.getByTestId('mart-tab-starters').click();
@@ -296,22 +295,17 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'playtest/hub-card-worn.png' });
 
-    // §8.3.4 — Level 10 with Tokens in hand: the Mart opens on the newest shelf, the Mastery lane sells a
-    // Tier-3 for five, the Starters shelf sells Eevee for six, and the Tokens come off each time.
+    // §8.3.4 — Level 10 with Tokens in hand: the Mart opens on the newest shelf (Hub upgrades, with the Mastery
+    // lane off), the Starters shelf sells Eevee for six, and the Tokens come off.
     await page.evaluate(() => {
       window.__ascendant!.meta.xp(20_000);
-      window.__ascendant!.meta.tokens(13);
+      window.__ascendant!.meta.tokens(8);
     });
     await page.goto('/?screen=hub');
     await openKiosk(page, 'mart');
-    await expect(page.getByTestId('mart-tab-mastery')).toHaveAttribute('data-open', 'true');
+    await expect(page.getByTestId('mart-tab-hub')).toHaveAttribute('data-open', 'true');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '13');
-    await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'buyable');
-    await page.getByTestId('mart-price-sages-tome').click();
-    await expect(page.getByTestId('mart-notice')).toContainText("Sage's Tome is in your pool");
     await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '8');
-    await expect(page.getByTestId('mart-sages-tome')).toHaveAttribute('data-state', 'owned');
     await page.screenshot({ path: 'playtest/hub-mart.png' });
     await page.getByTestId('mart-tab-starters').click();
     await expect(page.getByTestId('mart-eevee')).toHaveAttribute('data-state', 'buyable');

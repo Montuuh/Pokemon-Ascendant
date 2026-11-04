@@ -404,8 +404,8 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
   Mystery Events are supplies.
 - **65 relics**, **scarce** (v0.8.6: a full run ends with ~9, was 16.5). 32 Common (12 of them the +10 % party Elemental
   Gems, offered only for a type the Box can use) / 18 Uncommon / 9 Rare / **6 Legendary** (v0.9.98: re-tiered by measured power). Rarity is a measured
-  power band (v0.9.97, measured on the combat probe: Common up to ~2, Uncommon ~2–6, Rare ~3–9, Legendary ~4 and up). A trainer drops none; the Elite Trainer
-  offers a **pick of two Uncommons and a Rare**; the beaten Elite Wild a Rare; the **first Gym the same mix, 1-of-3**,
+  power band (v0.9.97, measured on the combat probe: Common up to ~2, Uncommon ~2–6, Rare ~3–9, Legendary ~4 and up). A route trainer drops a Common one fight in five; drop weights 70 / 25 / 5; the Starting Relic is a Common; relic unlocks are off (v0.9.99, every relic open from run 1); the Elite Trainer
+  offers a **pick of a Common and two Uncommons**; the beaten Elite Wild an Uncommon; the **first Gym the same mix, 1-of-3**,
   later Gyms, the Summit and a beaten Apex a **Legendary 1-of-3, max 2 per run** (at the cap: two Rares and an Uncommon). Relic events are drawn at weight 0.35. Shop relics carry the **collector's premium**: +50 %
   of list per relic bought this run.
 - **35 held items.** Trainer drops 50 %, Elite guaranteed, merchant always stocked, Mart two choices, Department Store four; typed bonuses match learned attacks. 12 unique type boosts (+20 % wearer-only) · 16 Type Plates (+10 % wearer, +5 % Lead Aura for the bench) · Leftovers, Eviolite, Focus

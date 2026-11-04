@@ -70,10 +70,11 @@ export const PRICES = {
  * table: the only way to one is a 1-of-3 pick. Adding a weight here, however small, would quietly turn the
  * apex tier into a lottery and make the pick-moment meaningless.
  */
+// v0.9.99 (the user: "commons a lot more, uncommons a bit rarer, rares rarer still") — was 60 / 30 / 10.
 const DROP_WEIGHTS: { rarity: RelicRarity; weight: number }[] = [
-  { rarity: 'common', weight: 60 },
-  { rarity: 'uncommon', weight: 30 },
-  { rarity: 'rare', weight: 10 },
+  { rarity: 'common', weight: 70 },
+  { rarity: 'uncommon', weight: 25 },
+  { rarity: 'rare', weight: 5 },
 ];
 
 /** §7.3.7 — the cap on how many Legendaries one run may hold. At the cap a pick-moment offers Rares. */
@@ -119,10 +120,12 @@ export function gemFits(r: { params?: Record<string, unknown> }, box: readonly P
 }
 
 /**
- * Per §8.6.3 — a Starting Relic has to do something from the first node (v0.9.97): never one spent the moment it is
- * picked up (Trauma Salve, with no Trauma yet to clear), and a Type Gem only for a type a starter has.
+ * Per §8.6.3 — a Starting Relic is a Common (v0.9.99, was Common or Uncommon: a pick of three nearly always held an
+ * Uncommon, so every run opened with one) and has to do something from the first node (v0.9.97): never one spent the
+ * moment it is picked up (Trauma Salve, with no Trauma yet to clear), and a Type Gem only for a type a starter has.
  */
-export function startingRelicFits(r: { hook: string; params?: Record<string, unknown> }, starters: readonly string[], content: ContentRegistry): boolean {
+export function startingRelicFits(r: { rarity: RelicRarity; hook: string; params?: Record<string, unknown> }, starters: readonly string[], content: ContentRegistry): boolean {
+  if (r.rarity !== 'common') return false;
   if (r.hook === 'on-acquire') return false;
   const type = r.params?.type;
   if (typeof type !== 'string' || !starters.length) return true;
@@ -465,10 +468,10 @@ export function rollShopStock(
 /** v0.9.10 — half again per relic already bought (was a quarter): relics are a run's few big moments, not a shopping list. */
 export const RELIC_PREMIUM = 0.5;
 
-/** §2.9.2 — a Common relic joins the merchant's permanent shelves this often. */
-export const MERCHANT_RELIC_CHANCE = 1 / 5;
-/** §2.11.2.2 — a City Mart's second relic slot is a Rare this often, otherwise an Uncommon. */
-export const CITY_RARE_CHANCE = 0.25;
+/** §2.9.2 — a Common relic joins the merchant's permanent shelves this often (v0.9.99: was one visit in five). */
+export const MERCHANT_RELIC_CHANCE = 2 / 5;
+/** §2.11.2.2 — a City Mart's second relic slot is a Rare this often, otherwise an Uncommon (v0.9.99: was 25 %). */
+export const CITY_RARE_CHANCE = 0.1;
 
 /** §2.11.2.3 — what a slot costs right now. A relic carries the premium for every relic bought before it. */
 export function slotPrice(run: Pick<RunState, 'relicsBought'>, slot: Pick<ShopSlot, 'kind' | 'price'>): number {

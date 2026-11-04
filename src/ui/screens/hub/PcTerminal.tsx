@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, speciesMet } from '@/sim';
+import { ACHIEVEMENTS, RELIC_UNLOCKS_ON, BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, speciesMet } from '@/sim';
 import { MedalIcon } from '@/ui/components/MedalIcon';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { itemIcon } from '@/ui/art';
@@ -86,9 +86,12 @@ export function PcTerminal() {
         <Tabs.Trigger className={styles.tab} value="medals" data-testid="pc-tab-medals">
           Medals <span className={`${styles.muted} tabular`}>{progress.unlocked.length} / {ACHIEVEMENTS.length}</span>
         </Tabs.Trigger>
-        <Tabs.Trigger className={styles.tab} value="relics" data-testid="pc-tab-relics">
-          Relic discoveries <span className={`${styles.muted} tabular`}>{discovered} / {discoverable.length}</span>
-        </Tabs.Trigger>
+        {/* §8.6.1 — no discoveries while relic unlocks are off (v0.9.99): every relic is already in the pool. */}
+        {RELIC_UNLOCKS_ON && (
+          <Tabs.Trigger className={styles.tab} value="relics" data-testid="pc-tab-relics">
+            Relic discoveries <span className={`${styles.muted} tabular`}>{discovered} / {discoverable.length}</span>
+          </Tabs.Trigger>
+        )}
       </Tabs.List>
 
       {/* ── Pokédex (§5.13, §8.9) ─────────────────────────────────────────────────────────────────────── */}
@@ -188,6 +191,7 @@ export function PcTerminal() {
         </div>
       </Tabs.Content>
 
+      {RELIC_UNLOCKS_ON && (<>
       {/* ── Relic discoveries ───────────────────────────────────────────────────────────────────────────── */}
       <Tabs.Content value="relics" className={styles.tabPanel}>
         <p className={styles.lede}>
@@ -221,6 +225,7 @@ export function PcTerminal() {
           })}
         </ul>
       </Tabs.Content>
+      </>)}
     </Tabs.Root>
     </>
   );

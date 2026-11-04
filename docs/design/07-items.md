@@ -155,9 +155,9 @@ Sixty-five relics: **59 in the drop pool** (32 Common, 18 Uncommon, 9 Rare) plus
 
 | Rarity | Count | Drop weight | Typical source |
 |---|---|---|---|
-| Common | 32 | 60 % | A Starting Relic, the merchant's wildcard (one visit in five), City Shops, a find, a rare event |
-| Uncommon | 18 | 30 % | The Elite Trainer's pick, the first Gym's pick, City Shops, a rare event |
-| Rare | 9 | 10 % | One of the Elite Trainer's three, one of the first Gym's three, the beaten Elite Wild, the Ring, the Gambler, a rare Gamble event |
+| Common | 32 | 70 % | The Starting Relic, a route trainer (one fight in five), the merchant's wildcard (two visits in five), City Shops, a find, the Elite's and the first Gym's pick, a rare event |
+| Uncommon | 18 | 25 % | Two of the Elite Trainer's three, two of the first Gym's three, the beaten Elite Wild, City Shops, a find from Region 2, a rare event |
+| Rare | 9 | 5 % | The Ring's top prize, the Department Store's top floor, a City Mart one visit in ten, a Region-3 find, the Gambler, a hold-out's guard, a rare Gamble event, a capped Legendary pick |
 | **Legendary** | 6 | **never drops** | The Gym's 1-of-3 from the second Gym on, the Summit, and a beaten Apex (§7.3.7) |
 
 **Relics are scarce** (the user's call, 2026-09-30, v0.8.6). Before it a whole run ended holding about sixteen:
@@ -171,6 +171,13 @@ By source: shops 30 %, trainers 29 %, the Legendary pick 24 %, the Elite 11 %, m
 The pace is even — no Region floods the team — and a doubled collector's premium (0.5) moved it by under half a
 relic: money is not what limits a buyer. v0.9.10 doubled it anyway (the user's call: a run held ~11 relics at its end), so
 each relic bought makes the next half again dearer.
+
+**Where relics come from, by rarity** (v0.9.99, the user: "commons a lot more, uncommons a bit rarer than commons, rares
+rarer still, and one or two Legendaries a run at most"). The picks that used to hand over a Rare — the Elite, the first
+Gym, the beaten Elite Wild — hand over Uncommons; route trainers drop a Common again; the Starting Relic is a Common;
+Rares are the optional, dear or late prizes; the two-a-run Legendary cap stands. Measured on the harness (60 runs, which
+mostly end in Region 1): Common 92 % · Uncommon 6 % · Rare 3 % of relics taken, from 31 / 44 / 25 %. By estimate, a player who clears
+Region 1 takes about four Commons to three Uncommons there: the Elite and the Gym, the Uncommon sources, are where the harness dies.
 
 Rarity is **drop weight**. Meta tier (§8.6.1) is **pool membership**. They are orthogonal and conflating them is
 the single easiest mistake to make in this system.
@@ -317,7 +324,7 @@ the relic system and retuned for permanent scope.
 
 | | |
 |---|---|
-| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is the Elite's mix, two Uncommons and a Rare (v0.8.6 made it three Rares so the apex tier arrives mid-run; v0.9.80 took it back down — a harness run gained 1.6 Rares for every 0.07 Uncommons, because nearly every source asked for a Rare, and the user read a screen of reds as meaningless). Seeded; already-held relics are excluded. And a beaten Apex on Victory Road offers the same 1-of-3 (§2.12.2). The Black Market's showcase sells a Legendary *Pokémon* since v0.9.21, not a relic (§2.11.6) |
+| **Acquisition** | A guaranteed **1-of-3 pick** at each Gym victory from the **second** on, and at the Victory Road Summit. The first Gym's pick is the Elite's mix, a Common and two Uncommons since v0.9.99 (v0.8.6 made it three Rares so the apex tier arrives mid-run; v0.9.80 took it back down — a harness run gained 1.6 Rares for every 0.07 Uncommons, because nearly every source asked for a Rare, and the user read a screen of reds as meaningless). Seeded; already-held relics are excluded. And a beaten Apex on Victory Road offers the same 1-of-3 (§2.12.2). The Black Market's showcase sells a Legendary *Pokémon* since v0.9.21, not a relic (§2.11.6) |
 | **Hold cap** | **Maximum 2 per run**. At the cap, a pick-moment offers two Rares and an Uncommon instead, or a skip |
 | **Never** | Not in Starting Relics, not in shop random stock, not in the drop pool |
 | **Meta status** | Available from run 1 — Legendary is a rarity class, not a meta tier |
@@ -468,8 +475,8 @@ the hook vocabulary is listed in the catalogues.
 | Where does a new effect belong? | The boundary test in §7.1 |
 | Held Item slots per Pokémon | One |
 | Are TMs consumables? | A consumable **class**, applied from the Map View, never drawn as a card |
-| The relic rarity curve | 25 / 18 / 7 at 60 / 30 / 10 % (§7.3.1) |
-| Starting Relic pool | Common and Uncommon only (§8.6.3) |
+| The relic rarity curve | 32 / 18 / 9 at 70 / 25 / 5 % (§7.3.1) |
+| Starting Relic pool | Common only (§8.6.3, v0.9.99) |
 | Faint-prevention order | Endure → Sturdy → Last Stand → Focus Sash → full Friendship → Phoenix Feather (§7.3.6) |
 | Flat or percentage healing | **Flat**, the franchise numbers; the upgrade chain does the scaling (§7.2.2) |
 | Full Heal's AP cost | 1, so the single cures keep a purpose (§7.2.3) |

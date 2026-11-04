@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.99 — Commons first · 2026-11-04
+
+Commons turn up often, Uncommons less, Rares rarely; every relic is open.
+
+- **Commons everywhere.** Route trainers drop one again; the Starting Relic is a Common.
+- **Uncommon picks.** The Elite, the first Gym and the Elite Wild give Uncommons, not Rares.
+- **Rares are prizes.** The Ring, the top floor, late finds; drops weigh 70 / 25 / 5.
+- **Every relic open.** No unlocks for now: all 65 relics can turn up from your first run.
+
 ### v0.9.98 — Rarity by power · 2026-11-04
 
 A relic's rarity now matches how strong it is.

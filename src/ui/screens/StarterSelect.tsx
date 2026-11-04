@@ -42,7 +42,7 @@ const STAT_MAX = { hp: 120, attack: 120, defense: 120, speed: 120 };
  */
 const MAGIKARP_LEAN = ['water-gem', 'barrier-charm', 'berry-pouch', 'hikers-coat', 'vital-pendant', 'brave-charm'];
 
-/** §8.6.3 — the offer is Common and Uncommon only, from the account's pool, seeded off the run seed. */
+/** §8.6.3 — the offer is Commons only (v0.9.99), from the account's pool, seeded off the run seed. */
 function relicOffer(seed: number, count: number, account: AccountState, starters: readonly string[], lean: readonly string[] = []): string[] {
   const content = getContent();
   const accountPool = relicPoolFor(account, content);
@@ -50,7 +50,7 @@ function relicOffer(seed: number, count: number, account: AccountState, starters
     .allRelics()
     // §7.7 — same rule as every other offer: a relic whose system does not exist is not on the menu.
     // §8.6.2 — and a Tier-2 or Tier-3 relic the account has not opened is not in the pool at all.
-    .filter((r) => isOfferable(r) && inPool(r, accountPool) && (r.rarity === 'common' || r.rarity === 'uncommon') && startingRelicFits(r, starters, content));
+    .filter((r) => isOfferable(r) && inPool(r, accountPool) && startingRelicFits(r, starters, content));
   // A tiny deterministic shuffle: the offer has to be stable across re-renders, and seeding it off the run
   // seed means a shared seed reproduces the whole pre-run, not just the map.
   const out: string[] = [];

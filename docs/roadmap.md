@@ -1540,6 +1540,19 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.99 — Commons first  ✅ 2026-11-04
+
+**Shipped to be played** (the user, 2026-11-04: "one or two Legendaries a run at most; commons a lot more; uncommons a
+bit rarer than commons; rares rarer still" — and, asked, "yes, remove the unlocks" for now). (1) Sources (§7.3.1): a
+route trainer drops a Common one fight in five (was never); the Elite's and the first Gym's pick a Common and two
+Uncommons (was two Uncommons and a Rare); the beaten Elite Wild an Uncommon (was a Rare); the merchant's Common two
+visits in five; a City Mart's Rare one visit in ten; finds Common in R1, Common/Uncommon in R2, Uncommon/Rare in R3;
+drop weights 70 / 25 / 5; the Starting Relic a Common. The two-a-run Legendary cap stands. (2) Relic unlocks off
+(`RELIC_UNLOCKS_ON`, §8.6): every relic in every pool from run 1, no Mastery lane, no PC discoveries tab, nothing
+discovered; counters still fold. The meta-progression rework is in the backlog. (3) The harness takes the rarest of a
+pick. **Measured** (60 runs, mostly ending in R1): Common 92 % · Uncommon 6 % · Rare 3 % of relics taken (was 31 / 44
+/ 25); 1.8 a run (was 0.6). **Next:** the user's playtest.
+
 ### v0.9.98 — Rarity by power  ✅ 2026-11-04
 
 **Shipped to be played** (the user, 2026-11-04: "the weak relics go down a rarity, and so on progressively"). Every
@@ -1952,6 +1965,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 |---|---|---|
 | ~~**Motion opportunities**~~ built in v0.9.67. From the sweep of 2026-10-27, each through motion-review.md's gate: the HP bar drains at the series' constant rate (big hits weigh more); a hit-stop at medium and heavy impacts (60 / 100 ms); a press state on the main buttons; the played card leaving toward its target (§9.9); modals and sheets that fade and grow in | ui-reviewer, 2026-10-27 | the next v0.9 patches, or v1.1's VFX pass |
 | ~~**A Legendary Pokémon takes two team slots.**~~ Designed 2026-10-16 — the user's call: two places, one body (§2.3). Built with the Legendaries. | user, 2026-09-28 | v0.9.21 |
+| **Meta-progression rework — relic unlocks** | user, 2026-11-04 | Relic unlocks are off since v0.9.99 (`RELIC_UNLOCKS_ON`, §8.6): every relic is open from run 1, no Mastery lane, no discoveries tab. The rework decides what an account earns instead — tiers back, a different unlock, or none — with the discovery counters still folding so no history is lost. Design pass with the user first |
 | **A Steel Gym** (or a Dark/Steel Elite) — a 13th Badge, a lane with its own terrain and rule, a team of Magneton, Scizor, Steelix and Magnezone. Dark has only Umbreon, so it cannot carry a team. Left out of v0.9.84 on purpose; the user chose to keep it so | user, 2026-10-29 | a Region-pool design pass, after v1.0 |
 
 **Multiplayer** — everything that needs **player accounts and a server**. None of it is in v1.0, which is

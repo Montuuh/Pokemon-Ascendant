@@ -19,7 +19,7 @@ type PrizeKind = FindPrize | { kind: 'any-tm' } | { kind: 'any-stone' };
 
 /**
  * §2.9.5 — what a reel can hold, by Region (index) and row. A reel takes distinct entries from each row; the Rare row
- * always carries a relic. Region 1's Rare relics are Common or Uncommon; later Regions' Uncommon or Rare.
+ * always carries a relic: a Common in Region 1, Common or Uncommon in Region 2, Uncommon or Rare in Region 3 (v0.9.99).
  */
 export const FIND_REEL: readonly {
   common: readonly PrizeKind[];
@@ -47,7 +47,7 @@ export const FIND_REEL: readonly {
       { kind: 'supply', items: ['x-attack', 'x-defense'] },
     ],
     rare: [{ kind: 'any-stone' }, { kind: 'supply', items: ['revive'] }, { kind: 'supply', items: ['hyper-potion'] }, { kind: 'held-item' }],
-    relics: ['common', 'uncommon'],
+    relics: ['common'],
     fallbackMoney: 300,
   },
   {
@@ -68,7 +68,7 @@ export const FIND_REEL: readonly {
       { kind: 'supply', items: ['revive'] },
     ],
     rare: [{ kind: 'any-stone' }, { kind: 'supply', items: ['ultra-ball', 'ultra-ball'] }, { kind: 'supply', items: ['max-potion'] }, { kind: 'held-item' }],
-    relics: ['uncommon', 'rare'],
+    relics: ['common', 'uncommon'],
     fallbackMoney: 500,
   },
   {

@@ -885,7 +885,7 @@ Region so a Region with four trainer nodes never repeats a team.
 | Trainer XP (meta) | 5 |
 | Poké Dollars | 50–150 (R1) · 120–260 (R2) · 200–400 (R3) |
 | Supplies | **1–2 consumables, always**, from the Region's supply table (Potions and cures in Region 1, Super Potions in Region 2, Hyper Potions in Region 3), and a Poké Ball one time in five |
-| Relic | **Never** (v0.9.10, the user's call: a won run ended holding ~10 relics; was 15 %, a Common). Relics are a run's few big moments — the start, the Elite, the Gym — and its shops |
+| Relic | **A Common, one fight in five** (v0.9.99, the user: "commons a lot more"; v0.9.10 had made it never, when the picks handed over Rares and a won run ended holding ~10). The big moments — the Elite, the Gym — hand over Uncommons now, so the trainer's relics are the small ones |
 | Held Item | 50 % chance; one useful, unowned item (§7.4.1) |
 | TM | 5 % chance |
 | Pokédex | Each defeated Pokémon counts toward its species' kill thresholds (§5.13) |
@@ -947,7 +947,7 @@ borrowed Pokémon at Lv 2–4 — a number nobody could read as a mini-boss. Mea
 Guaranteed once per Region in the late trunk. **No type lock** — that identity belongs to Gyms, which makes the
 Elite a different kind of test from the Gym ahead of it.
 
-**Reward:** a **relic, choice of 1 of 3 — two Uncommons and a Rare** — plus ~300–500 ₽, two Poké Balls, two
+**Reward:** a **relic, choice of 1 of 3 — a Common and two Uncommons** (v0.9.99; was two Uncommons and a Rare) — plus ~300–500 ₽, two Poké Balls, two
 supplies and one prize from the Region's better table (Super Potion, Ether, Full Heal in Region 1; up to Max Potion
 and Revive in Region 3), and 25 Trainer XP. The pick is taken on the reward screen, and leaving all three is
 allowed. *(v0.8.6: the Elite used to drop a single Uncommon; one guaranteed pick, slightly better, is what the user
@@ -986,7 +986,7 @@ A **catchable boss-wild**: the Region's mini-boss with a catch-or-kill dilemma.
 | Choice | How | Reward |
 |---|---|---|
 | **Catch it** | Fill the Catchability gauge and throw | Victory, full XP, and the **rare recruit** |
-| **Defeat it** | Reduce it to 0 HP | Victory and a **single Rare relic**, no choice |
+| **Defeat it** | Reduce it to 0 HP | Victory and a **single Uncommon relic**, no choice (a Rare until v0.9.99) |
 
 Catching is the premium path by design, because the Elite Trainer already owns the "pick 1 of 3" beat.
 
@@ -1052,7 +1052,7 @@ spent (§3.5, v0.8.6), at 10 % off the unit price.
 | 2 | Another Tier-1 consumable ×3 — a status cure, an Ether, an X Attack | 110 ₽ |
 | 3 | Poké Balls ×3 | 120 ₽ |
 | 4 | One useful, unowned Held Item, always when its pool permits | 300 ₽ |
-| 5 | A Common relic one visit in five; otherwise absent | 300 ₽ + premium |
+| 5 | A Common relic two visits in five (v0.9.99, was one); otherwise absent | 300 ₽ + premium |
 
 Stock is seeded per visit. The merchant does **not** buy anything: selling exists only in a City (§2.11.2.4).
 
@@ -1235,7 +1235,7 @@ the one that is yours, a tick for each tile that passes; it is in the bag by the
 |---|---|---|---|
 | **Common** (3 of) | Potion ×2 · Poké Ball ×3 · Antidote and Paralyze Heal · Ether · X Attack · 100 ₽ | Super Potion ×2 · Great Ball · Full Heal · Ether · X Defense · 180 ₽ | Hyper Potion · Ultra Ball · Full Heal and X Attack · Great Ball ×2 · Ether ×2 · 300 ₽ |
 | **Uncommon** (2 of) | Super Potion ×2 · Great Ball ×2 · 250 ₽ · a held item · a TM · X Attack and X Defense | Hyper Potion · Great Ball ×3 · 400 ₽ · a held item · a TM · Revive | Max Potion · Revive · 600 ₽ · a held item · a TM · Ultra Ball ×2 |
-| **Rare** (2: a relic, and 1 of) | a Common or Uncommon relic · an Evolution stone · Revive · Hyper Potion · a held item | an Uncommon or Rare relic · a stone · Ultra Ball ×2 · Max Potion · a held item | an Uncommon or Rare relic · a stone · Revive ×2 · Max Potion ×2 · a held item |
+| **Rare** (2: a relic, and 1 of) | a Common relic · an Evolution stone · Revive · Hyper Potion · a held item | a Common or Uncommon relic · a stone · Ultra Ball ×2 · Max Potion · a held item | an Uncommon or Rare relic · a stone · Revive ×2 · Max Potion ×2 · a held item |
 
 Supplies, money, the TM and the stone are **named on the reel**. A held item and a relic show their kind (and the
 relic its rarity's gem) behind the overworld's "?", and the reel says **which one when it lands** — so it is never one
@@ -1474,7 +1474,7 @@ The Mart's nine, and the shape each Department Store floor follows:
 | 2–3 | Tier-1 bundles (×3) — status cures, Ether, X Attack |
 | 4 | A Tier-2 bundle (×2) — Super Potion, X Defense |
 | 5 | Common relic |
-| 6 | Uncommon relic — a **Rare** one visit in four |
+| 6 | Uncommon relic — a **Rare** one visit in ten (v0.9.99, was four) |
 | 7–8 | Two different Held Items, curated to the Box's known attacks (§7.4.1) |
 | 9 | TM, curated to the team's compatibility |
 | 10 | An Evolution Item someone in the Box can use — only when there is one (§6.3.2) |
@@ -1898,7 +1898,7 @@ v0.7.4 it was Region 1's tables sixteen levels up and went unnamed on the map.)*
 | Wild Area | Yes | 0–25 | 5 + 10 on recruit | Recruitment | The catch gauge |
 | Trainer | Yes | 50–150 | 5 | Loot table | — |
 | Elite Trainer | Yes | ~300 | 25 | **Rare relic, 1 of 3** | Rival / Giovanni / Specialist |
-| Elite Wild | Yes | small | recruit XP | **Catch → recruit, or defeat → 1 Rare relic** | Catch-or-kill |
+| Elite Wild | Yes | small | recruit XP | **Catch → recruit, or defeat → 1 Uncommon relic** | Catch-or-kill |
 | Field Aid (nurse) | No | — | — | — | +50 % HP, no Trauma |
 | Travelling merchant | No | spend | — | — | 4 basic slots + one re-roll |
 | Mystery | Varies | Varies | Varies | Varies | Choice-driven |

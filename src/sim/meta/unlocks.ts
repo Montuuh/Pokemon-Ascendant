@@ -2,7 +2,7 @@ import type { ContentRegistry, RelicDef } from '../content/defs';
 import type { DifficultyModifier } from '../run/modifiers';
 import { STARTER_IDS } from '../run/region';
 import type { RunPerks } from '../run/types';
-import { hasHubUpgrade, levelFor, type AccountContext, type AccountState } from './account';
+import { RELIC_UNLOCKS_ON, hasHubUpgrade, levelFor, type AccountContext, type AccountState } from './account';
 import { BOND_TIER, bondRank, bondUnlocks } from './bond';
 
 // §8.4–§8.6, §8.8 — what an account has opened, answered from the account and the content tables.
@@ -22,9 +22,9 @@ export const discoverableRelics = (content: ContentRegistry): string[] =>
 export const masteryRelics = (content: ContentRegistry): RelicDef[] =>
   content.allRelics().filter((r) => relicTier(r) === 3 || r.mastery === true);
 
-/** Is this relic in the account's pool? Tier 1 and Legendary always; Tier 2 and 3 once unlocked. */
+/** Is this relic in the account's pool? Every relic while unlocks are off (§8.6.1); else Tier 1 and Legendary always, Tier 2 and 3 once unlocked. */
 export function relicUnlocked(account: AccountState, r: RelicDef): boolean {
-  return relicTier(r) === 1 || r.rarity === 'legendary' || account.relics.includes(r.id);
+  return !RELIC_UNLOCKS_ON || relicTier(r) === 1 || r.rarity === 'legendary' || account.relics.includes(r.id);
 }
 
 /** §8.6.2 — the ids a run started by this account may drop, offer or stock. */

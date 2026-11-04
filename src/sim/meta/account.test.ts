@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { ACCOUNT_VERSION, accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, LEVEL_CURVE, levelFor, levelProgress, MONEY_TO_TOKENS, REWARD_TRACK, SHELF_ORDER, SHELVES, TRACK_TOKENS, tokensForMoney, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
+import { ACCOUNT_VERSION, accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, LEVEL_CURVE, levelFor, levelProgress, MONEY_TO_TOKENS, RELIC_UNLOCKS_ON, REWARD_TRACK, SHELF_ORDER, SHELVES, TRACK_TOKENS, tokensForMoney, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
 import { dexTierFor, DEX_FAMILIAR, emptyDexEntry, normalizeDexEntry } from './pokedex';
 import { BOND, BOND_RANKS, bondRank } from './bond';
 import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
@@ -122,8 +122,9 @@ describe('The reward track — §8.3.5', () => {
     expect(delta.rewards).toEqual([{ level: 2, reward: REWARD_TRACK[2] }]);
     expect(delta.tokens).toBe(REWARD_TRACK[2]!.tokens);
     expect(state.tokens).toBe(REWARD_TRACK[2]!.tokens);
-    // Three hundred clean wins also *discover* two relics on the way (§8.6.1: a no-faint win, fifty wins).
-    expect(delta.discoveredRelics).toEqual(['barrier-charm', 'lucky-egg-token']);
+    // Three hundred clean wins also *discover* two relics on the way (§8.6.1: a no-faint win, fifty wins) — while
+    // relic unlocks are on; off (v0.9.99), every relic is open and nothing is discovered.
+    expect(delta.discoveredRelics).toEqual(RELIC_UNLOCKS_ON ? ['barrier-charm', 'lucky-egg-token'] : []);
     // Folding more XP inside the same level pays nothing again.
     const again = applyAccountEvent(state, win(), ctx);
     expect(again.delta.rewards).toHaveLength(0);
@@ -293,7 +294,16 @@ describe('Bond — §6.8', () => {
 });
 
 describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
-  it('ACriterionMet_OpensItsRelic_Once', () => {
+  it.skipIf(RELIC_UNLOCKS_ON)('WhileUnlocksAreOff_EveryRelicIsInTheFreshPool_AndACounterStillFolds_v0999', () => {
+    expect(relicPoolFor(emptyAccount(), content)).toHaveLength(content.allRelics().length);
+    const crit = (n: number) => win({ tally: { ...emptyTally(), crits: n } });
+    const { state, delta } = applyAccountEvents(seasoned(), [crit(6), crit(4)], ctx);
+    expect(state.counters.crits).toBe(10);
+    expect(delta.discoveredRelics).toEqual([]);
+    expect(SHELF_ORDER).not.toContain('mastery');
+  });
+
+  it.skipIf(!RELIC_UNLOCKS_ON)('ACriterionMet_OpensItsRelic_Once', () => {
     // Ten crits across three fights: Steady Aim. A fourth fight with more crits does not discover it twice.
     const crit = (n: number) => win({ tally: { ...emptyTally(), crits: n } });
     const { state, delta } = applyAccountEvents(seasoned(), [crit(4), crit(4), crit(2)], ctx);
@@ -304,7 +314,7 @@ describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
     expect(again.state.relics.filter((id) => id === 'steady-aim')).toHaveLength(1);
   });
 
-  it('TheRunPool_IsTierOnePlusWhatIsOpen_AndLegendariesAlways', () => {
+  it.skipIf(!RELIC_UNLOCKS_ON)('TheRunPool_IsTierOnePlusWhatIsOpen_AndLegendariesAlways', () => {
     const fresh = relicPoolFor(emptyAccount(), content);
     expect(fresh).not.toContain('steady-aim');
     expect(fresh).not.toContain('sages-tome');

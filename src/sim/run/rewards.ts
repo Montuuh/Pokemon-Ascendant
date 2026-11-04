@@ -98,19 +98,24 @@ export function rollFightSupplies(rng: GameRng, content: ContentRegistry, kind: 
  * 1-of-3 (`gymRelicOffer`). Nothing else in a fight hands one over.
  */
 export const RELIC_REWARD = {
-  /** v0.9.10 (the user's call: a run held ~11 relics at its end) — a trainer pays money and supplies, never a relic. Was 0.15. */
-  trainerChance: 0,
+  /**
+   * v0.9.99 (the user: "commons a lot more") — a route trainer drops a Common again, one fight in five. v0.9.10 had
+   * set it to 0 when a run held ~11 relics at its end; the picks below now hand over Uncommons rather than Rares, so the
+   * extra relics are the small ones.
+   */
+  trainerChance: 0.2,
   trainerRarity: 'common' as RelicRarity,
-  /** §2.8.1 — the Elite Trainer's pick: two Uncommons and a Rare. */
-  elitePick: ['uncommon', 'uncommon', 'rare'] as RelicRarity[],
-  eliteWild: 'rare' as RelicRarity,
+  /** §2.8.1 — the Elite Trainer's pick: a Common and two Uncommons (v0.9.99: was two Uncommons and a Rare). */
+  elitePick: ['common', 'uncommon', 'uncommon'] as RelicRarity[],
+  /** §2.8.2 — the beaten Elite Wild's relic: an Uncommon (v0.9.99: was a Rare). */
+  eliteWild: 'uncommon' as RelicRarity,
   /** §7.3.7 — the Region whose Gym offers a mixed pick rather than Legendaries (the first). */
   rareGymRegions: 1,
   /**
    * §7.3.7 — v0.9.80 (the user: too many reds). A pick of three is no longer three Rares: a measured run took 1.6 Rares
    * for every 0.07 Uncommons, because nearly every source asked for a Rare. The first Gym's pick is the Elite's mix.
    */
-  gymFirstPick: ['uncommon', 'uncommon', 'rare'] as RelicRarity[],
+  gymFirstPick: ['common', 'uncommon', 'uncommon'] as RelicRarity[],
   /** §7.3.7 — a Gym or Summit pick at the Legendary cap: still the big moment, so two Rares and an Uncommon. */
   gymCappedPick: ['rare', 'rare', 'uncommon'] as RelicRarity[],
 };

@@ -3,7 +3,7 @@ import { IconLock, IconPackage, IconSearch } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { MART_PRICE, PRICES, discoveryProgress, itemSources, listPrice, relicUnlocked, type ItemSources, type PokemonType, type PricedKind } from '@/sim';
+import { MART_PRICE, PRICES, RELIC_UNLOCKS_ON, discoveryProgress, itemSources, listPrice, relicUnlocked, type ItemSources, type PokemonType, type PricedKind } from '@/sim';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveChip } from '@/ui/components/MoveChip';
@@ -152,7 +152,8 @@ function Detail({ kind, id, icon }: { kind: PricedKind; id: string; icon: string
     name = r.name;
     body = r.description;
     pending = r.pending;
-    meta.push(RARITY_LABEL[r.rarity], <Tipped key="tier" as="span" tip={relicTierNoteTip(r.tier ?? 1)} className={styles.metaTip}>{GUIDE_TEXT.relicTier(r.tier ?? 1)}</Tipped>);
+    // §8.6.1 — the tier chip only means something while relic unlocks are on (off since v0.9.99).
+    meta.push(RARITY_LABEL[r.rarity], ...(RELIC_UNLOCKS_ON ? [<Tipped key="tier" as="span" tip={relicTierNoteTip(r.tier ?? 1)} className={styles.metaTip}>{GUIDE_TEXT.relicTier(r.tier ?? 1)}</Tipped>] : []));
     facts.push([GUIDE_TEXT.categories, r.categories.map(cap).join(' · ')]);
     const prog = discoveryProgress(account, r);
     facts.push([GUIDE_TEXT.yours, relicUnlocked(account, r) ? GUIDE_TEXT.inPool : r.tier === 3 ? GUIDE_TEXT.mastery(MART_PRICE.mastery) : prog ? GUIDE_TEXT.discover(prog.text, prog.have, prog.goal) : GUIDE_TEXT.locked]);

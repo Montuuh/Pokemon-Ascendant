@@ -126,7 +126,15 @@ export function levelProgress(xp: number): { level: number; into: number; span: 
  */
 export type ShelfId = 'corner' | 'starters' | 'hub' | 'mastery';
 
-export const SHELF_ORDER: readonly ShelfId[] = ['corner', 'starters', 'hub', 'mastery'];
+/**
+ * Per §8.6.1 — relic unlocks are off (the user's call, 2026-11-04, v0.9.99): every relic is in every run's pool from run
+ * one, the Mastery lane is not on the Mart, and no relic is discovered. The discovery counters still fold, so the
+ * meta-progression rework (roadmap backlog) can turn this back on — or replace it — with every account's history intact.
+ * *Why:* after the v0.9.98 re-tier a fresh account held 3 of the 18 Uncommons, so rarity could not mean what it says.
+ */
+export const RELIC_UNLOCKS_ON = false;
+
+export const SHELF_ORDER: readonly ShelfId[] = RELIC_UNLOCKS_ON ? ['corner', 'starters', 'hub', 'mastery'] : ['corner', 'starters', 'hub'];
 
 /**
  * §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. v0.9.2:
@@ -309,6 +317,7 @@ function count(next: AccountState, counter: string, by = 1, atLeast = false): vo
 
 /** §8.6.1 — every Tier-2 row whose criterion is now met joins the pool, once. */
 function discover(next: AccountState, ctx: AccountContext, delta: AccountDelta): void {
+  if (!RELIC_UNLOCKS_ON) return;
   for (const r of ctx.content.allRelics()) {
     if (!r.discovery || next.relics.includes(r.id)) continue;
     if ((next.counters[r.discovery.counter] ?? 0) >= r.discovery.goal) {

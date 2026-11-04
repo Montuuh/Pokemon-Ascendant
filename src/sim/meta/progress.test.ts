@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { applyAccountEvents, emptyAccount } from './account';
+import { applyAccountEvents, emptyAccount, RELIC_UNLOCKS_ON } from './account';
 import { ACHIEVEMENTS, type MetaEvent } from './achievements';
 import { progressNotes } from './progress';
 import { accountContextFor, discoverableRelics } from './unlocks';
@@ -35,7 +35,7 @@ describe('Progress notes — §8.7', () => {
     }
   });
 
-  it('ProgressNotes_ADiscoveryCounterRising_IsANote_UntilTheRelicIsFound', () => {
+  it.skipIf(!RELIC_UNLOCKS_ON)('ProgressNotes_ADiscoveryCounterRising_IsANote_UntilTheRelicIsFound', () => {
     const id = discoverableRelics(content).find((r) => content.relic(r).discovery);
     if (!id) return;
     const d = content.relic(id).discovery!;

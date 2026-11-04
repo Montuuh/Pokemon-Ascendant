@@ -3,8 +3,8 @@
 > Implements §7.3 (catalog, rarity, synergy categories), §8.6 (meta tiers, pool construction, starting-relic
 > curation), §7.3.7 (Legendary class). Status legend in `README.md`.
 >
-> **Two orthogonal axes, never conflate them** (§8.6.1): **Rarity** = in-run drop weight (Common 60 % /
-> Uncommon 30 % / Rare 10 %; Legendary never drops). **Meta tier** = whether the relic is in your account's pool
+> **Two orthogonal axes, never conflate them** (§8.6.1): **Rarity** = in-run drop weight (Common 70 % /
+> Uncommon 25 % / Rare 5 %; Legendary never drops). **Meta tier** = whether the relic is in your account's pool
 > at all (T1 Foundation 20, always; T2 Discovered 20, unlocked by an event; T3 Mastery 10, bought with Tokens).
 >
 > **Categories** (§7.3.2): `lead` Lead-Economy · `card` Card-Economy · `combat` Combat · `meta`
@@ -15,7 +15,7 @@
 > only when it does something from the first node (§8.6.3). **v0.9.98** moved every relic a band below its rarity down one
 > (six Uncommons, five Rares, four Legendaries) and Wide Lens up; meta tier does not move with rarity.
 
-## 1. Common (32) — drop weight 60 %
+## 1. Common (32) — drop weight 70 %
 
 | id | Name | Cat | Effect | Hook | Status |
 |---|---|---|---|---|---|
@@ -52,7 +52,7 @@
 | `battle-tracker` | Battle Tracker | meta | A species already fought this run never hides its first intent again (§5.5.1). Was "+5 % Witnessed reveal rate", a rate the Pokédex's single Familiar tier no longer has | `run-scouting` | ✅ v0.9.98 |
 | `trauma-salve` | Trauma Salve | meta | Single charge: remove all Trauma from one Pokémon (§8.2.4) | `on-acquire` | ✅ v0.9.98 |
 
-## 2. Uncommon (18) — drop weight 30 %
+## 2. Uncommon (18) — drop weight 25 %
 
 | id | Name | Cat | Effect | Meta tier | Status |
 |---|---|---|---|---|---|
@@ -75,7 +75,7 @@
 | `trainers-instinct` | Trainer's Instinct | combat | See each enemy's intent **one turn further ahead**; it commits to the plan (§5.5.1) | T3 | ✅ v0.9.98 |
 | `box-expander` | Box Expander | meta | Box capacity +2 for this run (stands down under Box Squeeze) | T3 | ✅ v0.9.98 |
 
-## 3. Rare (9) — drop weight 10 %
+## 3. Rare (9) — drop weight 5 %
 
 The seven below plus Perfect Recall and Evolution Catalyst, the Tier-3 rows in §6 that are Rare (Trainer's
 Instinct and Box Expander are Uncommon since v0.9.98).
@@ -157,8 +157,9 @@ Level 8 (§8.3.5), which is the only road to the two above until their systems s
 
 ## 7. Pool construction rules (§8.6.2)
 
-- Active pool = all T1 (20) + unlocked T2 + unlocked T3. Drop weight is by **rarity**, never tier.
-- **Starting Relic** offers are Common+Uncommon only, never Rare or Legendary (§8.6.3).
+- **Relic unlocks are off** (v0.9.99, §8.6): the active pool is every relic, from run 1. With unlocks on it is all
+  T1 + unlocked T2 + unlocked T3. Drop weight is by **rarity**, never tier: 70 / 25 / 5 (v0.9.99, was 60 / 30 / 10).
+- **Starting Relic** offers are Commons only (v0.9.99), never Uncommon, Rare or Legendary (§8.6.3).
 - Duplicates: a relic already held is excluded from every offer and drop for the rest of the run.
 - The `trauma-salve` relic and the Hub upgrade "Trauma Salve Cache" are independent (§7.3.6).
 

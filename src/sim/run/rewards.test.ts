@@ -114,11 +114,11 @@ describe('Relics are scarce — §7.3.1, §2.8.1, §7.3.7', () => {
     expect(drops / seeds.length).toBeLessThan(RELIC_REWARD.trainerChance + 0.1);
   });
 
-  it('TheEliteTrainer_OffersAPick_TwoUncommonsAndARare_TakenOnTheRewardScreen', () => {
+  it('TheEliteTrainer_OffersAPick_ACommonAndTwoUncommons_TakenOnTheRewardScreen', () => {
     const s = winAs('elite');
     const pick = s.pendingReward!.relicPick!;
     expect(pick).toHaveLength(3);
-    expect(pick.map((id) => content.relic(id).rarity).sort()).toEqual(['rare', 'uncommon', 'uncommon']);
+    expect(pick.map((id) => content.relic(id).rarity).sort()).toEqual(['common', 'uncommon', 'uncommon']);
     expect(s.relics).toEqual([]);
     // Only what is on the table can be taken.
     expect(runReducer(s, { type: 'claim-reward', relicId: 'not-a-relic' }, ctx).rejected).toBe('not-offered');
@@ -128,16 +128,16 @@ describe('Relics are scarce — §7.3.1, §2.8.1, §7.3.7', () => {
     expect(apply(s, { type: 'claim-reward' }).relics).toEqual([]);
   });
 
-  it('AnAccountWithNoRareOpen_GetsAnUncommonInTheRaresPlace_§8.6.2', () => {
-    const pool = content.allRelics().filter((r) => r.rarity !== 'rare').map((r) => r.id);
+  it('APoolWithNoUncommonOpen_GetsACommonInTheUncommonsPlace_§8.6.2', () => {
+    const pool = content.allRelics().filter((r) => r.rarity !== 'uncommon').map((r) => r.id);
     const rng = new RngStreams(13).get('LootRNG');
     const pick = rollMixedOffer(rng, content, [], RELIC_REWARD.elitePick, pool);
-    expect(pick.map((id) => content.relic(id).rarity)).toEqual(['uncommon', 'uncommon', 'uncommon']);
+    expect(pick.map((id) => content.relic(id).rarity)).toEqual(['common', 'common', 'common']);
   });
 
-  it('TheGym_OffersOneRareInRegion1_LegendariesAfter_§7.3.7', () => {
+  it('TheGym_OffersTheElitesMixInRegion1_LegendariesAfter_§7.3.7', () => {
     const rng = new RngStreams(11).get('LootRNG');
-    expect(gymRelicOffer(rng, content, [], 0).map((id) => content.relic(id).rarity)).toEqual(['uncommon', 'uncommon', 'rare']);
+    expect(gymRelicOffer(rng, content, [], 0).map((id) => content.relic(id).rarity)).toEqual(['common', 'uncommon', 'uncommon']);
     expect(gymRelicOffer(rng, content, [], 1).map((id) => content.relic(id).rarity)).toEqual(['legendary', 'legendary', 'legendary']);
   });
 

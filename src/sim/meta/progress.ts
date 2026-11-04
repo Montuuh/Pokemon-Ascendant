@@ -2,6 +2,7 @@ import type { ContentRegistry } from '../content/defs';
 import type { AccountState } from './account';
 import { ACHIEVEMENTS, type MedalTier } from './achievements';
 import { discoverableRelics, discoveryProgress } from './unlocks';
+import { RELIC_UNLOCKS_ON } from './account';
 
 // §8.7 / §8.6.1 — what a fold of the account moved, as notes the screen can show (v0.9.6): a medal that crept
 // forward, one that completed, a Tier-2 relic's discovery counter that rose, one that was discovered. Derived by
@@ -22,7 +23,8 @@ export function progressNotes(before: AccountState, after: AccountState, content
     if (to <= from || (a.hidden && !done)) continue;
     notes.push({ kind: 'achievement', id: a.id, name: a.name, tier: a.tier, from, to, goal: a.goal, done });
   }
-  for (const id of discoverableRelics(content)) {
+  // §8.6.1 — no discovery notes while relic unlocks are off: there is nothing to discover.
+  for (const id of RELIC_UNLOCKS_ON ? discoverableRelics(content) : []) {
     if (before.relics.includes(id)) continue;
     const r = content.relic(id);
     const was = discoveryProgress(before, r);

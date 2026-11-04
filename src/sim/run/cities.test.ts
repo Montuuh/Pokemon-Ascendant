@@ -243,8 +243,9 @@ describe('The route services — §2.9', () => {
       expect(rerollPrice(stock)).toBe(PRICES.rerolls[0]);
       expect(rerollPrice({ ...stock, rerolls: 1 })).toBeNull();
     }
-    expect(relics).toBeGreaterThan(10);
-    expect(relics).toBeLessThan(40);
+    // §2.9.2 — two visits in five (v0.9.99): about 48 in 120.
+    expect(relics).toBeGreaterThan(30);
+    expect(relics).toBeLessThan(66);
   });
 
   it('TheMerchant_BallSlot_BuysThreeBalls', () => {

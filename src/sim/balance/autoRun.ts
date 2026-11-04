@@ -840,9 +840,10 @@ export function autoRun(seed: number, starterId: string, ctx: CombatCtx, policy:
 
     // §6.4.1 — a TM that dropped is worth nothing in the bag; teach it to whoever can take it.
     const tm = run.pendingReward?.tm ?? null;
-    // §2.8.1 — the Elite Trainer's pick: the harness takes the Rare when there is one, else the first.
+    // §2.8.1 — a pick: the harness takes the rarest on offer, as a player mostly would (v0.9.99, was "a Rare, else the first").
     const pick = run.pendingReward?.relicPick ?? null;
-    const relicId = pick ? (pick.find((id) => ctx.content.relic(id).rarity === 'rare') ?? pick[0] ?? null) : null;
+    const rank = { common: 0, uncommon: 1, rare: 2, legendary: 3 } as const;
+    const relicId = pick?.length ? [...pick].sort((a, b) => rank[ctx.content.relic(b).rarity] - rank[ctx.content.relic(a).rarity])[0]! : null;
     step({ type: 'claim-reward', ...(relicId ? { relicId } : {}) });
 
     // §6.3.3 — work the evolution queue, one branch pick per screen, then re-pick the active 4 from the

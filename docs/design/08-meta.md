@@ -370,6 +370,12 @@ Small thematic flourishes, balance-neutral by intent:
 
 # §8.6 The relic pool
 
+> **Relic unlocks are off** (the user's call, 2026-11-04, v0.9.99; `RELIC_UNLOCKS_ON`). Every relic is in every run's
+> pool from run one, the Mastery lane is not on the Poké Mart, the PC Terminal has no discoveries tab and nothing is
+> discovered; the counters below still fold, so the meta-progression rework can turn the tiers back on or replace them.
+> *Why:* after the v0.9.98 re-tier a fresh account held 3 of the 18 Uncommons, so rarity could not mean what it says.
+> The tables below are the design the rework starts from, not what a player sees today.
+
 ## §8.6.1 Availability tiers
 
 | Tier | Count | Available | Unlocked by |
@@ -403,8 +409,9 @@ have unlocked. Unlocking more relics never makes the good ones rarer.
 
 ## §8.6.3 Starting Relic curation
 
-The 1-of-3 (or 1-of-4) Starting Relic offer is drawn from **Common and Uncommon only** — never Rare, never
-Legendary. A Starting Relic sets a direction; it does not decide the build.
+The 1-of-3 (or 1-of-4) Starting Relic offer is drawn from **Commons only** (v0.9.99; it was Common and Uncommon, and a
+pick of three nearly always held an Uncommon, so every run opened with one) — never Rare, never Legendary. A Starting
+Relic sets a direction; it does not decide the build.
 
 It also has to **do something from the first node** (`startingRelicFits`, v0.9.97): never a relic spent the moment it
 is picked up (Trauma Salve, with no Trauma yet to clear), and a Type Gem only for a type one of the starters has.
