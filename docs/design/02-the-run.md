@@ -636,6 +636,19 @@ species that answers its own Gym is in its Wild Areas' pool, as an Uncommon when
 **What the grass leaves** (v0.8.6): about a third of won wild fights turn up **1–2 Poké Balls**, and about one in
 seven a supply from the Region's table (§2.7.2) — a catching route should pay for its own throws.
 
+### §2.6.2.1 No wall before the first STAB
+
+**In Region 1, until the team has a hit of its own type, the grass holds back what a Normal move cannot hurt in full**
+(v0.9.94, the user's call: "until you get a STAB move you don't run into a wall"). A starter opens with Tackle or
+Scratch and Growl and learns its first own-type hit at Lv 7–9 (§6.9); a Geodude, an Onix, a Magnemite or a Gastly met
+before then is a fight the player cannot win by playing well, only by running. So while no Active Pokémon holds a
+damaging move of one of its own types that is not Normal, a Wild Area's pool leaves out every species Normal hits for
+less than ×1 — Rock, Steel and Ghost, read off the type chart (§4.1.2), not listed. The card, the odds, the roll and a
+pack's companions all read the pool as it stands now, so what the card shows is what can come out (Pillar 1); the
+walls come back the moment the team learns its hit, and the card says so by showing them again. A row it empties
+passes its share down as any empty row does; a pool that is nothing but walls stays whole. Trainers keep their teams:
+a Hiker's Geodude is announced on the node, and the player can route round it.
+
 ## §2.6.3 Species pools
 
 **Each Region fields its strength** (v0.9.7). Region 1 is first forms only, every one with a form still ahead of it — no

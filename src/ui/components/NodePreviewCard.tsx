@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId, leagueMemberOf } from '@/sim';
+import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, wildFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId, leagueMemberOf } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
 import { MetronomeChip } from './MetronomeChip';
@@ -56,7 +56,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         : plan.kind === 'pack' || plan.kind === 'trio'
           ? IconUsersGroup
           : IconUsers;
-  const art = run ? nodeArt(node, run.map) : { kind: 'sign' as const, src: mysterySign() };
+  const art = run ? nodeArt(node, run.map, wildFor(node, run, content)) : { kind: 'sign' as const, src: mysterySign() };
   const [artScale, setArtScale] = useState(1);
   // §5.9.5 — the Gym's own rule, promised on its preview like its field and its team.
   const gymId = node.kind === 'gym' && run && node.lane !== undefined ? run.map.gyms[node.lane] : undefined;
@@ -207,7 +207,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
                 Lv {node.preview.levelBand[0]}–{node.preview.levelBand[1]}
               </span>
             </h3>
-            <WildPool wild={node.preview.wild} odds={(run && wildChancesFor(node, run, content)) || { chances: node.preview.wild.odds, rolls: 1 }} />
+            <WildPool wild={(run && wildFor(node, run, content)) || node.preview.wild} odds={(run && wildChancesFor(node, run, content)) || { chances: node.preview.wild.odds, rolls: 1 }} />
           </>
         )}
         {/* A save from before v0.9.7: its Wild Area names the species it offered. */}

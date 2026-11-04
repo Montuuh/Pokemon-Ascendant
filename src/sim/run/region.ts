@@ -1125,6 +1125,9 @@ export function evolvedAt(speciesId: string, level: number, content: ContentRegi
  */
 export const STATUS_ACCENT_FROM = 1;
 
+/** §2.6.2.1 — the Regions whose Wild Areas hold back Rock, Steel and Ghost until the team has a STAB hit: Region 1. */
+export const WALL_GUARD_REGIONS = 1;
+
 /**
  * §5.2.2 — how many moves an enemy carries by who it is (v0.9.92, the user's call: "many more moves"): a wild Pokémon
  * four, a trainer's five, the climaxes six — an Elite Trainer's, a Gauntlet's, a Gym's, the League's.

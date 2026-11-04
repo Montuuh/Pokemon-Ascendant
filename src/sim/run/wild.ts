@@ -1,8 +1,9 @@
 import type { ContentRegistry } from '../content/defs';
+import { typeMultiplier } from '../combat/typeChart';
 import { GameRng } from '../rng/gameRng';
 import { fmix32, fnv1a } from '../rng/rngStreams';
 import { wildRolls } from './economy';
-import { WILD_TIERS, type WildTier } from './region';
+import { WILD_TIERS, WALL_GUARD_REGIONS, type WildTier } from './region';
 import type { MapNode, RunState } from './types';
 
 // §2.6.2 — who is waiting in a Wild Area (v0.9.7). The node shows its whole pool by rarity; walking in rolls the
@@ -45,11 +46,43 @@ export function wildChances(wild: NonNullable<MapNode['preview']['wild']>, rolls
   return out;
 }
 
-/** §2.6.2 — a Wild node's chances for this run: the Lure Module counted in. */
+/**
+ * §2.6.2.1 — the team has a hit of its own type that is not Normal: a damaging move in an Active Pokémon's four that
+ * matches one of its types. Until it does, a starter's Tackle and Scratch are all it has.
+ */
+export function teamHasOwnTypeHit(run: RunState, content: ContentRegistry): boolean {
+  return run.box.some((mon) => {
+    if (!run.activeUids.includes(mon.uid)) return false;
+    const types = content.species(mon.speciesId).types;
+    return mon.moveIds.some((id) => {
+      const m = content.move(id);
+      return m.power > 0 && m.type !== 'normal' && types.includes(m.type);
+    });
+  });
+}
+
+/**
+ * §2.6.2.1 — no wall before the first STAB: in the first Regions, while the team holds no hit of its own type, a Wild
+ * Area keeps out the species a Normal move cannot hurt in full (Rock, Steel, Ghost — read off the type chart). A row
+ * it empties is left empty, so its share falls to the commoner row as any empty row's does; a pool it would empty
+ * whole is kept as it is. Every reader of the pool goes through here — the roll, the odds, the card, a pack's
+ * companions — so what the card shows is what can come out of the grass.
+ */
+export function wildFor(node: MapNode, run: RunState, content: ContentRegistry): MapNode['preview']['wild'] {
+  const wild = node.preview.wild;
+  if (!wild || run.regionIndex >= WALL_GUARD_REGIONS || teamHasOwnTypeHit(run, content)) return wild;
+  const hurtByNormal = (id: string) => typeMultiplier('normal', content.species(id).types) >= 1;
+  const pool = { common: wild.pool.common.filter(hurtByNormal), uncommon: wild.pool.uncommon.filter(hurtByNormal), rare: wild.pool.rare.filter(hurtByNormal) };
+  if (!WILD_TIERS.some((t) => pool[t].length)) return wild;
+  return { ...wild, pool };
+}
+
+/** §2.6.2 — a Wild node's chances for this run: the Lure Module and the wall guard (§2.6.2.1) counted in. */
 export function wildChancesFor(node: MapNode, run: RunState, content: ContentRegistry): { chances: Record<WildTier, number>; rolls: number } | null {
-  if (!node.preview.wild) return null;
+  const wild = wildFor(node, run, content);
+  if (!wild) return null;
   const rolls = wildRolls(run, content);
-  return { chances: wildChances(node.preview.wild, rolls), rolls };
+  return { chances: wildChances(wild, rolls), rolls };
 }
 
 /**
@@ -57,7 +90,7 @@ export function wildChancesFor(node: MapNode, run: RunState, content: ContentReg
  * rarest kept. A tier left empty (a pool a level offset evolved together) falls to the next commoner one.
  */
 export function rollWild(node: MapNode, run: RunState, content: ContentRegistry): WildRoll {
-  const wild = node.preview.wild;
+  const wild = wildFor(node, run, content);
   // A save from before v0.9.7: its named species were the offer, and the first was the one fought.
   if (!wild) return { species: node.preview.speciesIds[0]!, tier: 'common' };
   const rng = new GameRng(fmix32((run.seed ^ fnv1a(`wild:${run.regionIndex}:${node.id}`)) >>> 0) || 1);

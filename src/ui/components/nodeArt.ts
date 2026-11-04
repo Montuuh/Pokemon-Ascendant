@@ -65,7 +65,8 @@ export function nodeLabel(node: MapNode, map: RegionMap): string {
   return MAP_LABEL[node.kind] ?? kindName(node);
 }
 
-export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
+/** `wild` is the pool as this run meets it (`wildFor`, §2.6.2.1); absent, the node's own. */
+export function nodeArt(node: MapNode, map: RegionMap, wild = node.preview.wild): NodeArt {
   const p = node.preview;
   switch (node.kind) {
     case 'trainer': {
@@ -102,12 +103,12 @@ export function nodeArt(node: MapNode, map: RegionMap): NodeArt {
       // reef — standing in the one grass every Wild Area shares, and the Pokémon met there going round at its sides:
       // the whole pool, Commons first, so a glance over time shows who lives there.
       const habitat = p.objective?.kind === 'flee' ? null : habitatOf(node, map);
-      const pool = p.wild ? [...p.wild.pool.common, ...p.wild.pool.uncommon, ...p.wild.pool.rare].map(pokemonIcon) : [];
+      const pool = wild ? [...wild.pool.common, ...wild.pool.uncommon, ...wild.pool.rare].map(pokemonIcon) : [];
       if (habitat) return { kind: 'habitat', src: habitatProp(habitat), low: LOW_PROPS.has(habitat), pool };
       // A runner (§5.6.5) is one named Pokémon, met wherever it bolts: the Pokémon itself, as the Elite Wild. So is a
       // Wild Area from a save older than its habitat: one of its Commons, picked by the node's id.
-      const commons = p.wild?.pool.common ?? [];
-      const face = commons.length ? commons[nodeHash(node.id) % commons.length] : p.wild?.pool.uncommon[0] ?? p.speciesIds[0];
+      const commons = wild?.pool.common ?? [];
+      const face = commons.length ? commons[nodeHash(node.id) % commons.length] : wild?.pool.uncommon[0] ?? p.speciesIds[0];
       return face ? { kind: 'pokemon', src: pokemonIcon(face), grass: true } : { kind: 'sign', src: mysterySign() };
     }
     // §2.8.2 — the Elite Wild: the Pokémon itself, in the same grass; §2.12.2 — the Apex: the Legendary, on its node.

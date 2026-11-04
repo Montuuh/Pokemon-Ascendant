@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-04 · **Version:** v0.9.93 (*The series' scale*).
+**Date:** 2026-11-04 · **Version:** v0.9.94 (*No early walls*).
+**Shipped 2026-11-04 (v0.9.94):** §2.6.2.1 wall guard (`wildFor`): R1 wild pools drop Rock/Steel/Ghost until a STAB.
 **Shipped 2026-11-04 (v0.9.93):** stats at half scale (`STAT_SCALE` 0.5, §6.2.3), divisor 5 → 10, flat HP amounts halved,
 save v24. Harness R1 63 · R2|R1 51 · R3|R2 38 · League 67 · run 8 %. Watch: small multipliers floor away on early hits.
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.

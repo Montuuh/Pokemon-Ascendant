@@ -4,7 +4,8 @@ import { wildOdds } from './map';
 import { BIOMES, BIOMES_R2, BIOMES_R3, REGIONS, WILD_TIERS, WILD_TIER_ODDS, type WildTier } from './region';
 import { createRun, defaultRunCtx } from './run';
 import type { MapNode, RunState } from './types';
-import { rollWild, wildChances } from './wild';
+import { rollWild, teamHasOwnTypeHit, wildChances, wildChancesFor, wildFor } from './wild';
+import { typeMultiplier } from '../combat/typeChart';
 
 // §2.6.2 / §2.6.3 — the Wild Areas of v0.9.7: the whole Pokédex placed by Region strength, three rarities, the
 // species rolled on entry.
@@ -118,5 +119,43 @@ describe('The roll — §2.6.2', () => {
     }
     // One roll lands off-Common 40 % of the time; the better of two, 64 %.
     expect(lured / total).toBeGreaterThan(plain / total + 0.15);
+  });
+});
+
+// §2.6.2.1 — no wall before the first STAB: Region 1's grass holds back what a Normal move cannot hurt in full.
+describe('The wall guard — §2.6.2.1', () => {
+  const walls = (ids: string[]) => ids.filter((id) => typeMultiplier('normal', content.species(id).types) < 1);
+  const poolOf = (w: ReturnType<typeof wildFor>) => (w ? [...w.pool.common, ...w.pool.uncommon, ...w.pool.rare] : []);
+
+  it('WallGuard_BeforeAStab_NoRockSteelOrGhostIsRolledShownOrPacked', () => {
+    let guarded = 0;
+    for (let seed = 1; seed <= 40; seed++) {
+      const run = createRun('charmander', seed, ctx);
+      expect(teamHasOwnTypeHit(run, content)).toBe(false);
+      for (const node of wildsOf(run)) {
+        const own = poolOf(node.preview.wild);
+        const met = poolOf(wildFor(node, run, content));
+        if (walls(own).length && walls(own).length < own.length) guarded += 1;
+        // A pool that is all walls is left whole rather than emptied.
+        if (walls(own).length < own.length) expect(walls(met), node.id).toEqual([]);
+        if (walls(own).length < own.length) expect(walls([rollWild(node, run, content).species]), node.id).toEqual([]);
+        const odds = wildChancesFor(node, run, content)!.chances;
+        expect(WILD_TIERS.reduce((a, t) => a + odds[t], 0)).toBeCloseTo(1, 9);
+      }
+    }
+    expect(guarded).toBeGreaterThan(0);
+  });
+
+  it('WallGuard_OnceTheTeamHasAStab_ThePoolIsWholeAgain', () => {
+    const run = createRun('charmander', 3, ctx);
+    const lead = run.box.find((m) => m.uid === run.activeUids[0])!;
+    lead.moveIds = [...lead.moveIds.slice(0, 3), 'ember'];
+    expect(teamHasOwnTypeHit(run, content)).toBe(true);
+    for (const node of wildsOf(run)) expect(wildFor(node, run, content)).toBe(node.preview.wild);
+  });
+
+  it('WallGuard_OutsideRegionOne_DoesNothing', () => {
+    const run = { ...createRun('charmander', 3, ctx), regionIndex: 1 };
+    for (const node of wildsOf(run)) expect(wildFor(node, run, content)).toBe(node.preview.wild);
   });
 });

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { DEFAULT_PROGRESSION, controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
+import { DEFAULT_PROGRESSION, controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, wildFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
 import { MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
@@ -39,7 +39,7 @@ export function routeNodeTip(node: MapNode, run: RunState, art: string, kind: st
   const group = groupLabel(groupPlanFor(node, run));
   const fields = fieldsFor(node, run, content);
   const odds = wildChancesFor(node, run, content);
-  const pool = node.kind === 'wild' && p.objective?.kind !== 'flee' ? p.wild?.pool : undefined;
+  const pool = node.kind === 'wild' && p.objective?.kind !== 'flee' ? wildFor(node, run, content)?.pool : undefined;
   const visibleLevel = p.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild' || p.objective?.kind === 'hold');
   const access = status === 'reachable' ? 'Available now · click to inspect before choosing'
     : status === 'current' ? 'You are here'

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, type FieldId, type MapNode, type RunState } from '@/sim';
+import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, wildFor, type FieldId, type MapNode, type RunState } from '@/sim';
+import { getContent } from '@/content/registry';
 import { IconTag } from '@tabler/icons-react';
 import { useSettingsStore } from '@/app/settingsStore';
 import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
@@ -275,7 +276,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
                 run={run}
                 artScale={nodeScale}
                 status={statusOf(node)}
-                art={nodeArt(node, run.map)}
+                art={nodeArt(node, run.map, wildFor(node, run, getContent()))}
                 ahead={ahead.has(node.id)}
                 caption={labels ? nodeLabel(node, run.map) : (landmarkName(node, run.map) ?? (statusOf(node) === 'reachable' ? nodeLabel(node, run.map) : null))}
                 style={{ left: at.x * px, top: at.y * px, '--node-top': `${at.y * px}px` } as CSSProperties}

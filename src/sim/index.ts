@@ -49,7 +49,7 @@ export { buildOutcomeReport } from './run/report';
 export { GYM_FIELD, laneField, fieldsFor, applyFields } from './run/battlefields';
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
 export { SHINY, shinyChance, applyShiny } from './run/shiny';
-export { rollWild, wildChances, wildChancesFor, type WildRoll } from './run/wild';
+export { rollWild, wildChances, wildChancesFor, wildFor, teamHasOwnTypeHit, type WildRoll } from './run/wild';
 export { forgottenMoves, kitPaths, learnInto, MOVE_CAP, reminderOptions } from './combat/kit';
 export { branchPayload, type BranchPayload } from './run/xp';
 export { listPrice, type PricedKind } from './run/economy';

@@ -1540,6 +1540,15 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.94 — No early walls  ✅ 2026-11-04
+
+**Shipped.** The user's call (2026-11-04): "the first nodes should not hold Pokémon that resist Normal, so until you
+get a STAB move you don't hit a wall". §2.6.2.1: in Region 1, while no Active Pokémon holds a damaging non-Normal move
+of its own type, a Wild pool leaves out what Normal hits for less than ×1 (Rock, Steel, Ghost, off the type chart);
+`wildFor` is the single reader, so the card, the odds, the roll and a pack's companions agree. Trainers unchanged.
+Harness R1 63 · R2|R1 53 · R3|R2 35 · League 50 · run 6 % (30 seeds; R1 unchanged — the auto-player's losses are not
+early walls).
+
 ### v0.9.93 — The series' scale  ✅ 2026-11-04
 
 **Shipped.** The user's call (2026-11-04: "too many stats next to the series — rebalance down"). Measured first: the

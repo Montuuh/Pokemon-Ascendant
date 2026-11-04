@@ -3,6 +3,7 @@ import { activeMoves } from '../combat/stats';
 import { GameRng } from '../rng/gameRng';
 import { fmix32, fnv1a } from '../rng/rngStreams';
 import { regionContent, type BiomeId } from './region';
+import { wildFor } from './wild';
 import type { MapNode, RunState } from './types';
 
 // §5.6.3 — where the groups of §5.6 stand in a run. Every fight node decides, once and for good, whether it is a
@@ -133,7 +134,8 @@ export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState,
   const region = regionContent(run.regionIndex);
   const lead = scenario.enemies[0]!;
   const biome = region.biomes[(node.preview.icon ?? '').replace('wild-', '') as BiomeId];
-  const pool = node.preview.wild?.pool.common ?? biome?.common ?? [lead.species];
+  // §2.6.2.1 — the pool as the wall guard leaves it, so a pack's companion is never the wall the lead was kept from.
+  const pool = wildFor(node, run, content)?.pool.common ?? biome?.common ?? [lead.species];
   switch (plan.kind) {
     case 'pack': {
       const rest = Array.from({ length: plan.size - 1 }, () => companion(pool, lead.species, lead.level, 'wild', rng, content));
