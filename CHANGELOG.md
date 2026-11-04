@@ -15,10 +15,10 @@ The account's systems revisited, and the road to the Champion.
 
 ### v0.9.94 — No early walls · 2026-11-04
 
-Region 1's grass holds back the walls until your team has its first own-type hit.
+Region 1's grass holds back the walls until your team has an own-type hit.
 
-- **No early walls.** No Rock, Steel or Ghost wild Pokémon until a team member knows a STAB attack.
-- **Honest cards.** A Wild Area's card shows the pool as it stands now; the walls return with your first STAB.
+- **No early walls.** No wild Rock, Steel or Ghost until your team knows a STAB attack.
+- **Honest cards.** A Wild card shows the pool as it stands now.
 
 ### v0.9.93 — The series' scale · 2026-11-04
 
