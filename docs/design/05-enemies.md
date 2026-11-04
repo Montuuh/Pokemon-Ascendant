@@ -650,8 +650,10 @@ exist; a run earns 3 Badges, so nine are missed — 220 possible three-Badge com
   off-type coverage move, like Graveler's Ground-typed Dig or Machamp's Thunder Punch. Coverage must be visible
   on its intent, not an unannounced immunity or a new rule added to make a counter fail.
 - **A Home Field** of its type is set at combat start (§4.3.5), over the Gym's own Battlefield (§4.3.14).
-- **The Gym's Attack is its own** (`GYM_ATTACK_MULTIPLIER` ×0.7 / ×0.55 / ×0.5 by Region — Region 2 ×0.62 until v0.9.88 — since 2026-10-20, when its
-  levels came up; ×1.15 / ×0.95 / ×0.9 before), with a **Leader's own scale** where its rule and its type's matchups make
+- **The Gym hits at ×1** (v0.9.95, §2.2.1): no Gym multiplier and no Leader's scale any more; its threat is its
+  team, its rule, its ace's double action and combo, and its levels — the opener at the Region's band top, the middle
+  three two under it, the ace two over (`GYM_LEVEL_PREMIUM` 0 / −2 / +2; +1 / −1 / +3 before). *History:*
+  `GYM_ATTACK_MULTIPLIER` ×0.7 / ×0.55 / ×0.5 by Region from 2026-10-20 (×0.8 / ×0.55 / ×0.58 by v0.9.92), with a **Leader's own scale** where its rule and its type's matchups make
   it harder than its neighbours (`GymDef.attackScale`: Brock ×0.6 — Rock resists most of Region 1 and Rock Solid caps
   what gets through; Misty ×0.85 — the tide hits the whole team at once). A higher level premium once made the run
   *easier*, because a Gym above the team pays it more XP (§6.2.1); since 2026-10-20 the Gym's base XP came down to

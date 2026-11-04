@@ -135,7 +135,10 @@ export function applyGroups(scenario: ScenarioDef, node: MapNode, run: RunState,
   const lead = scenario.enemies[0]!;
   const biome = region.biomes[(node.preview.icon ?? '').replace('wild-', '') as BiomeId];
   // §2.6.2.1 — the pool as the wall guard leaves it, so a pack's companion is never the wall the lead was kept from.
-  const pool = wildFor(node, run, content)?.pool.common ?? biome?.common ?? [lead.species];
+  const guarded = wildFor(node, run, content)?.pool;
+  // A Common row the guard emptied lends the node's other rows, then the lead's own kind: a companion always exists.
+  const rows = guarded ? [guarded.common, [...guarded.uncommon, ...guarded.rare]].find((r) => r.length) : undefined;
+  const pool = rows ?? (guarded ? [lead.species] : biome?.common ?? [lead.species]);
   switch (plan.kind) {
     case 'pack': {
       const rest = Array.from({ length: plan.size - 1 }, () => companion(pool, lead.species, lead.level, 'wild', rng, content));

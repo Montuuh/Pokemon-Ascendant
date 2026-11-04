@@ -106,7 +106,7 @@ weights up when the Box carries stacks. The offer never contains a modifier whos
 | `dense-fog` | Dense Fog | Every non-boss enemy starts with one Unknown intent | 1.15 | Trainer Lv 5 | ✅ |
 | `box-squeeze` | Box Squeeze | Two places fewer than the Box the account has bought (4 of 6; 6 of 8 with the Expanded Box); no relic expands it | 1.20 | Trainer Lv 7 | ✅ |
 | `trauma-surge` | Trauma Surge | Trauma costs 2 pp more per stack in each zone (−7 % / −12 %; cap unchanged) | 1.20 | Trainer Lv 8 | ✅ |
-| `greater-threats` | Greater Threats | Each Region's enemies use the next Region's stat tier | 1.40 | Trainer Lv 10 | ✅ |
+| `greater-threats` | Greater Threats | Every enemy hits 25 % harder (v0.9.95: the one Attack term left, §2.2.1) | 1.40 | Trainer Lv 10 | ✅ |
 | `faint-echo` | Faint Echo | A fainted Pokémon's discarded cards stay in the discard pile until the end of next turn (jamming draws) | 1.20 | Trainer Lv 9 | ✅ |
 | `one-path` | One Path | Both Gym fork routes show the same Gym type — no counter-pick | 1.10 | Trainer Lv 4 | ✅ |
 | `masters-challenge` | Master's Challenge | Every boss gains one extra phase (Phase 3 universal; aces get Phase 4) | 1.50 | Trainer Lv 15 + a Champion clear | ✅ |

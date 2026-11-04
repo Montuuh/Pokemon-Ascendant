@@ -199,14 +199,16 @@ fight — a team of evolved Pokémon with relics and Badges out-grows a band tha
    Geodude is a Golem. Wild Areas offer base forms — a biome is where the base form spawns — and a Region 2
    catch evolves after the catch fight (§6.3.1).
 3. **The status accent** above.
-4. **The enemy stat tier** — every enemy's Attack, by Region. **Never its HP** (v0.9.12, the user's call: an enemy is
-   the Pokémon its species and level say, with the HP that gives — the same as yours):
-
-| Region | Attack | Gym on top |
-|---|---|---|
-| 1 | ×0.55 | ×1.15 |
-| 2 | ×0.70 | ×1.0 |
-| 3 | ×0.76 | ×1.0 |
+4. **No enemy stat tier** (v0.9.95, the user's call: "no negative or positive damage modifiers on the enemies — leave
+   them at ×1"). Every enemy hits as its species and level say, in every Region and every climax — Gym, Elite, League,
+   Challenge Ring and hold-out included; the only Attack term left is **Greater Threats** (§8.8, ×1.25), the player's
+   own choice. Its HP was never scaled (v0.9.12). With the hidden multipliers gone, the enemy levels came down to read
+   like the series' (§2.7.3, §2.8.1, §5.9.3: a route trainer at the wild band's bottom, an Elite one over its top, a
+   Gym's ace two over), and the XP with them (§6.2.1). **Measured, and shipped to be played:** the auto-player clears
+   Region 1 about one run in ten at ×1 and no Region 2 (it cleared 58–63 % of Region 1 at the old tiers, ×0.49 /
+   ×0.48 / ×0.60). The user plays it to judge whether a person can; until then the harness's run bands are floors
+   against breakage, not targets. *(Until v0.9.95: ×0.55 / ×0.70 / ×0.76 from v0.9.90, ×0.49 / ×0.48 / ×0.60 by
+   v0.9.92, with each climax's own multiplier on top; the history below is the tier's.)*
 
 *(v0.9.12: until then the tier cut every enemy's Max HP — ×0.6 / ×0.45 / ×0.35 — and raised its Attack to match. With
 the whole HP back the fights doubled, and tuned by Attack alone Region 3 could not get past 37 % — Gyms of 46 turns,
@@ -646,8 +648,14 @@ damaging move of one of its own types that is not Normal, a Wild Area's pool lea
 less than ×1 — Rock, Steel and Ghost, read off the type chart (§4.1.2), not listed. The card, the odds, the roll and a
 pack's companions all read the pool as it stands now, so what the card shows is what can come out (Pillar 1); the
 walls come back the moment the team learns its hit, and the card says so by showing them again. A row it empties
-passes its share down as any empty row does; a pool that is nothing but walls stays whole. Trainers keep their teams:
-a Hiker's Geodude is announced on the node, and the player can route round it.
+passes its share down as any empty row does — and an emptied Common row passes it up to the next row that holds
+someone; a pool that is nothing but walls stays whole. Trainers keep their teams: a Hiker's Geodude is announced on the
+node, and the player can route round it.
+
+**No counter to a lone starter** (v0.9.95, with the enemies at ×1, §2.2.1): while the Active Team is one Pokémon, the
+grass also holds back every species whose own type hits it super-effectively — a Psyduck's Water Gun at Lv 6 takes
+three quarters of a Charmander's health, and a starter alone cannot swap. The guard lifts with the first catch. A pool
+the two guards would empty keeps the counters (a shore of Water-types before a lone Charmander) and drops only the walls.
 
 ## §2.6.3 Species pools
 
@@ -896,8 +904,9 @@ and everyone's levels stay hidden. A fifth Pokémon may complicate the promised 
 exception until the fight would make the lane's promise misleading. The preview shows it as a Guest pill whose
 bubble names its job, and the Team screen's matchup against that Gym adds the guest's own line (v0.9.88).
 
-**Authoring rules.** A trainer's level band is **its layer's** wild band +1 to +2 (§2.6.5) — a step up from a wild fight,
-not a boss. The archetype must be readable from the trainer's sprite and name, because the player counter-picks their Active 3
+**Authoring rules.** A trainer's lowest Pokémon stands at **its layer's** wild band bottom, its roster's spread above it
+(v0.9.95; +1 to +2 over the band's top while every enemy hit at the Region's tier) — the series' route trainer, at the
+player's level, not a boss. The archetype must be readable from the trainer's sprite and name, because the player counter-picks their Active 3
 from it. No hidden intents at baseline. **Every trainer's, Elite Trainer's
 and Gym's Pokémon fields the form its level warrants**, in every Region — it walks its line's `evolveLevel`s, the
 thresholds the player's own team evolves on (§6.2.4): a Pokémon sent out at or past its threshold is evolved, and
@@ -921,9 +930,9 @@ closes; the Region's trainers lend the two between them, one phase each.
 
 **Levels read right** (2026-10-20, the user's playtest: "a Lv 8 Pidgeotto and a Lv 2 Onix, and mine were all 11 — no
 sense"). The Elite's own Pokémon stand **over** the team that reaches it — its opener two over the wild band's top,
-its closer three (ELITE_LEVEL_PREMIUM +2) — and the two it borrows stand at the route's own level, the band's bottom
-(PAD_LEVEL_GAP 3 under its floor). Its threat is tuned by **Attack** (ELITE_ATTACK_MULTIPLIER ×0.65 / ×0.85 / ×0.9 by
-Region) and its pay by its tier's XP (§6.2.1), so the higher level never refunds itself. *(Until then the premium was
+its closer three — and the two it borrows stand at the route's own level, the band's bottom (PAD_LEVEL_GAP under its
+floor). **Since v0.9.95 its opener stands one over the band's top** (ELITE_LEVEL_PREMIUM 3 → 1) and it hits at ×1 like
+every enemy (§2.2.1; ELITE_ATTACK_MULTIPLIER was ×0.65 / ×0.85 / ×1.0); its pay is its tier's XP (§6.2.1). *(Until then the premium was
 −2 and the padding six under: the difficulty was kept by standing the Elite five levels under the team, and its
 borrowed Pokémon at Lv 2–4 — a number nobody could read as a mini-boss. Measured over 240 runs: the Elite is lost
 9 % / 7 % / 11 % of the time by Region, against 23 / 4 / 6 % before.)*
@@ -1158,8 +1167,8 @@ the rest. The ladder is rolled on arrival, so the next rival is always on screen
 | **Pallet Town** | Gym ace **+5** | **+4** | 4, two at a time | 0.45 · — · **0.08** (271) |
 | **Celadon City** | Gym ace **+8** | **+2** | 3, two at a time | 0.54 · 0.23 · **0.14** (167) |
 
-Every Ring rival hits at **×1.7 Attack** on top of the Region's tier (`RING.attackMultiplier`): the ladder is
-hard by how it hits and how it fights, not by standing a wall of levels over the team. *(v0.8.8: ×1.35 and Celadon at
+Every Ring rival hits at **×1** since v0.9.95, like every enemy (§2.2.1): the ladder is hard by its levels and how it
+fights. *(It hit at ×1.7, then ×2.05, on top of the Region's tier, i.e. ~×1.0 in effect — so the Ring barely moved.)* *(v0.8.8: ×1.35 and Celadon at
 +5 read rung 1 at 0.69 / 0.71 once teams arrived stronger; ×1.7, with Celadon's first rung at +6, reads Pallet 0.54
 and Celadon 0.40 — about half, as the Ring is meant to be. v0.8.9, re-read with the honest harness and Region 1 at
 ×1.55 over 160 seeds: rung 1 Pallet 0.45, Celadon 0.53 — still about half; the whole ladder is rarer. v0.8.10:

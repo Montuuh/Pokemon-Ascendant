@@ -45,6 +45,10 @@ export interface RunPolicy extends AutoPlayerOptions {
    * tuned against that player. It can be switched off to A/B the modifier itself.
    */
   takeRegionModifier: boolean;
+  /** v0.9.95 — the most an Elite (or an Elite Wild) may stand over the team's mean level and still be taken. */
+  eliteGap: number;
+  /** v0.9.95 — the most a trainer may stand over it before a wild fight is taken to grow first. */
+  trainerGap: number;
   /**
    * §2.11.6 — buy a Safari ticket when the wallet covers it, and which Pokémon to stalk first: the lineup's
    * rarest (the tempting one) or its easiest. Absent is on, rarest first.
@@ -72,6 +76,8 @@ export const DEFAULT_RUN_POLICY: RunPolicy = {
   takeMystery: true,
   keepReserve: 0,
   takeRegionModifier: true,
+  eliteGap: 2,
+  trainerGap: 3,
 };
 
 /** One fight as the harness saw it — for balance work that needs to know *where* a run is won or lost. */
@@ -142,6 +148,18 @@ const healthShare = (run: RunState, content: CombatCtx['content']): number => {
 };
 
 /**
+ * v0.9.95 — how far a node's strongest Pokémon stands over the Active Team's mean level, read off the card the player
+ * sees (its named team, else its level band). A player at ×1 enemies reads the levels before walking in; a harness
+ * that did not took a Lv 17 Elite with a Lv 9 team and lost a third of its runs there.
+ */
+const levelGap = (run: RunState, node: MapNode): number => {
+  const active = run.activeUids.map((u) => run.box.find((m) => m.uid === u)).filter((m): m is PartyMon => !!m);
+  const team = active.length ? active.reduce((a, m) => a + m.level, 0) / active.length : 1;
+  const foe = node.preview.enemies?.length ? Math.max(...node.preview.enemies.map((e) => e.level)) : node.preview.levelBand[1];
+  return foe - team;
+};
+
+/**
  * §5.9.2 / §2.5 — how well this Box answers a Gym, as an average type advantage across the Gym's team.
  *
  * This is the measurement the whole fork exists to make a player take, so a harness that ignores it measures
@@ -177,7 +195,7 @@ function chooseNode(run: RunState, content: CombatCtx['content'], policy: RunPol
 
   // §2.8.1 — the Elite is the hardest fight before the Gym and a relic pick: taken when the team can afford it.
   const elite = options.find((n) => n.kind === 'elite' && n.lane === undefined);
-  if (elite && healthShare(run, content) > 0.6) return elite;
+  if (elite && healthShare(run, content) > 0.6 && levelGap(run, elite) <= policy.eliteGap) return elite;
 
   return chooseAmong(run, content, policy, options.filter((n) => n !== elite).length ? options.filter((n) => n !== elite) : options);
 }
@@ -241,10 +259,10 @@ function tendBox(get: () => RunState, content: CombatCtx['content'], act: (a: Pa
 function chooseAmong(run: RunState, content: CombatCtx['content'], policy: RunPolicy, options: MapNode[]): MapNode {
   // §2.8.2 — an Elite Wild is a boss fight for a boss reward. Worth it with a healthy team, not otherwise.
   const eliteWild = options.find((n) => n.kind === 'elite-wild');
-  if (eliteWild && healthShare(run, content) > 0.8 && run.box.length >= 3) return eliteWild;
+  if (eliteWild && healthShare(run, content) > 0.8 && run.box.length >= 3 && levelGap(run, eliteWild) <= policy.eliteGap) return eliteWild;
   // An extra Elite Trainer in a lane is a spike; take it only when clearly ahead of it.
   const laneElite = options.find((n) => n.kind === 'elite');
-  if (laneElite && healthShare(run, content) > 0.85) return laneElite;
+  if (laneElite && healthShare(run, content) > 0.85 && levelGap(run, laneElite) <= policy.eliteGap) return laneElite;
 
   // §2.9.1 — the nurse, when hurt or carrying a status into the next fight (§4.2.7.1).
   const hurt = healthShare(run, content) < policy.restBelow || run.box.some((m) => m.hp > 0 && (m.status || m.confusionTurns > 0));
@@ -264,8 +282,10 @@ function chooseAmong(run: RunState, content: CombatCtx['content'], policy: RunPo
   // A thin Box needs bodies, and a hurt team wants the cheaper fight: one wild Pokémon, not a trainer's two.
   if (wild && (run.box.length < policy.recruitUntil || healthShare(run, content) < 0.85)) return wild;
 
-  // Otherwise take the trainer: more XP, and the route is short.
-  const trainer = options.find((n) => n.kind === 'trainer');
+  // Otherwise take the trainer: more XP, and the route is short — unless it stands well over the team and the grass
+  // offers a fight to grow into it.
+  const trainers = options.filter((n) => n.kind === 'trainer').sort((a, b) => levelGap(run, a) - levelGap(run, b));
+  const trainer = trainers[0] && (!wild || levelGap(run, trainers[0]) <= policy.trainerGap) ? trainers[0] : undefined;
   // §2.9.5 — in a stop column with nothing above worth it, pick up what is on the ground.
   const cache = options.find((n) => n.kind === 'cache');
   return trainer ?? wild ?? cache ?? options.find((n) => n.kind !== 'aid') ?? options[0]!;

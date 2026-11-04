@@ -100,8 +100,8 @@ and Dratini are the Safari's too: the park's are stalked, the Trader's are stole
 
 | Source | XP | Field |
 |---|---|---|
-| Wild | 26 | `wildXp` |
-| Trainer | 39 | `trainerXp` |
+| Wild | 22 (v0.9.95; 26 before) | `wildXp` |
+| Trainer | 24 (v0.9.95; 39 before — a trainer was two levels at Lv 10) | `trainerXp` |
 | Elite | 49 | `eliteXp` |
 | Gym | 28 | `gymXp` |
 | Elite Wild · Gauntlet · Apex | 66 | `apexXp` |

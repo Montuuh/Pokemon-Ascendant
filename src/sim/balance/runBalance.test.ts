@@ -90,12 +90,16 @@ describe('Run pacing — §2.1, §3.7', () => {
     // put a Held Item on a recruit and bank a relic from the Elite is no longer hostage to one matchup:
     // it has four places to find an answer that v0.3 did not have. v0.5's Gym fork is still the designed
     // fix for the *structural* problem, but it is no longer load-bearing for shipping this build.
-    for (const r of rows) expect(r.winRate, `${r.starter} win rate`).toBeGreaterThan(0.2);
+    // v0.9.95 (the user's call, 2026-11-04): enemies at ×1 and the user playtests it. The harness wins R1 about one run in ten
+    // there and no Region 2, so these are floors against breakage, not targets: the user's play is the measure until re-tuned.
+    for (const r of rows) expect(r.winRate, `${r.starter} win rate`).toBeGreaterThan(0.03);
   });
 
   it('Run_IsNotAWalkover_NorAWall', () => {
     const overall = rows.reduce((a, r) => a + r.winRate, 0) / rows.length;
-    expect(overall).toBeGreaterThan(0.35);
+    // v0.9.95 (the user's call, 2026-11-04): enemies at ×1 and the user playtests it. The harness wins R1 about one run in ten
+    // there and no Region 2, so these are floors against breakage, not targets: the user's play is the measure until re-tuned.
+    expect(overall).toBeGreaterThan(0.04);
     expect(overall).toBeLessThan(0.85);
   });
 
@@ -181,16 +185,15 @@ describe('Run pacing — §2.1, §3.7', () => {
     const full = won / n;
     const league = won / Math.max(1, cleared[3]!);
     console.log(`regions: R1 ${(past1 / n).toFixed(2)} · R2|R1 ${r2.toFixed(2)} · R3|R2 ${r3.toFixed(2)} · League|R3 ${league.toFixed(2)} · full run ${full.toFixed(2)}`);
-    expect(r2, 'Region 2, given Region 1').toBeGreaterThan(0.4);
+    // v0.9.95 — enemies at ×1: the harness clears Region 1 about one run in ten and no Region 2 (the user playtests it).
+    // The floors are the breakage guard (a Region 1 nobody clears); the ceilings still catch a walkover.
+    expect(past1 / n, 'Region 1').toBeGreaterThan(0.03);
     expect(r2, 'Region 2, given Region 1').toBeLessThan(0.8);
     // ~50 runs reach Region 3 in this block of 40 seeds a starter (a standard error near 0.07): v0.9.8 read 0.25 here and
     // 0.44 over CURVE_SEEDS=240, so the floor is a sanity bound, not the target (48 %, tuned at 240).
-    expect(r3, 'Region 3, given Region 2').toBeGreaterThan(0.2);
     expect(r3, 'Region 3, given Region 2').toBeLessThan(0.72);
     // §2.2.1 (v0.9.22) — Victory Road and the League cost runs too: about a third of those that beat the third Gym.
-    expect(league, 'Victory Road and the League, given Region 3').toBeGreaterThan(0.35);
     expect(league, 'Victory Road and the League, given Region 3').toBeLessThan(0.92);
-    expect(full, 'the whole run').toBeGreaterThan(0.04);
     expect(full, 'the whole run').toBeLessThan(0.24);
   });
 
@@ -201,7 +204,8 @@ describe('Run pacing — §2.1, §3.7', () => {
     const inRegion = (r: number) => fights.filter((f) => f.region === r);
     const r1 = inRegion(0);
     const r2 = inRegion(1);
-    expect(r2.length).toBeGreaterThan(100);
+    // v0.9.95 — at ×1 the harness rarely reaches Region 2; the measure waits for a sample (see the curve's note).
+    if (r2.length < 100) return console.log(`region 2: ${r2.length} fights — too few to measure the accent`);
     const statused = (list: FightTrace[]) => list.filter((f) => f.team.some((m) => m.status)).length / Math.max(1, list.length);
     console.log(`region 2: fights leaving a status ${statused(r2).toFixed(2)} (R1 ${statused(r1).toFixed(2)})`);
     // ×1.15 since v0.9.10 (×1.5 before): the Pokémon behind a Region 1 Lead are whole and play their own status moves too, so Region 1
@@ -215,10 +219,10 @@ describe('Run pacing — §2.1, §3.7', () => {
     const inRegion = (r: number) => fights.filter((f) => f.region === r).flatMap((f) => f.enemies);
     const final = (list: { species: string }[]) => list.filter((e) => ctx.content.species(e.species).evolvesTo.length === 0).length / Math.max(1, list.length);
     const [r1, r2, r3] = [inRegion(0), inRegion(1), inRegion(2)];
-    expect(r3.length).toBeGreaterThan(40);
     console.log(`final forms: R1 ${final(r1).toFixed(2)} · R2 ${final(r2).toFixed(2)} · R3 ${final(r3).toFixed(2)}`);
-    expect(final(r2)).toBeGreaterThan(final(r1));
-    expect(final(r3)).toBeGreaterThan(final(r2));
+    // v0.9.95 — the later Regions are compared once the harness reaches them (at ×1 it rarely does).
+    if (r2.length > 40) expect(final(r2)).toBeGreaterThan(final(r1));
+    if (r3.length > 40) expect(final(r3)).toBeGreaterThan(final(r2));
     const r1Wild = fights.filter((f) => f.region === 0 && f.kind === 'wild').flatMap((f) => f.enemies.slice(0, 1));
     expect(final(r1Wild), 'a last evolution leading a Region 1 wild fight').toBe(0);
   });
@@ -226,7 +230,8 @@ describe('Run pacing — §2.1, §3.7', () => {
   it('Run_ThickensTheDeck_SomethingEvolvesEveryRun', () => {
     // §6.2.4 — a base form's learnset ends before its threshold, so a run with no evolution is a run whose
     // Pokémon stopped learning. This is the guard that caught that.
-    for (const r of rows) expect(r.avgEvolutions, `${r.starter} evolutions`).toBeGreaterThan(1);
+    // v0.9.95 — at ×1 most harness runs end before Lv 16; something still evolves in a share of them.
+    for (const r of rows) expect(r.avgEvolutions, `${r.starter} evolutions`).toBeGreaterThan(0.1);
   });
 
   it('Run_RecruitsATeam_TheBoxDoesNotStayAtOne', () => {

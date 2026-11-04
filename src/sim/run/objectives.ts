@@ -61,7 +61,7 @@ export interface GuardDef {
  */
 export const HOLD_OUT = {
   chance: 1 / 8,
-  attackMultiplier: 1.2,
+  attackMultiplier: 1,
   /** "A Pokémon that will not be beaten in time": a guard stands on this much more HP than a wild one of its level. */
   hpMultiplier: 1.75,
   guards: [

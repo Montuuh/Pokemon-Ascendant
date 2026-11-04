@@ -1056,15 +1056,15 @@ describe('Layer-scaled difficulty — §2.6.3, §2.7.3', () => {
     expect(Math.max(...late)).toBeGreaterThan(Math.max(...early));
   });
 
-  it('Trainer_SitsAboveTheWildBandOfItsLayer', () => {
-    // §2.7.3 — the roster's own Pokémon sit above the band; since v0.8.5 the padding to TEAM_SIZE stands
-    // PAD_LEVEL_GAP.trainer under the roster's floor (§5.6.3).
+  it('Trainer_StandsOnTheWildBandOfItsLayer', () => {
+    // §2.7.3 (v0.9.95) — the roster's lowest Pokémon stands at the bottom of the band, its spread above it; the padding
+    // to TEAM_SIZE stands PAD_LEVEL_GAP.trainer under the roster's floor (§5.6.3).
     const s = start(33);
     for (const node of Object.values(s.map.nodes)) {
       if (node.kind !== 'trainer') continue;
-      const wildHi = wildBandFor(node.layer)[1];
-      expect(node.preview.levelBand[1], `${node.id}`).toBeGreaterThan(wildHi);
-      expect(node.preview.levelBand[0], `${node.id}`).toBeGreaterThanOrEqual(wildHi + 1 - PAD_LEVEL_GAP.trainer);
+      const wildLo = wildBandFor(node.layer)[0];
+      expect(node.preview.levelBand[1], `${node.id}`).toBeGreaterThanOrEqual(wildLo);
+      expect(node.preview.levelBand[0], `${node.id}`).toBeGreaterThanOrEqual(wildLo - PAD_LEVEL_GAP.trainer);
     }
   });
 

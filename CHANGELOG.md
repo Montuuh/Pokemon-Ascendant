@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.95 — Enemies at full strength · 2026-11-04
+
+Every enemy hits as its species and level say; levels and XP come down to match.
+
+- **No hidden multipliers.** Enemies, Gyms, Elites and the League all hit at ×1.
+- **Series-like levels.** Route trainers stand at your level; Gym aces two over.
+- **Less XP.** Trainers pay about what a wild Pokémon does, per Pokémon.
+- **A fair start.** A lone starter meets no wild Pokémon strong against its type.
+
 ### v0.9.94 — No early walls · 2026-11-04
 
 Region 1's grass holds back the walls until your team has an own-type hit.

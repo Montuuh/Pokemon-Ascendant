@@ -1540,6 +1540,20 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.95 — Enemies at full strength  ✅ 2026-11-04
+
+**Shipped to be played** (the user's call, 2026-11-04: "no negative or positive damage modifiers on the enemies — leave
+them at ×1"; "too much XP, trainers above all"; then, given the measure, "publish it and I'll test it"). (1) Every enemy
+Attack multiplier is ×1 — Region tier, Gym (and `attackScale`), Elite, League, Ring, hold-out; Greater Threats is ×1.25
+(§2.2.1, §8.8). (2) Enemy levels like the series' — a trainer at the wild band's bottom, Elite +1, Gym 0 / −2 / +2
+(§2.7.3, §2.8.1, §5.9.3). (3) XP wild 26 → 22, trainer 39 → 24 (§6.2.1). (4) §2.6.2.1: a lone starter meets no wild
+species super-effective against it; an emptied Common row passes its share up (a v0.9.94 roll could fall through to
+the unfiltered list). (5) Auto-player: one voluntary swap a turn, levels read before an Elite or trainer, and an
+optional one-turn lookahead (`lookahead`, ×14 the cost; off in `npm run check`). **Measured:** R1 10 % · R2|R1 0 %
+with either policy (was 58–63 % · 46–53 %); the run bands are floors against breakage until the user's playtest says
+where ×1 stands. **Next:** the playtest's verdict — if Gyms are walls, cut structure (R1 Gyms of four, no ace double
+action in R1), not numbers.
+
 ### v0.9.94 — No early walls  ✅ 2026-11-04
 
 **Shipped.** The user's call (2026-11-04): "the first nodes should not hold Pokémon that resist Normal, so until you

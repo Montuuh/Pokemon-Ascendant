@@ -123,7 +123,7 @@ export const MODIFIERS: DifficultyModifier[] = [
   {
     id: 'greater-threats',
     name: 'Greater Threats',
-    effect: "Each Region's enemies use the next Region's stat tier.",
+    effect: 'Every enemy hits 25 % harder.',
     xpMultiplier: 1.4,
     unlock: 'Trainer Lv 10',
     unlockLevel: 10,

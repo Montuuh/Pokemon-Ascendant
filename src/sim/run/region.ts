@@ -147,11 +147,12 @@ export function wildBandFor(layer: number, band: readonly [number, number] = WIL
 }
 
 /**
- * §2.7.3 — a trainer sits 1–2 levels above the wild band of its layer. The roster table keeps the team's
- * internal spread; the layer decides where that spread sits.
+ * §2.7.3 — a trainer's lowest Pokémon stands at the bottom of the wild band of its layer (v0.9.95; until then one over
+ * its top, when every enemy hit at the Region's ×0.5 tier — at ×1 that was a wall at every trainer). The roster table
+ * keeps the team's internal spread; the layer decides where that spread sits.
  */
 export function trainerTeamFor(roster: TrainerRoster, layer: number, band: readonly [number, number] = WILD_LEVEL_BAND): { species: string; level: number }[] {
-  const base = wildBandFor(layer, band)[1] + 1;
+  const base = wildBandFor(layer, band)[0];
   const floor = Math.min(...roster.team.map((m) => m.level));
   const team = roster.team.map((m) => ({ species: m.species, level: base + (m.level - floor) }));
   // §2.7.1 / §5.6.3 — a trainer carries the Region's team size (TEAM_SIZE): the roster's own Pokémon first, then
@@ -183,10 +184,10 @@ export const PAD_LEVEL_GAP = { trainer: 4, elite: 4, gym: 3 } as const;
  * higher level never refunds itself in XP. History: +2 and +4/+6 until v0.8.5, when a boss fought one Pokémon at a
  * time; then −2 and −2/0, which kept the difficulty by standing the boss five to eight levels under the team.
  */
-export const ELITE_LEVEL_PREMIUM = 3;
-export const GYM_LEVEL_PREMIUM = { other: 1, middle: -1, ace: 3 } as const;
+export const ELITE_LEVEL_PREMIUM = 1;
+export const GYM_LEVEL_PREMIUM = { other: 0, middle: -2, ace: 2 } as const;
 /** §2.8.1 — the Elite's own Attack, on top of the Region's tier: its threat, now that its levels read right. */
-export const ELITE_ATTACK_MULTIPLIER: readonly number[] = [0.65, 0.85, 1.0];
+export const ELITE_ATTACK_MULTIPLIER: readonly number[] = [1, 1, 1];
 /**
  * §5.9.3 — a Gym's own Attack, on top of the Region's tier (v0.8.8): the climax is a threat by how hard it hits, not
  * by levels — a higher premium made the run easier, because a Gym above the team pays it more XP (§6.2.1). v0.9.8 walked
@@ -198,7 +199,7 @@ export const ELITE_ATTACK_MULTIPLIER: readonly number[] = [0.65, 0.85, 1.0];
  * Region 2 went 0.62 → 0.55. v0.9.92 (§5.9.3) re-cut the Gyms to forms legal at their levels — Region 1's Kabuto where it
  * fielded Kabutops — and gave every ace a combo: Region 1 0.7 → 0.8, Region 3 0.5 → 0.58.
  */
-export const GYM_ATTACK_MULTIPLIER: readonly number[] = [0.8, 0.55, 0.58];
+export const GYM_ATTACK_MULTIPLIER: readonly number[] = [1, 1, 1];
 
 /**
  * Pad a team to `size` from `pool` (another species first), deterministically: the pick is a hash of `key` and
@@ -411,7 +412,6 @@ export const GYMS: GymDef[] = [
     badgeId: 'boulder-badge', rule: 'rock-solid',
     // §5.9.3 — Rock resists most of what Region 1 recruits, and Rock Solid caps the hits that get through: with its
     // whole team at its real level (2026-10-20) Brock ended two runs in three at the Region's Attack.
-    attackScale: 0.6,
     // §2.5 — each Gym Leader fights in their own dedicated Gym arena backdrop.
     stage: 'gym-rock',
     line: 'My rock-hard willpower is evident even in my Pokémon!',
@@ -435,7 +435,6 @@ export const GYMS: GymDef[] = [
     type: 'water',
     badgeId: 'cascade-badge', rule: 'riptide',
     // §5.9.3 — the tide's turns hit the whole team at once; at its real levels Misty lost one run in four.
-    attackScale: 0.85,
     stage: 'gym-water',
     line: 'My policy is an all-out offensive with Water-type Pokémon!',
     telegraph: 'Taxes your AP and muddles your hand. Bring Grass or Electric, and cards you can afford.',
@@ -758,7 +757,6 @@ export const GYMS_R2: GymDef[] = [
   {
     id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge', rule: 'meltdown',
     // §5.9.3 — five Fire attackers on a Home Field, not one: its authored team lost 17 % of 29 arrivals at the Region's Attack (v0.9.88).
-    attackScale: 0.85,
     stage: 'gym-fire',
     line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
@@ -774,7 +772,6 @@ export const GYMS_R2: GymDef[] = [
   {
     id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge', rule: 'bloom',
     // §5.9.3 — five members each untouched by a hit bloom back: its authored team lost 14 % of 28 arrivals (v0.9.88).
-    attackScale: 0.9,
     stage: 'gym-grass',
     line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
     telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
@@ -804,7 +801,6 @@ export const GYMS_R2: GymDef[] = [
   {
     id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge', rule: 'toxic',
     // §5.9.3 — Toxic doubling on five Poison carriers, not two: 25 % of 64 arrivals lost at the Region's Attack (v0.9.88).
-    attackScale: 0.85,
     stage: 'gym-poison',
     line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
@@ -1252,11 +1248,17 @@ export interface StatTier {
  * (`GYM_ATTACK_MULTIPLIER`, `ELITE_ATTACK_MULTIPLIER`, `LEAGUE.attackMultiplier`). With the slower curve: ×0.49 / ×0.48 /
  * ×0.60 — R1 58 % · R2|R1 46 % · R3|R2 44 % · League 71 % · run 8 %.
  */
+// v0.9.95 (§2.2.1, the user's call: "no negative or positive damage modifiers on the enemies — leave them at ×1"):
+// every enemy hits as its species and level say, in every Region and every climax. The Regions differ by their
+// Pokémon, their levels, their status accent and their rules, not by a hidden multiplier.
 export const REGION_STAT_TIER: readonly StatTier[] = [
-  { attack: 0.49 },
-  { attack: 0.48 },
-  { attack: 0.6 },
+  { attack: 1 },
+  { attack: 1 },
+  { attack: 1 },
 ];
+
+/** §8.8 Greater Threats — the one Attack term left on the enemies, and only the player's own choice: ×this everywhere. */
+export const GREATER_THREATS_ATTACK = 1.25;
 
 /**
  * §2.2, §8.8 Greater Threats — the tier a Region's enemies fight at. The modifier borrows the next Region's
@@ -1264,13 +1266,8 @@ export const REGION_STAT_TIER: readonly StatTier[] = [
  * is as far above Region 3 as Region 3 is above Region 2.
  */
 export function statTierFor(regionIndex: number, greaterThreats: boolean): StatTier {
-  const i = regionIndex + (greaterThreats ? 1 : 0);
-  const last = REGION_STAT_TIER.length - 1;
-  if (i <= last) return REGION_STAT_TIER[Math.max(0, i)]!;
-  const top = REGION_STAT_TIER[last]!;
-  const prev = REGION_STAT_TIER[last - 1]!;
-  const steps = i - last;
-  return { attack: top.attack + (top.attack - prev.attack) * steps };
+  const tier = REGION_STAT_TIER[Math.min(REGION_STAT_TIER.length - 1, Math.max(0, regionIndex))]!;
+  return greaterThreats ? { attack: tier.attack * GREATER_THREATS_ATTACK } : tier;
 }
 
 export const RUN_START = {

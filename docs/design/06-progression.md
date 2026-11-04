@@ -28,12 +28,16 @@ XP is awarded at combat end and scales with the enemy tier.
 
 | Enemy | XP | Config field |
 |---|---|---|
-| Wild | 26 | `ProgressionConfig.wildXp` |
-| Trainer | 39 | `trainerXp` |
+| Wild | 22 (v0.9.95; 26 before) | `ProgressionConfig.wildXp` |
+| Trainer | 24 (v0.9.95; 39 before — a trainer was two levels at Lv 10) | `trainerXp` |
 | Elite | 49 | `eliteXp` |
 | Gym Leader | 28 | `gymXp` |
 | Elite Wild, Victory Road's Gauntlet and Apex | 66 | `apexXp` |
 | A League door | 120 | `leagueXp` |
+
+*(v0.9.95, the user's playtest: "Lv 18 at the point of no return; trainers above all give a lot". A trainer already pays
+for every Pokémon it sends and stood over the team, so its rate came down to about the wild's per Pokémon; with the enemy
+levels lowered too (§2.7.3), the harness reaches the point of no return at Lv ~12 where it stood at ~15.)*
 
 *(2026-10-20: the Elite and the Gym 66 → 49 and 120 → 80, when their levels came up to stand over the team (§2.8.1,
 §5.9.3): the level factor below pays a foe over the team more, and the base came down by as much, so the team reaches

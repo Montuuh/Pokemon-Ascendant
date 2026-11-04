@@ -480,7 +480,7 @@ unlock criterion.
 | **Box Squeeze** | The Box holds two fewer than the account has bought — 4 instead of 6, or 6 instead of 8 with the Expanded Box — and no relic expands it. *The user's note (2026-10-19): a flat 4 ignored the Box you paid for; the picker shows your numbers beside the base ones, struck through.* | 1.20 | Level 7 |
 | **Trauma Surge** | Trauma costs 2 pp more per stack in each zone (−7 % / −12 %; cap unchanged) | 1.20 | Level 8 |
 | **Faint Echo** | A fainted Pokémon's discarded cards stay in the discard pile until the end of next turn | 1.20 | Level 9 |
-| **Greater Threats** | Each Region's enemies use the next Region's stat tier | 1.40 | Level 10 |
+| **Greater Threats** | Every enemy hits 25 % harder (v0.9.95: the one Attack term left, §2.2.1) | 1.40 | Level 10 |
 | **Master's Challenge** | Every boss gains one extra phase; aces get a fourth | 1.50 | Level 15 + a Champion clear |
 
 **One Path** removes the informed choice at the fork, which is a genuine difficulty increase and a deliberate,

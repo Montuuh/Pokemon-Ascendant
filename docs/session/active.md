@@ -1,6 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-04 · **Version:** v0.9.94 (*No early walls*).
+**Date:** 2026-11-04 · **Version:** v0.9.95 (*Enemies at full strength*).
+**Shipped 2026-11-04 (v0.9.95), for the user to playtest:** enemies ×1 everywhere, lower enemy levels, XP 22/24, lone-
+starter counter guard, auto-player fixes + optional lookahead. Harness R1 10 % · R2 0 %: bands are floors. **Waiting on
+the user's verdict**; if Gyms wall, cut structure (R1 Gyms of 4, no R1 ace double action).
 **Shipped 2026-11-04 (v0.9.94):** §2.6.2.1 wall guard (`wildFor`): R1 wild pools drop Rock/Steel/Ghost until a STAB.
 **Shipped 2026-11-04 (v0.9.93):** stats at half scale (`STAT_SCALE` 0.5, §6.2.3), divisor 5 → 10, flat HP amounts halved,
 save v24. Harness R1 63 · R2|R1 51 · R3|R2 38 · League 67 · run 8 %. Watch: small multipliers floor away on early hits.

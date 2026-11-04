@@ -21,7 +21,7 @@ export const LEAGUE = {
    * §5.11 — the League's own Attack, on top of its tier (v0.9.92): its aces' combos and the Champion's last two acting
    * twice made it the hardest step (48 % given Region 3 against 59 %); ×0.9 hands that back.
    */
-  attackMultiplier: 0.9,
+  attackMultiplier: 1,
 } as const;
 
 /** One League member: who, the type they are known by, where they fight, and their team as levels over the base. */

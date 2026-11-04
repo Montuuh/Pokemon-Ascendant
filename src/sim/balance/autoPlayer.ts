@@ -19,6 +19,12 @@ export interface AutoPlayerOptions {
   healBelow: number;
   /** Throw a ball as soon as the gauge is READY (wild only). */
   tryCatch: boolean;
+  /**
+   * v0.9.95 — look a turn ahead: every candidate action is played out to the end of the enemy's answer with the rule
+   * policy, and the best-standing one is taken. A player reads the intents and the numbers on the cards and plans the
+   * turn; the rule policy alone took the first rule that fired.
+   */
+  lookahead?: boolean;
 }
 
 export const DEFAULT_POLICY: AutoPlayerOptions = { retreatBelow: 0.3, healBelow: 0.45, tryCatch: false };
@@ -39,8 +45,63 @@ function healthiest(state: CombatState, indices: number[]): number | undefined {
   return [...indices].sort((a, b) => hpFraction(state.player.team[b]!) - hpFraction(state.player.team[a]!))[0];
 }
 
+/**
+ * v0.9.95 — how a fight stands, for the lookahead: the share of the enemy side's HP taken, a fainted foe worth half a
+ * bar more, against the team's share lost (weighed heavier: the run carries its HP) and a fainted ally's four cards.
+ */
+function standing(s: CombatState): number {
+  if (s.outcome === 'defeat') return -100;
+  const foes = [...s.enemies, ...s.enemyQueue, ...s.defeatedEnemies];
+  const dealt = foes.reduce((a, e) => a + (1 - Math.max(0, e.hp) / Math.max(1, e.maxHp)) + (e.hp <= 0 ? 0.5 : 0), 0);
+  const taken = s.player.team.reduce((a, m) => a + (1 - Math.max(0, m.hp) / Math.max(1, m.maxHp)) * 1.3 + (m.hp <= 0 ? 2 : 0), 0);
+  return dealt - taken + (s.outcome === 'in-progress' ? 0 : 50);
+}
+
+/** v0.9.95 — play the rule policy from here to the end of the enemy's answer (the next turn's start), or the fight's end. */
+function rollout(start: CombatState, ctx: CombatCtx, opts: AutoPlayerOptions): CombatState {
+  let s = start;
+  const turn = start.turn;
+  for (let i = 0; i < 16 && s.outcome === 'in-progress' && s.turn === turn; i++) {
+    const r = combatReducer(s, ruleAction(s, ctx, opts) ?? { type: 'end-turn' }, ctx);
+    s = r.rejected ? combatReducer(s, { type: 'end-turn' }, ctx).state : r.state;
+  }
+  return s;
+}
+
+/** v0.9.95 — every action worth weighing now: each playable card at each reachable target, each allowed swap, the end. */
+function candidates(state: CombatState, ctx: CombatCtx): CombatAction[] {
+  const out: CombatAction[] = [{ type: 'end-turn' }];
+  for (const c of state.player.hand) {
+    const p = cardPlayability(state, c.id, ctx)!;
+    if (!p.playable || p.needsStepBackChoice) continue;
+    const targets = p.hitsAll || state.enemies.length <= 1 ? [undefined] : p.targets.filter((t) => t.reachable).map((t) => t.uid);
+    for (const uid of targets.length ? targets : [undefined]) out.push({ type: 'play-card', cardId: c.id, ...(uid === undefined ? {} : { targetUid: uid }) });
+  }
+  for (const o of swapOptions(state, ctx.config)) if (o.allowed) out.push({ type: 'swap', benchIndex: o.benchIndex });
+  return out;
+}
+
 /** Decide the next action for the current state, or null when nothing can be done. */
 export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerOptions = DEFAULT_POLICY): CombatAction | null {
+  const rule = ruleAction(state, ctx, opts);
+  if (!opts.lookahead || !rule || state.outcome !== 'in-progress' || state.phase !== 'action' || state.player.pendingLeadPick) return rule;
+  // The rule's own pick is a candidate too, and wins a tie: the lookahead only overrules it for a better turn.
+  const plain = { ...opts, lookahead: false };
+  const value = (a: CombatAction): number => {
+    const r = combatReducer(state, a, ctx);
+    return r.rejected ? -Infinity : standing(rollout(r.state, ctx, plain));
+  };
+  let best = rule;
+  let bestValue = value(rule);
+  for (const a of candidates(state, ctx)) {
+    const v = value(a);
+    if (v > bestValue + 1e-9) { best = a; bestValue = v; }
+  }
+  return best;
+}
+
+/** The rule policy: the first rule that fires. */
+function ruleAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerOptions = DEFAULT_POLICY): CombatAction | null {
   if (state.outcome !== 'in-progress') return null;
   if (state.player.pendingLeadPick) {
     const best = healthiest(state, pickLeadOptions(state));
@@ -134,7 +195,10 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   const incoming = (forecastTurn(state, ctx).incoming[l.uid] ?? []).reduce((a, h) => a + h.amount, 0);
   const intent = enemy.intent;
   const threatensLead = !!intent && (intent.kind === 'attack' || intent.kind === 'cleave' || state.enemies.length > 1) && incoming > 0;
-  if (threatensLead && intent.moveId && (hpFraction(l) < opts.retreatBelow || incoming >= l.hp)) {
+  // v0.9.95 — one answer a turn: a second swap only to save a Lead that would faint, never a third. The harness that
+  // swapped on every threat spent whole turns walking the bench round (SSS|) and played no card.
+  const swapped = state.player.swapCounter;
+  if (threatensLead && intent.moveId && swapped < 2 && (swapped === 0 || incoming >= l.hp) && (hpFraction(l) < opts.retreatBelow || incoming >= l.hp)) {
     const options = swapOptions(state, ctx.config).filter((o) => o.allowed);
     if (options.length > 0) {
       const moveType = ctx.content.move(intent.moveId).type;
@@ -150,7 +214,7 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
   // still cheap and leaves AP to act. Measured: the stricter reading (only a super-effective hit, only into a resist)
   // almost never fired.
   // v0.8.8's harness only swapped a Lead that was nearly down, and played a player who ignores the intents.
-  if (threatensLead && intent.moveId && incoming >= l.hp * 0.35) {
+  if (threatensLead && intent.moveId && swapped === 0 && incoming >= l.hp * 0.35) {
     const moveType = ctx.content.move(intent.moveId).type;
     const leadMult = typeMultiplier(moveType, l.types);
     if (leadMult >= 1) {
@@ -174,7 +238,7 @@ export function nextAction(state: CombatState, ctx: CombatCtx, opts: AutoPlayerO
 
   // 4a. Nothing damaging is online but a bench Pokémon holds melee cards: swap to bring them online
   //     when the swap plus the card still fit in the AP budget (§3.3.1 — the swap IS the decision).
-  if (damaging.length === 0) {
+  if (damaging.length === 0 && swapped === 0) {
     const locked = all.filter((p) => p.reason === 'melee-needs-lead' && p.damage && p.damage.final > 0 && p.owner.hp > 0);
     const options = swapOptions(state, ctx.config).filter((o) => o.allowed);
     let best: { benchIndex: number; value: number } | null = null;

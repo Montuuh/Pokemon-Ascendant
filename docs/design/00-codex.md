@@ -97,8 +97,8 @@ Pokémon.
   micro-rest to everyone standing between doors. Beating the Champion wins the run.
 - **Escalation is mechanical**: R1 baseline · R2 status on enemy intents · R3 field effects and the largest
   multi-enemy groups (groups appear in every Region, more and larger each Region, §5.6.3; cards are dragged onto a target, §5.6). The
-  numeric half (§2.2.1): trainers at their evolved forms from R2, an enemy stat tier on Attack only — an enemy's HP is
-  never scaled (v0.9.12; ×0.55 / ×0.70 / ×0.76 since v0.9.90's real evolution levels; divisor 10 with the half-scale stats since v0.9.93) — **Acting Twice** (§5.6.1: two intents on one 3-AP
+  numeric half (§2.2.1): trainers at their evolved forms from R2, every enemy at ×1 Attack since v0.9.95 (no Region tier, no climax multiplier; Greater Threats ×1.25 is the player's
+  choice) and its HP never scaled (v0.9.12; divisor 10 with the half-scale stats since v0.9.93) — **Acting Twice** (§5.6.1: two intents on one 3-AP
   budget, broken by a quarter of its HP or a super-effective hit; v0.9.92: a Gym's ace and the Elite's Lead from R1, a Rare from
   R1's eighth column, every trainer's ace and a Gym's first from R2, the League's aces and the Champion's last two; at most two), and a
   curve the harness holds — R2 ~60 % given R1, R3 ~50 % given R2, the whole run ~1 in 6.

@@ -64,8 +64,11 @@ export const DEFAULT_PROGRESSION: ProgressionConfig = {
   // v0.8.6: ×0.8 with extra enemies at extraEnemyXpShare (were 48 / 72 / 110 / 200, every enemy in full).
   // v0.8.7: wild and trainer ×0.9 again (29 / 43) — the 20-column route walks ~12 fights where the old one walked
   // ~9.5 (§2.5.1). ×0.8 overshot (360 runs: R3|R2 30 %); ×0.9 reads R1 64 % · R2 61 % · R3 58 %.
-  wildXp: 26,
-  trainerXp: 39,
+  // v0.9.95 (§6.2.1, the user's playtest: "Lv 18 at the point of no return — trainers above all give a lot"): 26 / 39 →
+  // 22 / 24. A trainer already pays for every Pokémon it sends (extraEnemyXpShare) and stands over the team (the level
+  // factor), so its per-Pokémon rate came down to the wild's: one trainer is a level at Lv 10, not two.
+  wildXp: 22,
+  trainerXp: 24,
   // 2026-10-20: 66 → 49 and 120 → 80 — the Elite and the Gym stand over the team now (§2.8.1, §5.9.3), and the level
   // factor below pays them that much more; the run's XP stays where it was (harness: team Lv at each Gym unchanged).
   eliteXp: 49,

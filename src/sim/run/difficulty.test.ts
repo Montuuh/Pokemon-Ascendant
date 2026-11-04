@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
 import {
   activeMoves, createRun, defaultRunCtx, evolvedAt, levelXpFactor, runReducer, statTierFor, DEFAULT_PROGRESSION,
-  REGION_STAT_TIER, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_MOVES,
+  GREATER_THREATS_ATTACK, REGION_STAT_TIER, STATUS_ACCENT_FALLBACK, STATUS_ACCENT_MOVES,
   type RunAction, type RunState,
 } from '@/sim';
 import { PIDGEY, scenario, start } from '@/sim/testing/harness';
@@ -120,12 +120,12 @@ describe('The enemy stat tier — §2.2.1', () => {
     }
   });
 
-  it('GreaterThreats_BorrowsTheNextRegionsTier_AndExtrapolatesPastTheLast_§8.8', () => {
-    for (const e of firstFight(0, ['greater-threats']).enemies) expect(e.attackMultiplier ?? 1).toBeCloseTo(REGION_STAT_TIER[1]!.attack);
-    const top = REGION_STAT_TIER[2]!;
-    const prev = REGION_STAT_TIER[1]!;
-    expect(statTierFor(2, true).attack).toBeCloseTo(top.attack + (top.attack - prev.attack));
-    expect(statTierFor(2, false)).toEqual(top);
+  it('EnemiesHitAtX1_GreaterThreatsIsTheOneTerm_§8.8', () => {
+    // §2.2.1 (v0.9.95) — no Region tier: every enemy at ×1; Greater Threats, the player's own choice, is ×1.25 everywhere.
+    for (const t of REGION_STAT_TIER) expect(t.attack).toBe(1);
+    for (const e of firstFight(0, []).enemies) expect(e.attackMultiplier ?? 1).toBe(1);
+    for (const e of firstFight(0, ['greater-threats']).enemies) expect(e.attackMultiplier ?? 1).toBeCloseTo(GREATER_THREATS_ATTACK);
+    for (const r of [0, 1, 2]) expect(statTierFor(r, true).attack).toBeCloseTo(GREATER_THREATS_ATTACK);
   });
 
   it('TheAttackTier_ReachesTheCombatant', () => {

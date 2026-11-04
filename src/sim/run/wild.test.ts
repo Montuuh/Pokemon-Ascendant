@@ -146,16 +146,39 @@ describe('The wall guard — §2.6.2.1', () => {
     expect(guarded).toBeGreaterThan(0);
   });
 
-  it('WallGuard_OnceTheTeamHasAStab_ThePoolIsWholeAgain', () => {
-    const run = createRun('charmander', 3, ctx);
+  it('WallGuard_OnceTheTeamHasAStabAndCompany_ThePoolIsWholeAgain', () => {
+    // A copy: the run is edited below, and another test's createRun must not meet the edit.
+    const run = structuredClone(createRun('charmander', 3, ctx));
     const lead = run.box.find((m) => m.uid === run.activeUids[0])!;
     lead.moveIds = [...lead.moveIds.slice(0, 3), 'ember'];
     expect(teamHasOwnTypeHit(run, content)).toBe(true);
+    // Still alone: the walls are back, the counters to a lone Charmander are not.
+    for (const node of wildsOf(run)) {
+      const met = poolOf(wildFor(node, run, content));
+      const own = poolOf(node.preview.wild);
+      if (met.length < own.length) expect(met.every((id) => !content.species(id).types.some((t) => typeMultiplier(t, ['fire']) > 1)), node.id).toBe(true);
+    }
+    const mate = { ...lead, uid: 'mate', speciesId: 'pidgey' };
+    run.box.push(mate);
+    run.activeUids.push(mate.uid);
     for (const node of wildsOf(run)) expect(wildFor(node, run, content)).toBe(node.preview.wild);
   });
 
+  it('CounterGuard_ALoneStarter_MeetsNoSpeciesThatHitsItSuperEffectively', () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const run = createRun('charmander', seed, ctx);
+      for (const node of wildsOf(run)) {
+        const own = poolOf(node.preview.wild);
+        const counters = own.filter((id) => content.species(id).types.some((t) => typeMultiplier(t, ['fire']) > 1));
+        const met = poolOf(wildFor(node, run, content));
+        // A pool the counters would empty keeps them (the walls' guard alone stands): only a pool with something else drops them.
+        if (own.some((id) => !counters.includes(id) && typeMultiplier('normal', content.species(id).types) >= 1)) expect(met.filter((id) => counters.includes(id)), node.id).toEqual([]);
+      }
+    }
+  });
+
   it('WallGuard_OutsideRegionOne_DoesNothing', () => {
-    const run = { ...createRun('charmander', 3, ctx), regionIndex: 1 };
+    const run = { ...structuredClone(createRun('charmander', 3, ctx)), regionIndex: 1 };
     for (const node of wildsOf(run)) expect(wildFor(node, run, content)).toBe(node.preview.wild);
   });
 });
