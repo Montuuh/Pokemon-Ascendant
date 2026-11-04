@@ -130,7 +130,9 @@ describe('The wall guard — §2.6.2.1', () => {
   it('WallGuard_BeforeAStab_NoRockSteelOrGhostIsRolledShownOrPacked', () => {
     let guarded = 0;
     for (let seed = 1; seed <= 40; seed++) {
-      const run = createRun('charmander', seed, ctx);
+      // A Charmander without its Ember (the starters know their first STAB at Lv 3 since v0.9.96): Eevee's case.
+      const run = structuredClone(createRun('charmander', seed, ctx));
+      run.box[0]!.moveIds = run.box[0]!.moveIds.filter((m) => m !== 'ember');
       expect(teamHasOwnTypeHit(run, content)).toBe(false);
       for (const node of wildsOf(run)) {
         const own = poolOf(node.preview.wild);
@@ -150,7 +152,6 @@ describe('The wall guard — §2.6.2.1', () => {
     // A copy: the run is edited below, and another test's createRun must not meet the edit.
     const run = structuredClone(createRun('charmander', 3, ctx));
     const lead = run.box.find((m) => m.uid === run.activeUids[0])!;
-    lead.moveIds = [...lead.moveIds.slice(0, 3), 'ember'];
     expect(teamHasOwnTypeHit(run, content)).toBe(true);
     // Still alone: the walls are back, the counters to a lone Charmander are not.
     for (const node of wildsOf(run)) {

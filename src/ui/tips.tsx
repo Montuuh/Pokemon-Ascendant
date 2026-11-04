@@ -1577,10 +1577,12 @@ export function catchPickerTip(odds: CatchOdds): ReactNode {
   const ceiling = Math.round(odds.catchRate * 100);
   return (
     <Tip
-      title={odds.guaranteed ? 'Master Ball Charm — this throw cannot miss' : 'Catching'}
+      title={odds.firstCatch ? 'Your first catch — this throw cannot miss' : odds.guaranteed ? 'Master Ball Charm — this throw cannot miss' : 'Catching'}
       meta={[odds.hasStatus ? (odds.statusMult >= 1.5 ? 'Asleep or frozen ×1.5' : 'Status ×1.2') : 'No status yet', `Species ceiling ${ceiling}%`]}
       body={
-        odds.guaranteed
+        odds.firstCatch
+          ? 'While your starter fights alone, any ball you throw holds. Once a second Pokémon joins, every throw rolls its chance.'
+          : odds.guaranteed
           ? 'Throw any ball: the charm is spent on this run whatever happens.'
           : `Each throw spends the ball and is the series' four shake checks — three wobbles, then the click — which all pass at exactly the chance on its row. ${ballMultipliers()} The chance climbs as its HP falls — steeply in the last quarter — and a status multiplies it; Sleep and Freeze most.`
       }

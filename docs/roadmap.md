@@ -1540,6 +1540,20 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.96 — The series' formulas  ✅ 2026-11-04
+
+**Shipped to be played** (the user's playtest, 2026-11-04: "the stats are very unbalanced between Pokémon — Diglett and
+Onix do nothing; non-STAB moves barely hurt; some enemies have far more HP; the first levels are slow with so few
+moves"; then "yes, all of it"). (1) §6.2.3: Gen III's stat formula, `(2·base + 15)·L/100 + 5`, HP `+ L + 10` — Diglett
+16 HP to Snorlax's 31 at Lv 5 (was 7 to 90). (2) §4.1.1: the series' damage formula, level term and +2, divisor 100
+(twice the series', as a turn plays several hits; fixtures' fight lengths held). (3) §4.1.3.1: the rhythm reads Speed
+back on the base scale (`baseOfStat`) — v0.9.93 had slowed every meter. (4) §3.11.4: Guard grows with the level term.
+(5) §6.9: starters' third move at Lv 3; 15 Region-1 base forms get an own-type hit near Lv 7
+(`scripts/v0996-early-hits.mjs`). (6) §2.6.4.5: a lone starter's ball is sure. (7) Super / Hyper Potion 40 / 90; Pallet's
+Ring at the Gym ace's level, +2 a rung. Save v25 keeps each Pokémon's share of HP. **Measured:** fixtures as before
+(wild 3, pair 6, boss 7–8 turns; late fights shorter); harness R1 9 % · R2 0 % (floors, as in v0.9.95). **Next:** the
+user's playtest.
+
 ### v0.9.95 — Enemies at full strength  ✅ 2026-11-04
 
 **Shipped to be played** (the user's call, 2026-11-04: "no negative or positive damage modifiers on the enemies — leave

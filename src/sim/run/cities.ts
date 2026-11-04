@@ -50,6 +50,8 @@ export interface CityDef {
    * v0.8.7: the 20-column route sends stronger teams into both Cities, so Pallet's step is +4 and Celadon's first rung
    * +5. Measured: Pallet rung 1 0.80, ladder 0.23; Celadon rung 1 0.72, rung 2 0.30, ladder 0.14. The Ring's real
    * retune is v0.8.8's.
+   * v0.9.96: Pallet's rivals stand at the team's level, +2 a rung (was +5, +4): with the series' formulas (§4.1.1, §6.2.3)
+   * a level counts as it does in the games, and +5 over a Region-1 team read rung 1 at 0.04 on the harness.
    */
   ring: { fee: number; prizes: ({ money: number } | { relicPick: true })[]; firstOffset: number; stepOffset: number; teamSize: number };
 }
@@ -57,7 +59,7 @@ export interface CityDef {
 export const CITIES: Record<CityId, CityDef> = {
   'pallet-town': {
     id: 'pallet-town', name: 'Pallet Town', afterRegion: 0, open: ['center', 'mart', 'dojo', 'ring', 'safari'], ringName: 'Challenge Ring', blackMarket: false, shop: 'mart', dojoMarkup: 1, dojoWide: false,
-    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 5, stepOffset: 4, teamSize: 4 },
+    ring: { fee: 250, prizes: [{ money: 300 }, { relicPick: true }], firstOffset: 0, stepOffset: 2, teamSize: 4 },
   },
   'celadon-city': {
     id: 'celadon-city', name: 'Celadon City', afterRegion: 1, open: ['center', 'mart', 'dojo', 'ring', 'game-corner', 'safari'], ringName: 'Pokémon Coliseum', blackMarket: true, shop: 'department-store', dojoMarkup: 1.3, dojoWide: true,

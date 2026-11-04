@@ -39,7 +39,8 @@ describe('Manual swap — §3.3.1', () => {
   });
 
   it('ManualSwap_ChangesLeadIndex_AndEmitsSwapEvent', () => {
-    const s = dispatch(base(), { type: 'swap', benchIndex: 2 });
+    // A Pidgey of the team's level outpaces Bulbasaur (§3.3.1.1), so the swap pays its full rung.
+    const s = dispatch(start(scenario({ team: [STARTERS[0]!, { species: 'squirtle', level: 11, moves: ['tackle', 'water-gun', 'rest', 'tail-whip'] }, STARTERS[2]!], enemies: [{ ...PIDGEY, level: 13 }] })), { type: 'swap', benchIndex: 2 });
     expect(s.player.leadIndex).toBe(2);
     const ev = eventsOf(s, 'swap').at(-1) as { kind: string; apCost: number };
     expect(ev.kind).toBe('manual');
@@ -201,7 +202,7 @@ describe('Step-Forward / Step-Backward — §3.3.2–§3.3.4', () => {
   });
 
   it('StepBackward_FromLead_EffectThenSwapToChosenBench', () => {
-    let s = start(scenario({ team: [{ species: 'wartortle', level: 28, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 11 }, { species: 'bulbasaur', level: 11 }], enemies: [PIDGEY] }));
+    let s = start(scenario({ team: [{ species: 'wartortle', level: 28, moves: ['rolling-kick', 'water-gun', 'bite', 'withdraw'] }, { species: 'charmander', level: 11 }, { species: 'bulbasaur', level: 11 }], enemies: [{ ...PIDGEY, level: 24 }] }));
     s = withHand(s, ['rolling-kick']);
     const enemyHp = s.enemies[0]!.hp;
     s = dispatch(s, { type: 'play-card', cardId: handCard(s, 'rolling-kick').id, stepBackTo: 2 });

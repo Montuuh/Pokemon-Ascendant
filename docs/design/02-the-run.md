@@ -817,6 +817,14 @@ its causes in the tooltip; nothing about *how much* is being risked is hidden. W
 whether *this* ball was the one — and a miss costs a ball and a turn, which is a price the player chose to pay
 at a percentage they read. Balancing of ball counts and prices waits on the consumables decision (§7.2).
 
+### §2.6.4.5 The first catch
+
+**While the starter fights alone, any ball it throws holds** (v0.9.96, the user's call: "the first levels are slow and
+hard with so few moves"). The gauge reads 100 % and the ball clicks without rolling, as a Master Ball's does. A lone
+starter brings one Pokémon's four cards to the hand, and a run's second Pokémon is what turns the hand into a deck
+(Pillar 3), so the first one is a choice of *which* Pokémon, not a gamble on *whether*: the series teaches its first
+catch the same way. It ends the moment the Active Team has company; every later throw rolls its shown chance.
+
 ## §2.6.5 Wild stat tiers
 
 | Region | Recruit level |
@@ -1164,11 +1172,12 @@ the rest. The ladder is rolled on arrival, so the next rival is always on screen
 
 | | Rung 1 | Each later rung | Team | Measured: rung 1 · rung 2 · ladder (runs) |
 |---|---|---|---|---|
-| **Pallet Town** | Gym ace **+5** | **+4** | 4, two at a time | 0.45 · — · **0.08** (271) |
+| **Pallet Town** | Gym ace **+0** | **+2** | 4, two at a time | 0.39 · — · **0.04** (23, v0.9.96 harness) |
 | **Celadon City** | Gym ace **+8** | **+2** | 3, two at a time | 0.54 · 0.23 · **0.14** (167) |
 
 Every Ring rival hits at **×1** since v0.9.95, like every enemy (§2.2.1): the ladder is hard by its levels and how it
-fights. *(It hit at ×1.7, then ×2.05, on top of the Region's tier, i.e. ~×1.0 in effect — so the Ring barely moved.)* *(v0.8.8: ×1.35 and Celadon at
+fights. **Pallet's rivals stand at the Gym ace's level, +2 a rung, since v0.9.96** (were +5, +4): with the series'
+formulas (§4.1.1, §6.2.3) a level counts as it does in the games, and +5 read rung 1 at 0.04. *(It hit at ×1.7, then ×2.05, on top of the Region's tier, i.e. ~×1.0 in effect — so the Ring barely moved.)* *(v0.8.8: ×1.35 and Celadon at
 +5 read rung 1 at 0.69 / 0.71 once teams arrived stronger; ×1.7, with Celadon's first rung at +6, reads Pallet 0.54
 and Celadon 0.40 — about half, as the Ring is meant to be. v0.8.9, re-read with the honest harness and Region 1 at
 ×1.55 over 160 seeds: rung 1 Pallet 0.45, Celadon 0.53 — still about half; the whole ladder is rarer. v0.8.10:

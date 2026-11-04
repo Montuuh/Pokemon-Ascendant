@@ -3,6 +3,7 @@ import { RUN_SAVE_VERSION, effectiveMax, mintUid, uidIndex } from './run';
 import { hasPlaceFor } from './legendaries';
 import { DEFAULT_PROGRESSION, readyBranches, xpToNext } from './xp';
 import type { RunState } from './types';
+import { ARCHETYPE_STAT_BIAS, statAtLevel } from '../combat/stats';
 
 // §10.8 — the save model. The simulation only knows how to turn a run into text and back; *where* that text
 // lives is the app's business, behind a provider interface, so local storage now and a server-backed profile
@@ -290,8 +291,25 @@ function migrateScaleTo24(run: RunState, content: ContentRegistry): void {
   for (const [k, v] of Object.entries(run)) if (k !== 'box') walk(v);
 }
 
+/**
+ * §6.2.3 — v24 → v25: the series' stat formula (v0.9.96). A Pokémon's max HP is a new number, so the HP it carries is
+ * re-read as the same share of it: one at half HP is still at half. Fight records keep the numbers they showed.
+ */
+function migrateFormulaTo25(run: RunState, content: ContentRegistry): void {
+  run.version = RUN_SAVE_VERSION;
+  for (const mon of run.box) {
+    const sp = content.species(mon.speciesId);
+    const lv = Math.max(1, Math.trunc(mon.level));
+    const bias = mon.archetype ? ARCHETYPE_STAT_BIAS[mon.archetype].hp : 1;
+    // The v24 formula, kept only here: (base × (1 + 0.025·(L − 1)) + 0.7·L) × 0.5.
+    const was = Math.max(1, Math.round((sp.baseStats.hp * (1 + 0.025 * (lv - 1)) + 0.7 * lv) * 0.5 * bias) + (mon.boosts?.hp ?? 0));
+    const now = statAtLevel(sp, 'hp', lv, mon.archetype) + (mon.boosts?.hp ?? 0);
+    mon.hp = Math.min(Math.round((Math.min(mon.hp, was) / was) * now), effectiveMax(run, mon, content));
+  }
+}
+
 /** §10.8.3 — the known steps: the migration that takes a save *from* each version to the next. */
-const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22, 22: migrateLevelsTo23, 23: migrateScaleTo24 };
+const MIGRATIONS: Readonly<Record<number, (run: RunState, content: ContentRegistry) => void>> = { 9: migrateBadgesTo10, 10: migrateStonesTo11, 11: migrateSafariTo12, 12: migrateMarketTo13, 13: migrateRouletteTo14, 14: migrateDaycareTo15, 15: migrateSuppliesTo16, 16: migrateBallsTo17, 17: migrateRowsTo18, 18: migrateUidsTo19, 19: migrateMasterBallTo20, 20: migrateShowcaseTo21, 21: migrateCenterTo22, 22: migrateLevelsTo23, 23: migrateScaleTo24, 24: migrateFormulaTo25 };
 
 export type LoadResult =
   | { ok: true; run: RunState }

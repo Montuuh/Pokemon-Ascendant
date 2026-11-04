@@ -112,7 +112,8 @@ describe('Drain — §4.1.6, catalogs/moves.md', () => {
     // damage back is a bigger share of Max HP on both sides of the trade.
     // 11 % since v0.9.59: the critical rhythm (§4.1.3.1) crits every few cards, so the average hit is bigger again
     // (9.7 → 10.2 %); the share stays half and the Lead under fire loses more ground (−7.0 → −8.4 % a turn).
-    expect(plain.healPerAp).toBeLessThan(0.11);
+    // 12 % since v0.9.96: the series' formulas (§4.1.1, §6.2.3) and the rhythm read on the base scale again (11.5 %).
+    expect(plain.healPerAp).toBeLessThan(0.12);
     expect(plain.healPerDamage).toBeGreaterThan(0.45);
     expect(plain.healPerDamage).toBeLessThan(0.55);
   });

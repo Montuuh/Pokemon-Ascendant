@@ -8,7 +8,7 @@
     },
     {
       "type": "play-card",
-      "cardId": "c10"
+      "cardId": "c9"
     },
     {
       "type": "play-card",
@@ -23,14 +23,25 @@
     },
     {
       "type": "play-card",
+      "cardId": "c0"
+    },
+    {
+      "type": "play-card",
       "cardId": "c6"
     },
     {
       "type": "play-card",
-      "cardId": "c0"
+      "cardId": "c8"
+    },
+    {
+      "type": "end-turn"
+    },
+    {
+      "type": "play-card",
+      "cardId": "c2"
     }
   ],
-  "fingerprint": "t2 victory lead=0 ap=1 team=[charmander:28/28,squirtle:30/30,bulbasaur:30/30] enemies=[pidgey:0/27] events=29 rng=537126454",
-  "turns": 2,
+  "fingerprint": "t3 victory lead=0 ap=2 team=[charmander:28/31,squirtle:28/28,bulbasaur:28/28] enemies=[pidgey:0/28] events=40 rng=663891820",
+  "turns": 3,
   "outcome": "victory"
 }

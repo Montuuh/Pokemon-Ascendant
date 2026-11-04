@@ -126,3 +126,14 @@ describe('shakeChecks — §2.6.4.4', () => {
     expect(ev.checks === SHAKE_CHECKS).toBe(ev.success);
   });
 });
+
+describe('The first catch — §2.6.4.5', () => {
+  it('ALoneStarter_ThrowsASureBall_AndTheGaugeSaysSo', () => {
+    const lone = start(scenario({ team: [STARTERS[0]!], enemies: [PIDGEY], consumables: ['poke-ball'], balls: 1 }));
+    expect(catchStatus(lone, ctx)!.chance).toBe(1);
+    expect(catchStatus(lone, ctx)!.guaranteed).toBe(true);
+    // With company the ball rolls its shown chance again.
+    expect(catchStatus(wild(), ctx)!.guaranteed).toBe(false);
+    expect(catchOdds(mon(), BALL, content, true).chance).toBe(1);
+  });
+});

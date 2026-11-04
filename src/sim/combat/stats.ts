@@ -18,32 +18,27 @@ export const ARCHETYPE_STAT_BIAS: Record<BranchArchetype, Record<'hp' | Stat, nu
 };
 
 /**
- * §6.2.3 — the share of its base a stat gains every level (v0.9.10, the user's call: stats in proportion to the
- * series'). Every stat grows in proportion to its own base, so a species' total at any level keeps the proportion
- * of its base total: Magikarp stays small and Gyarados grows big, a final form stands above its pre-evolutions at
- * the same level, and a single stage or a Legendary carries its higher total. Chosen so the mean total at Lv 30 is
- * where the old flat per-line growth left it (584). v0.9.90: 0.035 → 0.025, as the levels stretched by 1.4 (§6.2.4): a
- * Pokémon at the same point of the run has the same stats at its real level that it had at the compressed one.
+ * §6.2.3 — the series' stat formula (Gen III, v0.9.96, the user's call: Pokémon as far apart as they are in the games).
+ * A stat is (2·base + IV)·level/100 + 5, and HP is (2·base + IV)·level/100 + level + 10. The flat terms are what keep
+ * a frail species alive and a sturdy one hittable at low level — Diglett has 16 HP to Snorlax's 31 at Lv 5, not 7 to
+ * 90 — and the level term is what makes a level count: a Lv 15 stands at about twice a Lv 5. `iv` is the series' mean
+ * individual value; no Pokémon rolls its own, so two of one species at one level are the same.
  */
-export const STAT_GROWTH_RATE = 0.025;
+export const STAT_FORMULA = { iv: 15, flat: 5, hpFlat: 10 } as const;
 
-/** §6.2.3 — HP also gains this much a level whatever its base, as the series adds the level to HP: a low-level fight keeps some length. */
-export const HP_PER_LEVEL = 0.7;
-
-/**
- * §6.2.3 — the scale every stat is printed at (v0.9.93, the user's call: numbers like the series'). Halved, a Lv 50
- * Pokémon reads ~90 / 96 / 79 / 77 where the series has ~132 / 98 / 82 / 81. Damage is a ratio of Attack to Defence
- * (§4.1.1), so the divisor doubled with it and every flat HP amount was halved: a fight lasts as long as before.
- */
-export const STAT_SCALE = 0.5;
-
-// §6.2.3 — level-scaled base stats: (base × (1 + rate × (level − 1)) + HP's per-level term) × the scale, then the
-// archetype's lean (§6.3.4) for a Pokémon that has taken a path. (Until v0.9.10: base + a flat per-line growth ×
-// (level − 1), which gave Geodude Golem's growth and a single stage a quarter more than a final form.)
+// §6.2.3 — the series' formula, then the archetype's lean (§6.3.4) for a Pokémon that has taken a path. (Until v0.9.95:
+// base × (1 + 0.025·(level − 1)) × 0.5, which kept every species at its base's proportion and let the level barely count.)
 export function statAtLevel(species: SpeciesDef, stat: 'hp' | Stat, level: number, archetype?: BranchArchetype | null): number {
   const lv = Math.max(1, Math.trunc(level));
-  const raw = (species.baseStats[stat] * (1 + STAT_GROWTH_RATE * (lv - 1)) + (stat === 'hp' ? HP_PER_LEVEL * lv : 0)) * STAT_SCALE;
+  const core = ((2 * species.baseStats[stat] + STAT_FORMULA.iv) * lv) / 100;
+  const raw = stat === 'hp' ? core + lv + STAT_FORMULA.hpFlat : core + STAT_FORMULA.flat;
   return Math.round(archetype ? raw * ARCHETYPE_STAT_BIAS[archetype][stat] : raw);
+}
+
+/** §6.2.3 — the base a stat reads as at a level: the formula run backwards, so a level-free reading (the rhythm's Speed) needs no species. */
+export function baseOfStat(value: number, level: number): number {
+  const lv = Math.max(1, Math.trunc(level));
+  return Math.max(1, (((value - STAT_FORMULA.flat) * 100) / lv - STAT_FORMULA.iv) / 2);
 }
 
 /**

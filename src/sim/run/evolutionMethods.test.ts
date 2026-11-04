@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
 import {
-  arriveAtCity, createRun, DEFAULT_PROGRESSION, defaultRunCtx, deserialiseRun, evolveItemsForBox, friendshipScale, newPartyMon,
+  arriveAtCity, createRun, DEFAULT_PROGRESSION, defaultRunCtx, deserialiseRun, evolveItemsForBox, friendshipScale, maxHpOf, newPartyMon,
   readyBranches, rollShopStock, runReducer, serialiseRun, xpToNext, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
@@ -111,5 +111,26 @@ describe('The v23 save — §6.2.4, §10.8.3', () => {
     expect(loaded.run.pendingEvolutions[0]!.forced).toBe(true);
     const done = apply(loaded.run, { type: 'choose-branch', uid: 'p', branchId: loaded.run.pendingEvolutions[0]!.branchIds[0]! });
     expect(done.box[0]!.speciesId).toBe('pidgeotto');
+  });
+});
+
+describe('The v25 save — §6.2.3, §10.8.3', () => {
+  it('ACarriedHp_KeepsItsShareOfTheBar_UnderTheSeriesFormula', () => {
+    const run = produce(createRun('squirtle', 7, ctx), (d) => {
+      d.box[0]!.level = 20;
+    });
+    const old = JSON.parse(serialiseRun(run, 0)) as { version: number; checksum: number; run: RunState };
+    old.version = 24;
+    old.run.version = 24;
+    // v24's max HP for a Lv 20 Squirtle (base 44): (44 × 1.475 + 14) × 0.5 = 39.45 → 39; it carried half of it.
+    old.run.box[0]!.hp = 20;
+    old.checksum = (JSON.parse(serialiseRun(old.run, 0)) as { checksum: number }).checksum;
+    const loaded = deserialiseRun(JSON.stringify(old), content);
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+    const mon = loaded.run.box[0]!;
+    const max = maxHpOf(mon, content);
+    expect(max).toBe(51); // (2·44 + 15)·20/100 + 20 + 10 = 50.6
+    expect(mon.hp).toBe(Math.round((20 / 39) * max));
   });
 });

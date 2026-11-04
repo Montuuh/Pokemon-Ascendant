@@ -8,11 +8,11 @@
     },
     {
       "type": "play-card",
-      "cardId": "c1"
+      "cardId": "c5"
     },
     {
       "type": "play-card",
-      "cardId": "c2"
+      "cardId": "c1"
     },
     {
       "type": "play-card",
@@ -24,28 +24,9 @@
     {
       "type": "play-card",
       "cardId": "c3"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c0"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c4"
-    },
-    {
-      "type": "end-turn"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c6"
-    },
-    {
-      "type": "play-card",
-      "cardId": "c9"
     }
   ],
-  "fingerprint": "t3 victory lead=0 ap=0 team=[wartortle:29/48,ivysaur:49/49,charmeleon:48/48] enemies=[graveler:0/50] events=46 rng=3795274202",
-  "turns": 3,
+  "fingerprint": "t2 victory lead=0 ap=2 team=[wartortle:38/52,ivysaur:52/52,charmeleon:52/52] enemies=[graveler:0/60] events=27 rng=2571440657",
+  "turns": 2,
   "outcome": "victory"
 }

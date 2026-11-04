@@ -25,12 +25,12 @@
           "move": "growl"
         },
         {
-          "level": 7,
-          "move": "leech-seed"
+          "level": 3,
+          "move": "vine-whip"
         },
         {
-          "level": 9,
-          "move": "vine-whip"
+          "level": 7,
+          "move": "leech-seed"
         }
       ],
       "availableAbilities": [
@@ -289,7 +289,7 @@
           "move": "growl"
         },
         {
-          "level": 7,
+          "level": 3,
           "move": "ember"
         },
         {
@@ -567,7 +567,7 @@
           "move": "tail-whip"
         },
         {
-          "level": 7,
+          "level": 3,
           "move": "bubble"
         },
         {
@@ -2099,12 +2099,12 @@
           "move": "growl"
         },
         {
-          "level": 10,
-          "move": "thunder-wave"
+          "level": 3,
+          "move": "quick-attack"
         },
         {
-          "level": 13,
-          "move": "quick-attack"
+          "level": 10,
+          "move": "thunder-wave"
         }
       ],
       "availableAbilities": [
@@ -2266,6 +2266,10 @@
           "move": "poison-sting"
         },
         {
+          "level": 9,
+          "move": "mud-shot"
+        },
+        {
           "level": 14,
           "move": "dig",
           "replaces": "scratch"
@@ -2414,7 +2418,7 @@
           "move": "tail-whip"
         },
         {
-          "level": 13,
+          "level": 7,
           "move": "poison-sting"
         }
       ],
@@ -2637,7 +2641,7 @@
           "move": "tackle"
         },
         {
-          "level": 13,
+          "level": 7,
           "move": "poison-sting"
         },
         {
@@ -4045,6 +4049,10 @@
         {
           "level": 7,
           "move": "astonish"
+        },
+        {
+          "level": 7,
+          "move": "mud-shot"
         },
         {
           "level": 18,
@@ -5907,12 +5915,12 @@
           "move": "defense-curl"
         },
         {
-          "level": 8,
-          "move": "rock-polish"
+          "level": 7,
+          "move": "rock-throw"
         },
         {
-          "level": 11,
-          "move": "rock-throw"
+          "level": 8,
+          "move": "rock-polish"
         },
         {
           "level": 18,
@@ -6928,7 +6936,7 @@
           "move": "growl"
         },
         {
-          "level": 11,
+          "level": 7,
           "move": "water-gun"
         },
         {
@@ -7084,6 +7092,10 @@
           "move": "poison-gas"
         },
         {
+          "level": 7,
+          "move": "acid"
+        },
+        {
           "level": 12,
           "move": "disable"
         },
@@ -7231,7 +7243,7 @@
           "move": "supersonic"
         },
         {
-          "level": 14,
+          "level": 8,
           "move": "water-gun"
         },
         {
@@ -7615,7 +7627,7 @@
           "move": "screech"
         },
         {
-          "level": 9,
+          "level": 6,
           "move": "rock-throw"
         },
         {
@@ -8059,12 +8071,12 @@
           "move": "screech"
         },
         {
-          "level": 8,
-          "move": "sonic-boom"
+          "level": 6,
+          "move": "thunder-shock"
         },
         {
-          "level": 11,
-          "move": "thunder-shock"
+          "level": 8,
+          "move": "sonic-boom"
         },
         {
           "level": 12,
@@ -8203,7 +8215,7 @@
           "move": "leech-seed"
         },
         {
-          "level": 17,
+          "level": 11,
           "move": "bullet-seed"
         },
         {
@@ -10701,7 +10713,7 @@
           "move": "tail-whip"
         },
         {
-          "level": 8,
+          "level": 3,
           "move": "sand-attack"
         },
         {

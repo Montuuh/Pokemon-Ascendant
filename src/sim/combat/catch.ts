@@ -42,6 +42,8 @@ export interface CatchOdds {
   hasStatus: boolean;
   /** §2.6.4.2 — a Master Ball: this throw cannot miss. */
   guaranteed: boolean;
+  /** §2.6.4.5 — sure because the starter stands alone, not because of the ball. */
+  firstCatch: boolean;
 }
 
 /** §2.6.4.1 — the species' catch rate: its row's, or the rarity × stage default. */
@@ -51,8 +53,16 @@ export function catchRateOf(speciesId: string, content: ContentRegistry): number
   return (CATCH.byRarity[s.rarity] ?? 0.5) * (CATCH.byStage[s.stage] ?? 1);
 }
 
-export function catchOdds(wild: Combatant, effect: Extract<ConsumableEffect, { kind: 'catch' }>, content: ContentRegistry): CatchOdds {
-  const guaranteed = !!effect.sure;
+/**
+ * §2.6.4.5 — the first catch is sure (v0.9.96): while the starter fights alone, any ball it throws holds, as the
+ * series' first catch is a lesson and not a gamble. The second Pokémon is the run's first real choice of hand.
+ */
+export function firstCatch(team: readonly unknown[]): boolean {
+  return team.length === 1;
+}
+
+export function catchOdds(wild: Combatant, effect: Extract<ConsumableEffect, { kind: 'catch' }>, content: ContentRegistry, sure = false): CatchOdds {
+  const guaranteed = !!effect.sure || sure;
   const hard = wild.status?.kind === 'sleep' || wild.status?.kind === 'freeze';
   const hasStatus = wild.status !== null || wild.confusionTurns > 0;
   const statusMult = hard ? CATCH.hardStatus : hasStatus ? CATCH.softStatus : 1;
@@ -61,7 +71,7 @@ export function catchOdds(wild: Combatant, effect: Extract<ConsumableEffect, { k
   const hpFactor = wild.hp <= 0 ? 0 : Math.pow(1 - CATCH.hpWeight * hpFraction(wild), CATCH.exponent);
   const raw = catchRate * hpFactor * statusMult * ballMult;
   const chance = guaranteed ? 1 : wild.hp <= 0 ? 0 : Math.min(CATCH.cap, Math.max(CATCH.floor, raw));
-  return { chance, catchRate, hpFactor, statusMult, ballMult, hasStatus, guaranteed };
+  return { chance, catchRate, hpFactor, statusMult, ballMult, hasStatus, guaranteed, firstCatch: sure && !effect.sure };
 }
 
 /**

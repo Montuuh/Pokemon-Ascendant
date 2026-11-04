@@ -236,8 +236,8 @@ describe('Run start — §2.1.1', () => {
 
   it('Start_StarterKnowsExactlyTheMovesItsLevelGives_§6.9', () => {
     const s = start(7, 'bulbasaur');
-    // Bulbasaur at L5 knows Tackle and Growl: Leech Seed is L7 and Vine Whip L9, the series' levels.
-    expect(s.box[0]!.moveIds).toEqual(['tackle', 'growl']);
+    // Bulbasaur at L5 knows Tackle, Growl and Vine Whip (L3 since v0.9.96, a starter's third card): Leech Seed is L7.
+    expect(s.box[0]!.moveIds).toEqual(['tackle', 'growl', 'vine-whip']);
   });
 
   it('Start_CarriesBallsAndConsumables', () => {
@@ -326,7 +326,7 @@ describe('XP and levels — §6.2', () => {
   });
 
   it('LevelUp_ReDerivesTheKit_SoTheDeckThickens_§6.9', () => {
-    const mon = newPartyMon('charmander', 3, content, 1);
+    const mon = newPartyMon('charmander', 2, content, 1);
     expect(mon.moveIds).toEqual(['scratch', 'growl']);
     // enough XP to cross several levels at once
     let total = 0;
@@ -622,7 +622,7 @@ describe('Evolution — §6.2.4, §6.3', () => {
 
   it('Threshold_FlagsTheEvolution_ButDoesNotApplyIt_§6.3.3', () => {
     const mon = newPartyMon('bulbasaur', 5, content, 1);
-    expect(mon.moveIds).toEqual(['tackle', 'growl']);
+    expect(mon.moveIds).toEqual(['tackle', 'growl', 'vine-whip']);
     const up = grantXp(mon, xpTo(16), content);
     expect(up?.evolutionReady).toBe(true);
     // The branch is the player's call, so the species is untouched until the screen is answered.
@@ -827,7 +827,7 @@ describe('The Learned Move Pool — §6.7', () => {
     const up = grantXp(mon, total, content);
 
     // Vine Whip and Leech Seed are learned, and wait in the pool rather than pushing a chosen card out.
-    expect(up!.learned).toEqual(['leech-seed', 'vine-whip']);
+    expect(up!.learned).toEqual(['vine-whip', 'leech-seed']);
     expect(up!.activated).toEqual([]);
     expect(mon.pool).toHaveLength(6);
     expect(mon.moveIds).toEqual(['tackle', 'growl', 'swords-dance', 'cut']);

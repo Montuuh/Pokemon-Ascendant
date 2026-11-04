@@ -388,9 +388,10 @@ faint-prevention ladder (§7.3.6) — paid for with a card, so it is spent befor
 
 **Guard** is HP that does not last: a Withdraw, a Harden, a Defense Curl gives the user Guard, absorbed before HP by every
 hit from a move, and gone at the start of the next turn. Burn, Poison and the weather go straight past it. The amount is
-a hit of the move's printed guard power — `power ÷ divisor`, the way §4.1.1 prices a hit — times the species' base
-Defence over `guardReferenceDefence` (70, the roster's mean) and times its Defence stage. It is level-free because the
-hits it stops are (§4.1.1 has no level in it): a Guard that grew with the level would outgrow every hit by Region 3. It
+a hit of the move's printed guard power — `level term × power ÷ divisor`, the way §4.1.1 prices a hit — times the
+species' base Defence over `guardReferenceDefence` (70, the roster's mean) and times its Defence stage. It grows with
+the user's level because the hits it stops do (§4.1.1's level term, v0.9.96), so a Withdraw is worth as much of a hit
+in Region 3 as in Region 1. It
 is Slay the Spire's Block, sized by the Pokémon so a Cloyster's shell is thicker than a Caterpie's. It stays on the
 Pokémon: guarding the Lead and then swapping it out guards the bench.
 

@@ -52,6 +52,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 // §2 — the run reducer. Pure: (state, action) → state, exactly like the combat reducer, so a run is a seed
 // plus an action log and a save is that pair (§10.7.4, §10.8).
 
+// 25 — v0.9.96: the series' stat formula (§6.2.3). Migrated from 24 in save.ts: every Pokémon keeps its share of HP.
 // 23 — v0.9.90: real evolution levels (every level ×1.4 from Lv 1), a Pokémon's Friendship and its primed evolution,
 //      the Metal Coat a held item (§6.2.4, §6.3.7–§6.3.9). Migrated from 22 in save.ts.
 // 13 — v0.7.7: the City carries Team Rocket's Black Market (`city.blackMarket`) and the MarketRNG cursor (§2.11.6),
@@ -69,7 +70,7 @@ export function shopSlotName(slot: ShopSlot, content: ContentRegistry): string {
 //     and statuses carried between fights with their clock (§2.9, §2.11, §4.2.7.1).
 // 4 — v0.4 added money, relics, held items, the Shop and Mystery Events (§7.3, §7.4, §2.9.2, §2.10).
 // 3 — v0.3 added the Learned Move Pool, the passive slot, TMs and the evolution queue (§6.3, §6.4, §6.7).
-export const RUN_SAVE_VERSION = 24;
+export const RUN_SAVE_VERSION = 25;
 
 export interface RunCtx {
   content: ContentRegistry;

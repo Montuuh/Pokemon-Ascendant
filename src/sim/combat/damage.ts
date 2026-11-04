@@ -4,7 +4,7 @@ import { typeMultiplier } from './typeChart';
 
 // Per docs/design/04-resolution.md §4.1.1 — pure damage resolver. No RNG inside: crit is a resolved input.
 //
-//   base     = Power × (EffAtk / EffDef) × Range / Divisor
+//   base     = ((2L/5 + 2) × Power × (EffAtk / EffDef) / Divisor + 2) × Range   — the series' formula (v0.9.96)
 //   postCrit = base × Crit
 //   final    = floor( postCrit × STAB × TypeEff )
 //
@@ -13,6 +13,8 @@ import { typeMultiplier } from './typeChart';
 
 export interface DamageInputs {
   power: number;
+  /** The attacker's level: the series' level term (§4.1.1). */
+  level: number;
   /** Effective attack of the attacker (stages + status already applied). */
   attack: number;
   /** Effective defense of the target (stages + status already applied). Clamped to ≥ 1. */
@@ -43,6 +45,11 @@ export interface DamageBreakdown {
   fieldMultiplier?: number;
 }
 
+/** §4.1.1 — the series' level term, 2L/5 + 2: what a hit (and a Guard, §3.11.4) grows by as its user levels. */
+export function levelTerm(level: number, config: BattleConfig): number {
+  return config.levelTerm.slope * Math.max(1, Math.trunc(level)) + config.levelTerm.base;
+}
+
 /** Per §4.1.2 — STAB applies if the move type matches either of the attacker's types. */
 export function hasStab(attackerTypes: readonly PokemonType[], moveType: PokemonType): boolean {
   return attackerTypes.includes(moveType);
@@ -58,7 +65,8 @@ export function computeDamage(inp: DamageInputs, config: BattleConfig): DamageBr
   const typeMult = typeMultiplier(inp.moveType, inp.defenderTypes);
   const divisor = Math.max(1, config.divisor);
 
-  const base = (((inp.power * inp.attack) / defense) * rangeMultiplier) / divisor;
+  // §4.1.1 — the level term and the +2 of the series; a move without power deals nothing at all.
+  const base = inp.power > 0 ? ((levelTerm(inp.level, config) * inp.power * inp.attack) / defense / divisor + config.damageFlat) * rangeMultiplier : 0;
   const postCrit = base * critMultiplier;
   const scaled = postCrit * stabMultiplier * typeMult;
   const final = Math.floor(scaled);

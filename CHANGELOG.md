@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.96 — The series' formulas · 2026-11-04
+
+Stats and damage follow the games' formulas; the start gets more cards.
+
+- **Series stats.** Frail and sturdy Pokémon stand closer; a level counts.
+- **Series damage.** Every hit does something; fights last as long.
+- **Three cards.** Starters begin with a third move; early walls learn hits.
+- **Sure first catch.** While your starter is alone, every ball holds.
+
 ### v0.9.95 — Enemies at full strength · 2026-11-04
 
 Every enemy hits as its species and level say; levels and XP come down to match.

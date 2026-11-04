@@ -1,6 +1,7 @@
 import type { ContentRegistry, MoveDef, MoveEffect } from '../content/defs';
 import type { RunCtx } from './context';
 import { emit, log } from './context';
+import { levelTerm } from './damage';
 import { FIELD_CATEGORY, fieldsSuppressed, withField, type FieldId } from './fields';
 import { latchPhase } from './phases';
 import { indexToSlot } from './slots';
@@ -162,13 +163,13 @@ export function applyKeyword(state: CombatState, ctx: RunCtx, user: Combatant, f
 }
 
 /**
- * §3.11.4 — the Guard a move of `power` gives this Pokémon now: level-free, like the hits it stops (§4.1.1 has no level in
- * it) — the power over the divisor, × the species' base Defence against the reference, × its Defence stage. The card
- * prints this number, so the plate and the chip agree.
+ * §3.11.4 — the Guard a move of `power` gives this Pokémon now: it grows with its level as the hits it stops do (§4.1.1's
+ * level term) — the level term × the power over the divisor, × the species' base Defence against the reference, × its
+ * Defence stage. The card prints this number, so the plate and the chip agree.
  */
 export function guardAmount(c: Combatant, power: number, ctx: Pick<RunCtx, 'content' | 'config'>): number {
   const base = ctx.content.species(c.speciesId).baseStats.defense;
-  return Math.max(1, Math.floor((power / ctx.config.divisor) * (base / ctx.config.keywords.guardReferenceDefence) * stageMultiplier(c.stages.defense, ctx.config)));
+  return Math.max(1, Math.floor(((levelTerm(c.level, ctx.config) * power) / ctx.config.divisor) * (base / ctx.config.keywords.guardReferenceDefence) * stageMultiplier(c.stages.defense, ctx.config)));
 }
 
 const SIDE_TEXT: Record<SideCondition['id'], string> = {

@@ -5,7 +5,7 @@ import { changeAp } from './ap';
 import { absorbedByAbility, applyMoveEffects, breakdownFor, changeStage, heal, onEnterLead, strike } from './damageFlow';
 import { buildSkillDeck, drawSkillCards } from './deck';
 import { echoesFirstCard, itemCureHeal, itemRidersFirst, stepDrawBonus, swapDrawBonus, swapHealAmount } from './items';
-import { catchOdds, SHAKE_CHECKS, shakeChecks } from './catch';
+import { catchOdds, firstCatch, SHAKE_CHECKS, shakeChecks } from './catch';
 import { declareIntent } from './intents';
 import { rhythmReady, spendsRhythm, stepRhythm } from './rhythm';
 import { apCostDetails, cardPlayability, cardVictims, catchTarget, consumablePlayability, pickLeadOptions, swapOptions } from './preview';
@@ -326,8 +326,8 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       break;
     case 'catch': {
       const enemy = catchTarget(state, targetUid)!;
-      // §2.6.4.2 — a Master Ball's throw is sure; every other ball rolls its shown chance.
-      const odds = catchOdds(enemy, fx, ctx.content);
+      // §2.6.4.2 — a Master Ball's throw is sure, and so is a lone starter's (§2.6.4.5); every other ball rolls its shown chance.
+      const odds = catchOdds(enemy, fx, ctx.content, firstCatch(state.player.team));
       player.balls = Math.max(0, player.balls - 1);
       // §2.6.4.4 — the four shake checks at the shown chance between them, from the fight's own stream so a replay
       // throws the same ball.

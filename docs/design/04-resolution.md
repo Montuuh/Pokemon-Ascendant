@@ -13,33 +13,40 @@
 ## §4.1.1 The damage formula
 
 ```
-damage = floor( Power × (Attack / Defence) × Range × Crit × STAB × TypeEff / Divisor )
+damage = floor( ((2L/5 + 2) × Power × (Attack / Defence) / Divisor + 2) × Range × Crit × STAB × TypeEff )
 ```
 
 | Term | Value | Source |
 |---|---|---|
 | **Power** | 40–130, banded by AP cost (§6.3.6.4) | the move |
+| **L** | the attacker's level: the level term `2L/5 + 2` (`BattleConfig.levelTerm`) | the attacker |
 | **Attack / Defence** | Effective stats after stages and status (§4.1.5) | the combatants |
 | **Range** | 1.0 Melee · **0.75 Ranged** | the move |
 | **Crit** | 1.5 on a crit, otherwise 1.0 | §4.1.3 |
 | **STAB** | 1.5 when the move's type matches either of the user's types | derived |
 | **TypeEff** | 4 / 2 / 1 / 0.5 / 0.25 / 0 | §4.1.2 |
-| **Divisor** | **10** (`BattleConfig.divisor`) | balance config |
+| **Divisor** | **100** (`BattleConfig.divisor`) | balance config |
+| **+2** | added before the multipliers (`BattleConfig.damageFlat`) | the series |
 
 **Rules that fall out of it**
 
 - **One floor, at the end.** Multiplication is commutative, so the term order is presentational: the damage
   breakdown reads Power → Crit → STAB → TypeEff → Range because that is the order the player thinks in.
 - **Range folds into base damage** before Crit, since it is intrinsic to the move's power profile.
-- **No minimum-damage clamp.** Only an immunity (×0) deals 0.
-- **Level is not in the formula.** Levels raise stats; stats feed the formula.
+- **No minimum-damage clamp, but a floor of its own.** The series' +2 means every hit that is not immune deals
+  something, a non-STAB Tackle on a wall included. Only an immunity (×0) or a move without power deals 0.
+- **Level is in the formula** (v0.9.96). The series' level term grows a hit as its user levels, the way HP grows with
+  the level (§6.2.3), so a fight takes as many hits at Lv 40 as at Lv 10 — and a level gap counts as it does in the games.
 - **No Physical/Special split.** One Attack, one Defence (§4.1.5).
 
-Divisor 5 is the tuned value (v0.9.12). Divisor 8 landed wild fights at 4–5 turns while every enemy fought on a
-fraction of its HP (§2.2.1); with its whole HP back — the user's call: an enemy is the Pokémon its species and level
-say — the fights doubled, and tuning the enemies' Attack alone could not hold Region 3 (37 %, Gyms of 46 turns, every
-hit 3 % of a Pokémon's HP). At 5, for both sides, fights run 5 / 8 / 10 turns by Region and Gyms 8 / 13 / 19. **10 since v0.9.93**: stats are
-printed at half scale (§6.2.3), HP with them, so the divisor doubled and a hit takes the same share of a health bar.
+**The series' formula since v0.9.96**, with the series' stats (§6.2.3): the user's playtest found the old one,
+`Power × Atk/Def / Divisor`, left a weak or off-type hit doing next to nothing and let a fight stretch as both sides
+levelled. The one departure is the divisor: **100, twice the series' 50**, because a turn here plays two or three hits
+where a turn of the games plays one. At 100 the fixtures' fights last the turns they did at the old formula (a wild
+fight 3, a two-trainer pair 6, a three-phase boss 7–8), and the late fights no longer double in length. At 70 both
+sides were deadlier and the auto-player's Region 1 and Ring fell; the slow first levels are answered by the third card
+and the sure first catch (§6.9, §2.6.4.5) instead. *(History:
+Unity shipped 8; 5 from v0.9.12, when every enemy got its whole HP back; 10 from v0.9.93 with half-scale stats.)*
 *(Ratified 2026-09-19 after the v0.1 balance pass. Earlier drafts said "TBD via playtesting" and an old document
 said 50; 8 is correct.)*
 
@@ -114,8 +121,9 @@ it, up to full, and a full meter waits for a hit. An AlwaysCrit move crits anywa
 **Speed sets the pace, and what happens to Speed moves it** (v0.9.80, the user's call: tiers hid Speed stages and
 Paralysis behind cuts a +10 % stage rarely crossed). The acts that fill a meter are a **curve**, in two steps:
 
-1. **The species.** Its *level-free* Speed (base, the archetype's lean and the Dojo's points, divided by the level's growth
-   §6.2.3, so it reads the species and not how far into the run it is) gives `k / Speed` acts, kept inside the side's
+1. **The species.** Its *level-free* Speed (base, the archetype's lean and the Dojo's points: the printed Speed read back
+   through §6.2.3's formula, `baseOfStat`, so it reads the species and not how far into the run it is; v0.9.93–v0.9.95
+   read the half-scale stat against these constants, and every meter filled slower than written) gives `k / Speed` acts, kept inside the side's
    reach: **allies 260 / Speed AP, between 2 and 5** (Speed 130+ fills in 2 AP, 65 in 4, 52 or less in 5); **enemies 270 /
    Speed actions, between 2 and 4** (Speed 135+ in 2, 90 in 3, 67 or less in 4). A Dugtrio (120) and a Meowth (90) no longer
    read alike, nor a Golem (45) and a Pidgeotto (71). The ally constant keeps the old per-card pace's crits a run: the

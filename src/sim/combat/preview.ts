@@ -3,7 +3,7 @@ import type { ConsumableDef, MoveDef } from '../content/defs';
 import type { CombatCtx } from './context';
 import { breakdownFor } from './damageFlow';
 import type { DamageBreakdown } from './damage';
-import { catchOdds, type CatchOdds } from './catch';
+import { catchOdds, firstCatch, type CatchOdds } from './catch';
 import { activeEnemy, aliveEnemies, benchIndices, lead } from './slots';
 import type { Combatant, CombatState, ConsumableCard, EnemyCombatant, RejectReason, SkillCard } from './state';
 import { choiceLockBlocks, itemApAdjustments } from './items';
@@ -285,7 +285,7 @@ export function catchOptions(state: CombatState, ctx: CombatCtx, targetUid?: str
     .map(([consumableId, cards]) => {
       const def = ctx.content.consumable(consumableId);
       const effect = def.effect as Extract<typeof def.effect, { kind: 'catch' }>;
-      return { consumableId, cardId: cards[0]!.id, count: cards.length, odds: catchOdds(enemy, effect, ctx.content), playable: consumablePlayability(state, cards[0]!.id, ctx, enemy.uid)! };
+      return { consumableId, cardId: cards[0]!.id, count: cards.length, odds: catchOdds(enemy, effect, ctx.content, firstCatch(state.player.team)), playable: consumablePlayability(state, cards[0]!.id, ctx, enemy.uid)! };
     })
     .sort((a, b) => b.odds.ballMult - a.odds.ballMult);
 }
@@ -299,7 +299,7 @@ export function catchStatus(state: CombatState, ctx: CombatCtx, targetUid?: stri
     .map((c) => ctx.content.consumable(c.consumableId))
     .find((d) => d.effect.kind === 'catch');
   const effect = ballDef?.effect.kind === 'catch' ? ballDef.effect : { kind: 'catch' as const, ballMultiplier: 1 };
-  return { ...catchOdds(enemy, effect, ctx.content), ballsLeft: state.player.balls };
+  return { ...catchOdds(enemy, effect, ctx.content, firstCatch(state.player.team)), ballsLeft: state.player.balls };
 }
 
 export function pickLeadOptions(state: CombatState): number[] {

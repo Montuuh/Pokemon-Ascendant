@@ -2,7 +2,7 @@ import type { MoveDef } from '../content/defs';
 import type { BattleConfig, RhythmCurve } from './battleConfig';
 import type { CombatCtx } from './context';
 import type { Combatant, EnemyCombatant, Intent } from './state';
-import { STAT_GROWTH_RATE } from './stats';
+import { baseOfStat } from './stats';
 import { stageMultiplier } from './statStages';
 
 // §4.1.3.1 — the critical rhythm. Every Pokémon, on both sides, fills a meter as it acts: a card played on the
@@ -16,17 +16,13 @@ const EPS = 1e-9;
 /** §4.1.3.1 — the curve of its side. */
 export const rhythmCurve = (c: Combatant, config: BattleConfig): RhythmCurve => ('tier' in c ? config.critRhythm.enemy : config.critRhythm.ally);
 
-/** §4.1.3.1 — the growth its level gave every stat (§6.2.3): what the card's Speed carries and the rhythm takes back out. */
-export function rhythmLevelFactor(c: Pick<Combatant, 'level'>): number {
-  return 1 + STAT_GROWTH_RATE * (Math.max(1, Math.trunc(c.level)) - 1);
-}
-
 /**
  * §4.1.3.1 — its Speed with the level taken back out and nothing else applied: the species (and its path and the Dojo's
- * points), so the pace reads what it *is* and not how far into the run it is.
+ * points), read on the base stat's scale (§6.2.3 run backwards), so the pace reads what it *is* and not how far into the
+ * run it is. (v0.9.93–95 read the half-scale stat here against curves set for the base, so every meter filled slower.)
  */
 export function rhythmSpeed(c: Combatant): number {
-  return c.base.speed / rhythmLevelFactor(c);
+  return baseOfStat(c.base.speed, c.level);
 }
 
 /** §4.1.3.1 — the acts a species of this level-free Speed takes to fill its meter on a side's curve: K / Speed, kept inside the curve's reach. */

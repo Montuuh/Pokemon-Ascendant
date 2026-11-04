@@ -3,19 +3,18 @@ import { ctx, dispatch, enemyOf, eventsOf, handCard, leadOf, scenario, start, tw
 import { cardPlayability } from './preview';
 import { markRhythm, rhythmActs, rhythmFillOf, rhythmLeft, rhythmReady, stepRhythm } from './rhythm';
 import type { CombatState } from './state';
-import { STAT_GROWTH_RATE } from './stats';
 
 // §4.1.3.1 — the critical rhythm. Squirtle leads with a pinned kit; one Pidgey that only ever Tackles.
 const fight = () =>
   start(scenario({
     team: [{ species: 'squirtle', level: 16, moves: ['tackle', 'water-gun', 'tail-whip', 'slash'] }],
-    enemies: [{ species: 'pidgey', level: 9, tier: 'wild', phaseCount: 1, moves: ['tackle'] }],
+    enemies: [{ species: 'pidgey', level: 16, tier: 'wild', phaseCount: 1, moves: ['tackle'] }],
   }));
+// §6.2.3 — the Speed a base of `speed` prints at a level: the rhythm reads the base back out of it, so a pinned base is exact.
+const printed = (speed: number, level = 50) => ((2 * speed + 15) * level) / 100 + 5;
 const pinSpeed = (s: CombatState, mine: number, foe: number) => tweak(s, (d) => {
-  d.player.team[0]!.base.speed = mine;
-  d.player.team[0]!.level = 1;
-  d.enemies[0]!.base.speed = foe;
-  d.enemies[0]!.level = 1;
+  d.player.team[0]!.base.speed = printed(mine, d.player.team[0]!.level);
+  d.enemies[0]!.base.speed = printed(foe, d.enemies[0]!.level);
 });
 
 // Ally pace is 260 / Speed *AP* of printed card cost (so Speed 65 fills in exactly 4 AP, a quarter an AP); an enemy's is 270 / Speed
@@ -27,16 +26,16 @@ const para = () => ({ kind: 'paralysis' as const, appliedTurn: 0, turnsLeft: 99 
 describe('Critical rhythm — §4.1.3.1', () => {
   it('Rhythm_PaceReadsLevelFreeSpeed_OnACurve_NotTiers', () => {
     const s = fight();
-    const at = (speed: number, level = 1) => rhythmActs({ ...leadOf(s), base: { ...leadOf(s).base, speed }, level }, ctx.config);
+    const at = (speed: number, level = 50) => rhythmActs({ ...leadOf(s), base: { ...leadOf(s).base, speed: printed(speed, level) }, level }, ctx.config);
     // K / Speed, kept inside 2 … 5 AP: a fast one hits the floor, a wall the ceiling, the middle is continuous.
     expect([at(200), at(130), at(65)]).toEqual([2, 2, 4]);
     expect(at(100)).toBeCloseTo(2.6, 5);
     expect(at(60)).toBeCloseTo(4.33, 2);
     expect([at(40), at(15)]).toEqual([5, 5]);
-    // The level is taken back out: 90 at Lv 1 and 90 × 1.5 at Lv 21 are the same pace.
-    expect(at(90 * (1 + STAT_GROWTH_RATE * 20), 21)).toBeCloseTo(at(90), 6);
+    // The level is taken back out: a base of 90 at Lv 5 and at Lv 50 is the same pace.
+    expect(at(90, 5)).toBeCloseTo(at(90), 6);
     // The enemy's curve is shorter at the slow end (it acts once where you play three cards) and still reaches 2 at the fast end.
-    const foe = (speed: number) => rhythmActs({ ...enemyOf(s), base: { ...enemyOf(s).base, speed }, level: 1 }, ctx.config);
+    const foe = (speed: number) => rhythmActs({ ...enemyOf(s), base: { ...enemyOf(s).base, speed: printed(speed) }, level: 50 }, ctx.config);
     expect(foe(FOE_3)).toBe(3);
     expect(foe(130)).toBeCloseTo(270 / 130, 9);
     expect([foe(300), foe(30), foe(15)]).toEqual([2, 4, 4]);
@@ -59,9 +58,9 @@ describe('Critical rhythm — §4.1.3.1', () => {
     const s = pinSpeed(fight(), ALLY_4, FOE_3);
     const slowed = tweak(s, (d) => { d.player.team[0]!.status = para(); d.enemies[0]!.status = para(); });
     // Half the pace is twice the acts — and not swallowed at either edge of the curve.
-    expect(rhythmActs(leadOf(slowed), ctx.config)).toBe(8);
-    expect(rhythmActs(enemyOf(slowed), ctx.config)).toBe(6);
-    expect(rhythmActs(leadOf(tweak(pinSpeed(fight(), 160, 50), (d) => { d.player.team[0]!.status = para(); })), ctx.config)).toBe(4);
+    expect(rhythmActs(leadOf(slowed), ctx.config)).toBeCloseTo(8, 9);
+    expect(rhythmActs(enemyOf(slowed), ctx.config)).toBeCloseTo(6, 9);
+    expect(rhythmActs(leadOf(tweak(pinSpeed(fight(), 160, 50), (d) => { d.player.team[0]!.status = para(); })), ctx.config)).toBeCloseTo(4, 9);
     expect(rhythmActs(leadOf(tweak(pinSpeed(fight(), 40, 50), (d) => { d.player.team[0]!.status = para(); })), ctx.config)).toBe(10);
     // Mid-fill: a meter at 0.5 needed 2 more AP, and needs 4 once it is paralysed. Cured, it is 2 again.
     const half = tweak(s, (d) => { d.player.team[0]!.rhythm = 0.5; });

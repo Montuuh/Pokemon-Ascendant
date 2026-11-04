@@ -92,31 +92,29 @@ applies the chosen branch and catches up the evolved form's learnset without rep
 
 ## §6.2.3 Stat growth
 
-**Every stat grows in proportion to its own base** (v0.9.10, the user's call: "stats like the series' — Magikarp
-has very few in total, Gyarados very many; Legendaries and single stages higher"):
+**The series' own formula** (v0.9.96, the user's call: "the stats are very unbalanced between Pokémon — Diglett and
+Onix do nothing, some enemies have far more HP than others"). Gen III's, with the mean individual value and no EVs:
 
 ```
-stat(level) = (base × (1 + STAT_GROWTH_RATE × (level − 1))     STAT_GROWTH_RATE = 0.025
-               + HP's per-level term) × STAT_SCALE              HP_PER_LEVEL = 0.7 (HP only) · STAT_SCALE = 0.5
+stat(level) = (2 × base + IV) × level / 100 + 5                 IV = 15 (STAT_FORMULA)
+HP(level)   = (2 × base + IV) × level / 100 + level + 10
 ```
 
-**Printed at the series' scale** (v0.9.93, the user's call: the numbers read too big next to the games'). The
-scale halves every stat, so the roster's mean at Lv 10 / 20 / 30 / 40 / 50 is about 43 / 53 / 43 / 42 ·
-55 / 64 / 52 / 51 · 66 / 75 / 61 / 59 · 78 / 85 / 70 / 68 · 90 / 96 / 79 / 77 (HP / Atk / Def / Spe), where the
-series' (IV 15, no EVs) is 34 / 23 / 20 / 20 at Lv 10 and 132 / 98 / 82 / 81 at Lv 50: close at the end of the run,
-higher early, because a Pokémon here starts from its base at Lv 1 rather than from almost nothing. The scale is
-cosmetic by construction: damage is a ratio of Attack to Defence (§4.1.1), so the divisor doubled with it (5 → 10)
-and every flat HP amount was halved (Potions §7.2.1, Swap Fuel, the Rainbow Badge, Healer, Healer's Kit, a Training
-Grounds' Stat Boost), and a fight takes as many hits as before. The two −1 reductions (Boulder Badge, Iron Skin)
-stay at 1, the smallest step there is: early on they now take a sixth of a hit rather than a third. What it does change is rounding: with hits half as
-big, a small multiplier (a +10 % item on a 7-damage hit) floors away early in the run, as it does in the series.
+The flat terms are the point. A purely proportional curve (v0.9.10–v0.9.95: `base × (1 + 0.025 × (level − 1)) × 0.5`)
+kept every species at its base's ratio at every level, so Diglett had 7 HP to Snorlax's 90 at Lv 5 (×13) and a frail
+species was one hit from anything. The series' `+ level + 10` and `+ 5` bring the extremes together where levels are
+low — 16 HP to 31 at Lv 5 (×2) — and the base takes over as the level climbs, as it does in the games. The level term
+is the other half: a Lv 15 stands at about twice a Lv 5, where the old curve gave it a quarter more, so a level is
+worth what it is in the games and a level gap (an Elite, a Gym's ace, the Ring) counts. Two Pokémon of one species
+and level are the same Pokémon: there are no rolled IVs. The archetype's lean (§6.3.4) multiplies the result.
 
 The base is the species' own (§4.1.5.1: Attack the higher of Gen I's Attack and Special, Defence their mean), so a
-species' total at any level keeps the proportion of its base total, as the series' does: Magikarp stays small,
-Gyarados grows big, a final form stands above its pre-evolution at the same level, and a single stage or a
-Legendary carries the higher total its base already gives it — with no bonus on top. The rate keeps the mean total
-at Lv 30 where the old curves left it. *(Until v0.9.10 each line had a flat growth per level, shared by every stage
-and +25 % for a single stage: Geodude grew as fast as Golem, and Tauros and Lapras out-totalled Dragonite at Lv 30.)*
+final form stands above its pre-evolution at the same level and a single stage or a Legendary carries its higher
+total, with no bonus on top. The damage formula took the series' shape with it (§4.1.1): the level term in front, the
++2 behind, so a fight lasts as many turns at Lv 40 as at Lv 10. Every flat HP amount is read against these numbers —
+a Potion's 10 is a third of a Lv 10 bar (§7.2.2) — and a level-free reading (the rhythm's Speed, §4.1.3.1) runs the
+formula backwards (`baseOfStat`). *(v0.9.93–v0.9.95 printed the proportional curve at half scale; v0.9.10–v0.9.92 at
+full scale; until v0.9.10 each line had a flat growth per level.)*
 
 The XP curve is `xpToNext(L) = 32 + (L − 1) × 1.2` (`levelUpBaseXp`, `levelUpSlopeXp`), to the series' Lv 100 —
 steep at the start and flat later, so Lv 5 → 6 costs 37 and Lv 44 → 45 costs 84. *(v0.9.92, the user's call of 2026-11-03:
@@ -724,6 +722,12 @@ great, not an invented one, and a content test keeps it out of every path the ki
   (Ponyta and Slowpoke's Tackle, into Stomp and Headbutt). A species that never evolves keeps its authored rows past
   Lv 25, and the Legendaries keep theirs: both are met high, with the kit their encounter was tuned for
   (`scripts/early-learnsets.mjs`).
+- **A third card before the first fight** (v0.9.96, the user's call: "the first levels are slow and hard with so few
+  moves"). Every starter learns a third move at Lv 3, so it walks in at Lv 5 with three: Bulbasaur Vine Whip,
+  Charmander Ember, Squirtle Bubble, Pikachu Quick Attack, Eevee Sand Attack. And a base form met in Region 1 with no hit
+  of its own type before Lv 10 gets one near Lv 7 — Diglett and Sandshrew Mud Shot, Geodude and Onix Rock Throw, the
+  Nidoran Poison Sting, Grimer Acid, Seel, Shellder Water Gun, Voltorb Thunder Shock, Exeggcute Bullet Seed at 11
+  (`scripts/v0996-early-hits.mjs`). The Lv 1 pair stays a pair.
 - **Deck contribution = `min(known, 4)`.** The active-4 cap never changes, and Mastery remains the 5th.
 - **One met already evolved** — a wild Ivysaur, a Gym's Venusaur, a recruit caught above its threshold — took its
   stage's first branch at every step, and its forms' learnsets up to its level, so it holds the kit a player's would.
@@ -741,7 +745,7 @@ great, not an invented one, and a content test keeps it out of every path the ki
 - A level-up teaches only the learnset entries its new levels reach (v0.9.5): before, it re-taught every move at or
   below the level, and a move an evolution had upgraded came back.
 
-**What this produces.** A run opens with one Pokémon and a **two-card deck**. It thickens as you recruit — about
+**What this produces.** A run opens with one Pokémon and a **three-card deck**, and its first catch is sure (§2.6.4.5). It thickens as you recruit — about
 six cards with a full base-form team — and reaches twelve by Gym 1 as those Pokémon level into their four-move
 kits. The deck growing *is* the early game's sense of progress. Past four, a Pokémon's moves **grow** rather than pile
 up (§6.9.1): the pool stays a choice, and the active four keep getting better.

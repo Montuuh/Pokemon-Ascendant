@@ -181,7 +181,8 @@ describe('Run Down — §6.5.2, §3.3.1', () => {
           { species: 'squirtle', level: 16 },
           { species: 'bulbasaur', level: 16 },
         ],
-        enemies: [PIDGEY],
+        // A Pidgey of the team's level: none of the three outpaces it (§3.3.1.1), so no swap is quick.
+        enemies: [{ ...PIDGEY, level: 19 }],
       }),
     );
     expect(s.player.freeSwaps).toBe(1);

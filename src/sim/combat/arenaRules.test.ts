@@ -78,7 +78,8 @@ describe('The arena rule — §2.12.2.1', () => {
   });
 
   it('Barrier_EveryThirdTurn_HalvesWhatTheLegendaryTakes_AndTheNumberSaysSo', () => {
-    let s = arena('barrier', legendary('mewtwo'));
+    // A team at Mewtwo's level: two turns of its hits must not knock the Lead out before the barrier is up.
+    let s = start({ ...scenario({ kind: 'wild', team: teamWithKit(['water-gun', 'ice-beam', 'tail-whip', 'tackle'], 'blastoise', 56), enemies: [legendary('mewtwo')] }), arenaRule: 'barrier' });
     const tackle = ctx.content.move('tackle');
     expect(barrierUp(s, ctx.config)).toBe(false);
     const plain = breakdownFor(leadOf(s), s.enemies[0]!, tackle, false, ctx, s).final;

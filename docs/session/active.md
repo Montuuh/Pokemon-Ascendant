@@ -1,30 +1,19 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-04 · **Version:** v0.9.95 (*Enemies at full strength*).
-**Shipped 2026-11-04 (v0.9.95), for the user to playtest:** enemies ×1 everywhere, lower enemy levels, XP 22/24, lone-
+**Date:** 2026-11-04 · **Version:** v0.9.96 (*The series' formulas*).
+**Shipped 2026-11-04 (v0.9.96), for the user to playtest:** Gen III stat formula (`STAT_FORMULA`, §6.2.3), series damage
+(level term, +2, divisor 100, §4.1.1), rhythm reads base Speed (`baseOfStat`; v0.9.93 had slowed it), Guard × level
+term, starters' 3rd move at Lv 3 + early own-type hits (`scripts/v0996-early-hits.mjs`), sure first catch (§2.6.4.5),
+Super/Hyper 40/90, Pallet Ring +0/+2, save v25. Fixtures' lengths held; harness R1 9 % (floors). **Waiting on verdict.**
+**Shipped 2026-11-04 (v0.9.95):** enemies ×1 everywhere, lower enemy levels, XP 22/24, lone-
 starter counter guard, auto-player fixes + optional lookahead. Harness R1 10 % · R2 0 %: bands are floors. **Waiting on
 the user's verdict**; if Gyms wall, cut structure (R1 Gyms of 4, no R1 ace double action).
-**Shipped 2026-11-04 (v0.9.94):** §2.6.2.1 wall guard (`wildFor`): R1 wild pools drop Rock/Steel/Ghost until a STAB.
-**Shipped 2026-11-04 (v0.9.93):** stats at half scale (`STAT_SCALE` 0.5, §6.2.3), divisor 5 → 10, flat HP amounts halved,
-save v24. Harness R1 63 · R2|R1 51 · R3|R2 38 · League 67 · run 8 %. Watch: small multipliers floor away on early hits.
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords. ✅ v0.9.90 real
 evolution levels and methods, Friendship. ✅ v0.9.91 progressive learnsets (tracks, Move Reminder, no filler on a final
 form, 76 Gen II–IV moves). ✅ **v0.9.92** enemies with intent (kits §5.2.2, disruption §5.2.3,
 weights §5.3.2, combos §5.5.2, doubles §5.6.1, Gym re-cut + test, 14 moves). The rework is complete. Harness (with the
 slower XP curve) R1 58 · R2|R1 46 · R3|R2 44 · League 71 · run 8 %; Region tier ×0.49 / ×0.48 / ×0.60. Open: the new moves in player learnsets/TMs, junk cards, Spite, Follow Me, Elite Trainer combos. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
-**Pushed 2026-11-03 (no version):** base forms learn at the series' levels (`scripts/early-learnsets.mjs`, §6.9): 55 species
-retimed, Lv 1 pair = first hit + first trick (starters Tackle/Scratch + Growl; Ember 7, Vine Whip 9). Leech Seed is in the
-v0.9.92 WIP (`seed`, disruption.ts) — check Grass immunity and the seeded chip when it lands.
-**Shipped 2026-11-03 (v0.9.91):** stage learnsets from Gen IV (`scripts/v0991-learnsets.mjs`), 269 tracks and 79 filler
-upgrades (§6.9.1), Move Reminder (§6.9.2), 76 moves (`scripts/v0991-moves.mjs`); Region tier ×0.50 / ×0.64 / ×0.67, Ring
-×2.05. Harness R1 63 · R2|R1 48 · R3|R2 47 · League 59 · run 8 %.
-**Shipped 2026-11-03 (v0.9.90):** every level ×1.4 from Lv 1 (`scripts/v0990-levels.mjs`; catalogue cells by
-`scripts/v0990-catalogs.mjs`), Gen I levels and methods (`readyBranches`, §6.3.7–§6.3.9), trade items held and spent,
-Friendship (hearts, grooming, Soothe Bell, Return, hold-on at 255), guaranteed stock, save v23, Region Attack tier
-×0.55 / ×0.70 / ×0.76. Harness R1 61 · R2|R1 49 · R3|R2 56 · League 60 · run 10 %. UI review Ship with fixes.
-**Shipped 2026-11-02 (v0.9.88):** twelve five-member authored Gym teams; guest named on the preview; pre-v0.9.88 maps keep
-the legacy roster. Lorelei stays hardest (37 %).
 **Art review (24 Oct):** closed by the user on 2026-11-02; its unimplemented findings (B20–B26, B29, B32, B33) are dropped, not pending. B30 fixed in architecture.md.
 
 **Dark and Steel (v0.9.84):** Gen II 17-type chart; Umbreon/Scizor/Steelix/Magnezone (155 species), 14 later moves, six TMs, Gems/Black Glasses/Plates/Metal Coat; Magnemite Electric/Steel. Eevee has four paths; archetype uniqueness is per target species. R3 Magnezone/Steelix trainers cost 13 win-rate points and were replaced. Four later species use enlarged Gen VII box icons. No new Dark/Steel Gym or Elite.

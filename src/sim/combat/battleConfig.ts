@@ -17,8 +17,15 @@ export interface RhythmCurve {
 }
 
 export interface BattleConfig {
-  /** §4.1.1 — damage formula divisor. Unity shipped 8; v0.9.12 took it to 5 when enemies got their whole HP back; v0.9.93 to 10 with the half-scale stats. */
+  /**
+   * §4.1.1 — damage formula divisor. Unity shipped 8; v0.9.12 took it to 5 when enemies got their whole HP back; v0.9.93 to
+   * 10 with the half-scale stats; v0.9.96 twice the series' 50, with the level term below in front of it.
+   */
   divisor: number;
+  /** §4.1.1 — the series' level term, slope × level + base (2L/5 + 2): a hit grows with its user's level as HP does. */
+  levelTerm: { slope: number; base: number };
+  /** §4.1.1 — the series' +2: every hit that is not immune does at least something before the multipliers. */
+  damageFlat: number;
   /** §4.1.2 — same-type attack bonus. */
   stabMultiplier: number;
   /** §4.1.3 — critical hit multiplier. Crit base chance is 0 %; sources stack additively. */
@@ -177,9 +184,14 @@ export interface BattleConfig {
 }
 
 export const DEFAULT_BATTLE_CONFIG: BattleConfig = {
-  // §4.1.1 — 5 since v0.9.12: every enemy fights on its whole HP, so every hit, yours and theirs, lands harder.
-  // 10 since v0.9.93: stats are printed at half scale (§6.2.3), HP with them, so a hit takes the same share it did.
-  divisor: 10,
+  // §4.1.1 — the series' damage formula since v0.9.96, ((2L/5 + 2) × Power × Atk/Def) / D + 2, with the series' stats
+  // (§6.2.3). D is twice the series' 50: a turn here plays two or three hits where the series plays one, and at 100 a
+  // fight lasts the turns it did before (the fixtures' table) while it no longer stretches as both sides level.
+  // At 70 every side is deadlier and the auto-player's Region 1 and Ring fell (7 %, 0.13): the early pace is the
+  // third card's and the first catch's job (§6.9, §2.6.4.5), not the divisor's.
+  divisor: 100,
+  levelTerm: { slope: 0.4, base: 2 },
+  damageFlat: 2,
   doubleActionApBudget: 3,
   doubleActionApBudgetBoss: 4,
   comboBreakShare: 0.25,

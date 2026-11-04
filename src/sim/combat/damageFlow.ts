@@ -58,6 +58,7 @@ export function breakdownFor(attacker: Combatant, target: Combatant, move: MoveD
   const raw = computeDamage(
     {
       power: move.power,
+      level: attacker.level,
       attack: effectiveAttack(attacker, ctx.config),
       // §7.4 Fissure — a ground-splitter ignores a braced stance, so Defence *stages* do not apply.
       // §6.8.3 Infiltrator — a raised Defence stage does not count against the wearer; a lowered one still does.
