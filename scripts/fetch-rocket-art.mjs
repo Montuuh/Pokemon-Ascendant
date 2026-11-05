@@ -19,7 +19,6 @@ import sharp from 'sharp';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CORNER = resolve(ROOT, 'public/art/game-corner');
-const MARKET = resolve(ROOT, 'public/art/black-market');
 const force = process.argv.includes('--force');
 const API = 'https://archives.bulbagarden.net/w/api.php';
 const UA = 'PokemonAscendant/0.7 (non-commercial fan project; art pipeline)';
@@ -33,8 +32,7 @@ function download(title) {
 
 const exists = async (p) => access(p).then(() => true, () => false);
 await mkdir(CORNER, { recursive: true });
-await mkdir(MARKET, { recursive: true });
-if (!force && (await exists(resolve(CORNER, 'room.png'))) && (await exists(resolve(MARKET, 'floor.png')))) {
+if (!force && (await exists(resolve(CORNER, 'room.png')))) {
   console.log('skip: the Rocket art is installed (--force to redo)');
   process.exit(0);
 }
@@ -43,7 +41,6 @@ if (!force && (await exists(resolve(CORNER, 'room.png'))) && (await exists(resol
 // coins with squares, none of them on the tiles taken from it here).
 const inside = download('File:Celadon Game Corner Inside FRLG.png');
 const empty = download('File:Rocket Game Corner hidden coins FRLG.png');
-const hideout = download('File:Rocket Hideout B1F FRLG.png');
 
 const raw = async (buf) => sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 const I = await raw(inside);
@@ -74,7 +71,4 @@ await room([noGrunt], resolve(CORNER, 'room-open.png'));
 // Shut: back up the stairs, the door locked — the Grunt still gone, and the corner under the hatch plain floor.
 await room([noStairs, noGrunt], resolve(CORNER, 'room-shut.png'));
 
-// The Hideout: the entrance room's back wall with a vent, and a floor tile.
-const cut = (x, y, w, h, name) => sharp(hideout).extract({ left: x, top: y, width: w, height: h }).png().toFile(resolve(MARKET, name)).then(() => console.log(name));
-await cut(208, 8, 48, 24, 'wall.png');
-await cut(192, 176, 16, 16, 'floor.png');
+// The Black Market itself is composed from pret's tilesets by scripts/build-black-market-art.mjs.

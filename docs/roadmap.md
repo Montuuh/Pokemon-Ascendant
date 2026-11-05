@@ -1540,6 +1540,18 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.100 — Rocket offices  ✅ 2026-11-05
+
+**Shipped to be played** (the user, 2026-11-05: "rework the Black Market room's art"; then "I want cool Team Rocket
+offices, with the Executive in an office of his own, with Poké Balls, Legendaries… decorate it more, put the Team Rocket
+logos"; and "TMs have no explanation on hover", "a move not learned has no tooltip when the four are full", "nor when a
+level teaches a move"). (1) The room (352×264) is composed from FRLG metatiles rendered straight from pret/pokefirered
+(`scripts/lib/frlg-map.mjs`; Bulbagarden is behind a bot check now): the Hideout office floor with the Warehouse's
+crates, two desks, server cabinets and two Team Rocket banners; behind a partition with its own south wall and door,
+Giovanni's B4F office with the four Legendaries on Mansion plinths, Mew on the desk and an R rug. (2) `tmTip` explains
+the move a TM teaches everywhere a TM is shown; locked Move Manager rows keep their bubble (aria-disabled) and say why;
+the level-up panel's moves open their bubble, and Escape closes it before it skips. **Next:** the user's look.
+
 ### v0.9.99 — Commons first  ✅ 2026-11-04
 
 **Shipped to be played** (the user, 2026-11-04: "one or two Legendaries a run at most; commons a lot more; uncommons a

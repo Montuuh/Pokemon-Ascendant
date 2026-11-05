@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.100 — Rocket offices · 2026-11-05
+
+The Black Market is Team Rocket's offices, and the Executive has his own.
+
+- **Rocket offices.** Desks, servers, crates and Rocket banners, in FireRed's own tiles.
+- **The Executive's office.** His own, behind a wall: Legendaries on show, an R rug.
+- **Moves explained.** TMs explain their move; locked and new moves show tooltips.
+
 ### v0.9.99 — Commons first · 2026-11-04
 
 Commons turn up often, Uncommons less, Rares rarely; every relic is open.
