@@ -1,7 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-05 · **Version:** v0.9.100 (*Rocket offices*).
-**Shipped 2026-11-05 (v0.9.100):** Black Market as Team Rocket's offices + the Executive's private office, composed from pret FRLG metatiles (`scripts/lib/frlg-map.mjs`, Bulbagarden now bot-checked); TM/move tooltips. **Waiting on the user's look.**
+**Date:** 2026-11-05 · **Version:** v0.9.101 (*Rooms with life*).
+**Shipped 2026-11-05 (v0.9.101 / v0.9.100):** every FRLG room rebuilt from pret metatiles (`scripts/build-rooms.mjs`, `scripts/lib/frlg-room.mjs`; Black Market by its own script) — richer, peopled, one prop per service. Bulbagarden is bot-checked: pret is the art source now. **Waiting on the user's look.**
 **Fixed 2026-11-05 (no version):** series Potions 20/60/120; level-up and evolution HP add the Max HP gained, shown on the level tick (no heal beat). Harness R1 9 % → 20 %.
 **Shipped 2026-11-04 (v0.9.99 / v0.9.98):** Common-heavy sources (trainers 20 % C, picks C/U/U, Elite Wild U, weights
 70/25/5, Starting Relic C) and relic unlocks off (`RELIC_UNLOCKS_ON`; rework in backlog); rarities re-tiered by

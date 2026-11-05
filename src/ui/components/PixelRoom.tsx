@@ -32,8 +32,8 @@ export interface RoomSpot<Id extends string> {
   /** The bubble on hover and focus. */
   tip: ReactNode;
   testId?: string;
-  /** Where the plate hangs: under its piece, centred; `raised` lifts it into the bottom of its piece. */
-  plate?: 'raised' | 'raised-right';
+  /** Where the plate hangs: under its piece, centred; `raised` lifts it into the bottom of its piece; `start` hangs it from the piece's left edge. */
+  plate?: 'raised' | 'raised-right' | 'start';
 }
 
 /** Someone the map has no room for, standing in it: a sprite and its top-left in the map's pixels. */
@@ -57,7 +57,7 @@ export interface RoomExit {
   testId: string;
 }
 
-const PLATE = { raised: styles.plateRaised, 'raised-right': styles.plateRaisedRight } as const;
+const PLATE = { raised: styles.plateRaised, 'raised-right': styles.plateRaisedRight, start: styles.plateStart } as const;
 
 /** The frame's border, outside the map's pixels. */
 const FRAME = 3;

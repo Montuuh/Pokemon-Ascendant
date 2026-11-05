@@ -1540,6 +1540,19 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.101 — Rooms with life  ✅ 2026-11-05
+
+**Shipped to be played** (the user, 2026-11-05: "rework the rest of the rooms built with these tilesets, whole, with more
+decoration, cohesion and better elements representative of each room"). Every FRLG interior is rendered from
+pret/pokefirered's tilesets by `scripts/build-rooms.mjs` (helpers in `scripts/lib/frlg-room.mjs`): the Center recomposed
+(19 × 14: PokemonCenter_1F's counter, PC and lounge, the Therapy rug and beds with Chansey, a waiting row, visitors);
+the Mart and the five store floors on their FRLG plans with customers in the aisles and one prop per service (fossils,
+amber and gems on relic glass, Poké Balls on held items); the Dojo with its people at the map's object events and
+Machop, Machoke and Poliwrath; the Game Corner's three states from the map script's own stair metatiles; the Hub's League
+lobby with its trainers, a Pokédex on the Item Guide and a clipboard on the Trainer Card counter. Sprites keep their
+black outlines (only the tiles' black surround is keyed). The old Bulbagarden scripts are retired (`art:people` keeps
+the clerk, nurse and player). **Next:** the user's look.
+
 ### v0.9.100 — Rocket offices  ✅ 2026-11-05
 
 **Shipped to be played** (the user, 2026-11-05: "rework the Black Market room's art"; then "I want cool Team Rocket

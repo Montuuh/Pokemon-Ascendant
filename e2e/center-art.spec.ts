@@ -16,7 +16,7 @@ for (const [width, height] of [[1920, 1080], [1280, 720]] as const) {
     await page.setViewportSize({ width, height }); await page.emulateMedia({ reducedMotion: 'reduce' }); await center(page);
     const lobby = page.getByTestId('center-lobby'); await expect(lobby).toBeVisible();
     expect((Number(await lobby.getAttribute('data-scale')) * 2) % 1).toBe(0);
-    const art = lobby.locator('img').first(); await expect(art).toHaveJSProperty('naturalWidth', 320); await expect(art).toHaveJSProperty('naturalHeight', 224);
+    const art = lobby.locator('img').first(); await expect(art).toHaveJSProperty('naturalWidth', 304); await expect(art).toHaveJSProperty('naturalHeight', 224);
     await expect(page.getByTestId('door-center-daycare')).toHaveCount(0);
     const beds = await page.getByTestId('door-center-therapy').boundingBox(); const nurse = await page.getByTestId('door-center-heal').boundingBox();
     expect(beds!.x).toBeLessThan(nurse!.x); expect(beds!.y).toBeGreaterThan(nurse!.y);

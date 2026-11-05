@@ -122,6 +122,8 @@ export function HubScreen() {
             label: SPOT_LABEL[id],
             tip: hubSpotTip(id, account.tokens),
             testId: `kiosk-${id}`,
+            // The PC's plate hangs right of it, over open floor, clear of the Trainer Card's counter beside it.
+            ...(id === 'pc' ? { plate: 'start' as const } : {}),
           }))}
           exit={{ box: LOBBY_EXIT, label: 'Menu', tip: hubExitTip(), testId: 'hub-exit', onExit: leave }}
         />

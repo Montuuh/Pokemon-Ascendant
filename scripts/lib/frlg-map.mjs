@@ -142,3 +142,86 @@ export function readLayout(bytes, width) {
   for (let i = 0; i < ids.length; i += width) rows.push(ids.slice(i, i + width));
   return rows;
 }
+
+// ── Maps by name, fetched from pret at a pinned commit ──────────────────────────────────────────────────────────────
+/** pret/pokefirered's revision every FRLG room in the game is built from. */
+export const PRET_COMMIT = 'ce6406d8c2eaf46d543c8a2606de0c3cb1951982';
+const RAW = `https://raw.githubusercontent.com/pret/pokefirered/${PRET_COMMIT}`;
+
+/**
+ * A pret source tree cached under `dir`: `file(path)` fetches once (or again with `refresh`) and records each file's
+ * URL and hash in `sources`; `map(name)` renders a layout by its name with the tilesets pret's headers give it (a
+ * tileset may draw with another one's tiles: SilphCo with the Condominiums').
+ */
+export function pretSource(dir, { refresh = false, onFile = () => {} } = {}) {
+  const cache = new Map();
+  async function file(path) {
+    if (cache.has(path)) return cache.get(path);
+    const { access, mkdir, writeFile } = await import('node:fs/promises');
+    const { dirname } = await import('node:path');
+    const local = join(dir, path);
+    const have = await access(local).then(
+      () => true,
+      () => false,
+    );
+    if (refresh || !have) {
+      const response = await fetch(`${RAW}/${path}`);
+      if (!response.ok) throw new Error(`${response.status}: ${RAW}/${path}`);
+      await mkdir(dirname(local), { recursive: true });
+      await writeFile(local, Buffer.from(await response.arrayBuffer()));
+    }
+    const bytes = await readFile(local);
+    onFile({ path, url: `${RAW}/${path}`, bytes });
+    cache.set(path, bytes);
+    return bytes;
+  }
+  const text = async (path) => (await file(path)).toString('utf8');
+  const tilesets = new Map();
+  async function tileset(symbol) {
+    if (tilesets.has(symbol)) return tilesets.get(symbol);
+    const headers = await text('src/data/tilesets/headers.h');
+    const block = new RegExp(String.raw`${symbol}\s*=\s*\{([^}]*)\}`).exec(headers)?.[1];
+    if (!block) throw new Error(`no tileset ${symbol}`);
+    const field = (k) => new RegExp(String.raw`\.${k}\s*=\s*(\w+)`).exec(block)[1];
+    const graphics = await text('src/data/tilesets/graphics.h');
+    const metas = await text('src/data/tilesets/metatiles.h');
+    // A few tilesets are declared outside graphics.h; they follow pret's folder convention (DepartmentStore →
+    // secondary/department_store).
+    const folder = (name) =>
+      `data/tilesets/${/isSecondary\s*=\s*TRUE/.test(block) ? 'secondary' : 'primary'}/${name
+        .replace(/^g\w+?_/, '')
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        .replace(/([a-zA-Z])([0-9])/g, '$1_$2')
+        .toLowerCase()}`;
+    const tilesPath =
+      new RegExp(String.raw`${field('tiles')}\[\]\s*=\s*INCBIN_U32\("([^"]+)/tiles\.4bpp`).exec(
+        graphics,
+      )?.[1] ?? folder(field('tiles'));
+    const palBlock = new RegExp(String.raw`${field('palettes')}\[\]\[16\]\s*=\s*\{([^}]*)\}`).exec(
+      graphics,
+    )?.[1];
+    const palPaths = palBlock
+      ? [...palBlock.matchAll(/"([^"]+)\.gbapal"/g)].map((m) => `${m[1]}.pal`)
+      : Array.from(
+          { length: 16 },
+          (_, i) => `${folder(field('palettes'))}/palettes/${String(i).padStart(2, '0')}.pal`,
+        );
+    const metaPath =
+      new RegExp(String.raw`${field('metatiles')}\[\]\s*=\s*INCBIN_U16\("([^"]+)"`).exec(metas)?.[1] ??
+      `${folder(field('metatiles'))}/metatiles.bin`;
+    await file(`${tilesPath}/tiles.png`);
+    for (const p of palPaths) await file(p);
+    await file(metaPath);
+    const ts = await loadTileset(join(dir, tilesPath), join(dir, metaPath.replace(/\/metatiles\.bin$/, '')));
+    tilesets.set(symbol, ts);
+    return ts;
+  }
+  async function map(name) {
+    const layouts = JSON.parse(await text('data/layouts/layouts.json')).layouts;
+    const l = layouts.find((x) => x.name === `${name}_Layout`);
+    if (!l) throw new Error(`no layout ${name}`);
+    const grid = readLayout(await file(l.blockdata_filepath), l.width);
+    return { grid, primary: await tileset(l.primary_tileset), secondary: await tileset(l.secondary_tileset) };
+  }
+  return { file, tileset, map };
+}

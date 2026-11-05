@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.101 — Rooms with life · 2026-11-05
+
+Every FRLG room redrawn from the games' tiles and furnished for its job.
+
+- **Pokémon Center.** Therapy beds with Chansey at work, the grooming table, visitors.
+- **Shops.** Customers in every aisle; fossils and gems on relic glass.
+- **Dojo and Game Corner.** Machop and Machoke sparring; regulars and prizes.
+- **Trainer Hub.** The League lobby's trainers, the Item Guide open on its table.
+
 ### v0.9.100 — Rocket offices · 2026-11-05
 
 The Black Market is Team Rocket's offices, and the Executive has his own.
