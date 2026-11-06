@@ -1540,6 +1540,18 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.102 — Moves in their own sprites  ✅ 2026-11-06
+
+**Shipped.** The user (2026-11-06) asked for a unique animation per move, pret first and ChatGPT for the gaps. Every
+move is now drawn with FRLG's battle-animation sprites and backgrounds, imported from pret at the rooms' pinned commit
+(`npm run art:fx`: 312 sprites in the GBA's tile order and palettes, 23 re-palettes, 16 backgrounds); each FRLG move
+takes the sprites its own script loads, the Gen IV moves are composed from them, and the 19 the GBA draws without
+sprites keep the drawn shapes (§9.9.2). The choreography and `MOTION_MS` are unchanged. Backgrounds only for heavy moves
+(field moves and the greatest blows), rising to the impact. UI review: Ship with fixes → Ship (6 Should fixed; Nits left:
+Recover's single orb, BG_DARK's palette unverified against the game). Eight moves (Wood Hammer, Dragon Pulse, Aura
+Sphere, Dark Pulse, Flash Cannon, Gunk Shot, Stone Edge, Stealth Rock) use a pret stand-in until the user's ChatGPT
+sheets arrive (`docs/art/fx/move-fx-chatgpt.xlsx`).
+
 ### v0.9.101 — Rooms with life  ✅ 2026-11-05
 
 **Shipped to be played** (the user, 2026-11-05: "rework the rest of the rooms built with these tilesets, whole, with more

@@ -1,0 +1,4038 @@
+{
+ "commit": "ce6406d8c2eaf46d543c8a2606de0c3cb1951982",
+ "sprites": {
+  "air-slash": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "air-wave": {
+   "w": 32,
+   "h": 16,
+   "frames": 1
+  },
+  "air-wave-2": {
+   "w": 32,
+   "h": 16,
+   "frames": 1
+  },
+  "alert": {
+   "w": 32,
+   "h": 16,
+   "frames": 7
+  },
+  "amnesia": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "angel": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "anger": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "bell": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "bell-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "bent-spoon": {
+   "w": 16,
+   "h": 32,
+   "frames": 6
+  },
+  "bird": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "black-ball": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "black-ball-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "black-smoke": {
+   "w": 32,
+   "h": 16,
+   "frames": 1
+  },
+  "bluegreen-orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "blue-burst": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "blue-flames": {
+   "w": 32,
+   "h": 32,
+   "frames": 2
+  },
+  "blue-flames-2": {
+   "w": 8,
+   "h": 8,
+   "frames": 16
+  },
+  "blue-light-wall": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "blue-lines": {
+   "w": 8,
+   "h": 8,
+   "frames": 2
+  },
+  "blue-orb": {
+   "w": 8,
+   "h": 8,
+   "frames": 3
+  },
+  "blue-ring": {
+   "w": 16,
+   "h": 32,
+   "frames": 1
+  },
+  "blue-ring-2": {
+   "w": 16,
+   "h": 32,
+   "frames": 1
+  },
+  "blue-shards": {
+   "w": 16,
+   "h": 16,
+   "frames": 7
+  },
+  "blue-star": {
+   "w": 32,
+   "h": 32,
+   "frames": 7
+  },
+  "bone": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "bone-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "breaking-egg": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "breath": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "brown-orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "brown-triangle": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "bubble": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "bubble-burst": {
+   "w": 16,
+   "h": 16,
+   "frames": 7
+  },
+  "bubble-burst-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "circle-impact": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "circle-of-light": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "clamp": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "clapping": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "claw-slash": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "claw-slash-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "closing-eye": {
+   "w": 32,
+   "h": 48,
+   "frames": 1
+  },
+  "closing-eye-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "coin": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "confetti": {
+   "w": 8,
+   "h": 8,
+   "frames": 12
+  },
+  "conversion": {
+   "w": 8,
+   "h": 8,
+   "frames": 4
+  },
+  "cracked-egg": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "cross-impact": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "cut": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "devil": {
+   "w": 32,
+   "h": 32,
+   "frames": 2
+  },
+  "dirt-mound": {
+   "w": 32,
+   "h": 16,
+   "frames": 2
+  },
+  "duck": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "eclipsing-orb": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "electricity": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "electric-orbs": {
+   "w": 8,
+   "h": 8,
+   "frames": 4
+  },
+  "explosion": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "explosion-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 6
+  },
+  "explosion-3": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "explosion-4": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "explosion-5": {
+   "w": 16,
+   "h": 16,
+   "frames": 5
+  },
+  "explosion-6": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "eye": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "eye-sparkle": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "fangs": {
+   "w": 32,
+   "h": 32,
+   "frames": 2
+  },
+  "fang-attack": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "finger": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "finger-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "fire": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "fire-plume": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "flat-rock": {
+   "w": 16,
+   "h": 16,
+   "frames": 5
+  },
+  "flower": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "flying-dirt": {
+   "w": 32,
+   "h": 16,
+   "frames": 2
+  },
+  "focus-energy": {
+   "w": 16,
+   "h": 32,
+   "frames": 4
+  },
+  "fresh-egg": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "fury-swipes": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "gem-1": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "gem-2": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "gem-3": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "ghostly-spirit": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "glass": {
+   "w": 32,
+   "h": 56,
+   "frames": 1
+  },
+  "glass-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "glowy-blue-orb": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "glowy-green-orb": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "glowy-red-orb": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "gold-ring": {
+   "w": 16,
+   "h": 32,
+   "frames": 1
+  },
+  "gold-stars": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "gray-light-wall": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "gray-orb": {
+   "w": 8,
+   "h": 8,
+   "frames": 3
+  },
+  "gray-smoke": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "green-light-wall": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "green-sparkle": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "green-spike": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "green-star": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "guard-ring": {
+   "w": 64,
+   "h": 32,
+   "frames": 1
+  },
+  "gust": {
+   "w": 32,
+   "h": 64,
+   "frames": 1
+  },
+  "hail": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "hands-and-feet": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "hatched-egg": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "hit": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "hit-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "hit-duplicate": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "hollow-orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "horn-hit": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "horn-hit-2": {
+   "w": 32,
+   "h": 16,
+   "frames": 1
+  },
+  "humanoid-foot": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "humanoid-hand": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "ice-chunk": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "ice-crystals": {
+   "w": 8,
+   "h": 8,
+   "frames": 14
+  },
+  "ice-cube": {
+   "w": 64,
+   "h": 64,
+   "frames": 2
+  },
+  "ice-spikes": {
+   "w": 8,
+   "h": 16,
+   "frames": 4
+  },
+  "icicle-spear": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "impact": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "impact-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 6
+  },
+  "impact-3": {
+   "w": 32,
+   "h": 208,
+   "frames": 1
+  },
+  "item-bag": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "jagged-music-note": {
+   "w": 32,
+   "h": 32,
+   "frames": 2
+  },
+  "large-fresh-egg": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "leaf": {
+   "w": 16,
+   "h": 16,
+   "frames": 9
+  },
+  "leer": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "letter-z": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "lick": {
+   "w": 16,
+   "h": 32,
+   "frames": 5
+  },
+  "lightbulb": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "lightning": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "lightning-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "lock-on": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "magenta-heart": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "magnifying-glass": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "metal-ball": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "metal-sound-waves": {
+   "w": 32,
+   "h": 64,
+   "frames": 1
+  },
+  "meteor": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "milk-bottle": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "mist-cloud": {
+   "w": 32,
+   "h": 16,
+   "frames": 2
+  },
+  "monster-doll": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "monster-foot": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "moon": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "movement-waves": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "mud-sand": {
+   "w": 8,
+   "h": 8,
+   "frames": 5
+  },
+  "mud-unk": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "music-notes": {
+   "w": 16,
+   "h": 16,
+   "frames": 6
+  },
+  "music-notes-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 16
+  },
+  "nail": {
+   "w": 32,
+   "h": 16,
+   "frames": 4
+  },
+  "needle": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "noise-line": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "opening-eye": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "orange": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "orange-light-wall": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "orbs": {
+   "w": 8,
+   "h": 8,
+   "frames": 12
+  },
+  "pain-split": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "paw-print": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "pencil": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "pencil-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "petal": {
+   "w": 16,
+   "h": 16,
+   "frames": 7
+  },
+  "pink-cloud": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "pink-glove": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "pink-heart": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "pink-heart-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "pink-orb": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "pink-petal": {
+   "w": 8,
+   "h": 8,
+   "frames": 4
+  },
+  "poison-bubble": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "poison-powder": {
+   "w": 8,
+   "h": 16,
+   "frames": 8
+  },
+  "pokeball": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "powder": {
+   "w": 8,
+   "h": 8,
+   "frames": 16
+  },
+  "protect": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "punch-impact": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "purple-coral": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "purple-droplet": {
+   "w": 16,
+   "h": 16,
+   "frames": 12
+  },
+  "purple-flame": {
+   "w": 16,
+   "h": 32,
+   "frames": 4
+  },
+  "purple-gas-cloud": {
+   "w": 32,
+   "h": 16,
+   "frames": 2
+  },
+  "purple-green-unk": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "purple-hand-outline": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "purple-ring": {
+   "w": 16,
+   "h": 32,
+   "frames": 1
+  },
+  "purple-scratch": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "purple-swipe": {
+   "w": 64,
+   "h": 64,
+   "frames": 2
+  },
+  "rainbow-rings": {
+   "w": 8,
+   "h": 16,
+   "frames": 3
+  },
+  "rain-drops": {
+   "w": 16,
+   "h": 32,
+   "frames": 7
+  },
+  "rapid-spin": {
+   "w": 32,
+   "h": 16,
+   "frames": 3
+  },
+  "razor-leaf": {
+   "w": 32,
+   "h": 16,
+   "frames": 1
+  },
+  "recycle": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "red-ball": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "red-fist": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "red-heart": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "red-light-wall": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "red-orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "red-orb-2": {
+   "w": 8,
+   "h": 8,
+   "frames": 3
+  },
+  "red-particles": {
+   "w": 8,
+   "h": 8,
+   "frames": 5
+  },
+  "red-tube": {
+   "w": 32,
+   "h": 8,
+   "frames": 1
+  },
+  "red-wand": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "reticle": {
+   "w": 16,
+   "h": 16,
+   "frames": 5
+  },
+  "ring": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "rocks": {
+   "w": 32,
+   "h": 32,
+   "frames": 6
+  },
+  "roots": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "round-shadow": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "round-white-halo": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "safari-bait": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "sap-drip": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "sap-drip-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "scratch": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "scratch-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "scratch-3": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "seed": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "seed-2": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "shadow-ball": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "sharp-teeth": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "shock": {
+   "w": 32,
+   "h": 32,
+   "frames": 6
+  },
+  "shock-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "shock-3": {
+   "w": 32,
+   "h": 32,
+   "frames": 3
+  },
+  "shock-4": {
+   "w": 16,
+   "h": 16,
+   "frames": 6
+  },
+  "slam-hit": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "slam-hit-2": {
+   "w": 64,
+   "h": 64,
+   "frames": 2
+  },
+  "slash": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "slash-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "sleep-powder": {
+   "w": 8,
+   "h": 16,
+   "frames": 8
+  },
+  "small-bubbles": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "small-ember": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "small-red-eye": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "smellingsalt-effect": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "smoke": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "smoke-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "snore-z": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "snowball": {
+   "w": 8,
+   "h": 8,
+   "frames": 6
+  },
+  "spark": {
+   "w": 8,
+   "h": 8,
+   "frames": 36
+  },
+  "sparkle-1": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "sparkle-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "sparkle-3": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "sparkle-4": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "sparkle-6": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "spark-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "spark-h": {
+   "w": 32,
+   "h": 16,
+   "frames": 2
+  },
+  "speed-dust": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "sphere-to-cube": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "spider-web": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "spikes": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "spinning-fire": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "spinning-green-orbs": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "spiral": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "splash": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "spore": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "spotlight": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "sprout": {
+   "w": 32,
+   "h": 32,
+   "frames": 7
+  },
+  "string": {
+   "w": 64,
+   "h": 32,
+   "frames": 1
+  },
+  "string-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "stun-spore": {
+   "w": 8,
+   "h": 16,
+   "frames": 8
+  },
+  "sunlight": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "sweat-bead": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "sweat-drop": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "swipe": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "sword": {
+   "w": 32,
+   "h": 64,
+   "frames": 1
+  },
+  "sword-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "tag-hand": {
+   "w": 32,
+   "h": 32,
+   "frames": 2
+  },
+  "teal-alert": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "teeth": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "tendrils": {
+   "w": 64,
+   "h": 32,
+   "frames": 4
+  },
+  "thin-ring": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "thought-bubble": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "tied-bag": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "tongue": {
+   "w": 16,
+   "h": 16,
+   "frames": 5
+  },
+  "torn-metal": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "toxic-bubble": {
+   "w": 16,
+   "h": 32,
+   "frames": 4
+  },
+  "tri-attack-triangle": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "unknown": {
+   "w": 8,
+   "h": 8,
+   "frames": 2
+  },
+  "vine": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "vine-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "void-lines": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "warm-rock": {
+   "w": 16,
+   "h": 16,
+   "frames": 21
+  },
+  "water-column": {
+   "w": 16,
+   "h": 16,
+   "frames": 8
+  },
+  "water-droplet": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "water-droplet-2": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "water-impact": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "water-orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 4
+  },
+  "waving-hand": {
+   "w": 16,
+   "h": 16,
+   "frames": 3
+  },
+  "weather-ball": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "web": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "web-thread": {
+   "w": 8,
+   "h": 8,
+   "frames": 1
+  },
+  "whip-hit": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  },
+  "whirlwind": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "whirlwind-2": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "whirlwind-lines": {
+   "w": 32,
+   "h": 16,
+   "frames": 3
+  },
+  "white-bag": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "white-circle-of-light": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "white-feather": {
+   "w": 32,
+   "h": 32,
+   "frames": 2
+  },
+  "white-shadow": {
+   "w": 64,
+   "h": 32,
+   "frames": 1
+  },
+  "wisp-fire": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "wisp-orb": {
+   "w": 16,
+   "h": 16,
+   "frames": 7
+  },
+  "x-sign": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "yellow-ball": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "yellow-star": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "yellow-unk": {
+   "w": 16,
+   "h": 16,
+   "frames": 1
+  },
+  "yellow-unk-2": {
+   "w": 8,
+   "h": 8,
+   "frames": 2
+  },
+  "z": {
+   "w": 16,
+   "h": 16,
+   "frames": 2
+  },
+  "slash@dark": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "cut@psychic": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "claw-slash@ghost": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "horn-hit@poison": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "cross-impact@poison": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "shadow-ball@grass": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "air-wave@vacuum": {
+   "w": 32,
+   "h": 16,
+   "frames": 1
+  },
+  "metal-sound-waves@bug": {
+   "w": 32,
+   "h": 64,
+   "frames": 1
+  },
+  "noise-line@dark": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "protect@gold": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "guard-ring@water": {
+   "w": 64,
+   "h": 32,
+   "frames": 1
+  },
+  "fire-plume@earth": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "explosion@mud": {
+   "w": 32,
+   "h": 32,
+   "frames": 4
+  },
+  "bird@brave": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "white-shadow@shade": {
+   "w": 64,
+   "h": 32,
+   "frames": 1
+  },
+  "meteor@draco": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "circle-of-light@zen": {
+   "w": 64,
+   "h": 64,
+   "frames": 1
+  },
+  "punch-impact@dark": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "impact@dark": {
+   "w": 32,
+   "h": 32,
+   "frames": 1
+  },
+  "fire-plume@lava": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "rocks@stone": {
+   "w": 32,
+   "h": 32,
+   "frames": 6
+  },
+  "vine@power": {
+   "w": 32,
+   "h": 32,
+   "frames": 5
+  },
+  "sparkle-1@stone": {
+   "w": 32,
+   "h": 32,
+   "frames": 8
+  }
+ },
+ "bgs": {
+  "dark": {
+   "w": 240,
+   "h": 160
+  },
+  "ghost": {
+   "w": 240,
+   "h": 160
+  },
+  "psychic": {
+   "w": 240,
+   "h": 160
+  },
+  "impact": {
+   "w": 240,
+   "h": 160
+  },
+  "drill": {
+   "w": 240,
+   "h": 160
+  },
+  "highspeed": {
+   "w": 240,
+   "h": 160
+  },
+  "thunder": {
+   "w": 240,
+   "h": 160
+  },
+  "guillotine": {
+   "w": 240,
+   "h": 160
+  },
+  "ice": {
+   "w": 240,
+   "h": 160
+  },
+  "cosmic": {
+   "w": 240,
+   "h": 160
+  },
+  "in-air": {
+   "w": 240,
+   "h": 160
+  },
+  "sky": {
+   "w": 240,
+   "h": 160
+  },
+  "aurora": {
+   "w": 240,
+   "h": 160
+  },
+  "fissure": {
+   "w": 240,
+   "h": 160
+  },
+  "bug": {
+   "w": 240,
+   "h": 160
+  },
+  "solar-beam": {
+   "w": 240,
+   "h": 160
+  }
+ },
+ "moves": {
+  "mirror-move": {
+   "sprites": [],
+   "bgs": []
+  },
+  "pound": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "double-slap": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "poison-powder": {
+   "sprites": [
+    "poison-powder",
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "stun-spore": {
+   "sprites": [
+    "stun-spore"
+   ],
+   "bgs": []
+  },
+  "sleep-powder": {
+   "sprites": [
+    "sleep-powder"
+   ],
+   "bgs": []
+  },
+  "swift": {
+   "sprites": [
+    "yellow-star",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "strength": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "tackle": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "body-slam": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "supersonic": {
+   "sprites": [
+    "gold-ring"
+   ],
+   "bgs": []
+  },
+  "screech": {
+   "sprites": [
+    "purple-ring"
+   ],
+   "bgs": []
+  },
+  "flame-wheel": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "pin-missile": {
+   "sprites": [
+    "needle",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "icicle-spear": {
+   "sprites": [
+    "icicle-spear",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "take-down": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "double-edge": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "poison-sting": {
+   "sprites": [
+    "needle",
+    "impact",
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "twineedle": {
+   "sprites": [
+    "needle",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "fire-blast": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "leech-seed": {
+   "sprites": [
+    "seed"
+   ],
+   "bgs": []
+  },
+  "ember": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "mega-punch": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": [
+    "impact",
+    "impact",
+    "impact"
+   ]
+  },
+  "mega-kick": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": [
+    "impact",
+    "impact",
+    "impact"
+   ]
+  },
+  "comet-punch": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "sonic-boom": {
+   "sprites": [
+    "air-wave",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "thunder-shock": {
+   "sprites": [
+    "spark",
+    "spark-2"
+   ],
+   "bgs": []
+  },
+  "thunderbolt": {
+   "sprites": [
+    "spark",
+    "shock-3",
+    "spark-2"
+   ],
+   "bgs": []
+  },
+  "thunder-wave": {
+   "sprites": [
+    "spark",
+    "spark-2",
+    "spark-h"
+   ],
+   "bgs": []
+  },
+  "beat-up": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "stomp": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "tail-whip": {
+   "sprites": [],
+   "bgs": []
+  },
+  "cut": {
+   "sprites": [
+    "cut"
+   ],
+   "bgs": []
+  },
+  "hidden-power": {
+   "sprites": [
+    "red-orb"
+   ],
+   "bgs": []
+  },
+  "reversal": {
+   "sprites": [
+    "blue-orb",
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "pursuit": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": [
+    "dark"
+   ]
+  },
+  "spike-cannon": {
+   "sprites": [
+    "needle",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "swords-dance": {
+   "sprites": [
+    "sword"
+   ],
+   "bgs": []
+  },
+  "psych-up": {
+   "sprites": [
+    "spiral"
+   ],
+   "bgs": []
+  },
+  "dizzy-punch": {
+   "sprites": [
+    "duck",
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "fire-spin": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "fury-cutter": {
+   "sprites": [
+    "cut"
+   ],
+   "bgs": []
+  },
+  "self-destruct": {
+   "sprites": [
+    "explosion"
+   ],
+   "bgs": []
+  },
+  "slam": {
+   "sprites": [
+    "slam-hit",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "vine-whip": {
+   "sprites": [
+    "whip-hit"
+   ],
+   "bgs": []
+  },
+  "drill-peck": {
+   "sprites": [
+    "impact",
+    "whirlwind-lines"
+   ],
+   "bgs": []
+  },
+  "waterfall": {
+   "sprites": [
+    "water-impact",
+    "small-bubbles",
+    "ice-crystals"
+   ],
+   "bgs": []
+  },
+  "explosion": {
+   "sprites": [
+    "explosion"
+   ],
+   "bgs": []
+  },
+  "defense-curl": {
+   "sprites": [
+    "eclipsing-orb"
+   ],
+   "bgs": []
+  },
+  "protect": {
+   "sprites": [
+    "protect"
+   ],
+   "bgs": []
+  },
+  "detect": {
+   "sprites": [
+    "sparkle-4"
+   ],
+   "bgs": []
+  },
+  "frustration": {
+   "sprites": [
+    "impact",
+    "anger"
+   ],
+   "bgs": []
+  },
+  "safeguard": {
+   "sprites": [
+    "guard-ring"
+   ],
+   "bgs": []
+  },
+  "pain-split": {
+   "sprites": [
+    "pain-split"
+   ],
+   "bgs": []
+  },
+  "vice-grip": {
+   "sprites": [
+    "cut",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "guillotine": {
+   "sprites": [
+    "cut",
+    "impact"
+   ],
+   "bgs": [
+    "guillotine",
+    "guillotine",
+    "guillotine"
+   ]
+  },
+  "pay-day": {
+   "sprites": [
+    "coin",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "outrage": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "spark": {
+   "sprites": [
+    "impact",
+    "spark-2"
+   ],
+   "bgs": []
+  },
+  "attract": {
+   "sprites": [
+    "red-heart"
+   ],
+   "bgs": []
+  },
+  "growth": {
+   "sprites": [],
+   "bgs": []
+  },
+  "whirlwind": {
+   "sprites": [
+    "whirlwind-lines"
+   ],
+   "bgs": []
+  },
+  "confuse-ray": {
+   "sprites": [
+    "yellow-ball"
+   ],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "lock-on": {
+   "sprites": [
+    "lock-on"
+   ],
+   "bgs": []
+  },
+  "mean-look": {
+   "sprites": [
+    "eye"
+   ],
+   "bgs": []
+  },
+  "rock-throw": {
+   "sprites": [
+    "rocks"
+   ],
+   "bgs": []
+  },
+  "rock-slide": {
+   "sprites": [
+    "rocks"
+   ],
+   "bgs": []
+  },
+  "thief": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": [
+    "dark"
+   ]
+  },
+  "bubble-beam": {
+   "sprites": [
+    "bubble",
+    "small-bubbles"
+   ],
+   "bgs": []
+  },
+  "icy-wind": {
+   "sprites": [
+    "ice-crystals",
+    "ice-spikes"
+   ],
+   "bgs": [
+    "ice"
+   ]
+  },
+  "smokescreen": {
+   "sprites": [
+    "black-smoke",
+    "black-ball"
+   ],
+   "bgs": []
+  },
+  "conversion": {
+   "sprites": [
+    "conversion"
+   ],
+   "bgs": []
+  },
+  "conversion-2": {
+   "sprites": [
+    "conversion"
+   ],
+   "bgs": []
+  },
+  "rolling-kick": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "headbutt": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "horn-attack": {
+   "sprites": [
+    "impact",
+    "horn-hit"
+   ],
+   "bgs": []
+  },
+  "fury-attack": {
+   "sprites": [
+    "impact",
+    "horn-hit"
+   ],
+   "bgs": []
+  },
+  "horn-drill": {
+   "sprites": [
+    "impact",
+    "horn-hit"
+   ],
+   "bgs": [
+    "drill",
+    "drill"
+   ]
+  },
+  "thrash": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "sing": {
+   "sprites": [
+    "music-notes"
+   ],
+   "bgs": []
+  },
+  "low-kick": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "earthquake": {
+   "sprites": [],
+   "bgs": []
+  },
+  "fissure": {
+   "sprites": [
+    "mud-sand"
+   ],
+   "bgs": [
+    "fissure"
+   ]
+  },
+  "dig": {
+   "sprites": [
+    "mud-sand",
+    "dirt-mound",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "meditate": {
+   "sprites": [],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "agility": {
+   "sprites": [],
+   "bgs": []
+  },
+  "quick-attack": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "rage": {
+   "sprites": [
+    "impact",
+    "anger"
+   ],
+   "bgs": []
+  },
+  "teleport": {
+   "sprites": [],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "double-team": {
+   "sprites": [],
+   "bgs": []
+  },
+  "minimize": {
+   "sprites": [],
+   "bgs": []
+  },
+  "metronome": {
+   "sprites": [
+    "finger",
+    "thought-bubble"
+   ],
+   "bgs": []
+  },
+  "skull-bash": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "amnesia": {
+   "sprites": [
+    "amnesia"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "kinesis": {
+   "sprites": [
+    "alert",
+    "bent-spoon"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "glare": {
+   "sprites": [
+    "small-red-eye",
+    "eye-sparkle"
+   ],
+   "bgs": []
+  },
+  "barrage": {
+   "sprites": [
+    "red-ball"
+   ],
+   "bgs": []
+  },
+  "sky-attack": {
+   "sprites": [
+    "impact",
+    "bird"
+   ],
+   "bgs": [
+    "sky",
+    "sky"
+   ]
+  },
+  "flash": {
+   "sprites": [],
+   "bgs": []
+  },
+  "splash": {
+   "sprites": [],
+   "bgs": []
+  },
+  "acid-armor": {
+   "sprites": [],
+   "bgs": []
+  },
+  "sharpen": {
+   "sprites": [
+    "sphere-to-cube"
+   ],
+   "bgs": []
+  },
+  "super-fang": {
+   "sprites": [
+    "fang-attack"
+   ],
+   "bgs": []
+  },
+  "slash": {
+   "sprites": [
+    "slash"
+   ],
+   "bgs": []
+  },
+  "struggle": {
+   "sprites": [
+    "impact",
+    "movement-waves"
+   ],
+   "bgs": []
+  },
+  "sketch": {
+   "sprites": [
+    "pencil"
+   ],
+   "bgs": []
+  },
+  "nightmare": {
+   "sprites": [],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "flail": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "spite": {
+   "sprites": [],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "mach-punch": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": [
+    "highspeed",
+    "highspeed"
+   ]
+  },
+  "foresight": {
+   "sprites": [
+    "magnifying-glass"
+   ],
+   "bgs": []
+  },
+  "destiny-bond": {
+   "sprites": [
+    "white-shadow"
+   ],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "endure": {
+   "sprites": [
+    "focus-energy"
+   ],
+   "bgs": []
+  },
+  "charm": {
+   "sprites": [
+    "magenta-heart"
+   ],
+   "bgs": []
+  },
+  "rollout": {
+   "sprites": [
+    "impact",
+    "mud-sand",
+    "rocks"
+   ],
+   "bgs": []
+  },
+  "false-swipe": {
+   "sprites": [
+    "slash-2",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "swagger": {
+   "sprites": [
+    "breath",
+    "anger"
+   ],
+   "bgs": []
+  },
+  "milk-drink": {
+   "sprites": [
+    "milk-bottle",
+    "thin-ring",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "magnitude": {
+   "sprites": [],
+   "bgs": []
+  },
+  "rapid-spin": {
+   "sprites": [
+    "impact",
+    "rapid-spin"
+   ],
+   "bgs": []
+  },
+  "moonlight": {
+   "sprites": [
+    "moon",
+    "green-sparkle",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "extreme-speed": {
+   "sprites": [
+    "speed-dust",
+    "impact"
+   ],
+   "bgs": [
+    "highspeed",
+    "highspeed"
+   ]
+  },
+  "uproar": {
+   "sprites": [
+    "jagged-music-note",
+    "thin-ring"
+   ],
+   "bgs": []
+  },
+  "heat-wave": {
+   "sprites": [
+    "flying-dirt"
+   ],
+   "bgs": []
+  },
+  "hail": {
+   "sprites": [
+    "hail",
+    "ice-crystals"
+   ],
+   "bgs": []
+  },
+  "torment": {
+   "sprites": [
+    "anger",
+    "thought-bubble"
+   ],
+   "bgs": []
+  },
+  "memento": {
+   "sprites": [],
+   "bgs": []
+  },
+  "facade": {
+   "sprites": [
+    "sweat-drop"
+   ],
+   "bgs": []
+  },
+  "smelling-salt": {
+   "sprites": [
+    "tag-hand",
+    "smellingsalt-effect"
+   ],
+   "bgs": []
+  },
+  "follow-me": {
+   "sprites": [
+    "finger"
+   ],
+   "bgs": []
+  },
+  "charge": {
+   "sprites": [
+    "electric-orbs",
+    "circle-of-light",
+    "electricity"
+   ],
+   "bgs": []
+  },
+  "taunt": {
+   "sprites": [
+    "finger-2",
+    "thought-bubble",
+    "anger"
+   ],
+   "bgs": []
+  },
+  "helping-hand": {
+   "sprites": [
+    "tag-hand"
+   ],
+   "bgs": []
+  },
+  "assist": {
+   "sprites": [
+    "paw-print"
+   ],
+   "bgs": []
+  },
+  "superpower": {
+   "sprites": [
+    "circle-of-light",
+    "meteor",
+    "flat-rock"
+   ],
+   "bgs": []
+  },
+  "recycle": {
+   "sprites": [
+    "recycle"
+   ],
+   "bgs": []
+  },
+  "brick-break": {
+   "sprites": [
+    "blue-light-wall",
+    "impact",
+    "hands-and-feet",
+    "torn-metal"
+   ],
+   "bgs": []
+  },
+  "yawn": {
+   "sprites": [
+    "pink-cloud"
+   ],
+   "bgs": []
+  },
+  "endeavor": {
+   "sprites": [
+    "sweat-drop",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "eruption": {
+   "sprites": [
+    "warm-rock"
+   ],
+   "bgs": []
+  },
+  "skill-swap": {
+   "sprites": [
+    "bluegreen-orb"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "imprison": {
+   "sprites": [
+    "hollow-orb",
+    "x-sign"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "grudge": {
+   "sprites": [
+    "purple-flame"
+   ],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "camouflage": {
+   "sprites": [],
+   "bgs": []
+  },
+  "tail-glow": {
+   "sprites": [
+    "circle-of-light"
+   ],
+   "bgs": []
+  },
+  "luster-purge": {
+   "sprites": [
+    "white-circle-of-light",
+    "impact"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "mist-ball": {
+   "sprites": [
+    "small-bubbles",
+    "white-feather"
+   ],
+   "bgs": []
+  },
+  "feather-dance": {
+   "sprites": [
+    "white-feather"
+   ],
+   "bgs": []
+  },
+  "teeter-dance": {
+   "sprites": [
+    "music-notes",
+    "duck"
+   ],
+   "bgs": []
+  },
+  "mud-sport": {
+   "sprites": [
+    "mud-sand"
+   ],
+   "bgs": []
+  },
+  "needle-arm": {
+   "sprites": [
+    "green-spike",
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "slack-off": {
+   "sprites": [
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "crush-claw": {
+   "sprites": [
+    "blue-light-wall",
+    "claw-slash",
+    "torn-metal"
+   ],
+   "bgs": []
+  },
+  "aromatherapy": {
+   "sprites": [
+    "flower",
+    "thin-ring",
+    "sparkle-2"
+   ],
+   "bgs": []
+  },
+  "fake-tears": {
+   "sprites": [
+    "small-bubbles",
+    "thought-bubble",
+    "music-notes"
+   ],
+   "bgs": []
+  },
+  "air-cutter": {
+   "sprites": [
+    "air-wave",
+    "cut",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "odor-sleuth": {
+   "sprites": [],
+   "bgs": []
+  },
+  "grass-whistle": {
+   "sprites": [
+    "music-notes"
+   ],
+   "bgs": []
+  },
+  "tickle": {
+   "sprites": [
+    "eye-sparkle"
+   ],
+   "bgs": []
+  },
+  "water-spout": {
+   "sprites": [
+    "glowy-blue-orb",
+    "water-impact"
+   ],
+   "bgs": []
+  },
+  "shadow-punch": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "extrasensory": {
+   "sprites": [],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "aerial-ace": {
+   "sprites": [
+    "cut"
+   ],
+   "bgs": []
+  },
+  "iron-defense": {
+   "sprites": [],
+   "bgs": []
+  },
+  "block": {
+   "sprites": [
+    "x-sign"
+   ],
+   "bgs": []
+  },
+  "howl": {
+   "sprites": [
+    "noise-line"
+   ],
+   "bgs": []
+  },
+  "bulk-up": {
+   "sprites": [
+    "breath"
+   ],
+   "bgs": []
+  },
+  "covet": {
+   "sprites": [
+    "magenta-heart",
+    "item-bag"
+   ],
+   "bgs": []
+  },
+  "volt-tackle": {
+   "sprites": [
+    "spark",
+    "circle-of-light",
+    "electricity"
+   ],
+   "bgs": []
+  },
+  "water-sport": {
+   "sprites": [
+    "glowy-blue-orb"
+   ],
+   "bgs": []
+  },
+  "calm-mind": {
+   "sprites": [
+    "thin-ring"
+   ],
+   "bgs": []
+  },
+  "leaf-blade": {
+   "sprites": [
+    "leaf",
+    "cross-impact"
+   ],
+   "bgs": []
+  },
+  "dragon-dance": {
+   "sprites": [
+    "hollow-orb"
+   ],
+   "bgs": []
+  },
+  "shock-wave": {
+   "sprites": [
+    "electric-orbs",
+    "circle-of-light",
+    "spark",
+    "lightning"
+   ],
+   "bgs": []
+  },
+  "harden": {
+   "sprites": [],
+   "bgs": []
+  },
+  "belly-drum": {
+   "sprites": [
+    "music-notes",
+    "purple-hand-outline"
+   ],
+   "bgs": []
+  },
+  "mind-reader": {
+   "sprites": [
+    "teal-alert",
+    "opening-eye",
+    "round-white-halo"
+   ],
+   "bgs": []
+  },
+  "ice-punch": {
+   "sprites": [
+    "ice-crystals",
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "rest": {
+   "sprites": [
+    "letter-z"
+   ],
+   "bgs": []
+  },
+  "confusion": {
+   "sprites": [],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "psychic": {
+   "sprites": [],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "future-sight": {
+   "sprites": [],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "thunder": {
+   "sprites": [
+    "lightning"
+   ],
+   "bgs": [
+    "thunder"
+   ]
+  },
+  "thunder-punch": {
+   "sprites": [
+    "impact",
+    "hands-and-feet",
+    "lightning"
+   ],
+   "bgs": []
+  },
+  "sacred-fire": {
+   "sprites": [
+    "fire",
+    "fire-plume"
+   ],
+   "bgs": []
+  },
+  "scratch": {
+   "sprites": [
+    "scratch"
+   ],
+   "bgs": []
+  },
+  "dragon-breath": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "roar": {
+   "sprites": [
+    "noise-line"
+   ],
+   "bgs": []
+  },
+  "growl": {
+   "sprites": [
+    "noise-line"
+   ],
+   "bgs": []
+  },
+  "snore": {
+   "sprites": [
+    "snore-z"
+   ],
+   "bgs": []
+  },
+  "light-screen": {
+   "sprites": [
+    "sparkle-3",
+    "green-light-wall"
+   ],
+   "bgs": []
+  },
+  "mirror-coat": {
+   "sprites": [
+    "sparkle-3",
+    "red-light-wall"
+   ],
+   "bgs": []
+  },
+  "reflect": {
+   "sprites": [
+    "sparkle-4",
+    "blue-light-wall"
+   ],
+   "bgs": []
+  },
+  "barrier": {
+   "sprites": [
+    "gray-light-wall"
+   ],
+   "bgs": []
+  },
+  "bubble": {
+   "sprites": [
+    "bubble",
+    "small-bubbles"
+   ],
+   "bgs": []
+  },
+  "smog": {
+   "sprites": [
+    "purple-gas-cloud"
+   ],
+   "bgs": []
+  },
+  "faint-attack": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": [
+    "dark"
+   ]
+  },
+  "sand-attack": {
+   "sprites": [
+    "mud-sand"
+   ],
+   "bgs": []
+  },
+  "mud-slap": {
+   "sprites": [
+    "mud-sand"
+   ],
+   "bgs": []
+  },
+  "dragon-rage": {
+   "sprites": [
+    "small-ember",
+    "fire-plume"
+   ],
+   "bgs": []
+  },
+  "rain-dance": {
+   "sprites": [
+    "rain-drops"
+   ],
+   "bgs": []
+  },
+  "bite": {
+   "sprites": [
+    "sharp-teeth",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "crunch": {
+   "sprites": [
+    "sharp-teeth",
+    "impact"
+   ],
+   "bgs": [
+    "dark"
+   ]
+  },
+  "clamp": {
+   "sprites": [
+    "clamp",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "ice-beam": {
+   "sprites": [
+    "ice-crystals"
+   ],
+   "bgs": []
+  },
+  "withdraw": {
+   "sprites": [],
+   "bgs": []
+  },
+  "aurora-beam": {
+   "sprites": [
+    "rainbow-rings"
+   ],
+   "bgs": [
+    "aurora"
+   ]
+  },
+  "solar-beam": {
+   "sprites": [
+    "orbs"
+   ],
+   "bgs": [
+    "solar-beam",
+    "solar-beam",
+    "solar-beam"
+   ]
+  },
+  "blizzard": {
+   "sprites": [
+    "ice-crystals"
+   ],
+   "bgs": [
+    "highspeed",
+    "highspeed"
+   ]
+  },
+  "powder-snow": {
+   "sprites": [
+    "ice-crystals"
+   ],
+   "bgs": []
+  },
+  "hydro-pump": {
+   "sprites": [
+    "water-orb",
+    "water-impact"
+   ],
+   "bgs": []
+  },
+  "signal-beam": {
+   "sprites": [
+    "glowy-red-orb",
+    "glowy-green-orb",
+    "duck"
+   ],
+   "bgs": []
+  },
+  "absorb": {
+   "sprites": [
+    "orbs",
+    "blue-star",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "mega-drain": {
+   "sprites": [
+    "orbs",
+    "blue-star",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "giga-drain": {
+   "sprites": [
+    "orbs",
+    "blue-star",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "leech-life": {
+   "sprites": [
+    "needle",
+    "orbs",
+    "blue-star",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "synthesis": {
+   "sprites": [
+    "blue-star",
+    "sparkle-2"
+   ],
+   "bgs": []
+  },
+  "toxic": {
+   "sprites": [
+    "toxic-bubble",
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "sludge": {
+   "sprites": [
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "sludge-bomb": {
+   "sprites": [
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "acid": {
+   "sprites": [
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "bonemerang": {
+   "sprites": [
+    "bone",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "bone-club": {
+   "sprites": [
+    "bone",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "bone-rush": {
+   "sprites": [
+    "bone",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "spikes": {
+   "sprites": [
+    "spikes"
+   ],
+   "bgs": []
+  },
+  "megahorn": {
+   "sprites": [
+    "horn-hit-2",
+    "impact"
+   ],
+   "bgs": [
+    "drill",
+    "drill"
+   ]
+  },
+  "gust": {
+   "sprites": [
+    "gust",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "wing-attack": {
+   "sprites": [
+    "gust",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "peck": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "aeroblast": {
+   "sprites": [
+    "air-wave-2",
+    "impact"
+   ],
+   "bgs": [
+    "sky",
+    "sky"
+   ]
+  },
+  "water-gun": {
+   "sprites": [
+    "small-bubbles",
+    "water-impact"
+   ],
+   "bgs": []
+  },
+  "crabhammer": {
+   "sprites": [
+    "ice-crystals",
+    "water-impact"
+   ],
+   "bgs": []
+  },
+  "surf": {
+   "sprites": [],
+   "bgs": []
+  },
+  "flamethrower": {
+   "sprites": [
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "sandstorm": {
+   "sprites": [
+    "flying-dirt"
+   ],
+   "bgs": []
+  },
+  "whirlpool": {
+   "sprites": [
+    "water-orb"
+   ],
+   "bgs": []
+  },
+  "fly": {
+   "sprites": [
+    "round-shadow",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "bounce": {
+   "sprites": [
+    "round-shadow",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "karate-chop": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "cross-chop": {
+   "sprites": [
+    "hands-and-feet",
+    "cross-impact"
+   ],
+   "bgs": []
+  },
+  "jump-kick": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "hi-jump-kick": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "double-kick": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "triple-kick": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "dynamic-punch": {
+   "sprites": [
+    "hands-and-feet",
+    "impact",
+    "explosion",
+    "explosion-6"
+   ],
+   "bgs": []
+  },
+  "counter": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "vital-throw": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "rock-smash": {
+   "sprites": [
+    "rocks",
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": []
+  },
+  "submission": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "sunny-day": {
+   "sprites": [
+    "sunlight"
+   ],
+   "bgs": []
+  },
+  "cotton-spore": {
+   "sprites": [
+    "spore"
+   ],
+   "bgs": []
+  },
+  "spore": {
+   "sprites": [
+    "spore"
+   ],
+   "bgs": []
+  },
+  "petal-dance": {
+   "sprites": [
+    "flower",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "razor-leaf": {
+   "sprites": [
+    "leaf",
+    "razor-leaf",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "nature-power": {
+   "sprites": [],
+   "bgs": []
+  },
+  "ancient-power": {
+   "sprites": [
+    "rocks",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "octazooka": {
+   "sprites": [
+    "gray-smoke",
+    "black-ball"
+   ],
+   "bgs": []
+  },
+  "mist": {
+   "sprites": [
+    "mist-cloud"
+   ],
+   "bgs": []
+  },
+  "haze": {
+   "sprites": [],
+   "bgs": []
+  },
+  "fire-punch": {
+   "sprites": [
+    "hands-and-feet",
+    "small-ember",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "leer": {
+   "sprites": [
+    "leer"
+   ],
+   "bgs": []
+  },
+  "dream-eater": {
+   "sprites": [
+    "orbs",
+    "blue-star"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "poison-gas": {
+   "sprites": [
+    "purple-gas-cloud",
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "bind": {
+   "sprites": [],
+   "bgs": []
+  },
+  "wrap": {
+   "sprites": [],
+   "bgs": []
+  },
+  "psybeam": {
+   "sprites": [
+    "gold-ring"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "hypnosis": {
+   "sprites": [
+    "gold-ring"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "psywave": {
+   "sprites": [
+    "blue-ring"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "zap-cannon": {
+   "sprites": [
+    "black-ball-2",
+    "spark-2"
+   ],
+   "bgs": []
+  },
+  "steel-wing": {
+   "sprites": [
+    "gust",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "iron-tail": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "poison-tail": {
+   "sprites": [
+    "impact",
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "metal-claw": {
+   "sprites": [
+    "claw-slash"
+   ],
+   "bgs": []
+  },
+  "night-shade": {
+   "sprites": [],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "egg-bomb": {
+   "sprites": [
+    "explosion",
+    "large-fresh-egg"
+   ],
+   "bgs": []
+  },
+  "shadow-ball": {
+   "sprites": [
+    "shadow-ball"
+   ],
+   "bgs": [
+    "ghost"
+   ]
+  },
+  "lick": {
+   "sprites": [
+    "lick"
+   ],
+   "bgs": []
+  },
+  "focus-energy": {
+   "sprites": [
+    "focus-energy"
+   ],
+   "bgs": []
+  },
+  "bide": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "string-shot": {
+   "sprites": [
+    "string",
+    "web-thread"
+   ],
+   "bgs": []
+  },
+  "spider-web": {
+   "sprites": [
+    "spider-web",
+    "web-thread"
+   ],
+   "bgs": []
+  },
+  "razor-wind": {
+   "sprites": [
+    "gust",
+    "air-wave-2",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "disable": {
+   "sprites": [
+    "sparkle-4"
+   ],
+   "bgs": []
+  },
+  "recover": {
+   "sprites": [
+    "orbs",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "mimic": {
+   "sprites": [
+    "orbs"
+   ],
+   "bgs": []
+  },
+  "constrict": {
+   "sprites": [
+    "tendrils"
+   ],
+   "bgs": []
+  },
+  "curse": {
+   "sprites": [
+    "nail",
+    "ghostly-spirit"
+   ],
+   "bgs": []
+  },
+  "soft-boiled": {
+   "sprites": [
+    "breaking-egg",
+    "thin-ring",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "heal-bell": {
+   "sprites": [
+    "bell",
+    "music-notes-2",
+    "thin-ring",
+    "sparkle-2"
+   ],
+   "bgs": []
+  },
+  "fake-out": {
+   "sprites": [],
+   "bgs": []
+  },
+  "scary-face": {
+   "sprites": [
+    "eye-sparkle"
+   ],
+   "bgs": []
+  },
+  "sweet-kiss": {
+   "sprites": [
+    "red-heart",
+    "angel"
+   ],
+   "bgs": []
+  },
+  "lovely-kiss": {
+   "sprites": [
+    "pink-heart",
+    "devil"
+   ],
+   "bgs": []
+  },
+  "fury-swipes": {
+   "sprites": [
+    "swipe"
+   ],
+   "bgs": []
+  },
+  "ingrain": {
+   "sprites": [
+    "roots",
+    "orbs"
+   ],
+   "bgs": []
+  },
+  "present": {
+   "sprites": [
+    "item-bag",
+    "explosion",
+    "green-sparkle",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "baton-pass": {
+   "sprites": [
+    "pokeball"
+   ],
+   "bgs": []
+  },
+  "perish-song": {
+   "sprites": [
+    "music-notes-2"
+   ],
+   "bgs": []
+  },
+  "sleep-talk": {
+   "sprites": [
+    "letter-z"
+   ],
+   "bgs": []
+  },
+  "hyper-fang": {
+   "sprites": [
+    "fang-attack"
+   ],
+   "bgs": [
+    "impact",
+    "impact",
+    "impact"
+   ]
+  },
+  "tri-attack": {
+   "sprites": [
+    "tri-attack-triangle",
+    "fire",
+    "lightning",
+    "ice-crystals"
+   ],
+   "bgs": []
+  },
+  "will-o-wisp": {
+   "sprites": [
+    "wisp-fire",
+    "wisp-orb"
+   ],
+   "bgs": []
+  },
+  "encore": {
+   "sprites": [
+    "spotlight",
+    "tag-hand"
+   ],
+   "bgs": []
+  },
+  "trick": {
+   "sprites": [
+    "item-bag",
+    "speed-dust"
+   ],
+   "bgs": []
+  },
+  "wish": {
+   "sprites": [
+    "gold-stars",
+    "sparkle-2"
+   ],
+   "bgs": []
+  },
+  "stockpile": {
+   "sprites": [
+    "gray-orb"
+   ],
+   "bgs": []
+  },
+  "spit-up": {
+   "sprites": [
+    "red-orb-2",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "swallow": {
+   "sprites": [
+    "blue-orb",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "transform": {
+   "sprites": [],
+   "bgs": []
+  },
+  "morning-sun": {
+   "sprites": [
+    "green-star",
+    "blue-star"
+   ],
+   "bgs": []
+  },
+  "sweet-scent": {
+   "sprites": [
+    "pink-petal"
+   ],
+   "bgs": []
+  },
+  "hyper-beam": {
+   "sprites": [
+    "orbs"
+   ],
+   "bgs": []
+  },
+  "flatter": {
+   "sprites": [
+    "spotlight",
+    "confetti"
+   ],
+   "bgs": []
+  },
+  "role-play": {
+   "sprites": [],
+   "bgs": []
+  },
+  "refresh": {
+   "sprites": [
+    "thin-ring",
+    "sparkle-2"
+   ],
+   "bgs": []
+  },
+  "blaze-kick": {
+   "sprites": [
+    "impact",
+    "hands-and-feet",
+    "small-ember"
+   ],
+   "bgs": []
+  },
+  "hyper-voice": {
+   "sprites": [
+    "thin-ring"
+   ],
+   "bgs": []
+  },
+  "sand-tomb": {
+   "sprites": [
+    "mud-sand"
+   ],
+   "bgs": []
+  },
+  "sheer-cold": {
+   "sprites": [
+    "ice-cube"
+   ],
+   "bgs": [
+    "ice"
+   ]
+  },
+  "arm-thrust": {
+   "sprites": [
+    "hands-and-feet",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "muddy-water": {
+   "sprites": [],
+   "bgs": []
+  },
+  "bullet-seed": {
+   "sprites": [
+    "seed"
+   ],
+   "bgs": []
+  },
+  "dragon-claw": {
+   "sprites": [
+    "small-ember",
+    "claw-slash"
+   ],
+   "bgs": []
+  },
+  "mud-shot": {
+   "sprites": [
+    "brown-orb"
+   ],
+   "bgs": []
+  },
+  "meteor-mash": {
+   "sprites": [
+    "gold-stars",
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": [
+    "cosmic"
+   ]
+  },
+  "revenge": {
+   "sprites": [
+    "purple-scratch",
+    "purple-swipe",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "poison-fang": {
+   "sprites": [
+    "fang-attack",
+    "poison-bubble"
+   ],
+   "bgs": []
+  },
+  "substitute": {
+   "sprites": [],
+   "bgs": []
+  },
+  "frenzy-plant": {
+   "sprites": [
+    "roots",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "metal-sound": {
+   "sprites": [
+    "metal-sound-waves"
+   ],
+   "bgs": []
+  },
+  "focus-punch": {
+   "sprites": [
+    "impact",
+    "hands-and-feet"
+   ],
+   "bgs": [
+    "impact",
+    "impact",
+    "impact"
+   ]
+  },
+  "return": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  },
+  "cosmic-power": {
+   "sprites": [
+    "sparkle-2"
+   ],
+   "bgs": [
+    "cosmic"
+   ]
+  },
+  "blast-burn": {
+   "sprites": [
+    "fire-plume",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "rock-tomb": {
+   "sprites": [
+    "x-sign",
+    "rocks"
+   ],
+   "bgs": []
+  },
+  "silver-wind": {
+   "sprites": [
+    "sparkle-6"
+   ],
+   "bgs": [
+    "bug",
+    "bug"
+   ]
+  },
+  "snatch": {
+   "sprites": [],
+   "bgs": []
+  },
+  "dive": {
+   "sprites": [
+    "splash",
+    "sweat-bead",
+    "round-shadow",
+    "water-impact",
+    "small-bubbles"
+   ],
+   "bgs": []
+  },
+  "rock-blast": {
+   "sprites": [
+    "rocks",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "overheat": {
+   "sprites": [
+    "small-ember",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "hydro-cannon": {
+   "sprites": [
+    "water-orb",
+    "water-impact"
+   ],
+   "bgs": []
+  },
+  "astonish": {
+   "sprites": [
+    "sweat-bead"
+   ],
+   "bgs": []
+  },
+  "seismic-toss": {
+   "sprites": [
+    "impact",
+    "rocks"
+   ],
+   "bgs": [
+    "in-air"
+   ]
+  },
+  "magic-coat": {
+   "sprites": [
+    "orange-light-wall"
+   ],
+   "bgs": []
+  },
+  "water-pulse": {
+   "sprites": [
+    "small-bubbles",
+    "blue-ring-2"
+   ],
+   "bgs": []
+  },
+  "psycho-boost": {
+   "sprites": [
+    "circle-of-light"
+   ],
+   "bgs": [
+    "psychic"
+   ]
+  },
+  "knock-off": {
+   "sprites": [
+    "slam-hit-2",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "doom-desire": {
+   "sprites": [],
+   "bgs": []
+  },
+  "sky-uppercut": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": [
+    "in-air"
+   ]
+  },
+  "secret-power": {
+   "sprites": [
+    "slam-hit",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "twister": {
+   "sprites": [
+    "leaf",
+    "impact",
+    "rocks"
+   ],
+   "bgs": []
+  },
+  "magical-leaf": {
+   "sprites": [
+    "leaf",
+    "razor-leaf",
+    "impact"
+   ],
+   "bgs": []
+  },
+  "ice-ball": {
+   "sprites": [
+    "ice-chunk",
+    "ice-crystals"
+   ],
+   "bgs": [
+    "ice"
+   ]
+  },
+  "weather-ball": {
+   "sprites": [
+    "weather-ball",
+    "impact",
+    "small-ember",
+    "small-bubbles",
+    "rocks",
+    "hail",
+    "ice-crystals"
+   ],
+   "bgs": []
+  },
+  "count": {
+   "sprites": [
+    "impact"
+   ],
+   "bgs": []
+  }
+ }
+}

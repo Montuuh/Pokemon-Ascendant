@@ -693,6 +693,22 @@ and its power — so a move added to the content has its animation before anyone
 | **Glow** | A move with no power that raises, heals or guards | Rings rise from the user's feet — or its ally's — in its type's light |
 | **Hex** | A move with no power that puts a status or a lowered stat on the foe | Motes thrown at the foe and a swirl round it |
 
+**What a move is drawn with: the GBA's own sprites** (v0.9.102). The kinds above are the choreography; the cast is
+FireRed / LeafGreen's battle-animation graphics, imported from pret (`scripts/fx/import-pret-fx.mjs`, the same pinned
+commit as the rooms). Each move takes the sprites its own FRLG script loads, so Flamethrower pours embers, Bite closes
+its teeth, Mega Kick lands a foot and Psychic washes the stage in its waves: the move's own sprite is what flies, streams,
+scatters over the field or strikes the target, and its burst is what lands. Where the GBA fades a background in, it is
+washed over the stage under the Pokémon — **for a heavy move only**: a field move (Psychic's waves, Thunder's storm) or
+one of the greatest blows (Giga Impact, Solar Beam, Hyper Beam, Sky Attack, the one-hit KOs). A routine hit or a status
+card keeps the stage even where FRLG fades one in, because the stage is the heaviest channel of a beat and a card played
+every turn must not flood it (D12). The background rises to the impact and fades after it. The Gen IV moves
+FRLG never animated are composed from pret's sprites, some re-paletted as the GBA itself does (Fire, Ice and Thunder
+Fang are its fangs with embers, ice or sparks). Sprites keep their pixels: stepped through their frames, carried along
+the line without turning or scaling, mirrored on the foe's side, at the field's pixel scale (a small one a half step
+larger, to read across a field far wider than the GBA's). The 19 moves the GBA animates without sprites (Agility, Harden,
+Surf's wave, Earthquake…) keep the shapes in the table. Eight moves are being drawn new (`docs/art/fx/`) and use a pret
+stand-in until then. Recipes: `ui/fx/moveFx.ts`.
+
 **The hit lands with its impact.** The damage number, the shake, the HP on the target's card and a burst of sparks in
 the type's colour all wait for the moment the move arrives — the dash's end, the projectile's landing, the wave's
 crest — so nothing reads before the blow: until then the card shows the HP it had. The log does the same: the line

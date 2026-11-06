@@ -87,7 +87,8 @@ Pokémon.
 - **Move animations** (✅ v0.9.24, §9.9.2): every move animated from its row — a Melee move dashes its user across the
   field and back, a Ranged one is charged and thrown in its type's shape, streams are beams and lightning bolts, Surf,
   Earthquake, Blizzard, Thunder, Fire Blast and anything hitting several fill the whole stage (Earthquake shakes it);
-  the number lands with the impact.
+  the number lands with the impact. Since v0.9.102 each move is drawn with FireRed's own battle-animation sprites and
+  backgrounds (pret), Gen IV moves composed from them.
 - **Sound** (✅ v0.9.23, §9.5): every sound synthesised as it plays (Web Audio, no files) — a swish per type for every
   card, impacts by effectiveness, a sting per status, the ball's wobbles and click, level-up and evolution — and music
   composed in code per Region, City, Victory Road, League, fight, boss and Champion, with a tension layer under 30 % HP.

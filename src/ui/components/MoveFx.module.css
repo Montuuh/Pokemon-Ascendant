@@ -748,3 +748,103 @@
 .move[data-style='darkness'] .swirl::before {
   animation: swirl calc(var(--mv-area-peak) + var(--mv-area-settle)) ease-out var(--mv-area-build) both;
 }
+
+/* ── The move's own sprites (pret's battle animations, §9.9.2) ──────────────────────────────────────────── */
+/* One sprite: a strip of frames stepped through like the GBA's own, centred on its point, mirrored for the foe's
+   side, never turned or smoothed (D9). Hidden until its delay, then looping — or, `fxOnce`, played through once and
+   gone: past its last frame the strip has nothing left to show. */
+.fxSprite {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--fx-w);
+  height: var(--fx-h);
+  /* Centred on its point by its margins: `left`/`top` are the point, set inline where it lands. */
+  margin: calc(var(--fx-h) / -2) 0 0 calc(var(--fx-w) / -2);
+  background-image: var(--fx-url);
+  background-repeat: no-repeat;
+  background-size: var(--fx-w) var(--fx-sheet);
+  background-position: 0 calc(var(--fx-y0) * -1);
+  image-rendering: pixelated;
+  scale: var(--fx-flip) 1;
+  animation:
+    fxShow var(--mv-frames-flicker) steps(1, jump-start) var(--fx-delay) both,
+    fxFrames calc(var(--mv-frames-flicker) * var(--fx-n)) steps(var(--fx-n)) var(--fx-delay) infinite;
+}
+.fxSprite.fxOnce {
+  animation:
+    fxShow var(--mv-frames-flicker) steps(1, jump-start) var(--fx-delay) both,
+    fxFrames calc(var(--mv-frames-flicker) * var(--fx-n) + var(--mv-impact-ring)) steps(var(--fx-n)) var(--fx-delay) 1 both;
+}
+/* A held piece landing (a fist, a rock): it shows a frame step and the impact's ring, then is hidden — the strip
+   below it holds the sheet's next piece, not an empty frame. */
+.fxSprite.fxHeld {
+  animation:
+    fxShow var(--mv-frames-flicker) steps(1, jump-start) var(--fx-delay) both,
+    fxHide calc(var(--mv-frames-flicker) + var(--mv-impact-ring)) steps(1, jump-end) var(--fx-delay) forwards;
+}
+@keyframes fxHide {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+/* A pair of jaws (Bite, Clamp): pret draws the upper jaw; the lower is the same sprite turned over — a flip, not a
+   turn — the two closing on the Pokémon's middle. */
+.fxJawUpper {
+  translate: 0 calc(var(--fx-h) * -0.15);
+}
+.fxJawLower {
+  translate: 0 calc(var(--fx-h) * 0.15);
+  scale: calc(var(--fx-flip) * -1) -1;
+}
+@keyframes fxShow {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fxFrames {
+  from { background-position-y: calc(var(--fx-y0) * -1); }
+  to { background-position-y: calc((var(--fx-y0) + var(--fx-h) * var(--fx-n)) * -1); }
+}
+/* Inside a flight, which is turned to face its target: the sprite stays upright. */
+.upright {
+  position: absolute;
+  rotate: calc(var(--angle) * -1);
+}
+/* A stream: its sprites poured along the line one after another through the beam's hold. */
+.streamFlight {
+  animation: fly calc(var(--mv-beam-grow) * 2) linear calc(var(--mv-beam-cast) + var(--i) * var(--mv-beam-hold) / var(--n)) both;
+}
+/* A raise's sprite rises with the rings, from the Pokémon's middle. */
+.fxAura {
+  translate: 0 calc(var(--fx-h) * -0.25);
+}
+/* A pret background washed over the stage, under the Pokémon, for a heavy move only: it rises to the impact, holds
+   on it and goes over the rest of the beat — the stage peaks with the blow, never before it (D12). */
+.fxBg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--fx-bg);
+  background-size: cover;
+  background-position: center;
+  image-rendering: pixelated;
+  opacity: 0;
+  animation:
+    fxBgIn var(--mv-impact-at) ease-out both,
+    fxBgOut calc(var(--mv-total) - var(--mv-impact-at)) linear var(--mv-impact-at) forwards;
+}
+@keyframes fxBgIn {
+  from { opacity: 0; }
+  to { opacity: 0.6; }
+}
+@keyframes fxBgOut {
+  from { opacity: 0.6; }
+  to { opacity: 0; }
+}
+/* A sprite in flight is carried, never scaled (D9): the same path as `fly`, at its own size. */
+.flight.spriteFlight {
+  animation-name: flyFlat;
+}
+@keyframes flyFlat {
+  0% { opacity: 1; transform: translate(0, var(--off)); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dist), 0); }
+}

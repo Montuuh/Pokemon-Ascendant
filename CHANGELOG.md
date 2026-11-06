@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.102 — Moves in their own sprites · 2026-11-06
+
+Every move animated with FireRed / LeafGreen's own battle-animation sprites.
+
+- **Every move its own.** Flamethrower pours embers, Bite closes its jaws.
+- **Big moves, big stage.** Psychic and Thunder wash it in the GBA's backgrounds.
+- **Gen IV moves too.** The Fangs, Shadow Claw, Air Slash: the same sprites.
+- Agility, Harden and other sprite-less moves keep their drawn effects.
+
 ### v0.9.101 — Rooms with life · 2026-11-05
 
 Every FRLG room redrawn from the games' tiles and furnished for its job.

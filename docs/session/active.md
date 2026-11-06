@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-05 · **Version:** v0.9.101 (*Rooms with life*).
+**Date:** 2026-11-06 · **Version:** v0.9.102 (*Moves in their own sprites*).
+**Shipped 2026-11-06 (v0.9.102):** every move animated with FRLG's battle-animation sprites from pret (`npm run art:fx`, `src/ui/fx/moveFx.ts`, §9.9.2); backgrounds only for heavy moves. UI review Ship. Next: import the user's 8 ChatGPT sheets (`docs/art/fx/README.md`, raw PNGs in `docs/art/sources/fx-chatgpt/`) over their pret stand-ins. **Waiting on the user's look.**
 **Shipped 2026-11-05 (v0.9.101 / v0.9.100):** every FRLG room rebuilt from pret metatiles (`scripts/build-rooms.mjs`, `scripts/lib/frlg-room.mjs`; Black Market by its own script) — richer, peopled, one prop per service. Bulbagarden is bot-checked: pret is the art source now. **Waiting on the user's look.**
 **Fixed 2026-11-05 (no version):** series Potions 20/60/120; level-up and evolution HP add the Max HP gained, shown on the level tick (no heal beat). Harness R1 9 % → 20 %.
 **Shipped 2026-11-04 (v0.9.99 / v0.9.98):** Common-heavy sources (trainers 20 % C, picks C/U/U, Elite Wild U, weights
@@ -16,7 +17,6 @@ evolution levels and methods, Friendship. ✅ v0.9.91 progressive learnsets (tra
 form, 76 Gen II–IV moves). ✅ **v0.9.92** enemies with intent (kits §5.2.2, disruption §5.2.3,
 weights §5.3.2, combos §5.5.2, doubles §5.6.1, Gym re-cut + test, 14 moves). The rework is complete. Harness (with the
 slower XP curve) R1 58 · R2|R1 46 · R3|R2 44 · League 71 · run 8 %; Region tier ×0.49 / ×0.48 / ×0.60. Open: the new moves in player learnsets/TMs, junk cards, Spite, Follow Me, Elite Trainer combos. Plan: `~/.claude/plans/quiero-hacer-un-rework-wobbly-steele.md`.
-**Move FX from sprites (2026-11-06, planned):** pret first, ChatGPT for gaps. 234 pret · 19 no-sprite · 49 composed · 109 `-plus` · 8 ChatGPT; sheet `docs/art/fx/move-fx-chatgpt.xlsx` is with the user, raw PNGs land in `docs/art/sources/fx-chatgpt/`. Next: pret sprite decode, recipe table, sprite renderer (`docs/art/fx/README.md`).
 
 **Dark and Steel (v0.9.84):** Gen II 17-type chart; Umbreon/Scizor/Steelix/Magnezone (155 species), 14 later moves, six TMs, Gems/Black Glasses/Plates/Metal Coat; Magnemite Electric/Steel. Eevee has four paths; archetype uniqueness is per target species. R3 Magnezone/Steelix trainers cost 13 win-rate points and were replaced. Four later species use enlarged Gen VII box icons. No new Dark/Steel Gym or Elite.
 **Rhythm (v0.9.81–83):** continuous Speed curve; ally fills by printed AP (k 260, 2–5, carry 0.5), enemy per action. Card hover fill, ghost arc, pace chevron and ready cue built. Cue is delay-timed, not impact-timed; held/dragged/720p ghosts remain unreviewed. Earlier threshold-tier design is superseded.

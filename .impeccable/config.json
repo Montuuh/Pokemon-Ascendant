@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/ui/components/MoveFx.module.css"
+        ],
+        "createdAt": "2026-11-06T17:17:05.430Z",
+        "reason": "Claude: .gust is a Flying projectile drawn as a crescent (one-side border on a 50% circle), not a card accent; pre-existing since 29897b03 (2026-10-18)"
+      }
+    ]
+  }
+}

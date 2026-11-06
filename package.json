@@ -1,7 +1,7 @@
 {
   "name": "pokemon-ascendant",
   "private": true,
-  "version": "0.9.101",
+  "version": "0.9.102",
   "description": "Pokémon Ascendant — roguelike deckbuilder where the party is the deck (web build).",
   "license": "MIT",
   "type": "module",
@@ -20,6 +20,7 @@
     "e2e": "playwright test",
     "shot": "playwright test e2e/screens.spec.ts",
     "check": "npm run typecheck && npm run lint && npm run test && npm run check:refs && npm run check:catalogs && npm run check:version",
+    "art:fx": "node scripts/fx/import-pret-fx.mjs",
     "art:sprites": "node scripts/fetch-sprites.mjs",
     "art:compact": "node scripts/build-compact-icons.mjs",
     "art:stages": "node scripts/normalise-stages.mjs install",

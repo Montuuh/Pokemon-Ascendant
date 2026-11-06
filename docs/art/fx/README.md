@@ -1,9 +1,10 @@
-# Move animations from sprites (planned)
+# Move animations from sprites
 
-**Status (2026-11-06):** source survey done, prompt sheet out to the user, renderer not started.
+**Status (2026-11-06):** pret import, recipes and the sprite renderer built (v0.9.102, §9.9.2 in
+`docs/design/09-presentation.md`). The 8 ChatGPT moves use a pret stand-in until their sheets arrive.
 
-Combat move animations today are CSS/SVG shapes in eight motion kinds (`src/ui/components/MoveFx.tsx`,
-`src/ui/moveMotion.ts`, §9.9.2), so many moves look alike. The user wants a unique animation for every move. The
+Combat move animations were CSS/SVG shapes in eight motion kinds (`src/ui/components/MoveFx.tsx`,
+`src/ui/moveMotion.ts`, §9.9.2), so many moves looked alike. The user wants a unique animation for every move. The
 chosen route (user, 2026-11-06) is **pret first, ChatGPT for the gaps**. A move effect the player has seen in the
 games is an object, and the art rule is to fetch objects and generate only what does not exist
 (`docs/session/standing-facts.md`, *Art*).
@@ -32,12 +33,17 @@ rooms (`PRET_COMMIT` in `scripts/lib/frlg-map.mjs`). The scripts and tables are 
   (`scripts/lib/move-palette.mjs`), trim to a shared frame box, write `public/art/fx/<move-id>.png` as a horizontal
   strip plus its frame count.
 
-## Still to build
+## Built
 
-1. Fetch and decode pret's sprites (4bpp + `.gbapal`, frame sizes from the sprite templates) to `public/art/fx/pret/`.
-2. A per-move recipe table: sprites, where they spawn (user, target, field), path and timing. It keeps `MOTION_MS`
-   so the hit and its number still land together.
-3. A sprite renderer in `MoveFx`, replacing the CSS shapes, with motion lint (D11/D12) and the UI review.
+- `npm run art:fx` (`scripts/fx/import-pret-fx.mjs`): every pret battle-animation sprite, decoded in its tag's palette
+  and cut into frames in the GBA's 1-D tile order, the 23 re-palettes of `scripts/fx/variants.mjs`, the 16 backgrounds
+  (240 × 160), and per FRLG move script the sprites and backgrounds it loads → `src/ui/fx/pret-anims.json`.
+  `node scripts/fx/contact-sheet.mjs [regex]` shows them in `playtest/fx-contact.png`.
+- `src/ui/fx/moveFx.ts`: the recipe per move (`main`, `impact`, `bg`); FRLG moves from their script, Gen IV moves and
+  the ChatGPT stand-ins in `COMPOSED`.
+- `src/ui/components/MoveFx.tsx`: the sprite renderer over the existing choreography.
+- To import a ChatGPT sheet: slice, key out, sample to 64 px, quantise, write `public/art/fx/<move-id>.png`, register
+  its frames in the recipe (replacing the stand-in) and screenshot it with `e2e/move-sprites.spec.ts`.
 
 ## Rebuild the sheet
 
