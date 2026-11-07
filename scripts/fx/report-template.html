@@ -1,0 +1,230 @@
+<title>Animaciones de movimientos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: a battle log — the diagnosis up top as five numbered causes, then a filterable wall of filmed moves,
+   each a card with its film, ours-vs-GBA side by side, the gaps, and the user's call. Single dark look: the stage. */
+:root {
+  --bg: #17131c; --panel: #221c29; --panel-2: #2c2434; --line: #3d3347;
+  --fg: #f3ece4; --muted: #c4b8c9; --accent: #f2c14e; --accent-ink: #1d1608;
+  --ok: #6fcf8a; --warn: #f2a14e; --bad: #ef6a6a; --info: #8fb4ff;
+  --display: "Silkscreen", "Courier New", monospace;
+  --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: .02em; }
+h1 { font-size: clamp(26px, 4vw, 40px); }
+h2 { font-size: 20px; }
+p { margin: 0; }
+.lede { color: var(--muted); max-width: 72ch; }
+.tally { display: flex; flex-wrap: wrap; gap: 8px; }
+.tally span { font: 13px var(--mono); padding: 4px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
+.causes { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); }
+.cause { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.cause h3 { margin: 0; font-size: 16px; display: flex; gap: 10px; align-items: baseline; }
+.cause h3 b { font-family: var(--display); color: var(--accent); font-weight: 400; }
+.cause .why { color: var(--muted); font-size: 14px; }
+.cause .fix { font-size: 14px; }
+.cause .fix::before { content: "Propuesta · "; color: var(--accent); font-weight: 700; }
+.cause .meta { font: 12px var(--mono); color: var(--muted); }
+.decide { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.decide button { font: 13px var(--body); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); cursor: pointer; }
+.decide button:hover { border-color: var(--muted); }
+.decide button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.decide button[aria-pressed="true"][data-v="ok"] { background: var(--ok); color: #0e2414; border-color: var(--ok); }
+.decide button[aria-pressed="true"][data-v="mejorar"] { background: var(--warn); color: #2a1604; border-color: var(--warn); }
+.decide button[aria-pressed="true"][data-v="rehacer"] { background: var(--bad); color: #2a0808; border-color: var(--bad); }
+.decide textarea { width: 100%; min-height: 34px; resize: vertical; font: 13px var(--body); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+.saved { font: 12px var(--mono); color: var(--muted); }
+.filters { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.filters input, .filters select { font: 14px var(--body); background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; min-width: 0; }
+.filters input { flex: 1 1 200px; }
+.filters .count { font: 13px var(--mono); color: var(--muted); margin-left: auto; }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 600px), 1fr)); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: grid; grid-template-rows: auto auto; min-width: 0; }
+.card[data-verdict="mal"] { border-left: 4px solid var(--bad); }
+.card[data-verdict="mejorable"] { border-left: 4px solid var(--warn); }
+.card[data-verdict="bien"] { border-left: 4px solid var(--ok); }
+.film { background: #000; aspect-ratio: 640 / 110; width: 100%; display: block; image-rendering: auto; }
+.film img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.body { padding: 12px 14px 14px; display: grid; gap: 10px; min-width: 0; }
+.head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.head h3 { margin: 0; font-size: 17px; }
+.chip { font: 12px var(--mono); padding: 2px 7px; border-radius: 3px; background: var(--panel-2); color: var(--muted); }
+.chip.type { color: var(--fg); }
+.pill { font: 12px var(--mono); padding: 2px 8px; border-radius: 10px; margin-left: auto; }
+.pill.mal { background: var(--bad); color: #2a0808; } .pill.mejorable { background: var(--warn); color: #2a1604; } .pill.bien { background: var(--ok); color: #0e2414; }
+.vs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
+.vs > div { background: var(--bg); border-radius: 4px; padding: 8px 10px; min-width: 0; }
+.vs b { display: block; font-family: var(--display); font-weight: 400; font-size: 12px; color: var(--accent); margin-bottom: 2px; letter-spacing: .04em; }
+.vs code { font: 12px var(--mono); color: var(--info); overflow-wrap: anywhere; }
+.gaps { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); display: grid; gap: 2px; }
+.mine { font-size: 14px; border-left: 2px solid var(--accent); padding-left: 10px; display: grid; gap: 2px; }
+.mine .fix::before { content: "Cómo mejorarlo · "; color: var(--accent); font-weight: 700; }
+.empty { color: var(--muted); padding: 40px 0; text-align: center; }
+@media (max-width: 520px) { .vs { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header style="display:grid;gap:12px">
+    <h1>Animaciones de movimientos</h1>
+    <p class="lede">Cada movimiento base de Pokémon Ascendant (v0.9.102) grabado en combate en tiempo real, al lado de lo que hace su animación de FireRed según el script de pret. Las causas generales van primero: explican por qué casi todo se ve igual. Debajo está cada movimiento con su vídeo, las diferencias medidas y mi valoración. Marca en cada uno <b>Dejar</b>, <b>Mejorar</b> o <b>Rehacer</b> y deja una nota si quieres: lo leo desde aquí.</p>
+    <div class="tally" id="tally"></div>
+  </header>
+
+  <section style="display:grid;gap:12px" aria-labelledby="causes-h">
+    <h2 id="causes-h">Por qué parece que no ha cambiado nada</h2>
+    <div class="causes" id="causes"></div>
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="moves-h">
+    <h2 id="moves-h">Cada movimiento</h2>
+    <div class="filters">
+      <label class="sr" for="q" hidden>Buscar</label>
+      <input id="q" type="search" placeholder="Buscar movimiento, sprite o tipo…">
+      <select id="fv" aria-label="Valoración"><option value="">Toda valoración</option><option value="mal">Mal</option><option value="mejorable">Mejorable</option><option value="bien">Bien</option></select>
+      <select id="fs" aria-label="Origen"><option value="">Todo origen</option><option value="frlg">Script FRLG</option><option value="compuesto">Compuesto (Gen IV)</option><option value="chatgpt">Sustituto ChatGPT</option><option value="dibujado">Dibujado (sin sprites)</option></select>
+      <select id="fk" aria-label="Tipo de animación"><option value="">Toda animación</option></select>
+      <select id="fd" aria-label="Tu decisión"><option value="">Toda decisión</option><option value="none">Sin decidir</option><option value="ok">Dejar</option><option value="mejorar">Mejorar</option><option value="rehacer">Rehacer</option></select>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="grid" id="grid"><p class="empty">Cargando movimientos…</p></div>
+  </section>
+</div>
+
+<script>
+const CAUSES = __CAUSES__;
+const KIND = { melee: 'Cuerpo a cuerpo', projectile: 'Proyectil', beam: 'Chorro', bolt: 'Rayo', drain: 'Drenaje', area: 'Campo', aura: 'Aura', hex: 'Hechizo' };
+const SOURCE = { frlg: 'Script FRLG', compuesto: 'Compuesto', chatgpt: 'Sustituto ChatGPT', dibujado: 'Dibujado' };
+const VERD = { mal: 'Mal', mejorable: 'Mejorable', bien: 'Bien' };
+const DEC = [['ok', 'Dejar'], ['mejorar', 'Mejorar'], ['rehacer', 'Rehacer']];
+let items = [];
+const decisions = new Map();
+let db = null;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const secs = (ms) => (ms / 1000).toFixed(1).replace('.', ',') + ' s';
+
+function decideHtml(id) {
+  const d = decisions.get(id) ?? {};
+  return `<div class="decide" data-id="${id}">${DEC.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${d.choice === v}">${l}</button>`).join('')}
+    <span class="saved" data-saved></span>
+    <textarea id="note-${id}" aria-label="Nota" placeholder="Nota (opcional): qué cambiarías">${esc(d.note)}</textarea></div>`;
+}
+
+function renderCauses() {
+  $('#causes').innerHTML = CAUSES.map((c, i) => `<article class="cause"><h3><b>${i + 1}</b>${esc(c.title)}</h3><p class="why">${c.why}</p><p class="fix">${c.fix}</p><p class="meta">${esc(c.meta)}</p>${decideHtml('causa-' + (i + 1))}</article>`).join('');
+}
+
+function card(m) {
+  const g = m.gba;
+  const gbaSprites = g?.sprites.length ? g.sprites.map((s) => `<code>${esc(s.tag)}</code> ×${s.n} (${esc(s.prim)})`).join(', ') : 'ninguno';
+  const ours = [m.ours.main && `<code>${esc(m.ours.main)}</code>`, m.ours.impact && `golpe <code>${esc(m.ours.impact)}</code>`, m.ours.bg && `fondo <code>${esc(m.ours.bg)}</code>`].filter(Boolean).join(', ') || 'formas dibujadas';
+  return `<article class="card" data-verdict="${m.verdict}" id="m-${m.id}">
+    <div class="film"><img loading="lazy" decoding="async" src="film/${m.id}.webp" alt="Animación de ${esc(m.name)} grabada en combate"></div>
+    <div class="body">
+      <div class="head"><h3>${esc(m.name)}</h3><span class="chip type">${esc(m.type)}</span><span class="chip">${KIND[m.kind] ?? m.kind}${m.style ? ' · ' + esc(m.style) : ''}</span><span class="chip">${SOURCE[m.source]}</span><span class="pill ${m.verdict}">${VERD[m.verdict]}</span></div>
+      <div class="vs">
+        <div><b>Aquí</b>${secs(m.ours.ms)} · ${ours}<br>${esc(m.ours.how)}</div>
+        <div><b>GBA</b>${g ? `≈${secs(g.ms)} · ${gbaSprites}${g.mon.length ? '<br>' + esc([...new Set(g.mon)].join(', ')) : ''}${g.bgs.length ? '<br>fondo ' + esc(g.bgs.join(', ')) : ''}` : 'No existe en FRLG (Gen IV)'}</div>
+      </div>
+      ${m.note || m.fix ? `<div class="mine">${m.note ? `<p>${esc(m.note)}</p>` : ''}${m.fix ? `<p class="fix">${esc(m.fix)}</p>` : ''}</div>` : ''}
+      ${m.gaps.length ? `<ul class="gaps">${m.gaps.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${decideHtml(m.id)}
+    </div></article>`;
+}
+
+function render() {
+  const q = $('#q').value.trim().toLowerCase();
+  const fv = $('#fv').value, fs = $('#fs').value, fk = $('#fk').value, fd = $('#fd').value;
+  const shown = items.filter((m) => {
+    if (fv && m.verdict !== fv) return false;
+    if (fs && m.source !== fs) return false;
+    if (fk && m.kind !== fk) return false;
+    const d = decisions.get(m.id)?.choice;
+    if (fd === 'none' ? d : fd && d !== fd) return false;
+    if (q && ![m.id, m.name, m.type, m.ours.main, m.ours.impact, m.note, m.fix].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $('#grid').innerHTML = shown.length ? shown.map(card).join('') : '<p class="empty">Ningún movimiento con estos filtros.</p>';
+  $('#count').textContent = `${shown.length} de ${items.length}`;
+}
+
+function tally() {
+  const by = (k) => items.reduce((a, m) => ((a[m[k]] = (a[m[k]] ?? 0) + 1), a), {});
+  const v = by('verdict');
+  const decided = items.filter((m) => decisions.get(m.id)?.choice).length;
+  $('#tally').innerHTML = [`${items.length} movimientos`, `Mal ${v.mal ?? 0}`, `Mejorable ${v.mejorable ?? 0}`, `Bien ${v.bien ?? 0}`, `Decididos por ti ${decided}`].map((t) => `<span>${t}</span>`).join('');
+}
+
+function refreshDecide(id) {
+  document.querySelectorAll(`.decide[data-id="${CSS.escape(id)}"]`).forEach((el) => {
+    const d = decisions.get(id) ?? {};
+    el.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(d.choice === b.dataset.v)));
+    const ta = el.querySelector('textarea');
+    if (ta && document.activeElement !== ta) ta.value = d.note ?? '';
+  });
+}
+
+async function save(id, patch, el) {
+  const next = { ...(decisions.get(id) ?? {}), ...patch, at: new Date().toISOString() };
+  decisions.set(id, next);
+  refreshDecide(id);
+  tally();
+  const s = el?.querySelector('[data-saved]');
+  if (!db) { if (s) s.textContent = 'Sin conexión: no se guarda'; return; }
+  try {
+    if (s) s.textContent = 'Guardando…';
+    await db.collection('decisions').doc(id).set(next);
+    if (s) s.textContent = 'Guardado';
+  } catch (e) {
+    if (s) s.textContent = 'No se pudo guardar: ' + (e?.code ?? 'error');
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.decide button');
+  if (!b) return;
+  const el = b.closest('.decide');
+  const id = el.dataset.id;
+  const cur = decisions.get(id)?.choice;
+  save(id, { choice: cur === b.dataset.v ? null : b.dataset.v }, el);
+});
+const pending = new Map();
+document.addEventListener('input', (e) => {
+  const ta = e.target.closest('.decide textarea');
+  if (!ta) return;
+  const el = ta.closest('.decide');
+  clearTimeout(pending.get(el.dataset.id));
+  pending.set(el.dataset.id, setTimeout(() => save(el.dataset.id, { note: ta.value }, el), 800));
+});
+['q', 'fv', 'fs', 'fk', 'fd'].forEach((id) => $('#' + id).addEventListener('input', render));
+
+(async () => {
+  renderCauses();
+  try {
+    items = await (await fetch('data.json')).json();
+  } catch {
+    $('#grid').innerHTML = '<p class="empty">No se pudieron cargar los movimientos.</p>';
+    return;
+  }
+  const kinds = [...new Set(items.map((m) => m.kind))];
+  $('#fk').insertAdjacentHTML('beforeend', kinds.map((k) => `<option value="${k}">${KIND[k] ?? k}</option>`).join(''));
+  tally();
+  render();
+  db = window.claude?.use ? await window.claude.use('db') : null;
+  if (!db) return;
+  db.collection('decisions').onSnapshot((snap) => {
+    for (const d of snap.docs) decisions.set(d.id, { ...d.data() });
+    for (const d of snap.docs) refreshDecide(d.id);
+    tally();
+  }, () => {});
+})();
+</script>

@@ -1,0 +1,1537 @@
+{
+ "absorb": {
+  "v": "mal",
+  "note": "Se lee como un láser verde: los orbes que vuelven son puntos y no se distinguen.",
+  "fix": "Quitar el tentáculo; 6–8 orbes (orbs) grandes saliendo del objetivo en espiral hacia el usuario, y tinte verde en el objetivo."
+ },
+ "acid": {
+  "v": "mal",
+  "note": "Vuela un punto magenta; la burbuja de veneno apenas se ve en el objetivo.",
+  "fix": "2–3 burbujas (poison-bubble) a buen tamaño lanzadas en arco, salpicando al caer, con tinte morado del objetivo."
+ },
+ "acid-armor": {
+  "v": "mal",
+  "note": "Sólo los anillos de color del aura y un tinte morado: no se derrite.",
+  "fix": "Ondular el sprite del propio Pokémon (se derrite y vuelve) con tinte azul; no necesita sprites."
+ },
+ "aerial-ace": {
+  "v": "mejorable",
+  "note": "El salto se ve; el corte en el objetivo es pequeño y dura un instante.",
+  "fix": "Tajo (cut) al doble de tamaño, dos cortes cruzados y destello blanco del objetivo."
+ },
+ "agility": {
+  "v": "mal",
+  "note": "Anillos rosas genéricos; no transmite velocidad.",
+  "fix": "Estela: 3 copias translúcidas del Pokémon que se deslizan atrás y adelante, como en la GBA."
+ },
+ "air-cutter": {
+  "v": "mejorable",
+  "note": "Tinte morado en todo el campo que no significa nada; las medialunas de aire son diminutas.",
+  "fix": "Sin tinte de campo; 3 medialunas (air-wave) grandes cruzando en arco hasta los objetivos."
+ },
+ "air-slash": {
+  "v": "mal",
+  "note": "Apenas se ve una medialuna pequeña en vuelo.",
+  "fix": "Medialuna (air-slash) grande que cruza girando y dos tajos sobre el objetivo."
+ },
+ "amnesia": {
+  "v": "mal",
+  "note": "Fallo: el sprite sale como un amasijo blanco (la hoja amnesia está mal cortada) sobre anillos rosas.",
+  "fix": "Recortar bien el signo de interrogación; que aparezca grande sobre la cabeza ~0,6 s."
+ },
+ "ancient-power": {
+  "v": "mejorable",
+  "note": "Una roca grande sale del usuario y llega el golpe. En la GBA las rocas brotan del suelo alrededor del usuario y luego vuelan.",
+  "fix": "4–5 rocas que suben desde los pies del usuario, quedan flotando y salen disparadas en arco al objetivo."
+ },
+ "aqua-jet": {
+  "v": "mal",
+  "note": "No se ve la columna de agua: sólo el salto y el número de daño.",
+  "fix": "Estela de agua (water-column) detrás del usuario durante el salto y salpicadura (water-impact) grande al golpear."
+ },
+ "aqua-ring": {
+  "v": "bien",
+  "note": "El anillo de agua rodea al usuario y se lee.",
+  "fix": "Que gire más tiempo y suban burbujas."
+ },
+ "aqua-tail": {
+  "v": "mal",
+  "note": "Igual que Aqua Jet: el salto y el número, sin agua visible.",
+  "fix": "Coletazo: columna de agua en arco sobre el objetivo y salpicadura grande."
+ },
+ "aromatherapy": {
+  "v": "mejorable",
+  "note": "Una flor pequeña sobre el usuario y anillos verdes.",
+  "fix": "Flores (flower) cayendo despacio sobre todo el equipo."
+ },
+ "astonish": {
+  "v": "mejorable",
+  "note": "El salto se ve; la gota de sudor apenas.",
+  "fix": "El usuario se asoma hacia el objetivo (sin salto completo), el objetivo se sacude y aparece la gota de sudor grande."
+ },
+ "aura-sphere": {
+  "v": "mejorable",
+  "note": "Orbe verde pequeño y destello blanco al llegar. Es el sustituto de pret mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: esfera azul que crece en las manos del usuario y sale disparada; mientras tanto, orbe a mayor tamaño."
+ },
+ "aurora-beam": {
+  "v": "mal",
+  "note": "Los anillos arcoíris sólo se ven al final, sobre el objetivo.",
+  "fix": "Chorro continuo de anillos (rainbow-rings) en onda del usuario al objetivo durante ~1 s, con el objetivo cambiando de color."
+ },
+ "avalanche": {
+  "v": "mejorable",
+  "note": "El bloque de hielo cae bien sobre el objetivo; el salto previo sobra.",
+  "fix": "Sin salto: varios bloques (ice-chunk) cayendo desde arriba sobre el objetivo y sacudida."
+ },
+ "barrage": {
+  "v": "mal",
+  "note": "Fallo: las tres bolas se ven apiladas sobre el usuario antes de salir.",
+  "fix": "Ocultar cada proyectil hasta su salida; bolas (red-ball) en arco, una tras otra, rebotando en el objetivo."
+ },
+ "barrier": {
+  "v": "mejorable",
+  "note": "Aparece un rectángulo gris plano: se entiende como muro, pero parece un recuadro de la UI.",
+  "fix": "Muro con brillo que lo recorre y algo de transparencia, delante del usuario."
+ },
+ "baton-pass": {
+  "v": "mal",
+  "note": "La Poké Ball no se ve; la tarjeta del usuario se descoloca.",
+  "fix": "Poké Ball que sube girando del usuario y cae en el compañero que entra."
+ },
+ "bind": {
+  "v": "mal",
+  "note": "Dibujado y salto: no se ve que atrapa.",
+  "fix": "Sin salto: el objetivo se comprime de lado varias veces (apretado), como en la GBA."
+ },
+ "bite": {
+  "v": "bien",
+  "note": "Las mandíbulas se cierran sobre el objetivo y se leen. El salto previo no es de la GBA y el número de daño las tapa en parte.",
+  "fix": "Quitar el salto (en la GBA el usuario no se mueve); retrasar el número hasta que cierren."
+ },
+ "blast-burn": {
+  "v": "mal",
+  "note": "Una llama asoma en el usuario y llega un golpe genérico. En la GBA es una explosión de fuego que envuelve al objetivo.",
+  "fix": "Llamaradas (fire-plume) brotando alrededor del objetivo en anillo, varias oleadas, y tinte rojo de la pantalla."
+ },
+ "blizzard": {
+  "v": "mejorable",
+  "note": "El fondo blanco tapa el campo entero pero los cristales de hielo no se ven: queda como niebla.",
+  "fix": "Fondo más tenue y ráfaga de cristales (ice-crystals) cruzando en diagonal sobre los objetivos, muchos y grandes."
+ },
+ "body-slam": {
+  "v": "mejorable",
+  "note": "El salto y un golpe genérico. En la GBA el usuario cae encima del objetivo.",
+  "fix": "El usuario sube y cae aplastando (salto vertical sobre el objetivo), sacudida fuerte."
+ },
+ "bone-club": {
+  "v": "mal",
+  "note": "No se ve el hueso: el número de daño tapa el golpe.",
+  "fix": "Hueso (bone) grande girando que golpea al objetivo, y el número un poco después."
+ },
+ "bonemerang": {
+  "v": "mejorable",
+  "note": "El hueso sale del usuario pero vuela en línea recta y no vuelve.",
+  "fix": "Hueso girando en arco de ida y vuelta (boomerang), golpeando al pasar."
+ },
+ "brave-bird": {
+  "v": "mejorable",
+  "note": "El pájaro se ve bien al golpear, pero sólo al final del salto.",
+  "fix": "El pájaro envuelve al usuario durante todo el vuelo (el usuario se convierte en el ave) y estalla al chocar."
+ },
+ "brick-break": {
+  "v": "mal",
+  "note": "No se ve el muro ni la mano: golpe genérico.",
+  "fix": "Muro azul (blue-light-wall) delante del objetivo que se rompe con un golpe de mano (hands-and-feet), fragmentos."
+ },
+ "brine": {
+  "v": "mal",
+  "note": "Fallo: la salpicadura se queda grande sobre el usuario durante la carga y luego cruza.",
+  "fix": "Ocultar el proyectil hasta que sale; mejor un chorro de agua salada (water-impact pequeño en onda) y salpicadura en el objetivo."
+ },
+ "bubble": {
+  "v": "mal",
+  "note": "Las burbujas son puntos casi invisibles.",
+  "fix": "5–6 burbujas (bubble) a buen tamaño, subiendo y bajando en onda hasta el objetivo y estallando."
+ },
+ "bubble-beam": {
+  "v": "mal",
+  "note": "El chorro de burbujas no se ve en vuelo; sólo una burbuja al final.",
+  "fix": "Chorro de muchas burbujas en onda durante ~1 s, con el objetivo tiñéndose de azul."
+ },
+ "bug-buzz": {
+  "v": "mejorable",
+  "note": "Las ondas aparecen en el usuario pero no se ve que crucen.",
+  "fix": "Ondas de sonido verdes (metal-sound-waves@bug) en anillos que se expanden hacia el objetivo, varias seguidas."
+ },
+ "bulk-up": {
+  "v": "mal",
+  "note": "Anillos rojos; el soplido no se ve.",
+  "fix": "El usuario se agacha y se infla (escala), destello rojo, y soplido (breath) al final."
+ },
+ "bullet-punch": {
+  "v": "mejorable",
+  "note": "El golpe se ve pequeño y tapado por el número.",
+  "fix": "Varios puñetazos rápidos (punch-impact) en posiciones distintas del objetivo, brillo metálico."
+ },
+ "bullet-seed": {
+  "v": "mejorable",
+  "note": "Una semilla pequeña y un estallido. En la GBA es una ráfaga de semillas.",
+  "fix": "5 semillas (seed) en ráfaga rápida, cada una con su golpe pequeño en el objetivo."
+ },
+ "call-for-help": {
+  "v": "mejorable",
+  "note": "Una alerta roja pequeña sobre anillos.",
+  "fix": "Signo de alerta (alert) grande sobre el usuario, parpadeando dos veces."
+ },
+ "calm-mind": {
+  "v": "bien",
+  "note": "El anillo fino se contrae sobre el usuario: se lee.",
+  "fix": "Dos o tres anillos que se contraen, con tinte rosa suave."
+ },
+ "charm": {
+  "v": "bien",
+  "note": "Los corazones salen del usuario y llegan al objetivo: se entiende.",
+  "fix": "Más corazones y que suban flotando sobre el objetivo en lugar de chocar."
+ },
+ "clamp": {
+  "v": "mal",
+  "note": "La almeja no se ve: la tapa el número.",
+  "fix": "Concha (clamp) que se cierra sobre el objetivo, dos mitades, y el número después."
+ },
+ "close-combat": {
+  "v": "mejorable",
+  "note": "Salto y un golpe; no se nota la ráfaga de golpes.",
+  "fix": "6–8 puños y patadas (hands-and-feet) en posiciones aleatorias del objetivo, rápidos, con sacudida continua."
+ },
+ "comet-punch": {
+  "v": "mejorable",
+  "note": "El puño es pequeño y llega una sola vez.",
+  "fix": "Puños repetidos (uno por golpe del movimiento) en puntos distintos del objetivo."
+ },
+ "confuse-ray": {
+  "v": "mejorable",
+  "note": "La bola amarilla se ve y llega. En la GBA da vueltas alrededor del objetivo.",
+  "fix": "Bola (yellow-ball) que cruza rebotando y luego gira en espiral alrededor del objetivo."
+ },
+ "confusion": {
+  "v": "mejorable",
+  "note": "Un anillo dibujado cruza; el impacto se ve. En la GBA no hay proyectil: el objetivo se sacude con tinte psíquico.",
+  "fix": "Sin proyectil: tinte rosa sobre el objetivo y sacudida ondulante, como Psychic en pequeño."
+ },
+ "constrict": {
+  "v": "mal",
+  "note": "Los tentáculos apenas se ven junto al número.",
+  "fix": "Tentáculos (tendrils) que envuelven al objetivo de abajo arriba y lo aprietan (escala lateral)."
+ },
+ "conversion": {
+  "v": "mal",
+  "note": "Un bloque pequeño sobre anillos; no se ve la rejilla.",
+  "fix": "Rejilla de bloques (conversion) que cubre al usuario fila a fila."
+ },
+ "counter": {
+  "v": "mal",
+  "note": "El puño aparece sobre el propio usuario: Counter se dibuja como aura y no golpea a nadie.",
+  "fix": "Cambiar a cuerpo a cuerpo: el usuario se lanza contra el objetivo con puños rojos (hands-and-feet) y destello rojo."
+ },
+ "cover": {
+  "v": "mal",
+  "note": "Fallo: el escudo dorado se dibuja como una pila de piezas amarillas encima del usuario (sprite mal cortado).",
+  "fix": "Revisar el corte de protect@gold (es un sprite de 64×64 en cuatro partes); escudo dorado delante del compañero."
+ },
+ "crabhammer": {
+  "v": "mal",
+  "note": "No se ve nada en el golpe; usa cristales de hielo como sprite principal.",
+  "fix": "Pinza enorme que golpea desde arriba con salpicadura (water-impact) y burbujas."
+ },
+ "cross-chop": {
+  "v": "mejorable",
+  "note": "La cruz blanca del golpe se ve; las manos no.",
+  "fix": "Dos manos (hands-and-feet, mano abierta) que bajan cruzándose sobre el objetivo y la cruz (cross-impact) al juntarse."
+ },
+ "cross-poison": {
+  "v": "mal",
+  "note": "No se ve la cruz venenosa: sólo el número.",
+  "fix": "Cruz morada (cross-impact@poison) grande sobre el objetivo y burbujas de veneno saliendo."
+ },
+ "crunch": {
+  "v": "bien",
+  "note": "Las mandíbulas grandes se cierran sobre el objetivo y se leen.",
+  "fix": "Quitar el salto del usuario; añadir el tinte oscuro del objetivo al morder."
+ },
+ "crush-claw": {
+  "v": "mal",
+  "note": "Fallo: aparece un rectángulo azul liso sobre el objetivo (el muro azul usado como sprite principal).",
+  "fix": "Garras (claw-slash) que arañan dos veces sobre el objetivo; el muro azul sólo como destello de fondo, o nada."
+ },
+ "curse": {
+  "v": "mal",
+  "note": "El clavo no se ve; anillos morados.",
+  "fix": "Clavo (nail) que cae y se clava en el usuario (tipo Fantasma) o tinte rojo del usuario (resto de tipos)."
+ },
+ "cut": {
+  "v": "mal",
+  "note": "El tajo no se ve tras el salto.",
+  "fix": "Tajo (cut) grande en diagonal sobre el objetivo, sin salto del usuario."
+ },
+ "dark-pulse": {
+  "v": "mejorable",
+  "note": "Anillo morado en el usuario y golpe oscuro. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: anillos oscuros concéntricos que se expanden hasta el objetivo."
+ },
+ "defense-curl": {
+  "v": "mejorable",
+  "note": "Un orbe pequeño y anillos.",
+  "fix": "El usuario se encoge (escala abajo y vuelve) con el orbe (eclipsing-orb) envolviéndolo."
+ },
+ "detect": {
+  "v": "mejorable",
+  "note": "El destello se ve sobre el usuario.",
+  "fix": "Destello más grande en los ojos y tinte blanco breve."
+ },
+ "dig": {
+  "v": "mal",
+  "note": "La tarjeta del usuario se descoloca y no se ve la tierra.",
+  "fix": "Turno 1: tierra (mud-sand) saltando y el usuario se hunde; turno 2: sale bajo el objetivo con golpe."
+ },
+ "disable": {
+  "v": "mal",
+  "note": "Fallo: el destello sale sobre el usuario y debería ir al objetivo.",
+  "fix": "Destello (sparkle-4) sobre el objetivo y el objetivo se tiñe de gris."
+ },
+ "discharge": {
+  "v": "mejorable",
+  "note": "El campo se oscurece y las chispas se ven sobre el objetivo: se entiende.",
+  "fix": "Chispas saliendo del usuario en todas direcciones y rayos cortos a cada objetivo."
+ },
+ "dizzy-punch": {
+  "v": "mal",
+  "note": "Los patitos no se ven; golpe genérico.",
+  "fix": "Puño y luego patitos (duck) girando sobre la cabeza del objetivo."
+ },
+ "double-edge": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico; no se nota el riesgo.",
+  "fix": "Embestida más larga con estela, golpe fuerte y retroceso con sacudida del propio usuario."
+ },
+ "double-hit": {
+  "v": "mejorable",
+  "note": "Un solo golpe genérico para un movimiento de dos golpes.",
+  "fix": "Dos golpes (impact) en lados alternos del objetivo, con dos sacudidas."
+ },
+ "double-kick": {
+  "v": "mal",
+  "note": "El pie no se ve; un golpe en vez de dos.",
+  "fix": "Dos patadas (hands-and-feet, pie) a izquierda y derecha del objetivo."
+ },
+ "double-slap": {
+  "v": "mal",
+  "note": "Golpe genérico único; no se ven las bofetadas.",
+  "fix": "Mano abierta que golpea alternando lados, una vez por golpe, con el objetivo balanceándose."
+ },
+ "double-team": {
+  "v": "mal",
+  "note": "Sólo anillos.",
+  "fix": "Copias translúcidas del usuario que se separan a los lados y vuelven a juntarse."
+ },
+ "draco-meteor": {
+  "v": "mejorable",
+  "note": "El meteoro morado es grande y se ve, pero cruza de lado desde el usuario.",
+  "fix": "Varios meteoros (meteor@draco) cayendo desde arriba sobre el objetivo, explosión y sacudida del campo."
+ },
+ "dragon-breath": {
+  "v": "mal",
+  "note": "Una brasa diminuta.",
+  "fix": "Chorro de llamas en onda (small-ember a buen tamaño, muchas) en verde/morado, como el Flamethrower de la GBA."
+ },
+ "dragon-claw": {
+  "v": "mal",
+  "note": "No se ve nada en el golpe; usa una brasa como sprite principal.",
+  "fix": "Garras (claw-slash) moradas arañando dos veces y llamas pequeñas alrededor del usuario antes del salto."
+ },
+ "dragon-dance": {
+  "v": "mejorable",
+  "note": "Anillos morados y un orbe pequeño.",
+  "fix": "Llamas/orbes (hollow-orb) girando alrededor del usuario mientras se balancea."
+ },
+ "dragon-pulse": {
+  "v": "mejorable",
+  "note": "Llama morada pequeña. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: pulso de energía dragón en onda hasta el objetivo."
+ },
+ "dragon-rage": {
+  "v": "mejorable",
+  "note": "Tinte morado y llamas sobre el objetivo: se entiende, aunque las llamas son pequeñas.",
+  "fix": "Columnas de llama (fire-plume) rodeando al objetivo, más grandes y más tiempo."
+ },
+ "drain-punch": {
+  "v": "mejorable",
+  "note": "Golpe y nada más; no se ve el drenaje.",
+  "fix": "Puño (punch-impact) y luego orbes verdes volviendo al usuario."
+ },
+ "dream-eater": {
+  "v": "mejorable",
+  "note": "El fondo psíquico se ve fuerte; el tentáculo rosa y los orbes son finos.",
+  "fix": "Sin tentáculo; orbes grandes saliendo del objetivo dormido hacia el usuario sobre el fondo."
+ },
+ "drill-peck": {
+  "v": "mal",
+  "note": "No se ve nada en el golpe.",
+  "fix": "El usuario gira como un taladro hacia el objetivo con golpes rápidos repetidos (hit) en el mismo punto."
+ },
+ "dynamic-punch": {
+  "v": "mal",
+  "note": "No se ve el puño; sólo el número.",
+  "fix": "Puño grande y explosión (explosion) sobre el objetivo, con sacudida fuerte y destello."
+ },
+ "earth-power": {
+  "v": "mal",
+  "note": "La columna de tierra apenas asoma bajo el número.",
+  "fix": "El suelo bajo el objetivo se agrieta y brota una columna (fire-plume@earth) grande con tierra (flying-dirt) cayendo."
+ },
+ "earthquake": {
+  "v": "mejorable",
+  "note": "Grietas, polvo y sacudida del campo: se entiende, aunque las grietas son finas.",
+  "fix": "Sacudida más larga del campo entero y de todos los Pokémon, como en la GBA (es su único efecto)."
+ },
+ "egg-bomb": {
+  "v": "mejorable",
+  "note": "El huevo se ve volando; la explosión es pequeña.",
+  "fix": "Huevo (large-fresh-egg) en arco alto y explosión (explosion) a tamaño del Pokémon."
+ },
+ "ember": {
+  "v": "mejorable",
+  "note": "Brasa pequeña y un estallido; en la GBA son tres brasas que caen y prenden.",
+  "fix": "Tres brasas (small-ember) en arco una tras otra que prenden en llamas pequeñas sobre el objetivo."
+ },
+ "endure": {
+  "v": "mejorable",
+  "note": "Una llama pequeña sobre anillos.",
+  "fix": "Energía (focus-energy) subiendo alrededor del usuario y tinte rojo, ~0,8 s."
+ },
+ "energy-ball": {
+  "v": "mejorable",
+  "note": "La bola verde es grande y se ve, pero se queda pegada al usuario durante la carga.",
+  "fix": "Ocultarla hasta que sale; que crezca en el usuario y luego cruce."
+ },
+ "explosion": {
+  "v": "mejorable",
+  "note": "Ondas y destello blanco de todo el campo: se lee como explosión, sin sprites de pret.",
+  "fix": "Añadir las explosiones (explosion) repartidas por el campo y la sacudida fuerte."
+ },
+ "feather-dance": {
+  "v": "mejorable",
+  "note": "Las plumas se ven cruzando.",
+  "fix": "Plumas (white-feather) que caen balanceándose sobre el objetivo en lugar de volar recto."
+ },
+ "feint-attack": {
+  "v": "mal",
+  "note": "No se ve nada: golpe genérico.",
+  "fix": "El usuario se desvanece, reaparece junto al objetivo y golpea (impact)."
+ },
+ "fire-blast": {
+  "v": "mejorable",
+  "note": "Tinte naranja y llamas sobre el objetivo; las llamas son pequeñas.",
+  "fix": "Bola de fuego que cruza y estalla en la figura de cinco brazos de la GBA, con llamas grandes."
+ },
+ "fire-fang": {
+  "v": "mal",
+  "note": "Los colmillos no se ven tras el salto.",
+  "fix": "Colmillos (fangs) grandes cerrándose sobre el objetivo y brasas prendiendo."
+ },
+ "fire-punch": {
+  "v": "mal",
+  "note": "No se ve el puño ni el fuego.",
+  "fix": "Puño (hands-and-feet) con llamas girando alrededor del objetivo, como en la GBA."
+ },
+ "fire-spin": {
+  "v": "mal",
+  "note": "Una brasa pequeña vuela recta.",
+  "fix": "Remolino: muchas brasas girando en espiral alrededor del objetivo ~1 s."
+ },
+ "fissure": {
+  "v": "mejorable",
+  "note": "Grietas, polvo y fondo: se entiende.",
+  "fix": "Grieta grande que se abre bajo el objetivo y el objetivo se hunde."
+ },
+ "flail": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "El usuario se agita a los lados varias veces antes de golpear, golpes repetidos pequeños."
+ },
+ "flame-wheel": {
+  "v": "mal",
+  "note": "No se ve fuego: sólo el salto.",
+  "fix": "Rueda de llamas (small-ember en círculo) girando alrededor del usuario mientras embiste."
+ },
+ "flamethrower": {
+  "v": "mejorable",
+  "note": "Las brasas se ven, pero pequeñas, en línea recta y pocas; la GBA lanza 22 en onda.",
+  "fix": "Chorro continuo de ~20 brasas a buen tamaño en onda sinusoidal durante ~1 s, con el objetivo sacudiéndose."
+ },
+ "flare-blitz": {
+  "v": "mal",
+  "note": "El fuego no se ve; golpe pequeño.",
+  "fix": "Usuario envuelto en llamas (spinning-fire) durante la carga y explosión (explosion-2) grande al chocar."
+ },
+ "flash": {
+  "v": "mal",
+  "note": "Un punto blanco cruza; el destello no se nota.",
+  "fix": "Destello blanco de toda la pantalla (fade a blanco y vuelta), sin proyectil."
+ },
+ "flash-cannon": {
+  "v": "mejorable",
+  "note": "Orbe gris pequeño. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: haz de luz metálico; mientras tanto, orbe grande con destello."
+ },
+ "fly": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico; no se ve que vuela.",
+  "fix": "Turno 1: el usuario sube fuera de pantalla; turno 2: baja en picado sobre el objetivo."
+ },
+ "focus-energy": {
+  "v": "mejorable",
+  "note": "Una llama pequeña sobre anillos.",
+  "fix": "Energía que sube alrededor del usuario dos veces, más grande, tinte naranja."
+ },
+ "frenzy-plant": {
+  "v": "mal",
+  "note": "Las raíces no se ven bajo el número.",
+  "fix": "Raíces (roots) gigantes que brotan del suelo bajo el objetivo en varias oleadas."
+ },
+ "fury-attack": {
+  "v": "mejorable",
+  "note": "El cuerno se ve un instante con el golpe.",
+  "fix": "Cuerno (horn-hit) que pincha repetidas veces, una por golpe."
+ },
+ "fury-cutter": {
+  "v": "mal",
+  "note": "No se ve el tajo.",
+  "fix": "Tajos (cut) cada vez más grandes según el número de usos seguidos."
+ },
+ "fury-swipes": {
+  "v": "mejorable",
+  "note": "El arañazo se ve pequeño.",
+  "fix": "Tres arañazos (swipe) alternando dirección sobre el objetivo."
+ },
+ "giga-drain": {
+  "v": "mal",
+  "note": "Fallo: dibujado como proyectil; un orbe va del usuario al objetivo, al revés de un drenaje.",
+  "fix": "Tipo drenaje: muchos orbes verdes (orbs) saliendo del objetivo en espiral hacia el usuario, tinte verde."
+ },
+ "giga-impact": {
+  "v": "mejorable",
+  "note": "El fondo de velocidad lava el campo y hay golpe; el usuario apenas se ve correr.",
+  "fix": "Carrera con estela larga sobre el fondo y explosión grande con sacudida del campo."
+ },
+ "glare": {
+  "v": "mal",
+  "note": "El ojo es un punto diminuto que cruza.",
+  "fix": "Ojos rojos (small-red-eye) grandes que se abren sobre el usuario y destello amarillo en el objetivo; sin proyectil."
+ },
+ "growl": {
+  "v": "mal",
+  "note": "Una línea naranja pequeña sobre el usuario; debería ir hacia el objetivo.",
+  "fix": "Líneas de ruido (noise-line) saliendo de la boca del usuario hacia el objetivo, que se agacha."
+ },
+ "growth": {
+  "v": "mal",
+  "note": "Sólo anillos genéricos.",
+  "fix": "El usuario crece (escala arriba y vuelve) con tinte verde, como en la GBA."
+ },
+ "guillotine": {
+  "v": "mejorable",
+  "note": "El fondo amarillo se ve; la pinza no.",
+  "fix": "Dos pinzas (cut) grandes que se cierran sobre el objetivo desde los lados, sin salto."
+ },
+ "gunk-shot": {
+  "v": "mejorable",
+  "note": "Burbuja morada pequeña. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: masa de basura tóxica que salpica al llegar."
+ },
+ "gust": {
+  "v": "mejorable",
+  "note": "El remolino se ve grande pero espera quieto sobre el usuario durante la carga.",
+  "fix": "Ocultarlo en la carga; remolino (gust) que cruza ondulando y envuelve al objetivo."
+ },
+ "hail": {
+  "v": "mal",
+  "note": "Sólo anillos azules en el usuario; no cae granizo.",
+  "fix": "Granizo (hail) cayendo en diagonal sobre todo el campo ~1 s, tipo área."
+ },
+ "harden": {
+  "v": "mal",
+  "note": "Sólo anillos genéricos.",
+  "fix": "Brillo metálico que recorre al usuario (destello blanco de arriba abajo)."
+ },
+ "haze": {
+  "v": "mal",
+  "note": "Sólo anillos sobre el usuario.",
+  "fix": "Niebla gris que cubre todo el campo y se disipa."
+ },
+ "headbutt": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico; se entiende como golpe.",
+  "fix": "El usuario se echa atrás antes del cabezazo y el objetivo retrocede con sacudida."
+ },
+ "heal-bell": {
+  "v": "mejorable",
+  "note": "La campana se ve pequeña sobre el usuario.",
+  "fix": "Campana más grande balanceándose y notas saliendo hacia el equipo."
+ },
+ "heat-wave": {
+  "v": "mejorable",
+  "note": "Tinte naranja del campo y polvo sobre el objetivo.",
+  "fix": "Ondas de calor que cruzan el campo con distorsión y tierra volando hacia los objetivos."
+ },
+ "helping-hand": {
+  "v": "mejorable",
+  "note": "La mano se ve sobre el usuario; debería ir sobre el compañero.",
+  "fix": "Dos manos (tag-hand) que chocan sobre el compañero."
+ },
+ "high-jump-kick": {
+  "v": "mejorable",
+  "note": "Salto y golpe; el pie no se ve.",
+  "fix": "Salto alto en arco y patada (hands-and-feet, pie) grande que cae sobre el objetivo."
+ },
+ "horn-attack": {
+  "v": "mejorable",
+  "note": "El cuerno se ve un instante junto al golpe.",
+  "fix": "Cuerno (horn-hit) grande que avanza con el usuario y empuja al objetivo."
+ },
+ "horn-drill": {
+  "v": "mejorable",
+  "note": "El fondo de velocidad se ve; el cuerno apenas.",
+  "fix": "Cuerno girando como taladro sobre el objetivo varias veces, con el fondo."
+ },
+ "hydro-cannon": {
+  "v": "mal",
+  "note": "Un orbe azul pequeño cruza despacio; nada que ver con la GBA.",
+  "fix": "Carga de agua creciendo en el usuario y chorro enorme (water-orb continuo) que golpea con salpicaduras."
+ },
+ "hydro-pump": {
+  "v": "mal",
+  "note": "El chorro no se ve en vuelo; sólo el número.",
+  "fix": "Chorro continuo grueso de agua (water-orb, muchos) en línea con salpicaduras en el objetivo ~1 s."
+ },
+ "hyper-beam": {
+  "v": "mal",
+  "note": "Unos puntos amarillos cruzan; no parece un rayo.",
+  "fix": "Rayo grueso continuo de orbes (orbs) del usuario al objetivo ~1 s, pantalla oscurecida, sacudida fuerte."
+ },
+ "hyper-fang": {
+  "v": "mal",
+  "note": "El colmillo no se ve.",
+  "fix": "Un colmillo grande (fang-attack) que muerde desde arriba con destello."
+ },
+ "hypnosis": {
+  "v": "mejorable",
+  "note": "Los anillos dorados cruzan y se ven.",
+  "fix": "Ondas (gold-ring) que crecen al cruzar y el objetivo se balancea adormecido."
+ },
+ "ice-beam": {
+  "v": "mal",
+  "note": "El rayo no se ve en vuelo; sólo un cristal al final.",
+  "fix": "Chorro de cristales (ice-crystals) en onda ~1 s y el objetivo envuelto en hielo al final."
+ },
+ "ice-fang": {
+  "v": "mal",
+  "note": "Los colmillos no se ven.",
+  "fix": "Colmillos (fangs) y bloque de hielo (ice-chunk) creciendo sobre el objetivo."
+ },
+ "ice-punch": {
+  "v": "mal",
+  "note": "No se ve el puño ni el hielo.",
+  "fix": "Cristales girando alrededor del objetivo y puño al final, como en la GBA."
+ },
+ "ice-shard": {
+  "v": "mejorable",
+  "note": "El trozo de hielo se ve, pero espera pegado al usuario durante la carga.",
+  "fix": "Ocultarlo en la carga; dos trozos (ice-chunk) rápidos sin carga (es un movimiento de prioridad)."
+ },
+ "ingrain": {
+  "v": "mejorable",
+  "note": "Las raíces se intuyen bajo anillos verdes.",
+  "fix": "Raíces más grandes bajando al suelo y orbes verdes subiendo."
+ },
+ "iron-defense": {
+  "v": "mal",
+  "note": "Sólo anillos genéricos.",
+  "fix": "Brillo metálico que recorre al usuario y tinte gris breve."
+ },
+ "iron-head": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "Cabeza con brillo metálico al embestir y golpe fuerte con sacudida."
+ },
+ "iron-tail": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "Coletazo: el usuario gira y la cola golpea con destello metálico."
+ },
+ "jump-kick": {
+  "v": "mal",
+  "note": "El pie no se ve.",
+  "fix": "Salto en arco y patada (hands-and-feet, pie) grande que cae sobre el objetivo."
+ },
+ "karate-chop": {
+  "v": "mal",
+  "note": "La mano no se ve.",
+  "fix": "Mano abierta (hands-and-feet, canto) que baja en diagonal sobre el objetivo con golpe."
+ },
+ "kinesis": {
+  "v": "mal",
+  "note": "Cruza una raya roja (el sprite de alerta): no es la cuchara.",
+  "fix": "Cuchara (bent-spoon) que se dobla sobre el usuario y el objetivo se tiñe; sin proyectil."
+ },
+ "knock-off": {
+  "v": "mejorable",
+  "note": "El golpe amarillo se ve bien.",
+  "fix": "Golpe (slam-hit-2) y el objeto del objetivo saliendo despedido."
+ },
+ "lava-plume": {
+  "v": "mejorable",
+  "note": "Tinte rojo y llamas sobre el objetivo: se entiende.",
+  "fix": "Llamas brotando en anillo alrededor del usuario que se expanden hacia todos."
+ },
+ "leaf-blade": {
+  "v": "mal",
+  "note": "La hoja no se ve.",
+  "fix": "Hoja (leaf) grande que corta en diagonal con tajo (cut) verde."
+ },
+ "leaf-storm": {
+  "v": "mal",
+  "note": "Las hojas no se ven; sólo el número.",
+  "fix": "Remolino de muchas hojas (leaf) cruzando el campo y envolviendo al objetivo ~1 s."
+ },
+ "leech-life": {
+  "v": "mal",
+  "note": "La aguja no se ve; no hay drenaje.",
+  "fix": "Aguja (needle) que pincha y orbes rojos volviendo al usuario."
+ },
+ "leech-seed": {
+  "v": "mal",
+  "note": "Fallo: las semillas salen sobre el usuario; deberían ir al objetivo.",
+  "fix": "Tres semillas (seed) en arco al objetivo que brotan en él."
+ },
+ "leer": {
+  "v": "mejorable",
+  "note": "El destello se ve sobre el usuario.",
+  "fix": "Destello en los ojos más grande y el objetivo tiembla."
+ },
+ "lick": {
+  "v": "mejorable",
+  "note": "La lengua no se ve, sólo el golpe.",
+  "fix": "Lengua (lick) grande que lame de abajo arriba al objetivo, sin salto."
+ },
+ "light-screen": {
+  "v": "mal",
+  "note": "Un destello diminuto sobre anillos rosas.",
+  "fix": "Muro de luz delante del equipo con destellos."
+ },
+ "lovely-kiss": {
+  "v": "mejorable",
+  "note": "Los corazones se ven, pero esperan apilados sobre el usuario antes de salir.",
+  "fix": "Labios/corazón (pink-heart) que se acercan al objetivo y estallan en corazones pequeños."
+ },
+ "low-kick": {
+  "v": "mejorable",
+  "note": "Salto y golpe; el pie no se distingue.",
+  "fix": "Patada baja (hands-and-feet, pie) barriendo a ras de suelo y el objetivo cae."
+ },
+ "mach-punch": {
+  "v": "mal",
+  "note": "El puño no se ve.",
+  "fix": "Sin carga (prioridad): puño rápido con estela y golpe."
+ },
+ "magnet-bomb": {
+  "v": "mal",
+  "note": "No se ve la bola metálica ni la chispa.",
+  "fix": "Dos bolas metálicas (metal-ball) que persiguen al objetivo en curva y estallan en chispas."
+ },
+ "mega-drain": {
+  "v": "mal",
+  "note": "Se lee como un láser verde.",
+  "fix": "Sin tentáculo; orbes verdes (orbs) en espiral del objetivo al usuario."
+ },
+ "mega-kick": {
+  "v": "mejorable",
+  "note": "El pie aparece en el golpe, pequeño.",
+  "fix": "Pie (hands-and-feet) al doble, que crece al golpear, y sacudida fuerte."
+ },
+ "mega-punch": {
+  "v": "mejorable",
+  "note": "El puño se ve en el golpe, pequeño.",
+  "fix": "Puño al doble que crece al golpear, destello y sacudida."
+ },
+ "megahorn": {
+  "v": "mejorable",
+  "note": "El cuerno apenas asoma junto al número.",
+  "fix": "Cuerno (horn-hit-2) enorme que embiste desde el usuario hasta el objetivo."
+ },
+ "metal-claw": {
+  "v": "mejorable",
+  "note": "El zarpazo se ve pequeño.",
+  "fix": "Tres arañazos (claw-slash) con brillo metálico."
+ },
+ "metal-sound": {
+  "v": "bien",
+  "note": "Las ondas metálicas cruzan y se ven bien.",
+  "fix": "Más ondas seguidas y el objetivo sacudiéndose."
+ },
+ "meteor-mash": {
+  "v": "mejorable",
+  "note": "Las estrellas no se ven; golpe genérico.",
+  "fix": "Estrellas doradas (gold-stars) cayendo y puño con destello."
+ },
+ "mud-bomb": {
+  "v": "mejorable",
+  "note": "El orbe de barro se ve en el usuario; la explosión de barro es pequeña.",
+  "fix": "Bola de barro (brown-orb) en arco y salpicadura de barro (explosion@mud) grande."
+ },
+ "mud-shot": {
+  "v": "mejorable",
+  "note": "El orbe de barro cruza y hay golpe.",
+  "fix": "Ráfaga de 3–4 bolas de barro pequeñas en línea, rápidas."
+ },
+ "night-shade": {
+  "v": "mal",
+  "note": "Tinte azul y rojo extraño en todo el campo; no se ve la sombra.",
+  "fix": "La pantalla se oscurece y una silueta oscura del usuario se proyecta sobre el objetivo (fondo dark)."
+ },
+ "night-slash": {
+  "v": "mal",
+  "note": "El tajo oscuro no se ve.",
+  "fix": "Tajo (slash@dark) grande y rápido sobre el objetivo, sin salto, con la pantalla oscurecida un instante."
+ },
+ "outrage": {
+  "v": "mal",
+  "note": "No se ve fuego ni furia; golpe genérico.",
+  "fix": "Llamas (small-ember) estallando alrededor del usuario y varias embestidas seguidas."
+ },
+ "overheat": {
+  "v": "mal",
+  "note": "Una brasa pequeña; nada del calor de la GBA.",
+  "fix": "El usuario se pone rojo y un chorro de llamas grandes cruza; tinte rojo de la pantalla."
+ },
+ "pay-day": {
+  "v": "mejorable",
+  "note": "La moneda cruza pequeña.",
+  "fix": "Monedas (coin) lanzadas en arco que rebotan y caen al suelo."
+ },
+ "payback": {
+  "v": "mejorable",
+  "note": "Golpe oscuro pequeño tras el salto.",
+  "fix": "El usuario espera, la pantalla se oscurece y devuelve un golpe (impact@dark) grande."
+ },
+ "peck": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "Dos picotazos rápidos (hit) en el mismo punto, sin salto completo."
+ },
+ "petal-dance": {
+  "v": "mejorable",
+  "note": "Tinte verde del campo y pétalos sobre el objetivo; los pétalos son pocos.",
+  "fix": "Sin tinte; muchos pétalos (flower) girando alrededor del usuario y luego cruzando en remolino."
+ },
+ "pin-missile": {
+  "v": "mal",
+  "note": "Tinte verde del campo y una aguja fina; no se ven los misiles.",
+  "fix": "Sin tinte; 3–5 agujas (needle) en arco una tras otra, cada una con su golpe."
+ },
+ "poison-fang": {
+  "v": "mal",
+  "note": "El colmillo no se ve.",
+  "fix": "Colmillos (fang-attack) mordiendo y burbujas moradas en el objetivo."
+ },
+ "poison-gas": {
+  "v": "mejorable",
+  "note": "La nube morada se ve en el usuario y en el objetivo.",
+  "fix": "Nube de gas (purple-gas-cloud) que avanza ondulando y envuelve al objetivo."
+ },
+ "poison-jab": {
+  "v": "mejorable",
+  "note": "El pinchazo morado se ve en el objetivo.",
+  "fix": "Pinchazo (horn-hit@poison) más grande y burbujas de veneno saliendo."
+ },
+ "poison-powder": {
+  "v": "mal",
+  "note": "El polvo es un punto morado que cruza.",
+  "fix": "Polvo (poison-powder) cayendo como lluvia sobre el objetivo, muchas partículas."
+ },
+ "poison-sting": {
+  "v": "mal",
+  "note": "El aguijón es una raya invisible.",
+  "fix": "Aguijón (needle) a buen tamaño, golpe y tinte morado del objetivo."
+ },
+ "pound": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico; correcto para el movimiento más básico.",
+  "fix": "Mano que golpea y sacudida; quitar la carga dorada del usuario."
+ },
+ "powder-snow": {
+  "v": "mal",
+  "note": "Un cristal diminuto cruza.",
+  "fix": "Nieve en polvo: muchos cristales (ice-crystals) pequeños en onda hacia el objetivo."
+ },
+ "power-gem": {
+  "v": "mejorable",
+  "note": "El destello azul se ve cruzando.",
+  "fix": "Gemas brillantes (sparkle-4) en volea y destellos sobre el objetivo."
+ },
+ "power-whip": {
+  "v": "mal",
+  "note": "El látigo no se ve.",
+  "fix": "Látigo de liana (vine@power) que golpea en arco desde el usuario, sin salto."
+ },
+ "protect": {
+  "v": "mal",
+  "note": "Fallo: el escudo se dibuja como una pila de piezas verdes (sprite mal cortado) que tapa al usuario.",
+  "fix": "Recortar bien el sprite protect (piezas que se montan en un escudo) y mostrarlo delante del usuario con su brillo."
+ },
+ "psybeam": {
+  "v": "bien",
+  "note": "Los anillos cruzan en fila y se leen como un rayo psíquico.",
+  "fix": "Más anillos y en onda, con el objetivo cambiando de color."
+ },
+ "psychic": {
+  "v": "mejorable",
+  "note": "El fondo psíquico se ve fuerte; el objetivo no se deforma.",
+  "fix": "Mantener el fondo y ondular/estirar al objetivo como en la GBA."
+ },
+ "psycho-cut": {
+  "v": "mal",
+  "note": "El tajo rosa no se ve.",
+  "fix": "Tajos psíquicos (cut@psychic) girando alrededor del usuario y saliendo disparados al objetivo."
+ },
+ "psywave": {
+  "v": "mejorable",
+  "note": "El anillo azul sale del usuario; se pierde en el camino.",
+  "fix": "Varias ondas (blue-ring) en onda sinusoidal hasta el objetivo."
+ },
+ "pursuit": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "Golpe oscuro (impact@dark) rápido; más grande si el objetivo se retira."
+ },
+ "quick-attack": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico; no se nota la velocidad.",
+  "fix": "Sin carga, salto con estela de imágenes residuales y golpe."
+ },
+ "rage": {
+  "v": "mejorable",
+  "note": "El símbolo de enfado no se ve; golpe genérico.",
+  "fix": "Símbolo de enfado (anger) sobre el usuario antes del golpe, tinte rojo."
+ },
+ "razor-leaf": {
+  "v": "mal",
+  "note": "Una hoja diminuta cruza.",
+  "fix": "Hojas (leaf) a buen tamaño, 4–6, girando y cortando en arco."
+ },
+ "razor-wind": {
+  "v": "mejorable",
+  "note": "Los torbellinos aparecen sobre el objetivo y se ven.",
+  "fix": "Turno de carga con viento alrededor del usuario y medialunas que cruzan al soltarlo."
+ },
+ "return": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "Embestida con corazones pequeños saliendo del usuario antes del golpe."
+ },
+ "revenge": {
+  "v": "mejorable",
+  "note": "El arañazo morado no se ve; golpe genérico.",
+  "fix": "Arañazos morados (purple-scratch) cruzados y destello rojo del usuario."
+ },
+ "reversal": {
+  "v": "mal",
+  "note": "El orbe azul no se ve.",
+  "fix": "Orbes azules (blue-orb) girando alrededor del usuario antes de lanzarse al objetivo."
+ },
+ "rock-blast": {
+  "v": "mejorable",
+  "note": "La roca grande cruza bien, pero espera sobre el usuario en la carga.",
+  "fix": "Ocultarla en la carga; 2–5 rocas (una por golpe) en arco."
+ },
+ "rock-slide": {
+  "v": "mejorable",
+  "note": "Las rocas caen sobre el objetivo y se ven; el tinte amarillo sobra.",
+  "fix": "Sin tinte; más rocas cayendo desde arriba de la pantalla y polvo al tocar el suelo."
+ },
+ "rock-throw": {
+  "v": "mejorable",
+  "note": "La roca cruza pero espera sobre el usuario durante la carga.",
+  "fix": "Ocultarla en la carga; rocas que caen desde arriba sobre el objetivo, como en la GBA."
+ },
+ "rock-tomb": {
+  "v": "mal",
+  "note": "Fallo: cruza una X roja enorme (el sprite x-sign no es el movimiento).",
+  "fix": "Rocas (rocks) cayendo alrededor del objetivo y rodeándolo como una tumba."
+ },
+ "rolling-kick": {
+  "v": "mal",
+  "note": "El pie no se ve y la tarjeta del usuario aparece descolocada.",
+  "fix": "El usuario gira sobre sí mismo y patea (hands-and-feet, pie) con golpe."
+ },
+ "sand-attack": {
+  "v": "mal",
+  "note": "La arena no se ve.",
+  "fix": "Chorro de arena (mud-sand) desde los pies del usuario a la cara del objetivo."
+ },
+ "scary-face": {
+  "v": "mal",
+  "note": "Un destello diminuto cruza.",
+  "fix": "Cara aterradora: los ojos del usuario destellan (eye-sparkle) grandes y el objetivo tiembla; sin proyectil."
+ },
+ "scratch": {
+  "v": "mejorable",
+  "note": "El arañazo apenas asoma.",
+  "fix": "Tres arañazos (scratch) grandes en diagonal, sin salto completo."
+ },
+ "screech": {
+  "v": "mejorable",
+  "note": "Los anillos morados cruzan y se ven.",
+  "fix": "Ondas de chirrido que se expanden desde el usuario y el objetivo vibrando."
+ },
+ "seed-bomb": {
+  "v": "mal",
+  "note": "Semilla diminuta; la explosión no se ve.",
+  "fix": "Semillas grandes en arco que estallan (explosion-2) sobre el objetivo."
+ },
+ "seismic-toss": {
+  "v": "mal",
+  "note": "Salto y número; no se ve el lanzamiento.",
+  "fix": "El objetivo sube fuera de pantalla y cae con sacudida del campo y polvo."
+ },
+ "self-destruct": {
+  "v": "mejorable",
+  "note": "Ondas y destello blanco; se lee como explosión.",
+  "fix": "Explosiones (explosion) en cadena alrededor del usuario y sacudida fuerte."
+ },
+ "shadow-ball": {
+  "v": "mejorable",
+  "note": "La bola oscura se ve grande, pero espera sobre el usuario en la carga.",
+  "fix": "Ocultarla en la carga; que crezca entre las manos y cruce girando."
+ },
+ "shadow-claw": {
+  "v": "mal",
+  "note": "Las garras de sombra no se ven.",
+  "fix": "Garras (claw-slash@ghost) grandes saliendo de la sombra del usuario sobre el objetivo."
+ },
+ "shadow-punch": {
+  "v": "mejorable",
+  "note": "Golpe oscuro pequeño.",
+  "fix": "Puño que desaparece y reaparece junto al objetivo con golpe (impact@dark)."
+ },
+ "shadow-sneak": {
+  "v": "mal",
+  "note": "La sombra no se ve.",
+  "fix": "La sombra del usuario (white-shadow@shade) corre por el suelo hasta el objetivo y lo golpea desde abajo."
+ },
+ "signal-beam": {
+  "v": "mal",
+  "note": "Un punto rojo cruza.",
+  "fix": "Rayo de orbes de colores (glowy-red-orb) alternando, continuo ~0,8 s."
+ },
+ "silver-wind": {
+  "v": "mal",
+  "note": "El polvo plateado no se ve en vuelo.",
+  "fix": "Viento de destellos (sparkle-6) en onda cruzando el campo."
+ },
+ "sing": {
+  "v": "mal",
+  "note": "Las notas apenas se ven.",
+  "fix": "Notas musicales (music-notes) grandes flotando en onda hacia el objetivo, de colores."
+ },
+ "skull-bash": {
+  "v": "mejorable",
+  "note": "Salto y golpe; no se nota la carga del turno previo.",
+  "fix": "Turno 1: el usuario agacha la cabeza con brillo; turno 2: embestida larga y golpe fuerte."
+ },
+ "sky-attack": {
+  "v": "bien",
+  "note": "Fondo de cielo y el ave blanca sobre el objetivo: se lee como un golpe grande.",
+  "fix": "El usuario brilla en la carga y cruza como ave en picado."
+ },
+ "slam": {
+  "v": "mejorable",
+  "note": "El golpe se ve pequeño.",
+  "fix": "Golpe (slam-hit) más grande y el objetivo aplastado (escala vertical)."
+ },
+ "slash": {
+  "v": "mal",
+  "note": "El tajo no se ve.",
+  "fix": "Dos tajos (slash) grandes en diagonal, sin salto completo."
+ },
+ "sleep-powder": {
+  "v": "mal",
+  "note": "El polvo es un punto verde que cruza.",
+  "fix": "Polvo (sleep-powder) cayendo como lluvia sobre el objetivo, muchas partículas."
+ },
+ "sludge": {
+  "v": "mejorable",
+  "note": "La bola morada cruza, pero espera sobre el usuario en la carga.",
+  "fix": "Ocultarla en la carga; lodo en arco que salpica burbujas sobre el objetivo."
+ },
+ "sludge-bomb": {
+  "v": "mejorable",
+  "note": "Igual que Sludge; las burbujas del impacto son pequeñas.",
+  "fix": "Varias bolas de lodo en arco y salpicadura grande con burbujas."
+ },
+ "smelling-salts": {
+  "v": "mejorable",
+  "note": "La mano se ve sobre el objetivo.",
+  "fix": "Mano que abofetea dos veces y signo de exclamación (smellingsalt-effect)."
+ },
+ "smog": {
+  "v": "mejorable",
+  "note": "La nube morada se ve en el usuario y en el objetivo.",
+  "fix": "Nube que avanza ondulando y envuelve al objetivo varias veces."
+ },
+ "smokescreen": {
+  "v": "mejorable",
+  "note": "El humo negro se ve en ambos extremos.",
+  "fix": "Bola de humo en arco que estalla en una nube negra grande que tapa al objetivo."
+ },
+ "snarl": {
+  "v": "mal",
+  "note": "Las líneas de ruido apenas se ven.",
+  "fix": "Líneas de ruido oscuras (noise-line@dark) grandes desde la boca del usuario hacia todos los objetivos."
+ },
+ "solar-beam": {
+  "v": "mejorable",
+  "note": "El fondo solar lava el campo; el rayo son puntos.",
+  "fix": "Turno 1: absorbe luz (orbes que llegan al usuario); turno 2: rayo continuo grueso de orbes."
+ },
+ "sonic-boom": {
+  "v": "mal",
+  "note": "La onda no se ve.",
+  "fix": "Medialuna de aire (air-wave) grande que cruza girando."
+ },
+ "spark": {
+  "v": "mal",
+  "note": "Las chispas no se ven; sólo el salto.",
+  "fix": "Usuario cargado de chispas (spark-2) durante la embestida y descarga sobre el objetivo."
+ },
+ "spike-cannon": {
+  "v": "mal",
+  "note": "Agujas finas casi invisibles; el campo se sacude raro.",
+  "fix": "Púas (needle) a buen tamaño en ráfaga, una por golpe."
+ },
+ "stealth-rock": {
+  "v": "mal",
+  "note": "Una roca gris sobre el usuario. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: rocas puntiagudas flotando alrededor del lado rival."
+ },
+ "steel-wing": {
+  "v": "mal",
+  "note": "Usa el remolino de Gust: no es el ala.",
+  "fix": "Alas con brillo metálico: golpe (hit) con destello blanco y plumas."
+ },
+ "stomp": {
+  "v": "mejorable",
+  "note": "El pie se ve en el golpe, pequeño.",
+  "fix": "Pie que baja desde arriba sobre el objetivo y sacudida."
+ },
+ "stone-edge": {
+  "v": "mal",
+  "note": "La roca cruza pero no se ve en el objetivo. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: rocas afiladas que brotan del suelo bajo el objetivo."
+ },
+ "strength": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "El usuario levanta y empuja: golpe grande con sacudida fuerte."
+ },
+ "string-shot": {
+  "v": "bien",
+  "note": "El hilo cruza y envuelve al objetivo: se lee.",
+  "fix": "Varios hilos y una red al final sobre el objetivo."
+ },
+ "stun-spore": {
+  "v": "mal",
+  "note": "La espora es un punto que cruza.",
+  "fix": "Esporas (stun-spore) cayendo sobre el objetivo y destellos amarillos."
+ },
+ "submission": {
+  "v": "mal",
+  "note": "La tarjeta del usuario se queda vacía y sólo hay golpe.",
+  "fix": "El usuario y el objetivo ruedan juntos (ambos se mueven en círculo) y golpe con retroceso."
+ },
+ "sucker-punch": {
+  "v": "mal",
+  "note": "El puño oscuro no se ve; sólo el número.",
+  "fix": "Sin carga (prioridad): puño oscuro rápido desde la sombra, pantalla oscurecida un instante."
+ },
+ "super-fang": {
+  "v": "mal",
+  "note": "El colmillo no se ve.",
+  "fix": "Colmillos enormes (fang-attack) que muerden desde arriba, destello."
+ },
+ "superpower": {
+  "v": "mejorable",
+  "note": "El círculo de luz tapa al objetivo y al número.",
+  "fix": "El usuario se ilumina (circle-of-light detrás de él) y embiste; el círculo no sobre el objetivo."
+ },
+ "supersonic": {
+  "v": "bien",
+  "note": "Los anillos de ultrasonido cruzan y se leen.",
+  "fix": "Más anillos seguidos y el objetivo confuso al final."
+ },
+ "surf": {
+  "v": "mejorable",
+  "note": "La ola azul cubre el campo entero, plana y opaca; tapa todo.",
+  "fix": "Ola con transparencia y espuma que cruza de lado a lado, como en la GBA, sin tapar el HUD."
+ },
+ "swift": {
+  "v": "mejorable",
+  "note": "Las estrellas se ven, pero esperan apiladas sobre el usuario en la carga.",
+  "fix": "Ocultarlas en la carga; 5 estrellas en abanico que persiguen al objetivo."
+ },
+ "tackle": {
+  "v": "bien",
+  "note": "Salto y golpe: correcto para un placaje, es lo que hace la GBA.",
+  "fix": "Quitar la carga dorada del usuario; sacudida del objetivo."
+ },
+ "take-down": {
+  "v": "mejorable",
+  "note": "Igual que Tackle.",
+  "fix": "Embestida más larga y retroceso con sacudida del usuario."
+ },
+ "thrash": {
+  "v": "mejorable",
+  "note": "Salto y golpe pequeño.",
+  "fix": "Varios golpes seguidos (hands-and-feet) en posiciones distintas, el usuario agitándose."
+ },
+ "thunder": {
+  "v": "bien",
+  "note": "Fondo de tormenta, rayo desde el cielo sobre el objetivo: se lee.",
+  "fix": "Rayo más alto (desde el borde superior) y destello amarillo del campo."
+ },
+ "thunder-fang": {
+  "v": "mal",
+  "note": "Los colmillos no se ven.",
+  "fix": "Colmillos (fangs) grandes y chispas (electricity) sobre el objetivo."
+ },
+ "thunder-punch": {
+  "v": "mal",
+  "note": "El puño no se ve.",
+  "fix": "Rayo que cae del cielo sobre el objetivo y puño con chispas, como en la GBA."
+ },
+ "thunder-shock": {
+  "v": "mejorable",
+  "note": "El rayo dibujado cruza y se ve; la chispa no.",
+  "fix": "Chispas (spark) creciendo sobre el objetivo y destello amarillo."
+ },
+ "thunder-wave": {
+  "v": "mal",
+  "note": "Una chispa diminuta cruza.",
+  "fix": "Onda eléctrica que rodea al objetivo (anillo de chispas) y destello amarillo."
+ },
+ "thunderbolt": {
+  "v": "mejorable",
+  "note": "El rayo dibujado cruza; los sprites de chispa no se ven. En la GBA dura ~3 s con 16 chispas.",
+  "fix": "Orbe eléctrico sobre el objetivo y chispas (spark-2) que bajan alrededor, más largo (~1,2 s)."
+ },
+ "tickle": {
+  "v": "mal",
+  "note": "Un destello diminuto cruza.",
+  "fix": "El objetivo se ríe: se balancea de lado a lado; sin proyectil."
+ },
+ "toxic": {
+  "v": "mejorable",
+  "note": "La burbuja tóxica se ve en ambos extremos.",
+  "fix": "Burbujas tóxicas (toxic-bubble) brotando alrededor del objetivo y tinte morado."
+ },
+ "tri-attack": {
+  "v": "bien",
+  "note": "Los triángulos de colores cruzan y se leen.",
+  "fix": "Que el triángulo gire al cruzar y estalle en sus tres colores."
+ },
+ "twineedle": {
+  "v": "mal",
+  "note": "Agujas finas casi invisibles.",
+  "fix": "Dos agujas (needle) a buen tamaño, una tras otra, con su golpe."
+ },
+ "twister": {
+  "v": "mal",
+  "note": "Fallo: un orbe morado grande queda sobre el usuario; vuela una hoja diminuta.",
+  "fix": "Tornado de hojas que envuelve al objetivo, girando ~0,8 s."
+ },
+ "u-turn": {
+  "v": "mejorable",
+  "note": "Golpe y vuelta; la tarjeta del usuario aparece descolocada.",
+  "fix": "Golpe rápido y el usuario vuelve hasta salir de la tarjeta (cambio)."
+ },
+ "vacuum-wave": {
+  "v": "mejorable",
+  "note": "La onda de vacío azul se ve cruzando.",
+  "fix": "Sin carga (prioridad); onda más grande que se expande al llegar."
+ },
+ "vice-grip": {
+  "v": "mal",
+  "note": "La pinza no se ve.",
+  "fix": "Dos pinzas (cut) que se cierran sobre el objetivo desde los lados."
+ },
+ "vine-whip": {
+  "v": "mal",
+  "note": "Fallo: un orbe verde grande queda sobre el usuario y vuela una hoja suelta; no hay látigo.",
+  "fix": "Látigo de liana (vine) que restalla dos veces sobre el objetivo, sin proyectil."
+ },
+ "vital-throw": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "El usuario espera (va último), agarra y lanza: el objetivo gira y cae."
+ },
+ "volt-tackle": {
+  "v": "mal",
+  "note": "Las chispas no se ven; sólo el salto.",
+  "fix": "Usuario envuelto en una bola eléctrica (spark) que embiste y estalla."
+ },
+ "wake-up-slap": {
+  "v": "mejorable",
+  "note": "La mano y el efecto se ven sobre el objetivo.",
+  "fix": "Dos bofetadas alternas y el signo del efecto."
+ },
+ "water-gun": {
+  "v": "mal",
+  "note": "El chorro no se ve en vuelo.",
+  "fix": "Chorro de gotas/burbujas (small-bubbles) en arco continuo y salpicadura."
+ },
+ "water-pulse": {
+  "v": "mal",
+  "note": "Las burbujas no se ven.",
+  "fix": "Anillos de agua que se expanden hacia el objetivo y burbujas al llegar."
+ },
+ "waterfall": {
+  "v": "mal",
+  "note": "No se ve agua; sólo el salto.",
+  "fix": "El usuario sube por una columna de agua y cae sobre el objetivo con salpicadura grande."
+ },
+ "will-o-wisp": {
+  "v": "bien",
+  "note": "Las llamas fantasma se ven grandes cruzando.",
+  "fix": "Tres llamas que orbitan y luego van al objetivo, tinte morado."
+ },
+ "wing-attack": {
+  "v": "mal",
+  "note": "Usa el remolino de Gust sobre el objetivo; no son alas.",
+  "fix": "Dos golpes de ala (hit) a ambos lados del objetivo y plumas."
+ },
+ "wood-hammer": {
+  "v": "mal",
+  "note": "Sólo el número. Sustituto mientras llega el de ChatGPT.",
+  "fix": "Hoja de ChatGPT: tronco que golpea desde arriba; el usuario recibe retroceso."
+ },
+ "wrap": {
+  "v": "mal",
+  "note": "No se ve que envuelve.",
+  "fix": "Sin salto: el objetivo se comprime de lado varias veces, como Bind."
+ },
+ "x-scissor": {
+  "v": "mal",
+  "note": "Las tijeras no se ven.",
+  "fix": "Dos tajos (cut) cruzados en X sobre el objetivo y la cruz (cross-impact) al juntarse."
+ },
+ "zap-cannon": {
+  "v": "mejorable",
+  "note": "Rayo dibujado; la bola no se ve.",
+  "fix": "Bola eléctrica (black-ball-2) grande que cruza lenta y descarga sobre el objetivo."
+ },
+ "zen-headbutt": {
+  "v": "mejorable",
+  "note": "Salto y golpe genérico.",
+  "fix": "Cabeza con aura rosa (fondo psíquico breve) y golpe."
+ },
+ "mean-look": {
+  "v": "mejorable",
+  "note": "El ojo grande se ve, pero sobre el usuario.",
+  "fix": "Ojo (eye) sobre el objetivo, que se abre y se queda mirando."
+ },
+ "meditate": {
+  "v": "mal",
+  "note": "Sólo anillos rosas.",
+  "fix": "El usuario se eleva un poco y brilla con tinte rosa."
+ },
+ "metronome": {
+  "v": "mal",
+  "note": "El dedo no se ve.",
+  "fix": "Dedo (finger) grande moviéndose de lado a lado sobre el usuario."
+ },
+ "milk-drink": {
+  "v": "mejorable",
+  "note": "La botella se ve pequeña.",
+  "fix": "Botella (milk-bottle) más grande que se vacía y destellos de curación."
+ },
+ "minimize": {
+  "v": "mal",
+  "note": "Sólo anillos genéricos.",
+  "fix": "El usuario se encoge hasta casi desaparecer y vuelve."
+ },
+ "mirror-coat": {
+  "v": "mal",
+  "note": "Sólo anillos rosas.",
+  "fix": "Superficie brillante (sparkle-3) que recorre al usuario como un espejo."
+ },
+ "mirror-move": {
+  "v": "mal",
+  "note": "Sólo anillos morados.",
+  "fix": "Destello que recorre al usuario y luego la animación del movimiento copiado."
+ },
+ "mist": {
+  "v": "mejorable",
+  "note": "La niebla se ve tenue sobre el usuario.",
+  "fix": "Nube de niebla (mist-cloud) que cubre al equipo y se queda."
+ },
+ "moonlight": {
+  "v": "mejorable",
+  "note": "La luna grande verde tapa al usuario.",
+  "fix": "Luna arriba del usuario (no encima) y destellos que caen sobre él."
+ },
+ "morning-sun": {
+  "v": "mal",
+  "note": "La estrella no se ve; sólo anillos.",
+  "fix": "Rayos de sol bajando sobre el usuario y destellos verdes."
+ },
+ "nasty-plot": {
+  "v": "bien",
+  "note": "El diablillo aparece grande sobre el usuario: se lee.",
+  "fix": "Que el diablillo ría (se balancee) y la pantalla se oscurezca un poco."
+ },
+ "perish-song": {
+  "v": "mal",
+  "note": "Las notas no se ven.",
+  "fix": "Notas oscuras (music-notes-2) cayendo sobre todos los Pokémon del campo."
+ },
+ "rain-dance": {
+  "v": "mal",
+  "note": "Sólo anillos azules; no llueve.",
+  "fix": "Lluvia (rain-drops) cayendo sobre todo el campo ~1 s, tipo área."
+ },
+ "recover": {
+  "v": "mal",
+  "note": "Un orbe diminuto.",
+  "fix": "Orbes de luz que llegan al usuario desde fuera y destello verde de curación."
+ },
+ "reflect": {
+  "v": "mejorable",
+  "note": "El destello se ve sobre anillos rosas.",
+  "fix": "Muro reflectante delante del equipo con destello que lo recorre."
+ },
+ "rest": {
+  "v": "mejorable",
+  "note": "La Z se ve sobre el usuario.",
+  "fix": "Zetas (letter-z) subiendo una tras otra y el usuario se tumba."
+ },
+ "roar": {
+  "v": "mejorable",
+  "note": "Las líneas de ruido se ven sobre el usuario; deberían ir al objetivo.",
+  "fix": "Líneas de ruido grandes hacia el objetivo, que sale despedido."
+ },
+ "rock-polish": {
+  "v": "mejorable",
+  "note": "Destellos pequeños sobre el usuario.",
+  "fix": "Destellos (sparkle-1@stone) más grandes recorriendo al usuario."
+ },
+ "roost": {
+  "v": "mal",
+  "note": "La pluma no se ve; anillos morados.",
+  "fix": "Plumas (white-feather) cayendo sobre el usuario y destello de curación."
+ },
+ "safeguard": {
+  "v": "mejorable",
+  "note": "El anillo protector rodea al usuario.",
+  "fix": "Velo brillante que cubre a todo el equipo."
+ },
+ "sandstorm": {
+  "v": "mal",
+  "note": "La arena apenas se ve sobre el usuario.",
+  "fix": "Tormenta de arena (flying-dirt) cruzando todo el campo ~1 s, tipo área."
+ },
+ "sharpen": {
+  "v": "mejorable",
+  "note": "El cubo azul se ve sobre el usuario.",
+  "fix": "El usuario se vuelve anguloso: esfera que se convierte en cubo, con destello."
+ },
+ "soft-boiled": {
+  "v": "mejorable",
+  "note": "El huevo se ve pequeño.",
+  "fix": "Huevo (breaking-egg) más grande que se abre y destellos de curación."
+ },
+ "spikes": {
+  "v": "mal",
+  "note": "Las púas salen sobre el usuario; deberían ir al lado rival.",
+  "fix": "Púas (spikes) lanzadas en arco que caen y se quedan en el suelo del rival."
+ },
+ "splash": {
+  "v": "mal",
+  "note": "Sólo anillos.",
+  "fix": "El usuario salta en el sitio dos veces, sin efecto."
+ },
+ "substitute": {
+  "v": "mal",
+  "note": "Sólo anillos.",
+  "fix": "El usuario se desvanece y aparece un muñeco en su lugar."
+ },
+ "sunny-day": {
+  "v": "mal",
+  "note": "Fallo: aparece un hexágono amarillo opaco sobre el usuario (el sprite sunlight sin transparencia).",
+  "fix": "Sol grande arriba del campo y tinte cálido de todo el campo, tipo área."
+ },
+ "swords-dance": {
+  "v": "mejorable",
+  "note": "Una espada azul grande cruza al usuario de arriba abajo.",
+  "fix": "Espadas (sword) girando alrededor del usuario, como en la GBA."
+ },
+ "synthesis": {
+  "v": "mal",
+  "note": "La estrella no se ve; anillos verdes.",
+  "fix": "Destellos de luz bajando sobre el usuario y tinte verde de curación."
+ },
+ "tail-whip": {
+  "v": "mal",
+  "note": "Sólo anillos; no mueve la cola.",
+  "fix": "El usuario se balancea de lado a lado dos veces, como en la GBA."
+ },
+ "taunt": {
+  "v": "mejorable",
+  "note": "El dedo rosa se ve pequeño sobre el usuario.",
+  "fix": "Dedo (finger-2) más grande moviéndose y el objetivo con símbolo de enfado."
+ },
+ "teleport": {
+  "v": "mal",
+  "note": "Sólo anillos rosas.",
+  "fix": "El usuario se estrecha hasta una línea y desaparece."
+ },
+ "transform": {
+  "v": "mal",
+  "note": "Sólo anillos.",
+  "fix": "El sprite del usuario ondula y se convierte en el del objetivo."
+ },
+ "whirlwind": {
+  "v": "mejorable",
+  "note": "Las líneas de viento se ven tenues sobre el usuario.",
+  "fix": "Remolino que cruza hasta el objetivo y lo saca del campo."
+ },
+ "wish": {
+  "v": "mejorable",
+  "note": "La estrella se ve pequeña sobre el usuario.",
+  "fix": "Estrella que sube al cielo y cae como estrella fugaz al turno siguiente."
+ },
+ "withdraw": {
+  "v": "mal",
+  "note": "Sólo anillos azules.",
+  "fix": "El usuario se encoge dentro del caparazón (escala abajo) y vuelve."
+ },
+ "yawn": {
+  "v": "bien",
+  "note": "La nube rosa grande sobre el usuario se lee como bostezo.",
+  "fix": "Que la nube vaya hacia el objetivo y lo adormezca."
+ },
+ "spore": {
+  "v": "mal",
+  "note": "Una bola blanca cruza; no se ven las esporas.",
+  "fix": "Esporas (spore) cayendo como lluvia sobre el objetivo, muchas partículas."
+ }
+}

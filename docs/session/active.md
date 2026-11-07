@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
 **Date:** 2026-11-06 · **Version:** v0.9.102 (*Moves in their own sprites*).
+**Review 2026-11-07:** user: "es como si no hubiera cambiado nada". All 307 base moves filmed (`node scripts/fx/film-moves.mjs`) and judged vs their pret script: 150 mal · 141 mejorable · 16 bien; five causes (generic choreography, small sprites, generic layer on top, 14 bugs, no mon-transforms) in `docs/art/fx/move-fx-causes.json`, per move in `move-fx-review.json`, report artifact claude.ai/artifact/MB5SLkZH3qHyK2LT85KZVa. **Waiting on the user's calls.**
 **Shipped 2026-11-06 (v0.9.102):** every move animated with FRLG's battle-animation sprites from pret (`npm run art:fx`, `src/ui/fx/moveFx.ts`, §9.9.2); backgrounds only for heavy moves. UI review Ship. Next: import the user's 8 ChatGPT sheets (`docs/art/fx/README.md`, raw PNGs in `docs/art/sources/fx-chatgpt/`) over their pret stand-ins. **Waiting on the user's look.**
 **Shipped 2026-11-05 (v0.9.101 / v0.9.100):** every FRLG room rebuilt from pret metatiles (`scripts/build-rooms.mjs`, `scripts/lib/frlg-room.mjs`; Black Market by its own script) — richer, peopled, one prop per service. Bulbagarden is bot-checked: pret is the art source now. **Waiting on the user's look.**
 **Fixed 2026-11-05 (no version):** series Potions 20/60/120; level-up and evolution HP add the Max HP gained, shown on the level tick (no heal beat). Harness R1 9 % → 20 %.
