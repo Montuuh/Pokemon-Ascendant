@@ -11,6 +11,15 @@
         ],
         "createdAt": "2026-11-06T17:17:05.430Z",
         "reason": "Claude: .gust is a Flying projectile drawn as a crescent (one-side border on a 50% circle), not a card accent; pre-existing since 29897b03 (2026-10-18)"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "#c4b8c9",
+        "files": [
+          "scripts/fx/report-template.html"
+        ],
+        "createdAt": "2026-11-07T03:55:00.695Z",
+        "reason": "Claude: the report page is single-dark (body #17131c, panels #221c29/#2c2434); the detector measured the muted text against an assumed #ffffff. Real contrast ≥ 7.8:1."
       }
     ]
   }
