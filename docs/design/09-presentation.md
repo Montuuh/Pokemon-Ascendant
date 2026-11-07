@@ -684,14 +684,14 @@ and its power — so a move added to the content has its animation before anyone
 
 | Kind | Which moves | What the player sees |
 |---|---|---|
-| **Melee** | A damaging Melee move | The user winds up, **dashes across the field** to its target, jabs into the blow and comes back to its card. Its sprite waits unseen in its card while its double crosses; the card itself stays |
-| **Thrown** | A damaging Ranged move | A glow gathers on the user, then the move **flies along the line** to its target in its type's shape — a fireball with its tail (Fire), bubbles (Water), leaves (Grass), shards (Ice), rocks (Rock, Ground), needles (Bug), sludge (Poison), rings (Psychic), stars (Normal), a gust (Flying), a shadow (Ghost), an orb (the rest) — one, or a volley a beat apart |
+| **Melee** | A damaging Melee move | The user winds up, **dashes across the field** to its target, jabs into the blow and comes back to its card. Its sprite waits unseen in its card while its double crosses; the card itself stays. Drawn with pret's sprites, only a move whose GBA script moves its attacker dashes (Tackle, Quick Attack, Body Slam); Bite, Cut or Slash lands its sprite on the target from where the user stands |
+| **Thrown** | A damaging Ranged move | A glow gathers on the user (none for a move drawn with its own sprites, thrown from the first frame), then the move **flies along the line** to its target in its type's shape — a fireball with its tail (Fire), bubbles (Water), leaves (Grass), shards (Ice), rocks (Rock, Ground), needles (Bug), sludge (Poison), rings (Psychic), stars (Normal), a gust (Flying), a shadow (Ghost), an orb (the rest) — one, or a volley a beat apart |
 | **Stream** | Flamethrower, Water Gun, Hydro Pump, Ice Beam, Psybeam, Bubble Beam, Aurora Beam, Hyper Beam, Solar Beam, Tri Attack, Sonic Boom | One continuous **beam** from the user to the target: it grows, holds and thins away |
 | **Lightning** | Thunder Shock, Thunderbolt, and every other Ranged Electric move | A jagged **bolt** drawn from the user to the target, flickering |
-| **Drain** | Absorb, Mega Drain, Dream Eater | A tendril to the target, the hit, and the life **flowing back** to the user as motes |
+| **Drain** | Absorb, Mega Drain, Giga Drain, Dream Eater | A tendril to the target, the hit, and the life **flowing back** to the user as motes — with pret's sprites, the hit on the target first and its orbs flowing back, no tendril |
 | **Stage** | Surf, Earthquake, Fissure, Blizzard, Thunder, Fire Blast, Rock Slide, Explosion, Self-Destruct, Petal Dance, Psychic, Razor Wind, Night Shade, Pin Missile, Dragon Rage — and **any move that lands on several at once** | The **whole stage** takes it: Surf a wall of water rolling across from its user's side; Earthquake the floor splitting from side to side, dust the width of the field, stones jumping and **the stage itself shaking**; Blizzard a driven storm of snow with frost at the edges; Thunder the sky darkening and a bolt striking each target; Fire Blast a great fireball and a wall of flame where it lands; Rock Slide rocks falling from above; Explosion and Self-Destruct a blast spreading from the user and a white flash; Psychic and Dragon Rage rings across the field; Petal Dance, Razor Wind and Pin Missile streaming across it. A move hitting several with no picture of its own fills the stage in its type's way |
-| **Glow** | A move with no power that raises, heals or guards | Rings rise from the user's feet — or its ally's — in its type's light |
-| **Hex** | A move with no power that puts a status or a lowered stat on the foe | Motes thrown at the foe and a swirl round it |
+| **Glow** | A move with no power that raises, heals or guards | Rings rise from the user's feet — or its ally's — in its type's light; a move with its own sprite shows it alone over the Pokémon, held on its last frame |
+| **Hex** | A move with no power aimed at the other side: a status, a lowered stat (on one foe or its whole side, Growl), a disable, a seed, a lock, a taunt, a hazard laid on its field, a forced swap | Motes thrown at the foe and a swirl round it |
 
 **What a move is drawn with: the GBA's own sprites** (v0.9.102). The kinds above are the choreography; the cast is
 FireRed / LeafGreen's battle-animation graphics, imported from pret (`scripts/fx/import-pret-fx.mjs`, the same pinned
@@ -708,6 +708,19 @@ the line without turning or scaling, mirrored on the foe's side, at the field's 
 larger, to read across a field far wider than the GBA's). The 19 moves the GBA animates without sprites (Agility, Harden,
 Surf's wave, Earthquake…) keep the shapes in the table. Eight moves are being drawn new (`docs/art/fx/`) and use a pret
 stand-in until then. Recipes: `ui/fx/moveFx.ts`.
+
+**A move's sprites are its whole picture** (v0.9.103, from the review of every move filmed, `docs/art/fx/move-fx-review.json`).
+Where a move has its pret sprites, the drawn layer that served every move alike goes: no glow gathers on the user
+before a throw, a raise shows its own sprite without the rings, a field move drops its type tint, a drain its tendril —
+the generic picture drew over the move's own and made every move read the same. With the charge goes its time: the
+sprite is on the field from the move's first frame, as pret's Bite shows its teeth at once and lands ten frames later
+(`MOTION_MS.sprite.lead`) — the teeth then give way to the splat — while a bare hit (Pound's splat) and a drain's hit
+land at once, and a volley lands with its last shot. A Melee move's user dashes across only where its pret
+script moves the attacker. A sprite pret blends over the stage (Protect's barrier, Sunny Day's sunbeam, a slash) stays
+see-through at the GBA's own 12/16, never an opaque slab; a raise's sprite plays through and holds its last frame
+(Amnesia's question mark, once formed); a volley's later shots wait unseen until they leave, never stacked on their
+user. Where an FRLG script loads first a piece that is not the move (Rock Tomb's X, Kinesis' alert
+mark, Crush Claw's wall flash, Wing Attack's gust), the recipe names the piece that is.
 
 **The hit lands with its impact.** The damage number, the shake, the HP on the target's card and a burst of sparks in
 the type's colour all wait for the moment the move arrives — the dash's end, the projectile's landing, the wave's

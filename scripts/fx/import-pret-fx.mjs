@@ -93,12 +93,19 @@ for (const m of table.matchAll(/\{(gBattleAnimSpritePal_\w+),\s*(ANIM_TAG_\w+)\}
 
 // Frame sizes: the OAM shape each tag's sprite templates draw it at (the commonest, if several).
 const sizes = {};
+// The C callback that moves each sprite template: a script that creates one of the attacker-moving ones lunges.
+const callbackOf = {};
+const blended = {};
 for (const file of ANIM_C) {
   const c = await text(file);
-  for (const m of c.matchAll(/\.tileTag\s*=\s*(ANIM_TAG_\w+)[\s\S]{0,200}?\.oam\s*=\s*&gOamData_\w+?_(\d+)x(\d+)/g)) {
+  for (const m of c.matchAll(/struct\s+SpriteTemplate\s+(\w+)\s*=\s*\{[\s\S]*?\.callback\s*=\s*(\w+)/g)) callbackOf[m[1]] = m[2];
+  for (const m of c.matchAll(/\.tileTag\s*=\s*(ANIM_TAG_\w+)[\s\S]{0,200}?\.oam\s*=\s*&gOamData_(\w+?)_(\d+)x(\d+)/g)) {
     const s = (sizes[m[1]] ??= {});
-    const k = `${m[2]}x${m[3]}`;
+    const k = `${m[3]}x${m[4]}`;
     s[k] = (s[k] ?? 0) + 1;
+    // An ObjBlend OAM is drawn alpha-blended over the stage (a barrier, a sunbeam): see-through, never opaque.
+    if (/Blend/.test(m[2])) blended[m[1]] = (blended[m[1]] ?? 0) + 1;
+    else blended[m[1]] = (blended[m[1]] ?? 0) - 1;
   }
 }
 
@@ -111,12 +118,19 @@ for (const l of script) {
   if (m) labels[(cur = m[1])] = [];
   else if (cur) labels[cur].push(l.trim());
 }
-function walk(label, seen = new Set(), out = { sprites: new Set(), bgs: new Set() }) {
+/**
+ * §9.9.2 — what moves the attacker itself across the field in pret: a lunge, a slide, a dip, a jump. A Melee move
+ * whose script runs none of these lands its sprite on the target while its user stays in its card (Bite, Cut).
+ */
+const LUNGE = /DoHorizontalLunge|SlideMon|WindUpLunge|TranslateMon|AttackerPunchWithTrace|DoVerticalDip|AnimBowMon|SlideOffScreen|VoltTackle|FlyBallUp|BounceBall|RapidSpin|AnimJumpKick|SlidingKick|DiveBall|SkullBash/;
+function walk(label, seen = new Set(), out = { sprites: new Set(), bgs: new Set(), lunge: false }) {
   if (seen.has(label) || !labels[label]) return out;
   seen.add(label);
   for (const l of labels[label]) {
     const t = /loadspritegfx (ANIM_TAG_\w+)/.exec(l);
     if (t) out.sprites.add(t[1]);
+    const made = /^create(?:sprite|visualtask) (\w+)/.exec(l);
+    if (made && LUNGE.test(`${made[1]} ${callbackOf[made[1]] ?? ''}`)) out.lunge = true;
     for (const b of l.matchAll(/\b(BG_\w+)/g)) if (b[1] !== 'BG_NONE') out.bgs.add(b[1]);
     for (const w of l.split(/[\s,]+/).slice(1)) if (labels[w] && (!w.startsWith('Move_') || l.startsWith('goto'))) walk(w, seen, out);
   }
@@ -126,9 +140,9 @@ const moves = {};
 const usedTags = new Set(), usedBgs = new Set();
 for (const label of Object.keys(labels)) {
   if (!label.startsWith('Move_') || label === 'Move_NONE') continue;
-  const { sprites, bgs } = walk(label);
+  const { sprites, bgs, lunge } = walk(label);
   const id = label.slice(5).toLowerCase().replace(/_/g, '-');
-  moves[id] = { sprites: [...sprites].filter((t) => tagGfx[t]?.includes('/sprites/')).map(key), bgs: [...bgs].map(bgKey) };
+  moves[id] = { sprites: [...sprites].filter((t) => tagGfx[t]?.includes('/sprites/')).map(key), bgs: [...bgs].map(bgKey), ...(lunge ? { lunge } : {}) };
   sprites.forEach((t) => usedTags.add(t));
   bgs.forEach((b) => b !== 'BG_NONE' && usedBgs.add(b));
 }
@@ -182,7 +196,11 @@ for (const tag of [...usedTags].sort()) {
   const s = sizes[tag];
   const [fw, fh] = s ? Object.entries(s).sort((a, b) => b[1] - a[1])[0][0].split('x').map(Number) : [sheet.width, sheet.height % sheet.width ? sheet.height : sheet.width];
   const per = (fw / 8) * (fh / 8);
-  const frames = Math.max(1, Math.floor(tiles.length / per));
+  let frames = Math.max(1, Math.floor(tiles.length / per));
+  // A sheet padded with blank frames at its end (Amnesia's): they are dropped, so a strip played through and held
+  // stops on its last drawn frame, never on nothing.
+  const blank = (f) => tiles.slice(f * per, (f + 1) * per).every((t) => t.every((ix) => ix % 16 === 0));
+  while (frames > 1 && blank(frames - 1)) frames--;
   const index = new Uint8Array(fw * fh * frames);
   for (let t = 0; t < Math.min(tiles.length, frames * per); t++) {
     const f = Math.floor(t / per), i = t % per;
@@ -191,7 +209,7 @@ for (const tag of [...usedTags].sort()) {
   }
   const img = { width: fw, height: fh * frames, index };
   decoded[key(tag)] = { img, pal };
-  sprites[key(tag)] = { w: fw, h: fh, frames };
+  sprites[key(tag)] = { w: fw, h: fh, frames, ...(blended[tag] > 0 ? { blend: true } : {}) };
 }
 
 /** The sprite's pixels in a palette: colour 0 is transparent, as on the GBA. */

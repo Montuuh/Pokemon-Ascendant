@@ -1540,6 +1540,17 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.103 — The move, not the template  ✅ 2026-11-07
+
+**Shipped.** The user (2026-11-07): "es como si no hubiera cambiado nada". Every base move was filmed in combat and
+judged against its FRLG script (`scripts/fx/film-moves.mjs`, report artifact; 150 bad · 141 improvable · 16 good, five
+causes, `docs/art/fx/move-fx-review.json`). The user chose the bugs and the generic layer first. Where a move has its
+sprites: no charge glow, aura rings, area tint or drain tendril; a Melee move dashes only if its pret script moves the
+attacker (`lunge`, `fxLunges`); ObjBlend sprites drawn see-through; a raise's sprite holds its last frame; volleys
+unseen until they leave; no empty charge before a sprite move (`fxCastOf`, `MOTION_MS.sprite.lead`; a number lag was tried and dropped in the UI review); power-0 moves aimed at the
+other side are hexes; Giga Drain drains; seven FRLG recipes name the right piece. Still open from the review: a
+choreography per move (cause 1) and sprite size and count (cause 2).
+
 ### v0.9.102 — Moves in their own sprites  ✅ 2026-11-06
 
 **Shipped.** The user (2026-11-06) asked for a unique animation per move, pret first and ChatGPT for the gaps. Every

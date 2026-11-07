@@ -91,6 +91,7 @@ const items = films.map((f) => {
     verdict: v.v ?? (gaps.length >= 4 ? 'mal' : gaps.length >= 2 ? 'mejorable' : 'bien'),
     note: v.note ?? '',
     fix: v.fix ?? '',
+    fixed: v.fixed ?? '',
     filmed: f.filmed,
   };
 });

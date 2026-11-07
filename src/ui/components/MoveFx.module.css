@@ -783,6 +783,29 @@
     fxShow var(--mv-frames-flicker) steps(1, jump-start) var(--fx-delay) both,
     fxHide calc(var(--mv-frames-flicker) + var(--mv-impact-ring)) steps(1, jump-end) var(--fx-delay) forwards;
 }
+/* A sprite on the target before its blow (Bite's teeth): played as usual, gone at the impact (`--fx-until`), so the
+   hit's splat that lands then is seen whole, not under it. */
+.fxSprite.fxOnce.fxUntil {
+  animation:
+    fxShow var(--mv-frames-flicker) steps(1, jump-start) var(--fx-delay) both,
+    fxFrames calc(var(--mv-frames-flicker) * var(--fx-n) + var(--mv-impact-ring)) steps(var(--fx-n)) var(--fx-delay) 1 both,
+    fxHide var(--mv-frames-flicker) steps(1, jump-start) var(--fx-until) forwards;
+}
+/* Played through once over the first half of a raise and kept on its last frame (Amnesia's question mark). */
+.fxSprite.fxHoldLast {
+  animation:
+    fxShow var(--mv-frames-flicker) steps(1, jump-start) var(--fx-delay) both,
+    fxFramesHold calc(var(--mv-aura-rise) / 2) steps(var(--fx-n), jump-none) var(--fx-delay) 1 both;
+}
+@keyframes fxFramesHold {
+  from { background-position-y: calc(var(--fx-y0) * -1); }
+  to { background-position-y: calc((var(--fx-y0) + var(--fx-h) * (var(--fx-n) - 1)) * -1); }
+}
+/* pret's alpha-blended sprites (an ObjBlend OAM: a barrier, a sunbeam, a slash) see-through over the stage at the
+   GBA's own weight — `setalpha 12, 8`, the sprite at 12/16, in 133 of pret's 169 blends — never an opaque slab. */
+.fxBlend {
+  filter: opacity(0.75);
+}
 @keyframes fxHide {
   from { opacity: 1; }
   to { opacity: 0; }
@@ -813,7 +836,7 @@
 .streamFlight {
   animation: fly calc(var(--mv-beam-grow) * 2) linear calc(var(--mv-beam-cast) + var(--i) * var(--mv-beam-hold) / var(--n)) both;
 }
-/* A raise's sprite rises with the rings, from the Pokémon's middle. */
+/* A raise's sprite stands a little above the Pokémon's middle, over its head. */
 .fxAura {
   translate: 0 calc(var(--fx-h) * -0.25);
 }
@@ -843,8 +866,10 @@
 .flight.spriteFlight {
   animation-name: flyFlat;
 }
+/* Unseen until it leaves: a volley's later shots wait out their delay at 0% without sitting on their user. */
 @keyframes flyFlat {
-  0% { opacity: 1; transform: translate(0, var(--off)); }
+  0% { opacity: 0; transform: translate(0, var(--off)); }
+  2% { opacity: 1; }
   90% { opacity: 1; }
   100% { opacity: 0; transform: translate(var(--dist), 0); }
 }

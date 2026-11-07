@@ -37,7 +37,8 @@
  "amnesia": {
   "v": "mal",
   "note": "Fallo: el sprite sale como un amasijo blanco (la hoja amnesia está mal cortada) sobre anillos rosas.",
-  "fix": "Recortar bien el signo de interrogación; que aparezca grande sobre la cabeza ~0,6 s."
+  "fix": "Recortar bien el signo de interrogación; que aparezca grande sobre la cabeza ~0,6 s.",
+  "fixed": "El signo de interrogación ya se forma y se queda (la hoja traía fotogramas vacíos al final)."
  },
  "ancient-power": {
   "v": "mejorable",
@@ -87,7 +88,8 @@
  "barrage": {
   "v": "mal",
   "note": "Fallo: las tres bolas se ven apiladas sobre el usuario antes de salir.",
-  "fix": "Ocultar cada proyectil hasta su salida; bolas (red-ball) en arco, una tras otra, rebotando en el objetivo."
+  "fix": "Ocultar cada proyectil hasta su salida; bolas (red-ball) en arco, una tras otra, rebotando en el objetivo.",
+  "fixed": "Las bolas ya no esperan apiladas sobre el usuario."
  },
  "barrier": {
   "v": "mejorable",
@@ -147,7 +149,8 @@
  "brine": {
   "v": "mal",
   "note": "Fallo: la salpicadura se queda grande sobre el usuario durante la carga y luego cruza.",
-  "fix": "Ocultar el proyectil hasta que sale; mejor un chorro de agua salada (water-impact pequeño en onda) y salpicadura en el objetivo."
+  "fix": "Ocultar el proyectil hasta que sale; mejor un chorro de agua salada (water-impact pequeño en onda) y salpicadura en el objetivo.",
+  "fixed": "El proyectil ya no espera sobre el usuario."
  },
  "bubble": {
   "v": "mal",
@@ -230,19 +233,21 @@
   "fix": "Rejilla de bloques (conversion) que cubre al usuario fila a fila."
  },
  "counter": {
-  "v": "mal",
-  "note": "El puño aparece sobre el propio usuario: Counter se dibuja como aura y no golpea a nadie.",
-  "fix": "Cambiar a cuerpo a cuerpo: el usuario se lanza contra el objetivo con puños rojos (hands-and-feet) y destello rojo."
+  "v": "mejorable",
+  "note": "Counter es una postura (devuelve el próximo golpe): el puño sobre el usuario es correcto, aunque pequeño.",
+  "fix": "Puño rojo más grande sobre el usuario y destello rojo; el golpe de vuelta, cuando llegue."
  },
  "cover": {
   "v": "mal",
   "note": "Fallo: el escudo dorado se dibuja como una pila de piezas amarillas encima del usuario (sprite mal cortado).",
-  "fix": "Revisar el corte de protect@gold (es un sprite de 64×64 en cuatro partes); escudo dorado delante del compañero."
+  "fix": "Revisar el corte de protect@gold (es un sprite de 64×64 en cuatro partes); escudo dorado delante del compañero.",
+  "fixed": "El escudo dorado se dibuja translúcido, como en la GBA."
  },
  "crabhammer": {
   "v": "mal",
   "note": "No se ve nada en el golpe; usa cristales de hielo como sprite principal.",
-  "fix": "Pinza enorme que golpea desde arriba con salpicadura (water-impact) y burbujas."
+  "fix": "Pinza enorme que golpea desde arriba con salpicadura (water-impact) y burbujas.",
+  "fixed": "Ahora es la salpicadura de agua, no hielo."
  },
  "cross-chop": {
   "v": "mejorable",
@@ -262,7 +267,8 @@
  "crush-claw": {
   "v": "mal",
   "note": "Fallo: aparece un rectángulo azul liso sobre el objetivo (el muro azul usado como sprite principal).",
-  "fix": "Garras (claw-slash) que arañan dos veces sobre el objetivo; el muro azul sólo como destello de fondo, o nada."
+  "fix": "Garras (claw-slash) que arañan dos veces sobre el objetivo; el muro azul sólo como destello de fondo, o nada.",
+  "fixed": "Ahora es el zarpazo (claw-slash), no el rectángulo azul."
  },
  "curse": {
   "v": "mal",
@@ -297,7 +303,8 @@
  "disable": {
   "v": "mal",
   "note": "Fallo: el destello sale sobre el usuario y debería ir al objetivo.",
-  "fix": "Destello (sparkle-4) sobre el objetivo y el objetivo se tiñe de gris."
+  "fix": "Destello (sparkle-4) sobre el objetivo y el objetivo se tiñe de gris.",
+  "fixed": "Ahora va al objetivo."
  },
  "discharge": {
   "v": "mejorable",
@@ -412,7 +419,8 @@
  "energy-ball": {
   "v": "mejorable",
   "note": "La bola verde es grande y se ve, pero se queda pegada al usuario durante la carga.",
-  "fix": "Ocultarla hasta que sale; que crezca en el usuario y luego cruce."
+  "fix": "Ocultarla hasta que sale; que crezca en el usuario y luego cruce.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "explosion": {
   "v": "mejorable",
@@ -517,7 +525,8 @@
  "giga-drain": {
   "v": "mal",
   "note": "Fallo: dibujado como proyectil; un orbe va del usuario al objetivo, al revés de un drenaje.",
-  "fix": "Tipo drenaje: muchos orbes verdes (orbs) saliendo del objetivo en espiral hacia el usuario, tinte verde."
+  "fix": "Tipo drenaje: muchos orbes verdes (orbs) saliendo del objetivo en espiral hacia el usuario, tinte verde.",
+  "fixed": "Ahora es un drenaje: los orbes vuelven al usuario."
  },
  "giga-impact": {
   "v": "mejorable",
@@ -532,7 +541,8 @@
  "growl": {
   "v": "mal",
   "note": "Una línea naranja pequeña sobre el usuario; debería ir hacia el objetivo.",
-  "fix": "Líneas de ruido (noise-line) saliendo de la boca del usuario hacia el objetivo, que se agacha."
+  "fix": "Líneas de ruido (noise-line) saliendo de la boca del usuario hacia el objetivo, que se agacha.",
+  "fixed": "Ahora va al objetivo."
  },
  "growth": {
   "v": "mal",
@@ -552,7 +562,8 @@
  "gust": {
   "v": "mejorable",
   "note": "El remolino se ve grande pero espera quieto sobre el usuario durante la carga.",
-  "fix": "Ocultarlo en la carga; remolino (gust) que cruza ondulando y envuelve al objetivo."
+  "fix": "Ocultarlo en la carga; remolino (gust) que cruza ondulando y envuelve al objetivo.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "hail": {
   "v": "mal",
@@ -647,7 +658,8 @@
  "ice-shard": {
   "v": "mejorable",
   "note": "El trozo de hielo se ve, pero espera pegado al usuario durante la carga.",
-  "fix": "Ocultarlo en la carga; dos trozos (ice-chunk) rápidos sin carga (es un movimiento de prioridad)."
+  "fix": "Ocultarlo en la carga; dos trozos (ice-chunk) rápidos sin carga (es un movimiento de prioridad).",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "ingrain": {
   "v": "mejorable",
@@ -682,7 +694,8 @@
  "kinesis": {
   "v": "mal",
   "note": "Cruza una raya roja (el sprite de alerta): no es la cuchara.",
-  "fix": "Cuchara (bent-spoon) que se dobla sobre el usuario y el objetivo se tiñe; sin proyectil."
+  "fix": "Cuchara (bent-spoon) que se dobla sobre el usuario y el objetivo se tiñe; sin proyectil.",
+  "fixed": "Ahora es la cuchara (bent-spoon), no la alerta."
  },
  "knock-off": {
   "v": "mejorable",
@@ -712,12 +725,14 @@
  "leech-seed": {
   "v": "mal",
   "note": "Fallo: las semillas salen sobre el usuario; deberían ir al objetivo.",
-  "fix": "Tres semillas (seed) en arco al objetivo que brotan en él."
+  "fix": "Tres semillas (seed) en arco al objetivo que brotan en él.",
+  "fixed": "Las semillas ya van al objetivo."
  },
  "leer": {
   "v": "mejorable",
   "note": "El destello se ve sobre el usuario.",
-  "fix": "Destello en los ojos más grande y el objetivo tiembla."
+  "fix": "Destello en los ojos más grande y el objetivo tiembla.",
+  "fixed": "Ahora va al objetivo."
  },
  "lick": {
   "v": "mejorable",
@@ -732,7 +747,8 @@
  "lovely-kiss": {
   "v": "mejorable",
   "note": "Los corazones se ven, pero esperan apilados sobre el usuario antes de salir.",
-  "fix": "Labios/corazón (pink-heart) que se acercan al objetivo y estallan en corazones pequeños."
+  "fix": "Labios/corazón (pink-heart) que se acercan al objetivo y estallan en corazones pequeños.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "low-kick": {
   "v": "mejorable",
@@ -887,7 +903,8 @@
  "protect": {
   "v": "mal",
   "note": "Fallo: el escudo se dibuja como una pila de piezas verdes (sprite mal cortado) que tapa al usuario.",
-  "fix": "Recortar bien el sprite protect (piezas que se montan en un escudo) y mostrarlo delante del usuario con su brillo."
+  "fix": "Recortar bien el sprite protect (piezas que se montan en un escudo) y mostrarlo delante del usuario con su brillo.",
+  "fixed": "El escudo se dibuja translúcido, como en la GBA."
  },
  "psybeam": {
   "v": "bien",
@@ -952,7 +969,8 @@
  "rock-blast": {
   "v": "mejorable",
   "note": "La roca grande cruza bien, pero espera sobre el usuario en la carga.",
-  "fix": "Ocultarla en la carga; 2–5 rocas (una por golpe) en arco."
+  "fix": "Ocultarla en la carga; 2–5 rocas (una por golpe) en arco.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "rock-slide": {
   "v": "mejorable",
@@ -962,12 +980,14 @@
  "rock-throw": {
   "v": "mejorable",
   "note": "La roca cruza pero espera sobre el usuario durante la carga.",
-  "fix": "Ocultarla en la carga; rocas que caen desde arriba sobre el objetivo, como en la GBA."
+  "fix": "Ocultarla en la carga; rocas que caen desde arriba sobre el objetivo, como en la GBA.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "rock-tomb": {
   "v": "mal",
   "note": "Fallo: cruza una X roja enorme (el sprite x-sign no es el movimiento).",
-  "fix": "Rocas (rocks) cayendo alrededor del objetivo y rodeándolo como una tumba."
+  "fix": "Rocas (rocks) cayendo alrededor del objetivo y rodeándolo como una tumba.",
+  "fixed": "Ahora lanza rocas, no la X roja."
  },
  "rolling-kick": {
   "v": "mal",
@@ -1012,7 +1032,8 @@
  "shadow-ball": {
   "v": "mejorable",
   "note": "La bola oscura se ve grande, pero espera sobre el usuario en la carga.",
-  "fix": "Ocultarla en la carga; que crezca entre las manos y cruce girando."
+  "fix": "Ocultarla en la carga; que crezca entre las manos y cruce girando.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "shadow-claw": {
   "v": "mal",
@@ -1072,12 +1093,14 @@
  "sludge": {
   "v": "mejorable",
   "note": "La bola morada cruza, pero espera sobre el usuario en la carga.",
-  "fix": "Ocultarla en la carga; lodo en arco que salpica burbujas sobre el objetivo."
+  "fix": "Ocultarla en la carga; lodo en arco que salpica burbujas sobre el objetivo.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "sludge-bomb": {
   "v": "mejorable",
   "note": "Igual que Sludge; las burbujas del impacto son pequeñas.",
-  "fix": "Varias bolas de lodo en arco y salpicadura grande con burbujas."
+  "fix": "Varias bolas de lodo en arco y salpicadura grande con burbujas.",
+  "fixed": "Ya no espera sobre el usuario."
  },
  "smelling-salts": {
   "v": "mejorable",
@@ -1122,12 +1145,14 @@
  "stealth-rock": {
   "v": "mal",
   "note": "Una roca gris sobre el usuario. Sustituto mientras llega el de ChatGPT.",
-  "fix": "Hoja de ChatGPT: rocas puntiagudas flotando alrededor del lado rival."
+  "fix": "Hoja de ChatGPT: rocas puntiagudas flotando alrededor del lado rival.",
+  "fixed": "Ahora va al lado rival."
  },
  "steel-wing": {
   "v": "mal",
   "note": "Usa el remolino de Gust: no es el ala.",
-  "fix": "Alas con brillo metálico: golpe (hit) con destello blanco y plumas."
+  "fix": "Alas con brillo metálico: golpe (hit) con destello blanco y plumas.",
+  "fixed": "Ahora son plumas, no el remolino de Gust."
  },
  "stomp": {
   "v": "mejorable",
@@ -1187,7 +1212,8 @@
  "swift": {
   "v": "mejorable",
   "note": "Las estrellas se ven, pero esperan apiladas sobre el usuario en la carga.",
-  "fix": "Ocultarlas en la carga; 5 estrellas en abanico que persiguen al objetivo."
+  "fix": "Ocultarlas en la carga; 5 estrellas en abanico que persiguen al objetivo.",
+  "fixed": "Ya no esperan sobre el usuario."
  },
  "tackle": {
   "v": "bien",
@@ -1257,7 +1283,8 @@
  "twister": {
   "v": "mal",
   "note": "Fallo: un orbe morado grande queda sobre el usuario; vuela una hoja diminuta.",
-  "fix": "Tornado de hojas que envuelve al objetivo, girando ~0,8 s."
+  "fix": "Tornado de hojas que envuelve al objetivo, girando ~0,8 s.",
+  "fixed": "Sin el orbe de carga sobre el usuario."
  },
  "u-turn": {
   "v": "mejorable",
@@ -1277,7 +1304,8 @@
  "vine-whip": {
   "v": "mal",
   "note": "Fallo: un orbe verde grande queda sobre el usuario y vuela una hoja suelta; no hay látigo.",
-  "fix": "Látigo de liana (vine) que restalla dos veces sobre el objetivo, sin proyectil."
+  "fix": "Látigo de liana (vine) que restalla dos veces sobre el objetivo, sin proyectil.",
+  "fixed": "Ahora es la liana (vine), sin el orbe de carga."
  },
  "vital-throw": {
   "v": "mejorable",
@@ -1317,7 +1345,8 @@
  "wing-attack": {
   "v": "mal",
   "note": "Usa el remolino de Gust sobre el objetivo; no son alas.",
-  "fix": "Dos golpes de ala (hit) a ambos lados del objetivo y plumas."
+  "fix": "Dos golpes de ala (hit) a ambos lados del objetivo y plumas.",
+  "fixed": "Ahora son plumas, no el remolino de Gust."
  },
  "wood-hammer": {
   "v": "mal",
@@ -1347,7 +1376,8 @@
  "mean-look": {
   "v": "mejorable",
   "note": "El ojo grande se ve, pero sobre el usuario.",
-  "fix": "Ojo (eye) sobre el objetivo, que se abre y se queda mirando."
+  "fix": "Ojo (eye) sobre el objetivo, que se abre y se queda mirando.",
+  "fixed": "Ahora va al objetivo."
  },
  "meditate": {
   "v": "mal",
@@ -1427,7 +1457,8 @@
  "roar": {
   "v": "mejorable",
   "note": "Las líneas de ruido se ven sobre el usuario; deberían ir al objetivo.",
-  "fix": "Líneas de ruido grandes hacia el objetivo, que sale despedido."
+  "fix": "Líneas de ruido grandes hacia el objetivo, que sale despedido.",
+  "fixed": "Ahora va al objetivo."
  },
  "rock-polish": {
   "v": "mejorable",
@@ -1462,7 +1493,8 @@
  "spikes": {
   "v": "mal",
   "note": "Las púas salen sobre el usuario; deberían ir al lado rival.",
-  "fix": "Púas (spikes) lanzadas en arco que caen y se quedan en el suelo del rival."
+  "fix": "Púas (spikes) lanzadas en arco que caen y se quedan en el suelo del rival.",
+  "fixed": "Ahora va al lado rival."
  },
  "splash": {
   "v": "mal",
@@ -1477,7 +1509,8 @@
  "sunny-day": {
   "v": "mal",
   "note": "Fallo: aparece un hexágono amarillo opaco sobre el usuario (el sprite sunlight sin transparencia).",
-  "fix": "Sol grande arriba del campo y tinte cálido de todo el campo, tipo área."
+  "fix": "Sol grande arriba del campo y tinte cálido de todo el campo, tipo área.",
+  "fixed": "El rayo de sol se dibuja translúcido."
  },
  "swords-dance": {
   "v": "mejorable",
@@ -1492,12 +1525,14 @@
  "tail-whip": {
   "v": "mal",
   "note": "Sólo anillos; no mueve la cola.",
-  "fix": "El usuario se balancea de lado a lado dos veces, como en la GBA."
+  "fix": "El usuario se balancea de lado a lado dos veces, como en la GBA.",
+  "fixed": "Ahora va al objetivo."
  },
  "taunt": {
   "v": "mejorable",
   "note": "El dedo rosa se ve pequeño sobre el usuario.",
-  "fix": "Dedo (finger-2) más grande moviéndose y el objetivo con símbolo de enfado."
+  "fix": "Dedo (finger-2) más grande moviéndose y el objetivo con símbolo de enfado.",
+  "fixed": "Ahora va al objetivo."
  },
  "teleport": {
   "v": "mal",
@@ -1512,7 +1547,8 @@
  "whirlwind": {
   "v": "mejorable",
   "note": "Las líneas de viento se ven tenues sobre el usuario.",
-  "fix": "Remolino que cruza hasta el objetivo y lo saca del campo."
+  "fix": "Remolino que cruza hasta el objetivo y lo saca del campo.",
+  "fixed": "Ahora va al objetivo."
  },
  "wish": {
   "v": "mejorable",

@@ -68,4 +68,22 @@ test.describe('Move animation sprites — §9.9.2', () => {
     await expect(fx).toHaveAttribute('data-sprites', 'drawn');
     await expect(fx.locator('[data-fx-sprite]')).toHaveCount(0);
   });
+
+  test('Bite lands on the foe from where its user stands; a volley waits unseen until it leaves', async ({ page }) => {
+    await ready(page);
+    // The GBA does not move Bite's user: no double crosses the field and the user's own sprite never hides.
+    const bite = await frozen(page, 'bite', after(MOTION_MS.melee.windup + MOTION_MS.melee.dash));
+    await expect(bite.locator('[data-fx-sprite="sharp-teeth"]').first()).toBeAttached();
+    await expect(page.locator('.fx-dashing')).toHaveCount(0);
+    await settle(page);
+    // Swift as its first star leaves (no drawn charge before a sprite move): the later stars have not left, so they
+    // are not drawn stacked on their user.
+    const swift = await frozen(page, 'swift', MOTION_MS.projectile.volley / 2);
+    // The stars in flight (the impact waits at the foe): each one's flight, unseen while it waits.
+    const shown = await swift.locator('[data-fx-sprite]').evaluateAll((els) =>
+      els.map((e) => e.closest('[class*=flight]')).filter((f): f is Element => !!f).map((f) => Number(getComputedStyle(f).opacity)),
+    );
+    expect(shown.length).toBe(3);
+    expect(shown.slice(1).every((o) => o === 0)).toBe(true);
+  });
 });

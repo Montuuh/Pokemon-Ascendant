@@ -9,7 +9,8 @@
   "air-wave": {
    "w": 32,
    "h": 16,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "air-wave-2": {
    "w": 32,
@@ -24,7 +25,7 @@
   "amnesia": {
    "w": 32,
    "h": 32,
-   "frames": 8
+   "frames": 7
   },
   "angel": {
    "w": 32,
@@ -89,12 +90,13 @@
   "blue-flames-2": {
    "w": 8,
    "h": 8,
-   "frames": 16
+   "frames": 14
   },
   "blue-light-wall": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "blue-lines": {
    "w": 8,
@@ -139,7 +141,8 @@
   "breaking-egg": {
    "w": 32,
    "h": 32,
-   "frames": 3
+   "frames": 3,
+   "blend": true
   },
   "breath": {
    "w": 16,
@@ -149,7 +152,8 @@
   "brown-orb": {
    "w": 16,
    "h": 16,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "brown-triangle": {
    "w": 16,
@@ -159,7 +163,8 @@
   "bubble": {
    "w": 16,
    "h": 16,
-   "frames": 3
+   "frames": 3,
+   "blend": true
   },
   "bubble-burst": {
    "w": 16,
@@ -179,12 +184,14 @@
   "circle-of-light": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "clamp": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "clapping": {
    "w": 16,
@@ -224,7 +231,8 @@
   "conversion": {
    "w": 8,
    "h": 8,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "cracked-egg": {
    "w": 32,
@@ -234,12 +242,14 @@
   "cross-impact": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "cut": {
    "w": 32,
    "h": 32,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "devil": {
    "w": 32,
@@ -304,7 +314,8 @@
   "eye": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "eye-sparkle": {
    "w": 16,
@@ -389,7 +400,8 @@
   "ghostly-spirit": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "glass": {
    "w": 32,
@@ -429,7 +441,8 @@
   "gray-light-wall": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "gray-orb": {
    "w": 8,
@@ -444,7 +457,8 @@
   "green-light-wall": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "green-sparkle": {
    "w": 16,
@@ -464,7 +478,8 @@
   "guard-ring": {
    "w": 64,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "gust": {
    "w": 32,
@@ -529,7 +544,7 @@
   "ice-chunk": {
    "w": 32,
    "h": 32,
-   "frames": 5
+   "frames": 4
   },
   "ice-crystals": {
    "w": 8,
@@ -539,12 +554,14 @@
   "ice-cube": {
    "w": 64,
    "h": 64,
-   "frames": 2
+   "frames": 2,
+   "blend": true
   },
   "ice-spikes": {
    "w": 8,
    "h": 16,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "icicle-spear": {
    "w": 32,
@@ -554,7 +571,8 @@
   "impact": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "impact-2": {
    "w": 32,
@@ -629,7 +647,8 @@
   "magnifying-glass": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "metal-ball": {
    "w": 16,
@@ -649,12 +668,14 @@
   "milk-bottle": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "mist-cloud": {
    "w": 32,
    "h": 16,
-   "frames": 2
+   "frames": 2,
+   "blend": true
   },
   "monster-doll": {
    "w": 32,
@@ -669,7 +690,8 @@
   "moon": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "movement-waves": {
    "w": 32,
@@ -699,7 +721,8 @@
   "nail": {
    "w": 32,
    "h": 16,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "needle": {
    "w": 16,
@@ -724,7 +747,8 @@
   "orange-light-wall": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "orb": {
    "w": 16,
@@ -814,7 +838,8 @@
   "protect": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "punch-impact": {
    "w": 32,
@@ -829,17 +854,19 @@
   "purple-droplet": {
    "w": 16,
    "h": 16,
-   "frames": 12
+   "frames": 11
   },
   "purple-flame": {
    "w": 16,
    "h": 32,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "purple-gas-cloud": {
    "w": 32,
    "h": 16,
-   "frames": 2
+   "frames": 2,
+   "blend": true
   },
   "purple-green-unk": {
    "w": 32,
@@ -889,7 +916,8 @@
   "recycle": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "red-ball": {
    "w": 32,
@@ -909,7 +937,8 @@
   "red-light-wall": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "red-orb": {
    "w": 16,
@@ -964,7 +993,8 @@
   "round-white-halo": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "safari-bait": {
    "w": 16,
@@ -984,7 +1014,8 @@
   "scratch": {
    "w": 32,
    "h": 32,
-   "frames": 5
+   "frames": 5,
+   "blend": true
   },
   "scratch-2": {
    "w": 32,
@@ -1014,7 +1045,8 @@
   "sharp-teeth": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "shock": {
    "w": 32,
@@ -1084,7 +1116,7 @@
   "smoke": {
    "w": 16,
    "h": 16,
-   "frames": 2
+   "frames": 1
   },
   "smoke-2": {
    "w": 32,
@@ -1129,7 +1161,7 @@
   "sparkle-6": {
    "w": 16,
    "h": 16,
-   "frames": 2
+   "frames": 1
   },
   "spark-2": {
    "w": 16,
@@ -1154,7 +1186,8 @@
   "spider-web": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "spikes": {
    "w": 16,
@@ -1174,7 +1207,8 @@
   "spiral": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "splash": {
    "w": 64,
@@ -1204,7 +1238,7 @@
   "string-2": {
    "w": 32,
    "h": 32,
-   "frames": 5
+   "frames": 3
   },
   "stun-spore": {
    "w": 8,
@@ -1214,7 +1248,8 @@
   "sunlight": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "sweat-bead": {
    "w": 8,
@@ -1229,12 +1264,13 @@
   "swipe": {
    "w": 32,
    "h": 32,
-   "frames": 5
+   "frames": 4
   },
   "sword": {
    "w": 32,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "sword-2": {
    "w": 16,
@@ -1254,7 +1290,7 @@
   "teeth": {
    "w": 32,
    "h": 32,
-   "frames": 4
+   "frames": 3
   },
   "tendrils": {
    "w": 64,
@@ -1264,7 +1300,8 @@
   "thin-ring": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "thought-bubble": {
    "w": 32,
@@ -1314,7 +1351,8 @@
   "void-lines": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "warm-rock": {
    "w": 16,
@@ -1339,12 +1377,14 @@
   "water-impact": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "water-orb": {
    "w": 16,
    "h": 16,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "waving-hand": {
    "w": 16,
@@ -1394,7 +1434,8 @@
   "white-circle-of-light": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "white-feather": {
    "w": 32,
@@ -1404,7 +1445,8 @@
   "white-shadow": {
    "w": 64,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "wisp-fire": {
    "w": 32,
@@ -1454,7 +1496,8 @@
   "cut@psychic": {
    "w": 32,
    "h": 32,
-   "frames": 4
+   "frames": 4,
+   "blend": true
   },
   "claw-slash@ghost": {
    "w": 32,
@@ -1469,7 +1512,8 @@
   "cross-impact@poison": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "shadow-ball@grass": {
    "w": 32,
@@ -1479,7 +1523,8 @@
   "air-wave@vacuum": {
    "w": 32,
    "h": 16,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "metal-sound-waves@bug": {
    "w": 32,
@@ -1494,12 +1539,14 @@
   "protect@gold": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "guard-ring@water": {
    "w": 64,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "fire-plume@earth": {
    "w": 32,
@@ -1519,7 +1566,8 @@
   "white-shadow@shade": {
    "w": 64,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "meteor@draco": {
    "w": 64,
@@ -1529,7 +1577,8 @@
   "circle-of-light@zen": {
    "w": 64,
    "h": 64,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "punch-impact@dark": {
    "w": 32,
@@ -1539,7 +1588,8 @@
   "impact@dark": {
    "w": 32,
    "h": 32,
-   "frames": 1
+   "frames": 1,
+   "blend": true
   },
   "fire-plume@lava": {
    "w": 32,
@@ -1675,19 +1725,22 @@
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "tackle": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "body-slam": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "supersonic": {
    "sprites": [
@@ -1705,7 +1758,8 @@
    "sprites": [
     "small-ember"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "pin-missile": {
    "sprites": [
@@ -1725,13 +1779,15 @@
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "double-edge": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "poison-sting": {
    "sprites": [
@@ -1841,7 +1897,8 @@
   },
   "tail-whip": {
    "sprites": [],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "cut": {
    "sprites": [
@@ -1861,7 +1918,8 @@
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "pursuit": {
    "sprites": [
@@ -1876,13 +1934,15 @@
     "needle",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "swords-dance": {
    "sprites": [
     "sword"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "psych-up": {
    "sprites": [
@@ -1896,7 +1956,8 @@
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "fire-spin": {
    "sprites": [
@@ -1921,20 +1982,23 @@
     "slam-hit",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "vine-whip": {
    "sprites": [
     "whip-hit"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "drill-peck": {
    "sprites": [
     "impact",
     "whirlwind-lines"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "waterfall": {
    "sprites": [
@@ -1942,7 +2006,8 @@
     "small-bubbles",
     "ice-crystals"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "explosion": {
    "sprites": [
@@ -1973,7 +2038,8 @@
     "impact",
     "anger"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "safeguard": {
    "sprites": [
@@ -2016,14 +2082,16 @@
    "sprites": [
     "small-ember"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "spark": {
    "sprites": [
     "impact",
     "spark-2"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "attract": {
    "sprites": [
@@ -2039,7 +2107,8 @@
    "sprites": [
     "whirlwind-lines"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "confuse-ray": {
    "sprites": [
@@ -2079,7 +2148,8 @@
    ],
    "bgs": [
     "dark"
-   ]
+   ],
+   "lunge": true
   },
   "bubble-beam": {
    "sprites": [
@@ -2121,20 +2191,23 @@
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "headbutt": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "horn-attack": {
    "sprites": [
     "impact",
     "horn-hit"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "fury-attack": {
    "sprites": [
@@ -2151,7 +2224,8 @@
    "bgs": [
     "drill",
     "drill"
-   ]
+   ],
+   "lunge": true
   },
   "thrash": {
    "sprites": [
@@ -2171,7 +2245,8 @@
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "earthquake": {
    "sprites": [],
@@ -2201,20 +2276,23 @@
   },
   "agility": {
    "sprites": [],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "quick-attack": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "rage": {
    "sprites": [
     "impact",
     "anger"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "teleport": {
    "sprites": [],
@@ -2241,7 +2319,8 @@
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "amnesia": {
    "sprites": [
@@ -2305,7 +2384,8 @@
    "sprites": [
     "fang-attack"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "slash": {
    "sprites": [
@@ -2352,7 +2432,8 @@
    "bgs": [
     "highspeed",
     "highspeed"
-   ]
+   ],
+   "lunge": true
   },
   "foresight": {
    "sprites": [
@@ -2419,7 +2500,8 @@
     "impact",
     "rapid-spin"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "moonlight": {
    "sprites": [
@@ -2538,7 +2620,8 @@
     "hands-and-feet",
     "torn-metal"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "yawn": {
    "sprites": [
@@ -2649,7 +2732,8 @@
     "claw-slash",
     "torn-metal"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "aromatherapy": {
    "sprites": [
@@ -2677,7 +2761,8 @@
   },
   "odor-sleuth": {
    "sprites": [],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "grass-whistle": {
    "sprites": [
@@ -2705,7 +2790,8 @@
    ],
    "bgs": [
     "ghost"
-   ]
+   ],
+   "lunge": true
   },
   "extrasensory": {
    "sprites": [],
@@ -2717,7 +2803,8 @@
    "sprites": [
     "cut"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "iron-defense": {
    "sprites": [],
@@ -2754,7 +2841,8 @@
     "circle-of-light",
     "electricity"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "water-sport": {
    "sprites": [
@@ -2880,7 +2968,8 @@
    "sprites": [
     "noise-line"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "growl": {
    "sprites": [
@@ -2940,26 +3029,30 @@
    ],
    "bgs": [
     "dark"
-   ]
+   ],
+   "lunge": true
   },
   "sand-attack": {
    "sprites": [
     "mud-sand"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "mud-slap": {
    "sprites": [
     "mud-sand"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "dragon-rage": {
    "sprites": [
     "small-ember",
     "fire-plume"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "rain-dance": {
    "sprites": [
@@ -3118,7 +3211,8 @@
     "bone",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "bone-club": {
    "sprites": [
@@ -3148,7 +3242,8 @@
    "bgs": [
     "drill",
     "drill"
-   ]
+   ],
+   "lunge": true
   },
   "gust": {
    "sprites": [
@@ -3162,7 +3257,8 @@
     "gust",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "peck": {
    "sprites": [
@@ -3192,7 +3288,8 @@
     "ice-crystals",
     "water-impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "surf": {
    "sprites": [],
@@ -3221,14 +3318,16 @@
     "round-shadow",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "bounce": {
    "sprites": [
     "round-shadow",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "karate-chop": {
    "sprites": [
@@ -3249,14 +3348,16 @@
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "hi-jump-kick": {
    "sprites": [
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "double-kick": {
    "sprites": [
@@ -3286,13 +3387,15 @@
     "impact",
     "hands-and-feet"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "vital-throw": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "rock-smash": {
    "sprites": [
@@ -3306,7 +3409,8 @@
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "sunny-day": {
    "sprites": [
@@ -3331,7 +3435,8 @@
     "flower",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "razor-leaf": {
    "sprites": [
@@ -3350,7 +3455,8 @@
     "rocks",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "octazooka": {
    "sprites": [
@@ -3405,7 +3511,8 @@
   },
   "wrap": {
    "sprites": [],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "psybeam": {
    "sprites": [
@@ -3443,26 +3550,30 @@
     "gust",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "iron-tail": {
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "poison-tail": {
    "sprites": [
     "impact",
     "poison-bubble"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "metal-claw": {
    "sprites": [
     "claw-slash"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "night-shade": {
    "sprites": [],
@@ -3501,7 +3612,8 @@
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "string-shot": {
    "sprites": [
@@ -3602,7 +3714,8 @@
    "sprites": [
     "swipe"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "ingrain": {
    "sprites": [
@@ -3733,7 +3846,8 @@
     "spotlight",
     "confetti"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "role-play": {
    "sprites": [],
@@ -3779,7 +3893,8 @@
     "hands-and-feet",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "muddy-water": {
    "sprites": [],
@@ -3796,7 +3911,8 @@
     "small-ember",
     "claw-slash"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "mud-shot": {
    "sprites": [
@@ -3820,7 +3936,8 @@
     "purple-swipe",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "poison-fang": {
    "sprites": [
@@ -3861,7 +3978,8 @@
    "sprites": [
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "cosmic-power": {
    "sprites": [
@@ -3896,7 +4014,8 @@
   },
   "snatch": {
    "sprites": [],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "dive": {
    "sprites": [
@@ -3906,14 +4025,16 @@
     "water-impact",
     "small-bubbles"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "rock-blast": {
    "sprites": [
     "rocks",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "overheat": {
    "sprites": [
@@ -3933,7 +4054,8 @@
    "sprites": [
     "sweat-bead"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "seismic-toss": {
    "sprites": [
@@ -3970,7 +4092,8 @@
     "slam-hit-2",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "doom-desire": {
    "sprites": [],
@@ -3982,14 +4105,16 @@
    ],
    "bgs": [
     "in-air"
-   ]
+   ],
+   "lunge": true
   },
   "secret-power": {
    "sprites": [
     "slam-hit",
     "impact"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "twister": {
    "sprites": [
@@ -4026,7 +4151,8 @@
     "hail",
     "ice-crystals"
    ],
-   "bgs": []
+   "bgs": [],
+   "lunge": true
   },
   "count": {
    "sprites": [

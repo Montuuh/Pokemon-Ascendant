@@ -13,6 +13,8 @@ export interface FxSpriteInfo {
   w: number;
   h: number;
   frames: number;
+  /** pret draws it alpha-blended over the stage (a barrier, a sunbeam, a slash): see-through, as on the GBA. */
+  blend?: boolean;
 }
 
 export interface FxPiece {
@@ -36,7 +38,7 @@ export interface FxRecipe {
 
 const SPRITES = anims.sprites as Record<string, FxSpriteInfo>;
 const BGS = anims.bgs as Record<string, { w: number; h: number }>;
-const PRET = anims.moves as Record<string, { sprites: string[]; bgs: string[] }>;
+const PRET = anims.moves as Record<string, { sprites: string[]; bgs: string[]; lunge?: boolean }>;
 
 export const fxSprite = (key: string): FxSpriteInfo | undefined => SPRITES[key];
 /** A re-palette's file: `slash@dark` → `slash_dark.png` (static servers do not all decode `%40`). */
@@ -86,6 +88,15 @@ const CHOPS = new Set(['karate-chop', 'brick-break', 'cross-chop']);
  * ChatGPT (docs/art/fx/move-fx-chatgpt.xlsx), held here with a pret stand-in until their sheets arrive.
  */
 const COMPOSED: Record<string, FxRecipe> = {
+  // FRLG moves whose script loads a sprite that is not the move itself first (Rock Tomb's X, Kinesis' alert mark,
+  // Crush Claw's wall flash, Crabhammer's bubbles, Wing Attack's gust): drawn with the piece that is.
+  'rock-tomb': { main: piece('rocks'), impact: piece('hit') },
+  kinesis: { main: piece('bent-spoon'), bg: 'psychic' },
+  'crush-claw': { main: piece('claw-slash'), impact: piece('impact') },
+  crabhammer: { main: piece('water-impact'), impact: piece('impact') },
+  'wing-attack': { main: piece('white-feather'), impact: piece('impact') },
+  'steel-wing': { main: piece('white-feather'), impact: piece('impact') },
+  'vine-whip': { main: piece('vine'), impact: piece('whip-hit') },
   'call-for-help': { main: piece('alert') },
   cover: { main: piece('protect@gold') },
   snarl: { main: piece('noise-line@dark'), bg: 'dark' },
@@ -145,8 +156,34 @@ const COMPOSED: Record<string, FxRecipe> = {
   avalanche: { main: piece('ice-chunk'), impact: piece('hit') },
 };
 
+/** §9.9.2 — the Gen IV Melee moves whose user charges across the field, as pret's own lunging moves do. */
+const COMPOSED_LUNGES = new Set(['aqua-jet', 'brave-bird', 'flare-blitz', 'giga-impact', 'iron-head', 'u-turn', 'zen-headbutt', 'bullet-punch', 'sucker-punch', 'wood-hammer', 'double-hit']);
+
+/**
+ * §9.9.2 — whether a Melee move's user dashes across to its target: only where the GBA moves the attacker (a lunge, a
+ * slide, a jump — `lunge` in pret's script). Bite, Cut or Slash land their sprite on the target from where the user
+ * stands. A move drawn without sprites keeps the dash, its only picture of the blow.
+ */
+export function fxLunges(moveId: string): boolean {
+  const id = moveId.replace(/(-plus)+$/, '');
+  if (!fxRecipeOf(id)) return true;
+  if (COMPOSED[id] && !pretScriptOf(id)) return COMPOSED_LUNGES.has(id);
+  return pretScriptOf(id)?.lunge === true;
+}
+
+/**
+ * §9.9.2 — how a move is drawn, for its beat (`motionOf`): whether it is drawn with pret's sprites (its own, or — a
+ * Melee move that does not dash — only its hit, Pound's splat), whether that includes its own sprite, whether its user
+ * dashes, and its volley.
+ */
+export function fxCastOf(moveId: string): { sprites: boolean; own: boolean; dash: boolean; volley: number } {
+  const r = fxRecipeOf(moveId);
+  const dash = fxLunges(moveId);
+  return { sprites: !!r?.main || (!dash && !!r?.impact), own: !!r?.main, dash, volley: r?.main ? (r.volley ?? 1) : 1 };
+}
+
 /** The move's pret script, by our id. */
-export function pretScriptOf(moveId: string): { sprites: string[]; bgs: string[] } | undefined {
+export function pretScriptOf(moveId: string): { sprites: string[]; bgs: string[]; lunge?: boolean } | undefined {
   const id = moveId.replace(/(-plus)+$/, '');
   return PRET[PRET_NAME[id] ?? id] ?? PRET[PRET_BY_NORM.get(norm(PRET_NAME[id] ?? id)) ?? ''];
 }

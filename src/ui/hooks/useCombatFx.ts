@@ -3,6 +3,7 @@ import type { CombatEvent, CombatState, EnemyCombatant, PokemonType } from '@/si
 import { benchIndices, bossArchetype, indexToSlot } from '@/sim';
 import { getContent } from '@/content/registry';
 import { MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
+import { fxCastOf } from '@/ui/fx/moveFx';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
 import { CATCH_BREAK_LINE, DAMAGE_CAUSE_LABEL, EFFECTIVENESS_LABEL, PHASE_TEXT, STATUS_LABEL } from '@/ui/strings';
@@ -483,7 +484,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         if (n.t === 'attack' && n.moveId === moveId && !hit.includes(n.targetUid)) hit.push(n.targetUid);
         if ((n.t === 'status-applied' || n.t === 'status-immune' || n.t === 'stage' || n.t === 'heal') && !touched.includes(n.targetUid)) touched.push(n.targetUid);
       }
-      const motion = motionOf(move, hit.length);
+      const look = fxCastOf(moveId);
+      const motion = motionOf(move, hit.length, look);
       // A Pokémon still dashing back from its last blow finishes coming back first.
       delay = Math.max(delay, (clock.current.dashes[userUid] ?? 0) - t0);
       const fromSlot = slotOfUid(userUid, delay);
@@ -495,14 +497,16 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         : hit.length ? hit : aimed ? [aimed] : [];
       const to = targets.map((u) => slotOfUid(u, delay)).filter((s): s is SpriteSlot => !!s);
       if (!to.length && motion.kind !== 'area') return;
-      const actor = motion.kind === 'melee' ? actorOf(userUid) : null;
+      // §9.9.2 — a Melee move dashes its user across only where the GBA moves the attacker; Bite or Cut lands from afar.
+      const dashing = motion.kind === 'melee' && look.dash;
+      const actor = dashing ? actorOf(userUid) : null;
       const id = nextId.current++;
       const fx: MoveFx = { id, moveId, type: move.type, motion, from: fromSlot, to, side: isMine(userUid) ? 'player' : 'enemy', ...(actor ? { actor } : {}) };
       schedule(() => setMoves((ms) => [...ms, fx]), delay);
       schedule(() => setMoves((ms) => ms.filter((x) => x.id !== id)), delay + motion.totalMs);
       // A dash: the real sprite waits hidden in its card while its double crosses the field and comes back.
       // Its own class, not fx-hidden: a foe hidden that way reads as still in its ball, and its whole card waits unseen.
-      if (motion.kind === 'melee') {
+      if (dashing) {
         // Cleared only by the dash it belongs to: a second dash starting as the first ends keeps the sprite unseen.
         const back = t0 + delay + motion.totalMs;
         clock.current.dashes[userUid] = back;

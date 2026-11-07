@@ -42,7 +42,7 @@ const moves = await listPage.evaluate(async () => {
     .allMoves()
     .filter((m) => !/-plus$/.test(m.id))
     .map((m) => {
-      const motion = mm.motionOf(m, 1);
+      const motion = mm.motionOf(m, 1, fx.fxCastOf(m.id));
       return { id: m.id, name: m.name, type: m.type, power: m.power ?? 0, range: m.range ?? null, kind: motion.kind, style: motion.style ?? null, totalMs: motion.totalMs, impactMs: motion.impactMs, recipe: fx.fxRecipeOf(m.id) ?? null, bg: fx.fxBgOf(m.id, motion.kind) ?? null, pret: fx.pretScriptOf(m.id) ? true : false };
     });
 });

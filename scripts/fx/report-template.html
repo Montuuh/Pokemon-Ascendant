@@ -67,6 +67,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .gaps { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); display: grid; gap: 2px; }
 .mine { font-size: 14px; border-left: 2px solid var(--accent); padding-left: 10px; display: grid; gap: 2px; }
 .mine .fix::before { content: "Cómo mejorarlo · "; color: var(--accent); font-weight: 700; }
+.fixed { font-size: 13px; margin: 0; padding: 6px 10px; border-radius: 4px; background: var(--bg); border-left: 3px solid var(--ok); }
+.fixed b { color: var(--ok); }
 .empty { color: var(--muted); padding: 40px 0; text-align: center; }
 @media (max-width: 520px) { .vs { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
@@ -75,7 +77,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <div class="wrap">
   <header style="display:grid;gap:12px">
     <h1>Animaciones de movimientos</h1>
-    <p class="lede">Cada movimiento base de Pokémon Ascendant (v0.9.102) grabado en combate en tiempo real, al lado de lo que hace su animación de FireRed según el script de pret. Las causas generales van primero: explican por qué casi todo se ve igual. Debajo está cada movimiento con su vídeo, las diferencias medidas y mi valoración. Marca en cada uno <b>Dejar</b>, <b>Mejorar</b> o <b>Rehacer</b> y deja una nota si quieres: lo leo desde aquí.</p>
+    <p class="lede">Cada movimiento base de Pokémon Ascendant grabado en combate en tiempo real, al lado de lo que hace su animación de FireRed según el script de pret. Las causas generales van primero: explican por qué casi todo se ve igual. Debajo está cada movimiento con su vídeo, las diferencias medidas y mi valoración. Marca en cada uno <b>Dejar</b>, <b>Mejorar</b> o <b>Rehacer</b> y deja una nota si quieres: lo leo desde aquí.</p>
     <div class="tally" id="tally"></div>
   </header>
 
@@ -90,7 +92,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <label class="sr" for="q" hidden>Buscar</label>
       <input id="q" type="search" placeholder="Buscar movimiento, sprite o tipo…">
       <select id="fv" aria-label="Valoración"><option value="">Toda valoración</option><option value="mal">Mal</option><option value="mejorable">Mejorable</option><option value="bien">Bien</option></select>
-      <select id="fs" aria-label="Origen"><option value="">Todo origen</option><option value="frlg">Script FRLG</option><option value="compuesto">Compuesto (Gen IV)</option><option value="chatgpt">Sustituto ChatGPT</option><option value="dibujado">Dibujado (sin sprites)</option></select>
+      <select id="fs" aria-label="Origen"><option value="">Todo origen</option><option value="frlg">Script FRLG</option><option value="compuesto">Compuesto (Gen IV)</option><option value="chatgpt">Sustituto ChatGPT</option><option value="dibujado">Dibujado (sin sprites)</option><option value="arreglado">Arreglado en v0.9.103</option></select>
       <select id="fk" aria-label="Tipo de animación"><option value="">Toda animación</option></select>
       <select id="fd" aria-label="Tu decisión"><option value="">Toda decisión</option><option value="none">Sin decidir</option><option value="ok">Dejar</option><option value="mejorar">Mejorar</option><option value="rehacer">Rehacer</option></select>
       <span class="count" id="count"></span>
@@ -135,6 +137,7 @@ function card(m) {
         <div><b>Aquí</b>${secs(m.ours.ms)} · ${ours}<br>${esc(m.ours.how)}</div>
         <div><b>GBA</b>${g ? `≈${secs(g.ms)} · ${gbaSprites}${g.mon.length ? '<br>' + esc([...new Set(g.mon)].join(', ')) : ''}${g.bgs.length ? '<br>fondo ' + esc(g.bgs.join(', ')) : ''}` : 'No existe en FRLG (Gen IV)'}</div>
       </div>
+      ${m.fixed ? `<p class="fixed"><b>Arreglado en v0.9.103</b> · ${esc(m.fixed)}</p>` : ''}
       ${m.note || m.fix ? `<div class="mine">${m.note ? `<p>${esc(m.note)}</p>` : ''}${m.fix ? `<p class="fix">${esc(m.fix)}</p>` : ''}</div>` : ''}
       ${m.gaps.length ? `<ul class="gaps">${m.gaps.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
       ${decideHtml(m.id)}
@@ -146,10 +149,10 @@ function render() {
   const fv = $('#fv').value, fs = $('#fs').value, fk = $('#fk').value, fd = $('#fd').value;
   const shown = items.filter((m) => {
     if (fv && m.verdict !== fv) return false;
-    if (fs && m.source !== fs) return false;
     if (fk && m.kind !== fk) return false;
     const d = decisions.get(m.id)?.choice;
     if (fd === 'none' ? d : fd && d !== fd) return false;
+    if (fs === 'arreglado' ? !m.fixed : fs && m.source !== fs) return false;
     if (q && ![m.id, m.name, m.type, m.ours.main, m.ours.impact, m.note, m.fix].join(' ').toLowerCase().includes(q)) return false;
     return true;
   });

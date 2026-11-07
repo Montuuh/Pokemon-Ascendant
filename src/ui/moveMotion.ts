@@ -1,4 +1,5 @@
 import type { MoveDef, PokemonType } from '@/sim';
+import type { MoveEffect } from '@/sim/content/defs';
 
 // §9.9.2 — how a move moves: the catalogue that turns a move into its animation. Presentation only, read from the move's
 // own row (its range, its reach, its type, its power): a Melee move dashes its user across the field and back, a
@@ -42,6 +43,10 @@ export const MOTION_MS = {
   hex: { cast: 200, travel: 260, swirl: 360, stagger: 50 },
   /** Where any move lands: the ring and the sparks; and between the targets of a move landing on several. */
   impact: { ring: 380, spark: 340, stagger: 90 },
+  /** A move drawn with its own pret sprites has no drawn charge: its sprite is on the field from the first frame, and
+   *  `lead` is how long it shows before it lands where it does not travel (a bite, a drain's hit) — pret's Bite lands
+   *  its splat ten frames after its teeth. */
+  sprite: { lead: 160 },
   /** The stage's own beats: Earthquake's shake (from `lead` before its impact to the end of its settle, so `shake` =
    *  `lead` + the settle), the white flash of an Explosion, the coloured one of a strike, stones jumping, a snowflake
    *  crossing; `spread`: how long a field of things (dust, flames, stones, rings) takes to all get going. */
@@ -64,6 +69,46 @@ const timing: Record<MotionKind, { impactMs: number; totalMs: number }> = {
   aura: { impactMs: T.aura.rise / 2, totalMs: T.aura.rise },
   hex: { impactMs: T.hex.cast + T.hex.travel, totalMs: T.hex.cast + T.hex.travel + T.hex.swirl },
 };
+
+/** How a move is drawn, from its pret recipe (`fxCastOf` in `ui/fx/moveFx.ts`): with its own sprites, whether its user
+ *  dashes, how many it throws. A move drawn with the old shapes passes nothing. */
+export interface MoveLook {
+  sprites: boolean;
+  /** Its own sprite, not only its hit (Bite's teeth; Pound has only its splat). */
+  own: boolean;
+  dash: boolean;
+  volley: number;
+}
+
+/** §9.9.2 — when a move drawn with its sprites lands where it does not travel: a lead after its own sprite shows
+ *  (Bite's teeth), at once for a bare hit (Pound's splat) or a drain (its hit on the target, then the orbs back). */
+export const spriteLandsAt = (look: Pick<MoveLook, 'own'>, kind: 'melee' | 'drain'): number =>
+  kind === 'melee' && look.own ? MOTION_MS.sprite.lead : MOTION_MS.frames.flicker;
+
+/**
+ * §9.9.2 — the beat of a move drawn with its own sprites: no drawn charge before it (the sprite is the picture from the
+ * first frame), a Melee move that does not dash lands on the target at `spriteLandsAt`, and a volley lands with its
+ * last shot. Area and raise keep their beats.
+ */
+function spriteTiming(kind: MotionKind, look: MoveLook): { impactMs: number; totalMs: number } {
+  const last = (look.volley - 1) * T.projectile.volley;
+  switch (kind) {
+    case 'melee':
+      return look.dash ? timing.melee : burst(spriteLandsAt(look, 'melee'), spriteLandsAt(look, 'melee') + T.melee.strike);
+    case 'projectile':
+      return burst(T.projectile.travel + last, T.projectile.travel + last + T.projectile.burst);
+    case 'beam':
+      return burst(T.beam.grow, T.beam.grow + T.beam.hold + T.beam.fade);
+    case 'bolt':
+      return burst(T.bolt.strike, T.bolt.strike + T.bolt.hold);
+    case 'drain':
+      return burst(spriteLandsAt(look, 'drain'), spriteLandsAt(look, 'drain') + T.drain.back);
+    case 'hex':
+      return { impactMs: T.hex.travel, totalMs: T.hex.travel + T.hex.swirl };
+    default:
+      return timing[kind];
+  }
+}
 
 /** §9.9.2 — the great moves that fill the stage whatever they hit, each its own picture. */
 export const AREA_MOVES: Readonly<Record<string, AreaStyle>> = {
@@ -110,7 +155,7 @@ const BEAM_MOVES = new Set(['flamethrower', 'water-gun', 'hydro-pump', 'ice-beam
 /** Lightning: drawn as a bolt, never as a ball. */
 const BOLT_MOVES = new Set(['thunder-shock', 'thunderbolt']);
 /** A move that takes from its target: the hit, then the life flowing back to the user. */
-const DRAIN_MOVES = new Set(['absorb', 'mega-drain', 'dream-eater']);
+const DRAIN_MOVES = new Set(['absorb', 'mega-drain', 'giga-drain', 'dream-eater']);
 
 /** A thrown move's look, by its type. */
 const PROJECTILE_BY_TYPE: Record<PokemonType, ProjectileStyle> = {
@@ -133,6 +178,9 @@ const PROJECTILE_BY_TYPE: Record<PokemonType, ProjectileStyle> = {
   steel: 'stars',
 };
 
+/** §9.9.2 — power-0 effects that land on the other side, so the move is thrown at it (a hex), not glowed on its user. */
+const FOE_EFFECTS: ReadonlySet<MoveEffect['kind']> = new Set<MoveEffect['kind']>(['disable', 'seed', 'trap', 'taunt', 'hazard', 'force-swap']);
+
 /** The base move an upgraded card is drawn as: Flamethrower+ moves as Flamethrower does. */
 export const baseMoveId = (id: string): string => id.replace(/(-plus)+$/, '');
 
@@ -141,12 +189,14 @@ export const baseMoveId = (id: string): string => id.replace(/(-plus)+$/, '');
  * move glows on its user, or is thrown at the foe when it hexes; a Melee move dashes; a Ranged one is a beam, a bolt, a
  * drain or a thrown shape by its type.
  */
-export function motionOf(move: MoveDef, victims: number): Motion {
+export function motionOf(move: MoveDef, victims: number, look?: MoveLook): Motion {
   const id = baseMoveId(move.id);
-  const at = (kind: MotionKind, style?: Motion['style']): Motion => ({ kind, ...(style ? { style } : {}), ...timing[kind] });
+  const at = (kind: MotionKind, style?: Motion['style']): Motion => ({ kind, ...(style ? { style } : {}), ...(look?.sprites ? spriteTiming(kind, look) : timing[kind]) });
   if (move.power > 0 && (AREA_MOVES[id] || move.targeting === 'cleave' || victims > 1)) return at('area', AREA_MOVES[id] ?? AREA_BY_TYPE[move.type]);
   if (move.power <= 0) {
-    const atFoe = move.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && e.target === 'foe'));
+    // Aimed at the other side: a status, a lowered stage (one foe or its whole side), a seed, a lock, a hazard laid on
+    // its field, a forced swap. Only what the user does to itself or its own side glows on it.
+    const atFoe = move.effects.some((e) => (e.kind === 'status' && !e.self) || (e.kind === 'stage' && (e.target === 'foe' || e.target === 'foe-side')) || FOE_EFFECTS.has(e.kind));
     return atFoe ? at('hex', 'rings') : at('aura');
   }
   if (move.range === 'melee') return at('melee');

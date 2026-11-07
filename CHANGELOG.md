@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.103 — The move, not the template · 2026-11-07
+
+Each move's sprites are its whole picture: the shared drawn layer is gone.
+
+- **No template on top.** No charge glow, aura rings or type tint over sprites.
+- **Stays put.** Bite, Cut and Slash land from afar; only lunges dash.
+- **Fixed.** Protect, Amnesia, Sunny Day, Rock Tomb and 10 more drawn right.
+- **From the first frame.** No empty charge before a move's sprites.
+
 ### v0.9.102 — Moves in their own sprites · 2026-11-06
 
 Every move animated with FireRed / LeafGreen's own battle-animation sprites.

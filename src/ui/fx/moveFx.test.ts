@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getContent } from '@/content/registry';
-import { composedRecipes, fxBgOf, fxRecipeOf, fxSprite, fxSpriteFile, pretScriptOf } from './moveFx';
+import { composedRecipes, fxBgOf, fxCastOf, fxLunges, fxRecipeOf, fxSprite, fxSpriteFile, pretScriptOf } from './moveFx';
 
 // §9.9.2 — every move is drawn with FireRed's own battle-animation sprites (or pret's, composed for a Gen IV move),
 // except the few the GBA animates without any: those keep the drawn shapes.
@@ -65,5 +65,35 @@ describe('Move animation sprites — §9.9.2', () => {
   it('fxRecipeOf_AThrownMove_ThrowsOneUnlessItIsAVolley', () => {
     expect(fxRecipeOf('energy-ball')?.volley).toBeUndefined();
     expect(fxRecipeOf('pin-missile')?.volley).toBe(4);
+  });
+
+  it('fxLunges_OnlyWhereTheGbaMovesTheAttacker_BiteLandsFromAfar', () => {
+    expect(fxLunges('tackle')).toBe(true);
+    expect(fxLunges('quick-attack')).toBe(true);
+    expect(fxLunges('bite')).toBe(false);
+    expect(fxLunges('cut')).toBe(false);
+    expect(fxLunges('giga-impact')).toBe(true);
+    expect(fxLunges('night-slash')).toBe(false);
+    // A move drawn without sprites keeps its dash: it is its only picture of the blow.
+    expect(fxLunges('bind')).toBe(true);
+  });
+
+  it('fxCastOf_AMeleeMoveWithOnlyItsHit_IsDrawnWithSprites_SoItHasNoEmptyBeat', () => {
+    expect(fxCastOf('pound')).toMatchObject({ sprites: true, own: false, dash: false });
+    expect(fxCastOf('bite')).toMatchObject({ sprites: true, own: true, dash: false });
+    expect(fxCastOf('tackle')).toMatchObject({ sprites: false, dash: true });
+  });
+
+  it('fxRecipeOf_AFrlgScriptWhoseFirstSpriteIsNotTheMove_IsDrawnWithThePieceThatIs', () => {
+    expect(fxRecipeOf('rock-tomb')?.main?.sprite).toBe('rocks');
+    expect(fxRecipeOf('kinesis')?.main?.sprite).toBe('bent-spoon');
+    expect(fxRecipeOf('crush-claw')?.main?.sprite).toBe('claw-slash');
+    expect(fxRecipeOf('wing-attack')?.main?.sprite).toBe('white-feather');
+  });
+
+  it('fxSprite_AnObjBlendSprite_IsSeeThrough', () => {
+    expect(fxSprite('protect')?.blend).toBe(true);
+    expect(fxSprite('protect@gold')?.blend).toBe(true);
+    expect(fxSprite('small-ember')?.blend).toBeUndefined();
   });
 });

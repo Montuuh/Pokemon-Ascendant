@@ -1,14 +1,15 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { spriteOf } from '@/ui/art';
-import { fxBgOf, fxBgUrl, fxRecipeOf, fxSprite, fxSpriteUrl, type FxPiece, type FxRecipe } from '@/ui/fx/moveFx';
+import { fxBgOf, fxBgUrl, fxCastOf, fxRecipeOf, fxSprite, fxSpriteUrl, type FxPiece, type FxRecipe } from '@/ui/fx/moveFx';
 import type { MoveFx, SlotBox, SpriteSlot } from '@/ui/hooks/useCombatFx';
-import type { AreaStyle, ProjectileStyle } from '@/ui/moveMotion';
+import { spriteLandsAt, type AreaStyle, type ProjectileStyle } from '@/ui/moveMotion';
 import { ArenaSprite } from './ArenaSprite';
 import styles from './MoveFx.module.css';
 
 // §9.9.2 — a move, drawn: the user's dash across the field and back (Melee), the charge and the throw (Ranged — an orb,
 // a spray, a beam, a bolt, a drain), the stage filled (Surf, Earthquake, Blizzard…), a glow (a raise or a heal) or a hex
-// thrown at the foe. Every shape is positioned from the slots' measured boxes and coloured by the move's type; every
+// thrown at the foe. A move with its own pret sprites is drawn with them alone, from its first frame: no charge, rings
+// or tint, and its user dashes only where the GBA moves it. Every shape is positioned from the slots' measured boxes and coloured by the move's type; every
 // beat's length is a custom property from `MOTION_MS`, so the picture lands when the hook lands the number. What happens
 // in the ground itself (Earthquake's cracks and dust) is drawn on a floor layer, under the Pokémon's cards (`floor`).
 
@@ -35,6 +36,22 @@ const inTheGround = (m: MoveFx) => m.motion.kind === 'area' && m.motion.style ==
 const FX_STEP = 0.5;
 const pixelScale = (b: SlotBox) => Math.max(1, Math.floor((b.height / 64) / FX_STEP) * FX_STEP) + FX_STEP;
 
+/**
+ * §9.9.2 — the beats of a move drawn with its own sprites, as `motionOf` times them: no charge before a throw, a stream,
+ * a bolt, a hex or a drain, and a Melee move that does not dash and a drain land at `spriteLandsAt`.
+ */
+function spriteBeats(look: { own: boolean; dash: boolean }): Record<string, string> {
+  return {
+    '--mv-projectile-cast': '0ms',
+    '--mv-beam-cast': '0ms',
+    '--mv-bolt-cast': '0ms',
+    '--mv-hex-cast': '0ms',
+    '--mv-drain-cast': '0ms',
+    '--mv-drain-travel': `${spriteLandsAt(look, 'drain')}ms`,
+    ...(look.dash ? {} : { '--mv-melee-windup': '0ms', '--mv-melee-dash': `${spriteLandsAt(look, 'melee')}ms` }),
+  };
+}
+
 /** What a move is drawn with: its pret sprites at the field's scale, and whose side throws it (the foe's are mirrored). */
 interface Cast {
   recipe: FxRecipe;
@@ -56,7 +73,8 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
         const from = centre(fromBox);
         const targets = m.to.map((s) => boxes[s]).filter((b): b is SlotBox => !!b);
         const to = targets.map(found ? body : centre);
-        const vars = { '--mv-type': `var(--type-${m.type})`, '--mv-total': `${m.motion.totalMs}ms`, '--mv-impact-at': `${m.motion.impactMs}ms` } as CSSProperties;
+        const look = fxCastOf(m.moveId);
+        const vars = { '--mv-type': `var(--type-${m.type})`, '--mv-total': `${m.motion.totalMs}ms`, '--mv-impact-at': `${m.motion.impactMs}ms`, ...(look.sprites ? spriteBeats(look) : {}) } as CSSProperties;
         const cast = recipe ? { recipe, scale: pixelScale(targets[0] ?? fromBox), flip: m.side === 'enemy' } : undefined;
         return (
           <div
@@ -85,7 +103,7 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
  * §9.9.2 One of the move's pret sprites, at the field's scale: its frames played in steps (looping while it flies, or
  * once where it lands), or one frame held. Pixels are moved and mirrored, never turned or smoothed (D9).
  */
-function Sprite({ piece, cast, at, delay = '0ms', once = false, className }: { piece: FxPiece; cast: Cast; at?: Point; delay?: string; once?: boolean; className?: string }) {
+function Sprite({ piece, cast, at, delay = '0ms', once = false, hold = false, until, className }: { piece: FxPiece; cast: Cast; at?: Point; delay?: string; once?: boolean; hold?: boolean; until?: string; className?: string }) {
   const info = fxSprite(piece.sprite);
   if (!info) return null;
   const held = piece.frame !== undefined;
@@ -100,21 +118,27 @@ function Sprite({ piece, cast, at, delay = '0ms', once = false, className }: { p
     '--fx-n': n,
     '--fx-delay': delay,
     '--fx-flip': cast.flip ? -1 : 1,
+    ...(until ? { '--fx-until': until } : {}),
     ...(at ? { left: px(at.x), top: px(at.y) } : {}),
   } as CSSProperties;
-  // Played once: a strip runs off its last frame; a held piece of a sheet is hidden instead (past it is the next piece).
-  return <i className={`${styles.fxSprite} ${once ? (held ? styles.fxHeld : styles.fxOnce) : ''} ${className ?? ''}`} style={vars} data-fx-sprite={piece.sprite} />;
+  // Played once: a strip runs off its last frame; a held piece of a sheet is hidden instead (past it is the next piece);
+  // `hold`: played through once and kept on its last frame (Amnesia's question mark, once it has formed).
+  const play = hold && n > 1 ? styles.fxHoldLast : once ? (held ? styles.fxHeld : styles.fxOnce) : '';
+  // `until`: gone at that moment (Bite's teeth, closed, give way to the hit's splat at the impact).
+  return <i className={`${styles.fxSprite} ${play} ${until && once && !hold ? styles.fxUntil : ''} ${info.blend ? styles.fxBlend : ''} ${className ?? ''}`} style={vars} data-fx-sprite={piece.sprite} />;
 }
 
 /** Where a move lands, drawn with its sprites: its impact (or its own sprite, if it has no impact) played once. */
-function SpriteImpact({ cast, at, delay, withMain = false }: { cast: Cast; at: Point; delay: string; withMain?: boolean }) {
+function SpriteImpact({ cast, at, delay, withMain = false, mainAt }: { cast: Cast; at: Point; delay: string; withMain?: boolean; mainAt?: string }) {
   const { main, impact } = cast.recipe;
   // The move's own sprite (the foot, the teeth) lands first and stays on top; its burst follows a frame later, under it.
+  // `mainAt`: the sprite is on the target before the blow (Bite's teeth from the first frame, closing as it lands).
+  const own = mainAt ?? delay;
   return (
     <>
       {impact ? <Sprite piece={impact} cast={cast} at={at} delay={withMain && main ? `calc(${delay} + var(--mv-frames-flicker))` : delay} once /> : null}
-      {main && (withMain || !impact) && <Sprite piece={main} cast={cast} at={at} delay={delay} once className={cast.recipe.pair ? styles.fxJawUpper : undefined} />}
-      {main && (withMain || !impact) && cast.recipe.pair && <Sprite piece={main} cast={cast} at={at} delay={delay} once className={styles.fxJawLower} />}
+      {main && (withMain || !impact) && <Sprite piece={main} cast={cast} at={at} delay={own} once {...(mainAt && impact ? { until: delay } : {})} className={cast.recipe.pair ? styles.fxJawUpper : undefined} />}
+      {main && (withMain || !impact) && cast.recipe.pair && <Sprite piece={main} cast={cast} at={at} delay={own} once {...(mainAt && impact ? { until: delay } : {})} className={styles.fxJawLower} />}
     </>
   );
 }
@@ -190,18 +214,18 @@ function Melee({ m, box, from, to, cast }: { m: MoveFx; box: SlotBox; from: Poin
   const landed = 'calc(var(--mv-melee-windup) + var(--mv-melee-dash))';
   // It stops short of the target, so the two touch rather than overlap.
   const reach = 0.78;
-  const vars = { left: box.left, top: box.top, width: box.width, height: box.height, '--dx': px((to.x - from.x) * reach), '--dy': px((to.y - from.y) * reach) } as CSSProperties;
   return (
     <>
       {m.actor && (
-        <div className={styles.double} style={vars}>
+        <div className={styles.double} style={{ left: box.left, top: box.top, width: box.width, height: box.height, '--dx': px((to.x - from.x) * reach), '--dy': px((to.y - from.y) * reach) } as CSSProperties}>
           <span className={styles.trail} />
           <span className={styles.jab}>
             <ArenaSprite src={spriteOf({ speciesId: m.actor.speciesId }, m.side === 'player' ? 'back' : 'front', m.actor.shiny)} />
           </span>
         </div>
       )}
-      {cast ? <SpriteImpact cast={cast} at={to} delay={landed} withMain /> : <Impact at={to} delay={landed} />}
+      {/* Without a dash, the move's sprite is on the target from the first frame and its blow lands a lead later. */}
+      {cast ? <SpriteImpact cast={cast} at={to} delay={landed} withMain {...(m.actor ? {} : { mainAt: '0ms' })} /> : <Impact at={to} delay={landed} />}
     </>
   );
 }
@@ -212,14 +236,15 @@ const STREAK_COUNT = { petals: 40, gale: 18, swarm: 24 } as const;
 
 const VOLLEY: Partial<Record<ProjectileStyle, number>> = { bubbles: 4, leaves: 3, shards: 3, rocks: 3, needles: 4, rings: 3, stars: 3, gust: 3 };
 
-/** §9.9.2 Ranged — the charge, then the shape thrown along the line to the target: one orb, or a volley a beat apart. */
+/** §9.9.2 Ranged — the charge, then the shape thrown along the line to the target: one orb, or a volley a beat apart;
+ *  with its own sprite, thrown from the first frame and landing with its last shot. */
 function Projectile({ style, from, to, cast }: { style: ProjectileStyle; from: Point; to: Point; cast?: Cast }) {
   const n = cast?.recipe.main ? (cast.recipe.volley ?? 1) : (VOLLEY[style] ?? 1);
   const landed = 'calc(var(--mv-projectile-cast) + var(--mv-projectile-travel))';
-  if (cast?.recipe.main)
+  if (cast?.recipe.main) {
+    const last = `calc(${landed} + var(--mv-projectile-volley) * ${n - 1})`;
     return (
       <>
-        <Cast at={from} kind="projectile" />
         {Array.from({ length: n }, (_, i) => (
           <span key={i} className={`${styles.flight} ${styles.spriteFlight}`} style={{ ...flight(from, to), '--i': i, '--off': px(n > 1 ? spread(i, 3) * 14 : 0) } as CSSProperties}>
             <span className={styles.upright}>
@@ -227,9 +252,10 @@ function Projectile({ style, from, to, cast }: { style: ProjectileStyle; from: P
             </span>
           </span>
         ))}
-        {cast.recipe.impact ? <Sprite piece={cast.recipe.impact} cast={cast} at={to} delay={landed} once /> : <Impact at={to} delay={landed} />}
+        {cast.recipe.impact ? <Sprite piece={cast.recipe.impact} cast={cast} at={to} delay={last} once /> : <Impact at={to} delay={last} />}
       </>
     );
+  }
   return (
     <>
       <Cast at={from} kind="projectile" />
@@ -246,7 +272,7 @@ function Projectile({ style, from, to, cast }: { style: ProjectileStyle; from: P
           </span>
         </span>
       ))}
-      <Impact at={to} delay={landed} />
+      {cast?.recipe.impact ? <Sprite piece={cast.recipe.impact} cast={cast} at={to} delay={landed} once /> : <Impact at={to} delay={landed} />}
     </>
   );
 }
@@ -260,7 +286,6 @@ function Beam({ from, to, cast }: { from: Point; to: Point; cast?: Cast }) {
   if (cast?.recipe.main)
     return (
       <>
-        <Cast at={from} kind="beam" />
         {Array.from({ length: STREAM }, (_, i) => (
           <span key={i} className={`${styles.flight} ${styles.streamFlight} ${styles.spriteFlight}`} style={{ ...flight(from, to), '--i': i, '--n': STREAM, '--off': px(spread(i, 6) * 10) } as CSSProperties}>
             <span className={styles.upright}>
@@ -306,7 +331,7 @@ function Bolt({ from, to, cast }: { from: Point; to: Point; cast?: Cast }) {
   const landed = 'calc(var(--mv-bolt-cast) + var(--mv-bolt-strike))';
   return (
     <>
-      <Cast at={from} kind="bolt" />
+      {!cast?.recipe.main && <Cast at={from} kind="bolt" />}
       <svg className={styles.svg} aria-hidden="true">
         <polyline className={styles.boltGlow} points={path} pathLength={1} />
         <polyline className={styles.boltCore} points={path} pathLength={1} />
@@ -321,10 +346,15 @@ function Drain({ from, to, cast }: { from: Point; to: Point; cast?: Cast }) {
   const landed = 'calc(var(--mv-drain-cast) + var(--mv-drain-travel))';
   return (
     <>
-      <Cast at={from} kind="drain" />
-      <span className={`${styles.beam} ${styles.tendril}`} style={flight(from, to)}>
-        <span className={styles.beamCore} />
-      </span>
+      {/* With its own sprites, the motes flowing back are the picture: no charge, no tendril over them. */}
+      {!cast?.recipe.main && (
+        <>
+          <Cast at={from} kind="drain" />
+          <span className={`${styles.beam} ${styles.tendril}`} style={flight(from, to)}>
+            <span className={styles.beamCore} />
+          </span>
+        </>
+      )}
       {Array.from({ length: 6 }, (_, i) => (
         <span key={i} className={`${styles.flight} ${styles.back} ${cast?.recipe.main ? styles.spriteFlight : ''}`} style={{ ...flight(to, from), '--i': i, '--off': px(spread(i, 5) * 18) } as CSSProperties}>
           {cast?.recipe.main ? (
@@ -347,7 +377,7 @@ function Hex({ from, to, cast }: { from: Point; to: Point[]; cast?: Cast }) {
   const landed = 'calc(var(--mv-hex-cast) + var(--mv-hex-travel))';
   return (
     <>
-      <Cast at={from} kind="hex" />
+      {!cast?.recipe.main && <Cast at={from} kind="hex" />}
       {to.map((t, k) => (
         <span key={k}>
           {Array.from({ length: main ? 3 : 4 }, (_, i) => (
@@ -375,19 +405,17 @@ function Hex({ from, to, cast }: { from: Point; to: Point[]; cast?: Cast }) {
 /** §9.9.2 A raise or a heal — rings rising from the Pokémon's feet, and sparks going up. */
 function Aura({ at, box, cast }: { at: Point; box: SlotBox; cast?: Cast }) {
   const feet = { x: at.x, y: box.top + box.height * 0.92 };
+  // Its own sprite on the Pokémon (Swords Dance's sword, Amnesia's question mark), played through and held: the move's
+  // picture alone, without the drawn rings over it (one picture per beat, D12).
+  if (cast?.recipe.main) return <Sprite piece={cast.recipe.main} cast={cast} at={at} once hold className={styles.fxAura} />;
   return (
-    <>
-      <span className={styles.aura} style={{ left: px(feet.x), top: px(feet.y), '--h': px(box.height * 0.8) } as CSSProperties}>
-        <span className={styles.auraRing} />
-        <span className={styles.auraRing} style={{ '--i': 1 } as CSSProperties} />
-        <span className={styles.auraRing} style={{ '--i': 2 } as CSSProperties} />
-        <span className={styles.auraGlow} />
-        {!cast?.recipe.main &&
-          Array.from({ length: 10 }, (_, i) => <i key={i} className={styles.auraSpark} style={{ '--i': i, '--x': px(spread(i, 2) * box.width * 0.35) } as CSSProperties} />)}
-      </span>
-      {/* Its own sprite on the Pokémon (Swords Dance's sword, Amnesia's question mark), played through once. */}
-      {cast?.recipe.main && <Sprite piece={cast.recipe.main} cast={cast} at={at} once className={styles.fxAura} />}
-    </>
+    <span className={styles.aura} style={{ left: px(feet.x), top: px(feet.y), '--h': px(box.height * 0.8) } as CSSProperties}>
+      <span className={styles.auraRing} />
+      <span className={styles.auraRing} style={{ '--i': 1 } as CSSProperties} />
+      <span className={styles.auraRing} style={{ '--i': 2 } as CSSProperties} />
+      <span className={styles.auraGlow} />
+      {Array.from({ length: 10 }, (_, i) => <i key={i} className={styles.auraSpark} style={{ '--i': i, '--x': px(spread(i, 2) * box.width * 0.35) } as CSSProperties} />)}
+    </span>
   );
 }
 
@@ -416,9 +444,9 @@ function Area({ style, side, from, to, boxes, cast }: { style: AreaStyle; side: 
   };
   return (
     <div className={styles.area} style={vars}>
-      {/* Where pret's background washes the stage, no tint over it; where the move has its own sprites, they replace
-          the drawn picture (one picture per beat, D12) — Earthquake's shaking ground stays, it is the choreography. */}
-      {!cast?.recipe.bg && <span className={styles.tint} />}
+      {/* Where the move has its own sprites or pret's background, they replace the drawn picture and its type tint (one
+          picture per beat, D12) — Earthquake's shaking ground stays, it is the choreography. */}
+      {drawn && <span className={styles.tint} />}
       {drawn && style === 'wave' && (
         <span className={styles.waveTrack}>
           <span className={styles.waveBody} />

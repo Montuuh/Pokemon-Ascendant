@@ -20,6 +20,27 @@ describe('Move motion — §9.9.2', () => {
     expect(kindOf('thunder-wave')).toMatchObject({ kind: 'hex' });
   });
 
+  it('MotionOf_APowerZeroMoveAimedAtTheOtherSide_IsThrownAtIt_NotGlowedOnItsUser', () => {
+    // A lowered stage on the foe's whole side, a disable, a seed, a lock, a taunt, a hazard, a forced swap.
+    for (const id of ['growl', 'tail-whip', 'disable', 'leech-seed', 'mean-look', 'taunt', 'spikes', 'stealth-rock', 'roar'])
+      expect(kindOf(id), id).toMatchObject({ kind: 'hex' });
+    expect(kindOf('giga-drain')).toMatchObject({ kind: 'drain' });
+    expect(kindOf('protect')).toMatchObject({ kind: 'aura' });
+  });
+
+  it('MotionOf_AMoveDrawnWithItsSprites_HasNoEmptyCharge_AndAVolleyLandsWithItsLastShot', () => {
+    const drawn = kindOf('swift');
+    const sprite = motionOf(content.move('swift'), 1, { sprites: true, own: true, dash: false, volley: 3 });
+    expect(sprite.impactMs).toBe(MOTION_MS.projectile.travel + 2 * MOTION_MS.projectile.volley);
+    expect(sprite.impactMs).toBeLessThan(drawn.impactMs + 2 * MOTION_MS.projectile.volley);
+    // Bite, which does not dash: its teeth are on the foe from the first frame and land a lead later.
+    expect(motionOf(content.move('bite'), 1, { sprites: true, own: true, dash: false, volley: 1 }).impactMs).toBe(MOTION_MS.sprite.lead);
+    // Pound has only its splat: it lands at once, no empty beat before it.
+    expect(motionOf(content.move('pound'), 1, { sprites: true, own: false, dash: false, volley: 1 }).impactMs).toBe(MOTION_MS.frames.flicker);
+    // Tackle still dashes across first.
+    expect(motionOf(content.move('tackle'), 1, { sprites: true, own: false, dash: true, volley: 1 }).impactMs).toBe(kindOf('tackle').impactMs);
+  });
+
   it('TheGreatMoves_FillTheStage_AndAnythingHittingSeveral_Too', () => {
     expect(kindOf('surf')).toMatchObject({ kind: 'area', style: 'wave' });
     expect(kindOf('earthquake')).toMatchObject({ kind: 'area', style: 'quake' });
