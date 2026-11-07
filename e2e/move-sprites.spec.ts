@@ -3,7 +3,7 @@ import { MOTION_MS } from '../src/ui/moveMotion';
 
 // §9.9.2 — a move is drawn with FireRed's own battle-animation sprites: Flamethrower pours pret's embers, Bite
 // closes its teeth on the foe, Psychic washes the stage in its background. Each beat is frozen just after its impact
-// and screenshot to playtest/move-sprite-<id>.png; a move the GBA draws without sprites keeps the drawn shapes.
+// and screenshot to playtest/move-sprite-<id>.png; a move the GBA plays on the Pokémon itself moves its sprite.
 
 test.use({ reducedMotion: 'no-preference' });
 
@@ -65,11 +65,14 @@ test.describe('Move animation sprites — §9.9.2', () => {
     }
   });
 
-  test('a move the GBA draws without sprites keeps the drawn shapes', async ({ page }) => {
+  test('a move the GBA plays on the Pokémon itself moves its sprite, with no drawn rings', async ({ page }) => {
     await ready(page);
     const fx = await frozen(page, 'agility', 100);
-    await expect(fx).toHaveAttribute('data-sprites', 'drawn');
+    await expect(fx).toHaveAttribute('data-sprites', 'mon');
     await expect(fx.locator('[data-fx-sprite]')).toHaveCount(0);
+    // Agility rushes its user with afterimages: the user's sprite takes the beats, the field draws no rings.
+    await expect(fx.locator('*')).toHaveCount(0);
+    await expect(page.locator('[data-fx-slot="player"] .fx-mon-trace')).toHaveCount(1);
   });
 
   test('Bite lands on the foe from where its user stands; a volley waits unseen until it leaves', async ({ page }) => {

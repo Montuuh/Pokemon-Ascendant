@@ -52,6 +52,30 @@ export const pathOf = (callback) => BY_CALLBACK[callback] ?? PATHS.find(([, re])
 /** How long a sprite of each path lives, in GBA frames — about what its callback takes. */
 export const LIFE = { absorb: 30, orbit: 40, wave: 24, fall: 18, rise: 24, scatter: 20, arc: 24, line: 18, on: 16, close: 12, out: 18, sway: 48 };
 
+/**
+ * §9.9.2 — the visual tasks that move, deform or light the Pokémon itself (no sprite), as one of a dozen beats the
+ * game plays on its sprite: Agility's elliptical rush and its afterimages, Harden's metallic shine, Growth's swelling,
+ * Minimize's shrinking, Splash's hop, Tail Whip's sway, a tint in the move's colour. First match wins; a beat's own
+ * length in GBA frames. A shake on a Pokémon that takes the hit is the hit's own (it shakes already).
+ */
+export const MON_TASKS = [
+  ['trace', /TraceMonBlended|DoubleTeam|AttackerPunchWithTrace/, 40],
+  ['sway', /TranslateMonElliptical|SwayMon|RockMonBackAndForth|RotateMonSpriteToSide|RotateMonToSideAndRestore|TeeterDance|ThrashMoveMon/, 40],
+  ['shine', /MetallicShine|FlashAnimTagWithColor|StatusClearedEffect/, 30],
+  ['grow', /GrowAndShrink|StrongFrustrationGrowAndShrink|TransparentCloneGrowAndShrink|StretchAttackerUp|DeepInhale/, 24],
+  ['shrink', /Minimize|Withdraw|SwitchOutShrinkMon|ShrinkTargetCopy/, 30],
+  // A squash or a stretch (Defense Curl, Stockpile): shrunk to its half step instead — a Pokémon is never deformed.
+  ['shrink', /StretchTargetUp|DefenseCurlDeformMon|SquishAndSweatDroplets|SmellingSaltsSquish|SlackOffSquish|SwallowDeformMon|StockpileDeformMon|SpitUpDeformMon/, 20],
+  ['melt', /AcidArmor|TransformMon/, 40],
+  ['vanish', /Teleport|MonToSubstitute|SwapMonSpriteToFromSubstitute|AttackerFadeToInvisible|SubstituteFadeToInvisible/, 30],
+  ['hop', /Splash|DigUpMovement/, 30],
+  ['gray', /SetGrayscaleOrOriginalPal/, 30],
+  ['tint', /BlendColorCycle|BlendMonInAndOut|BlendBattleAnimPal(?!Exclude)|MusicNotesRainbowBlend|SetCamouflageBlend/, 24],
+  ['shake', /ShakeMon|HorizontalShake|ShakeTargetInPattern|ShakeAndSinkMon|ShakeTargetBasedOnMovePowerOrDmg/, 20],
+];
+/** ScaleMonAndRestore swells its Pokémon (negative scale args) or shrinks it (positive). */
+const scaleBeat = (args) => (Number(args[0]) < 0 ? 'grow' : 'shrink');
+
 /** A sprite that lands the blow: the hit's splat, a cross, a strike — the move lands with the first of them. */
 const HIT = /HitSplat|CrossImpact|ArmThrustHit|KnockOffStrike|SlidingHit|WhipHit|FlashingHit|Explosion/;
 
@@ -84,11 +108,13 @@ const MAX_EMITS = 40;
 
 /**
  * The timeline of one move script: `[t, sprite, path, dx, dy, on, life, hit]` per sprite it creates — t and life in
- * GBA frames, `on` 'u' (its user) or 't' (its target) where it plays or starts, `hit` 1 for the blow — following its
- * calls and the blow's branch, and where the GBA waits for its visuals, the end of the longest still playing.
+ * GBA frames, `on` 'u' (its user) or 't' (its target) where it plays or starts, `hit` 1 for the blow — and
+ * `[t, beat, on, life]` per visual task that moves or lights a Pokémon (`MON_TASKS`), following its calls and the blow's
+ * branch, and where the GBA waits for its visuals, the end of the longest still playing.
  */
 export function timeline(labels, label, templates, spriteKey, bodies = {}) {
   const emits = [];
+  const mon = [];
   let t = 0;
   let end = 0;
   const seen = new Set();
@@ -112,6 +138,19 @@ export function timeline(labels, label, templates, spriteKey, bodies = {}) {
           const [dx, dy] = how.offset || path === 'close' ? [own[0] ?? 0, own[1] ?? 0] : [0, 0];
           emits.push([t, sprite, path, dx, dy, anchor, life, HIT.test(tpl.callback) ? 1 : 0]);
           end = Math.max(end, t + life);
+        }
+      } else if (cmd === 'createvisualtask') {
+        const task = args[0].replace(/^AnimTask_/, '');
+        const beat = task === 'ScaleMonAndRestore' ? scaleBeat(args.slice(2)) : MON_TASKS.find(([, re]) => re.test(task))?.[0];
+        if (beat && mon.length < MAX_EMITS) {
+          const rest = args.slice(1).join(' ');
+          // On whom: the battler or the palette it names; a palette task on the background alone moves no Pokémon.
+          const on = /ANIM_TARGET|F_PAL_TARGET|ANIM_DEF_PARTNER|F_PAL_DEF/.test(rest) ? 't' : /ANIM_ATTACKER|F_PAL_ATTACKER|ANIM_ATK_PARTNER/.test(rest) ? 'u' : beat === 'tint' || beat === 'gray' ? null : 'u';
+          if (on) {
+            const life = MON_TASKS.find(([b]) => b === beat)?.[2] ?? 24;
+            mon.push([t, beat, on, life]);
+            end = Math.max(end, t + life);
+          }
         }
       } else if (cmd === 'delay') {
         t += Number(args[0]) || 0;
@@ -138,5 +177,5 @@ export function timeline(labels, label, templates, spriteKey, bodies = {}) {
     return 'end';
   };
   run(label, 0);
-  return { frames: Math.max(end, t), emits };
+  return { frames: Math.max(end, t), emits, mon };
 }

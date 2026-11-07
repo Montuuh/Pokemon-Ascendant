@@ -92,7 +92,8 @@ Pokémon.
   rings or tint over them), only a move whose GBA script moves its attacker dashes, and a move's sprite is on the
   field from its first frame; since v0.9.104 each FRLG move replays its own script's sprite timeline and paths, and
   Gen IV moves borrow the script of the move they move like; since v0.9.105 a move's sprites are drawn at twice the
-  Pokémon's pixel scale, what lands on a Pokémon capped to its box and what flies across the field to half again.
+  Pokémon's pixel scale, what lands on a Pokémon capped to its box and what flies across the field to half again; since v0.9.106 the
+  script's tasks on a Pokémon play on its own sprite (Agility's afterimages, Harden's shine, Growth's swelling).
 - **Sound** (✅ v0.9.23, §9.5): every sound synthesised as it plays (Web Audio, no files) — a swish per type for every
   card, impacts by effectiveness, a sting per status, the ball's wobbles and click, level-up and evolution — and music
   composed in code per Region, City, Victory Road, League, fight, boss and Champion, with a tension layer under 30 % HP.

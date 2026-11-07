@@ -732,6 +732,20 @@ move it moves `like` (Fire Fang bites as Bite does, with fangs and an ember), it
 move keeps the kind's picture. Why the script and not a hand-made path per move: it is the GBA's own choreography,
 data the importer reads, so 300 moves each move like themselves without 300 hand-tuned animations.
 
+**What a move does to the Pokémon itself** (v0.9.106, the review's fifth cause). The visual tasks of a move's FRLG
+script that move, deform or light a Pokémon (`MON_TASKS` in `scripts/fx/choreo.mjs` → `mon` in the choreography) play
+on that Pokémon's own sprite, at their moment in the script: Agility rushes its user side to side with afterimages in
+the move's colour, Double Team leaves them, Harden and Iron Defense shine it like metal, Growth swells and lights it,
+Minimize and Withdraw shrink it, Acid Armor and Transform shrink and grey it, Substitute and Teleport make it vanish,
+Splash hops it, Tail Whip sways it, and a blend toward a colour outlines and lights it in the move's type. A Pokémon
+is never squashed or stretched (motion-review §3): it swells or shrinks only to the next half step of its own pixel
+scale, in a jump (D9), where the GBA's affine tasks deform it. A beat the script repeats on the same Pokémon is one
+beat played again (Growth swells twice), at most three times, so no light flashes more than three times a second; a
+beat that would fight one already playing on that sprite gives way. A move the GBA plays only on the Pokémon draws
+nothing else — no rings rising from its feet — and a hex keeps its rings on the foe unless its script plays on the foe
+too. A shake on a Pokémon the move hits is the hit's own, already played; a beat on the target plays on every target,
+a stagger apart. Each beat's length is `MOTION_MS.mon`; under reduced motion none plays.
+
 **A move's sprites are its whole picture** (v0.9.103, from the review of every move filmed, `docs/art/fx/move-fx-review.json`).
 Where a move has its pret sprites, the drawn layer that served every move alike goes: no glow gathers on the user
 before a throw, a raise shows its own sprite without the rings, a field move drops its type tint, a drain its tendril —

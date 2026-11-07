@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.106 — Moves on the Pokémon · 2026-11-07
+
+Moves the GBA plays on the Pokémon itself now move its sprite.
+
+- **Self moves.** Agility rushes, Harden shines, Growth swells, Splash hops.
+- **No rings.** Raises show the Pokémon's own beat, not generic rings.
+- **Faithful pixels.** It swells or shrinks by half steps, never squashed.
+
 ### v0.9.105 — Moves you can see · 2026-11-07
 
 A move's sprites are drawn bigger, at twice the Pokémon's pixel.

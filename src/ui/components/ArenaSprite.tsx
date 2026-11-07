@@ -1,4 +1,4 @@
-import { useEffect, useState, type HTMLAttributes } from 'react';
+import { useEffect, useState, type CSSProperties, type HTMLAttributes } from 'react';
 import styles from './ArenaSprite.module.css';
 
 interface Props extends HTMLAttributes<HTMLSpanElement> {
@@ -30,7 +30,8 @@ export function ArenaSprite({ src, concealed, imgClassName, shiny, className, ..
   }, [box]);
   const scale = natural && room ? fitScale(room, natural.h) : 0;
   return (
-    <span ref={setBox} className={`${styles.box} ${className ?? ''}`} {...rest}>
+    // `--mon-px`: its pixel scale, so a move's beat swells or shrinks it only to the next half step (§9.9.2, D9).
+    <span ref={setBox} className={`${styles.box} ${className ?? ''}`} {...rest} style={{ ...rest.style, ...(scale ? { '--mon-px': scale } : {}) } as CSSProperties}>
       <img
         className={`pixel ${styles.img} ${imgClassName ?? ''}`}
         src={src}

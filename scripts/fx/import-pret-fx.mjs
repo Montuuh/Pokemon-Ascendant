@@ -153,7 +153,7 @@ for (const label of Object.keys(labels)) {
   const id = label.slice(5).toLowerCase().replace(/_/g, '-');
   // §9.9.2 — its choreography: each sprite it creates, when, along which path, where.
   const choreo = timeline(labels, label, templates, (tag) => (tagGfx[tag]?.includes('/sprites/') ? key(tag) : null), bodies);
-  moves[id] = { sprites: [...sprites].filter((t) => tagGfx[t]?.includes('/sprites/')).map(key), bgs: [...bgs].map(bgKey), ...(lunge ? { lunge } : {}), ...(choreo.emits.length ? { choreo } : {}) };
+  moves[id] = { sprites: [...sprites].filter((t) => tagGfx[t]?.includes('/sprites/')).map(key), bgs: [...bgs].map(bgKey), ...(lunge ? { lunge } : {}), ...(choreo.emits.length || choreo.mon.length ? { choreo } : {}) };
   sprites.forEach((t) => usedTags.add(t));
   bgs.forEach((b) => b !== 'BG_NONE' && usedBgs.add(b));
 }

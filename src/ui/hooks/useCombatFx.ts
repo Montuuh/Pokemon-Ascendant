@@ -3,7 +3,7 @@ import type { CombatEvent, CombatState, EnemyCombatant, PokemonType } from '@/si
 import { benchIndices, bossArchetype, indexToSlot } from '@/sim';
 import { getContent } from '@/content/registry';
 import { choreoCapOf, MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
-import { fxCastOf } from '@/ui/fx/moveFx';
+import { fxBeatOf, fxCastOf, fxChoreoOf } from '@/ui/fx/moveFx';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
 import { CATCH_BREAK_LINE, DAMAGE_CAUSE_LABEL, EFFECTIVENESS_LABEL, PHASE_TEXT, STATUS_LABEL } from '@/ui/strings';
@@ -101,6 +101,8 @@ export interface CombatFxState {
   floats: FloatingFx[];
   /** uid → css class applied to that combatant's card for a moment. */
   classes: Record<string, string>;
+  /** §9.9.2 — what a move does to each Pokémon itself (its FRLG script's visual tasks), as `fx-mon-*` classes. */
+  mons: Record<string, string>;
   /** uid → css class for that combatant's sprite in the arena only: sent out, waiting to be, entering. */
   sprites: Record<string, string>;
   ghosts: Ghost[];
@@ -265,6 +267,7 @@ const fromABall = (state: CombatState) => state.kind !== 'wild' || !!state.train
 export function useCombatFx(state: CombatState | null, combatKey: number, animate = true): CombatFxState {
   const [floats, setFloats] = useState<FloatingFx[]>([]);
   const [classes, setClasses] = useState<Record<string, string>>({});
+  const [mons, setMons] = useState<Record<string, readonly (readonly [number, string])[]>>({});
   const [sprites, setSprites] = useState<Record<string, string>>({});
   const [ghosts, setGhosts] = useState<Ghost[]>([]);
   const [balls, setBalls] = useState<BallFlight[]>([]);
@@ -355,6 +358,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       seen.current = look(state);
       setFloats([]);
       setClasses({});
+      setMons({});
       setGhosts([]);
       setBalls([]);
       setHits([]);
@@ -435,6 +439,12 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       const id = nextId.current++;
       schedule(() => setFloats((fs) => [...fs, { ...f, id }]), at);
       schedule(() => setFloats((fs) => fs.filter((x) => x.id !== id)), at + FX_MS.float);
+    };
+    // A beat on a Pokémon itself: several may overlap (Growth swells and lights at once), each cleared by its own timer.
+    const addMon = (uid: string, cls: string, at: number, ms: number) => {
+      const id = nextId.current++;
+      schedule(() => setMons((c) => ({ ...c, [uid]: [...(c[uid] ?? []), [id, cls] as const] })), at);
+      schedule(() => setMons((c) => ({ ...c, [uid]: (c[uid] ?? []).filter(([k]) => k !== id) })), at + ms + CLASS_TAIL_MS);
     };
     const addClass = (uid: string, cls: string, at: number, ms: number) => {
       schedule(() => setClasses((c) => ({ ...c, [uid]: cls })), at);
@@ -539,6 +549,18 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       if (line !== undefined) {
         logCuts.push({ at: delay, upTo: line + 1 });
         logCuts.push({ at: delay + motion.impactMs, upTo: nextMark(line) });
+      }
+      // §9.9.2 — what its FRLG script does to the Pokémon themselves: Agility's rush, Harden's shine, Growth's swelling. A
+      // shake on a Pokémon the move hits is the hit's own, already played.
+      const beat = fxChoreoOf(moveId, fxBeatOf(motion.kind, look.dash, cap));
+      const onTargets = motion.kind === 'area' ? MOTION_MS.impact.stagger : 0;
+      for (const b of beat?.mon ?? []) {
+        const who = b.on === 'user' ? [userUid] : targets.length ? targets : [userUid];
+        const cls = `fx-mon-${b.kind}${b.n > 1 ? ` fx-mon-n${b.n}` : ''}${b.kind === 'tint' || b.kind === 'trace' ? ` fx-tint-${move.type}` : ''}`;
+        who.forEach((uid, k) => {
+          if (b.kind === 'shake' && hit.includes(uid)) return;
+          addMon(uid, cls, delay + b.at + k * onTargets, MOTION_MS.mon[b.kind] * b.n);
+        });
       }
       const stagger = motion.kind === 'area' ? MOTION_MS.impact.stagger : 0;
       const hitAt = new Map(targets.map((uid, k) => [uid, delay + motion.impactMs + k * stagger]));
@@ -833,7 +855,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.nextSeq, combatKey]);
 
-  return { floats, classes, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, rhythm: rhythmShown, phase: phaseShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
+  const monClasses = Object.fromEntries(Object.entries(mons).map(([uid, list]) => [uid, list.map(([, cls]) => cls).join(' ')]));
+  return { floats, classes, mons: monClasses, sprites, ghosts, balls, hits, moves, stageClass, catching, banner, busy, logHold, faintPending, hp: hpShown, rhythm: rhythmShown, phase: phaseShown, acting, opening, turn: shownTurn ?? state?.turn ?? 1, hitStop };
 }
 
 export type { CombatEvent };

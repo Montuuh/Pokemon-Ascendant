@@ -161,4 +161,32 @@ describe('Move animation sprites — §9.9.2', () => {
     const blast = fxChoreoOf('fire-blast')!;
     expect(blast.impactMs).toBeGreaterThan(blast.emits[0]!.at);
   });
+
+  it('fxChoreoOf_AMoveTheGbaPlaysOnThePokemon_CarriesItsBeats', () => {
+    const kinds = (id: string) => fxChoreoOf(id)!.mon.map((b) => `${b.kind}:${b.on}`);
+    // Agility rushes with afterimages; Harden shines; Growth swells and lights; Minimize shrinks; Splash hops.
+    expect(kinds('agility')).toEqual(expect.arrayContaining(['sway:user', 'trace:user']));
+    expect(kinds('harden')).toEqual(['shine:user']);
+    expect(kinds('growth')).toEqual(expect.arrayContaining(['grow:user', 'tint:user']));
+    expect(kinds('minimize')).toEqual(['shrink:user']);
+    expect(kinds('splash')).toEqual(['hop:user']);
+    // A hit's own shake on its target is in the script too; the game skips it, the hit shakes it already.
+    expect(kinds('tackle')).toContain('shake:target');
+  });
+
+  it('fxChoreoOf_ABeatTheScriptRepeats_IsOneBeatPlayedAgain_AndNoLightFlashesThreeTimesASecond', () => {
+    // Growth swells twice: one swelling played twice, not two that would merge into one on screen.
+    const growth = fxChoreoOf('growth')!.mon.filter((b) => b.kind === 'grow');
+    expect(growth).toHaveLength(1);
+    expect(growth[0]!.n).toBe(2);
+    for (const m of moves) {
+      const beats = fxChoreoOf(m.id)?.mon ?? [];
+      for (const b of beats) {
+        expect(b.n, m.id).toBeLessThanOrEqual(3);
+        // The same beat never twice at once on the same Pokémon.
+        expect(beats.filter((o) => o.kind === b.kind && o.on === b.on && Math.abs(o.at - b.at) < MOTION_MS.mon[b.kind]), m.id).toHaveLength(1);
+        if (b.kind === 'shine' || b.kind === 'tint' || b.kind === 'gray') expect(b.n / ((b.n * MOTION_MS.mon[b.kind]) / 1000), m.id).toBeLessThanOrEqual(3);
+      }
+    }
+  });
 });

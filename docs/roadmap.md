@@ -1540,6 +1540,17 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.106 — Moves on the Pokémon  ✅ 2026-11-07
+
+**Shipped.** The user picked cause 5 of the move review (moves the GBA plays on the Pokémon itself showed only rings).
+Each FRLG script's visual tasks on a Pokémon are read into the choreography (`MON_TASKS` in `scripts/fx/choreo.mjs`)
+and play on its sprite as `fx-mon-*` beats (§9.9.2): afterimages, sway, metallic shine, swelling and shrinking to the
+next half step from its feet, vanishing, a hop, greying, a tint outline in the move's type, a shake; repeats merged
+(≤ 3, never over three lights a second), one beat per channel, every target a stagger apart; raises draw no rings.
+UI review: Ship with fixes → Ship with fixes (repeats, the ground shadow, black afterimages, no squash or stretch,
+Tail Whip's foe; then dead `squish`, scaling from the feet). Still open from the review: Growl's hex stagger, Tail
+Whip's drawn cast over its swaying user.
+
 ### v0.9.105 — Moves you can see  ✅ 2026-11-07
 
 **Shipped.** The user picked cause 2 of the move review (sprites small and few; the count is the GBA's since v0.9.104).

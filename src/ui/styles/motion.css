@@ -459,3 +459,119 @@ html[data-motion='reduced'] .fx-burst::before {
     stroke-dashoffset: -18;
   }
 }
+
+/*
+ * §9.9.2 — what a move does to the Pokémon itself, from its FRLG script's visual tasks (useCombatFx's `mons`): each
+ * beat sets one animation on the sprite's <img> — what moves it (--mon-move) and what lights it (--mon-light), so a
+ * swelling and a glow play together (Growth). A beat the script plays again and again is one beat played `--mon-n`
+ * times (`fx-mon-n2`, `fx-mon-n3`), never more than three lights a second. Its Pokémon is never squashed or stretched
+ * (motion-review §3): it swells or shrinks only to the next half step of its own pixel scale (`--mon-px`, set by
+ * ArenaSprite) and jumps there, as pixel art does (D9). The lengths are MOTION_MS.mon (motionTimings on the arena).
+ * Under reduced motion none plays.
+ */
+[class*='fx-mon-'] img {
+  animation: var(--mon-move, none), var(--mon-light, none);
+  /* It swells and shrinks from its feet, as pret keeps a scaled Pokémon on the ground: never floating mid-window. */
+  transform-origin: 50% 100%;
+}
+.fx-mon-n2 { --mon-n: 2; }
+.fx-mon-n3 { --mon-n: 3; }
+.fx-mon-trace {
+  --mon-light: monTrace var(--mv-mon-trace) linear var(--mon-n, 1) both;
+}
+.fx-mon-sway { --mon-move: monSway var(--mv-mon-sway) steps(4) var(--mon-n, 1) both; }
+.fx-mon-shine { --mon-light: monShine var(--mv-mon-shine) steps(1, end) var(--mon-n, 1) both; }
+.fx-mon-grow { --mon-move: monGrow var(--mv-mon-grow) steps(1, end) var(--mon-n, 1) both; }
+.fx-mon-shrink { --mon-move: monShrink var(--mv-mon-shrink) steps(1, end) var(--mon-n, 1) both; }
+/* Melting (Acid Armor, Transform): it shrinks and greys, never squashed flat. */
+.fx-mon-melt {
+  --mon-move: monShrink var(--mv-mon-melt) steps(1, end) var(--mon-n, 1) both;
+  --mon-light: monGray var(--mv-mon-melt) steps(1, end) var(--mon-n, 1) both;
+}
+.fx-mon-vanish { --mon-light: monVanish var(--mv-mon-vanish) steps(1, end) var(--mon-n, 1) both; }
+.fx-mon-hop { --mon-move: monHop var(--mv-mon-hop) steps(2) var(--mon-n, 1) both; }
+.fx-mon-gray { --mon-light: monGray var(--mv-mon-gray) steps(1, end) var(--mon-n, 1) both; }
+.fx-mon-tint { --mon-light: monTint var(--mv-mon-tint) steps(1, end) var(--mon-n, 1) both; }
+.fx-mon-shake { --mon-move: monShake var(--mv-mon-shake) steps(2) var(--mon-n, 1) both; }
+/* The move's type, for a tint and an afterimage. */
+.fx-tint-normal { --mon-tint: var(--type-normal); }
+.fx-tint-fire { --mon-tint: var(--type-fire); }
+.fx-tint-water { --mon-tint: var(--type-water); }
+.fx-tint-grass { --mon-tint: var(--type-grass); }
+.fx-tint-electric { --mon-tint: var(--type-electric); }
+.fx-tint-ice { --mon-tint: var(--type-ice); }
+.fx-tint-fighting { --mon-tint: var(--type-fighting); }
+.fx-tint-poison { --mon-tint: var(--type-poison); }
+.fx-tint-ground { --mon-tint: var(--type-ground); }
+.fx-tint-flying { --mon-tint: var(--type-flying); }
+.fx-tint-psychic { --mon-tint: var(--type-psychic); }
+.fx-tint-bug { --mon-tint: var(--type-bug); }
+.fx-tint-rock { --mon-tint: var(--type-rock); }
+.fx-tint-ghost { --mon-tint: var(--type-ghost); }
+.fx-tint-dragon { --mon-tint: var(--type-dragon); }
+.fx-tint-dark { --mon-tint: var(--type-dark); }
+.fx-tint-steel { --mon-tint: var(--type-steel); }
+@keyframes monSway {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -20% 0; }
+  75% { translate: 20% 0; }
+}
+/* Afterimages: hard copies of its silhouette in the move's colour either side as it rushes (Agility, Double Team) —
+   the same two shadows throughout, their offset and their colour's weight moving, so they never pass through black. */
+@keyframes monTrace {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 color-mix(in srgb, var(--mon-tint, var(--ink-primary)) 0%, transparent))
+      drop-shadow(0 0 0 color-mix(in srgb, var(--mon-tint, var(--ink-primary)) 0%, transparent));
+  }
+  25%, 75% {
+    filter: drop-shadow(calc(var(--sp-4) * var(--mon-px, 1) * -1) 0 0 color-mix(in srgb, var(--mon-tint, var(--ink-primary)) 55%, transparent))
+      drop-shadow(calc(var(--sp-4) * var(--mon-px, 1)) 0 0 color-mix(in srgb, var(--mon-tint, var(--ink-primary)) 55%, transparent));
+  }
+}
+@keyframes monShine {
+  0%, 100% { filter: none; }
+  30% { filter: brightness(2.2) contrast(1.4) saturate(0.4); }
+  70% { filter: none; }
+}
+/* Swelling and shrinking: to the next half step of its own pixel scale and back, in jumps. */
+@keyframes monGrow {
+  0%, 100% { scale: 1; }
+  20%, 80% { scale: calc((var(--mon-px, 1) + 0.5) / var(--mon-px, 1)); }
+}
+@keyframes monShrink {
+  0%, 100% { scale: 1; }
+  20%, 80% { scale: calc(max(0.5, var(--mon-px, 1) - 0.5) / var(--mon-px, 1)); }
+}
+@keyframes monVanish {
+  0%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+@keyframes monHop {
+  0%, 50%, 100% { translate: 0 0; }
+  25%, 75% { translate: 0 -32%; }
+}
+@keyframes monGray {
+  0%, 100% { filter: none; }
+  20%, 80% { filter: grayscale(1) brightness(0.8); }
+}
+/* A hard outline in the move's colour and the sprite lit toward it: the GBA's blend of a Pokémon toward a colour. */
+@keyframes monTint {
+  0%, 100% { filter: none; }
+  25%, 75% {
+    filter: brightness(1.5) drop-shadow(2px 0 0 var(--mon-tint, var(--ink-primary))) drop-shadow(-2px 0 0 var(--mon-tint, var(--ink-primary)))
+      drop-shadow(0 2px 0 var(--mon-tint, var(--ink-primary))) drop-shadow(0 -2px 0 var(--mon-tint, var(--ink-primary)));
+  }
+}
+@keyframes monShake {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -6% 0; }
+  75% { translate: 6% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) [class*='fx-mon-'] img {
+    animation: none;
+  }
+}
+html[data-motion='reduced'] [class*='fx-mon-'] img {
+  animation: none;
+}

@@ -51,6 +51,10 @@ export const MOTION_MS = {
    *  last once scaled down to fit the beat, by the card's weight (D12: `light` a routine card, `medium`, `max` a heavy
    *  blow — pret's Thunderbolt runs over two seconds); and the shortest a sprite may live once scaled. */
   choreo: { frame: 1000 / 60, max: 1400, minLife: 120, light: 800, medium: 1000 },
+  /** §9.9.2 — what a move does to the Pokémon itself, from its FRLG script's visual tasks (`fxChoreoOf` → `mon`): an
+   *  afterimage rush, a sway, a metallic shine, swelling, shrinking, melting, vanishing, a hop, greying, a
+   *  tint in the move's colour, a shake. */
+  mon: { trace: 640, sway: 640, shine: 480, grow: 400, shrink: 480, melt: 640, vanish: 480, hop: 480, gray: 480, tint: 400, shake: 340 },
   /** The stage's own beats: Earthquake's shake (from `lead` before its impact to the end of its settle, so `shake` =
    *  `lead` + the settle), the white flash of an Explosion, the coloured one of a strike, stones jumping, a snowflake
    *  crossing; `spread`: how long a field of things (dust, flames, stones, rings) takes to all get going. */

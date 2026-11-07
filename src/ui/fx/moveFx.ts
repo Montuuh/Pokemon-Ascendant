@@ -46,7 +46,9 @@ const BGS = anims.bgs as Record<string, { w: number; h: number }>;
 /** A sprite a script creates: `[frame, sprite, path, dx, dy, on, life, hit]` (scripts/fx/choreo.mjs) — `on` 'u' its
  *  user or 't' its target, `life` in GBA frames, `hit` 1 for the sprite that lands the blow. */
 type PretEmit = [number, string, string, number, number, string, number, number];
-const PRET = anims.moves as unknown as Record<string, { sprites: string[]; bgs: string[]; lunge?: boolean; choreo?: { frames: number; emits: PretEmit[] } }>;
+/** A visual task on a Pokémon: `[frame, beat, on, life]` — `on` 'u' its user or 't' its target. */
+type PretMon = [number, string, string, number];
+const PRET = anims.moves as unknown as Record<string, { sprites: string[]; bgs: string[]; lunge?: boolean; choreo?: { frames: number; emits: PretEmit[]; mon?: PretMon[] } }>;
 /** How long a sprite of each path lives, in GBA frames. */
 const PATH_LIFE = anims.paths as Record<string, number>;
 
@@ -201,8 +203,43 @@ export function fxChoreoOf(moveId: string, beat: { wait: number; cap: number } =
 }
 export interface FxChoreo {
   emits: FxEmit[];
+  /** What it does to the Pokémon themselves, when (ms) and to whom. */
+  mon: FxMonBeat[];
   impactMs: number;
   totalMs: number;
+}
+export type FxMonKind = 'trace' | 'sway' | 'shine' | 'grow' | 'shrink' | 'melt' | 'vanish' | 'hop' | 'gray' | 'tint' | 'shake';
+export interface FxMonBeat {
+  at: number;
+  kind: FxMonKind;
+  on: 'user' | 'target';
+  /** How many times it plays back to back: the script's repeats of one beat, merged. */
+  n: number;
+}
+/** What a beat plays on its sprite: its movement, its light, or both (an afterimage rush, a melt). */
+const MON_CHANNELS: Record<FxMonKind, readonly ('move' | 'light')[]> = {
+  trace: ['light'], sway: ['move'], shine: ['light'], grow: ['move'], shrink: ['move'],
+  melt: ['move', 'light'], vanish: ['light'], hop: ['move'], gray: ['light'], tint: ['light'], shake: ['move'],
+};
+/**
+ * §9.9.2 — a script's beats on the Pokémon, as they can play: the same beat on the same Pokémon again before it is over
+ * (Growth swells twice, Spark lights six times) is one beat played `n` times back to back — at most three, so a light
+ * never flashes more than three times a second (WCAG 2.3.1) — and a beat that would fight one already playing on the
+ * same channel of the same Pokémon (a tint over a vanish) gives way to it.
+ */
+function mergeMonBeats(beats: FxMonBeat[]): FxMonBeat[] {
+  const len = (b: FxMonBeat) => MOTION_MS.mon[b.kind] * b.n;
+  const merged: FxMonBeat[] = [];
+  for (const b of [...beats].sort((x, y) => x.at - y.at)) {
+    const same = merged.find((m) => m.kind === b.kind && m.on === b.on && b.at <= m.at + len(m));
+    if (same) {
+      same.n = Math.min(3, Math.max(same.n, Math.ceil((b.at + MOTION_MS.mon[b.kind] - same.at) / MOTION_MS.mon[b.kind])));
+      continue;
+    }
+    const clash = merged.some((m) => m.on === b.on && b.at < m.at + len(m) && MON_CHANNELS[m.kind].some((c) => MON_CHANNELS[b.kind].includes(c)));
+    if (!clash) merged.push({ ...b });
+  }
+  return merged;
 }
 /** Each move's choreography, worked out once. */
 const CHOREO = new Map<string, FxChoreo | undefined>();
@@ -212,10 +249,11 @@ function choreoOf(id: string, wait: number, cap: number): FxChoreo | undefined {
   const c = pretScriptOf(own?.like ?? id)?.choreo;
   const swap = own?.swap ?? {};
   const raw = (c?.emits ?? []).map((e): PretEmit => [e[0], swap[e[1]] ?? e[1], e[2], e[3], e[4], e[5], e[6], e[7]]).filter((e) => SPRITES[e[1]]);
-  if (!c || !raw.length) return undefined;
+  const monRaw = c?.mon ?? [];
+  if (!c || (!raw.length && !monRaw.length)) return undefined;
   const C = MOTION_MS.choreo;
-  const t0 = Math.min(...raw.map((e) => e[0]));
-  const frames = Math.max(...raw.map((e) => e[0] + (e[6] || PATH_LIFE[e[2]] || 0))) - t0;
+  const t0 = Math.min(...raw.map((e) => e[0]), ...monRaw.map((b) => b[0]));
+  const frames = Math.max(...raw.map((e) => e[0] + (e[6] || PATH_LIFE[e[2]] || 0)), ...monRaw.map((b) => b[0] + b[3])) - t0;
   // The whole beat keeps to its cap, a dash's or a bolt's wait included (at least half the cap is the script's).
   const ms = C.frame * Math.min(1, Math.max(cap / 2, cap - wait) / (frames * C.frame));
   // An orbit's sprites started on the same frame spread evenly round their circle.
@@ -232,7 +270,8 @@ function choreoOf(id: string, wait: number, cap: number): FxChoreo | undefined {
   const arrive = emits.filter((e) => ARRIVES.has(e.path) && e.path !== 'out').map((e) => e.at + e.life);
   const onTarget = emits.filter((e) => e.on === 'target' && !ARRIVES.has(e.path) && e.path !== 'absorb').map((e) => e.at);
   const first = (xs: number[]) => (xs.length ? Math.min(...xs) : undefined);
-  const lands = first(hit) ?? first(arrive) ?? first(onTarget) ?? Math.min(...emits.map((e) => e.at));
+  const monAt = monRaw.map(([t, kind, on]): FxMonBeat => ({ at: (t - t0) * ms, kind: kind as FxMonKind, on: on === 'u' ? 'user' : 'target', n: 1 }));
+  const lands = first(hit) ?? first(arrive) ?? first(onTarget) ?? first(emits.map((e) => e.at)) ?? first(monAt.filter((b) => b.on === 'target').map((b) => b.at)) ?? first(monAt.map((b) => b.at)) ?? 0;
   // A dash's arrival or a bolt's stroke comes first: what plays on or toward the target waits for it — and what plays
   // on the target before the blow (a horn, a fist) shows only as the user is about to arrive. What plays on the user
   // before the blow plays as it leaves, not later over its empty card.
@@ -249,8 +288,12 @@ function choreoOf(id: string, wait: number, cap: number): FxChoreo | undefined {
     e.at = Math.min(e.at, cap - C.minLife);
     e.life = Math.min(e.life, cap - e.at);
   }
-  const end = Math.max(...emits.map((e) => e.at + e.life));
-  return { emits, impactMs: Math.min(lands + late, end), totalMs: end };
+  // Where they play once the sprites have waited, within the cap; then merged, and their repeats kept within it too.
+  for (const b of monAt) b.at = Math.max(0, Math.min(b.at + late, cap - MOTION_MS.mon[b.kind]));
+  const mon = mergeMonBeats(monAt);
+  for (const b of mon) b.n = Math.max(1, Math.min(b.n, Math.floor((cap - b.at) / MOTION_MS.mon[b.kind])));
+  const end = Math.max(...emits.map((e) => e.at + e.life), ...mon.map((b) => b.at + MOTION_MS.mon[b.kind] * b.n), 0);
+  return { emits, mon, impactMs: Math.min(lands + late, end), totalMs: end };
 }
 
 /** §9.9.2 — what a choreography waits for before it lands (a dash's arrival, lightning's stroke), and its longest. */
@@ -283,11 +326,14 @@ export function fxCastOf(moveId: string, kind: MotionKind = 'projectile', cap: n
   const r = fxRecipeOf(moveId);
   const dash = fxLunges(moveId);
   const c = fxChoreoOf(moveId, fxBeatOf(kind, dash, cap));
-  return { sprites: !!r?.main || (!dash && !!r?.impact), own: !!r?.main, dash, volley: r?.main ? (r.volley ?? 1) : 1, ...(c ? { choreo: { impactMs: c.impactMs, totalMs: c.totalMs } } : {}) };
+  // A choreography sets the beat when it has sprites, or for a move played on the Pokémon alone (a raise, a hex); a
+  // blow whose script only shakes or wobbles its Pokémon (Psychic, under its background) keeps its kind's beat.
+  const times = c && (c.emits.length || kind === 'aura' || kind === 'hex');
+  return { sprites: !!r?.main || (!dash && !!r?.impact), own: !!r?.main, dash, volley: r?.main ? (r.volley ?? 1) : 1, ...(times ? { choreo: { impactMs: c.impactMs, totalMs: c.totalMs } } : {}) };
 }
 
 /** The move's pret script, by our id. */
-export function pretScriptOf(moveId: string): { sprites: string[]; bgs: string[]; lunge?: boolean; choreo?: { frames: number; emits: PretEmit[] } } | undefined {
+export function pretScriptOf(moveId: string): { sprites: string[]; bgs: string[]; lunge?: boolean; choreo?: { frames: number; emits: PretEmit[]; mon?: PretMon[] } } | undefined {
   const id = moveId.replace(/(-plus)+$/, '');
   return PRET[PRET_NAME[id] ?? id] ?? PRET[PRET_BY_NORM.get(norm(PRET_NAME[id] ?? id)) ?? ''];
 }

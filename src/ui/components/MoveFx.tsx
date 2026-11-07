@@ -110,13 +110,16 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
         const look = fxCastOf(m.moveId, m.motion.kind, m.cap);
         const choreo = fxChoreoOf(m.moveId, fxBeatOf(m.motion.kind, look.dash, m.cap));
         const vars = { '--mv-type': `var(--type-${m.type})`, '--mv-total': `${m.motion.totalMs}ms`, '--mv-impact-at': `${m.motion.impactMs}ms`, ...(look.sprites ? spriteBeats(look) : {}) } as CSSProperties;
+        // A move the GBA plays on the Pokémon itself (Agility, Harden): that is its whole picture, no rings. A hex keeps
+        // its rings on the foe unless its script plays something on the foe too (Tail Whip only sways its user).
+        const onThePokemon = !recipe && !!choreo?.mon.length && (m.motion.kind === 'aura' || (m.motion.kind === 'hex' && choreo.mon.some((b) => b.on === 'target')));
         const cast = recipe ? { recipe, ...pixelScales(fromBox, targets[0] ?? fromBox, biggestPieces(recipe, m.motion.kind, choreo?.emits)), flip: m.side === 'enemy' } : undefined;
         return (
           <div
             key={m.id}
             className={styles.move}
             style={vars}
-            {...(floor ? {} : { 'data-testid': 'move-fx', 'data-kind': m.motion.kind, 'data-style': m.motion.style, 'data-move': m.moveId, 'data-sprites': recipe && (recipe.main || recipe.impact || bg) ? 'pret' : 'drawn' })}
+            {...(floor ? {} : { 'data-testid': 'move-fx', 'data-kind': m.motion.kind, 'data-style': m.motion.style, 'data-move': m.moveId, 'data-sprites': recipe && (recipe.main || recipe.impact || bg) ? 'pret' : onThePokemon ? 'mon' : 'drawn' })}
             aria-hidden="true"
           >
             {floor ? (
@@ -124,9 +127,9 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
                 {bg && <span className={styles.fxBg} data-testid="move-fx-bg" style={{ '--fx-bg': `url(${fxBgUrl(bg)})` } as CSSProperties} />}
                 {inTheGround(m) && <Floor side={m.side} />}
               </>
-            ) : cast && choreo ? (
+            ) : cast && choreo?.emits.length ? (
               <Choreographed m={m} fromBox={fromBox} from={from} to={to} targets={targets} cast={cast} emits={choreo.emits} />
-            ) : (
+            ) : onThePokemon ? null : (
               draw(m, fromBox, from, to, targets, cast)
             )}
           </div>

@@ -27,6 +27,6 @@
   "title": "Los movimientos sin sprites sólo tienen anillos",
   "why": "En la GBA Agility, Harden, Growth, Tail Whip, Double Team, Minimize, Withdraw o Acid Armor no usan sprites: mueven, estiran, tiñen o duplican al propio Pokémon. Aquí todos son el mismo anillo.",
   "fix": "Efectos sobre el sprite del Pokémon: crecer y encoger, balanceo, copias translúcidas, brillo metálico, ondulación, tinte. Unos 8 efectos cubren los 19 movimientos.",
-  "meta": "19 movimientos sin sprites, más unos 20 de estado"
+  "meta": "Hecho en v0.9.106 · 19 movimientos sin sprites, más unos 20 de estado"
  }
 ]
