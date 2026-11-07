@@ -9,7 +9,7 @@
   "title": "Los sprites son pequeños y pocos",
   "why": "Un sprite de 32 px a 2–2,5× se pierde en un campo mucho más ancho que el de la GBA. La GBA lanza muchos (22 brasas en Flamethrower, 16 chispas en Thunderbolt); aquí sale 1 proyectil, 8 en un chorro y 3 en un campo. En 118 de las 307 fichas he anotado que el sprite no se ve o apenas se ve.",
   "fix": "Tamaño mínimo por sprite (que mida al menos un tercio del Pokémon), la cantidad de sprites que pone el script de la GBA (con un tope) y sin carga dorada genérica.",
-  "meta": "118 movimientos donde el sprite no se ve"
+  "meta": "Hecho en v0.9.105 · 118 movimientos donde el sprite no se ve"
  },
  {
   "title": "La capa genérica tapa al sprite",

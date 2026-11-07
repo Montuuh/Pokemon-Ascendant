@@ -1540,6 +1540,15 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.105 — Moves you can see  ✅ 2026-11-07
+
+**Shipped.** The user picked cause 2 of the move review (sprites small and few; the count is the GBA's since v0.9.104).
+A move's sprites are drawn at twice the mean pixel scale its user and target stand at (`SlotBox.pixel`, measured from
+the sprite's layout width), what lands on a Pokémon capped so its biggest piece fits nine tenths of the target's box
+and what flies across the field capped at one and a half (§9.9.2); damage numbers take a 2-px outline. UI review:
+Ship with fixes → Ship with fixes (the cap by the biggest piece, the honest D9 wording, the layout-width measure, then
+the separate flying scale so 32-px stars and embers double at 720p too).
+
 ### v0.9.104 — Moves that move like the GBA  ✅ 2026-11-07
 
 **Shipped.** The user picked cause 1 of the move review (every move rode one of eight generic paths). Each FRLG move

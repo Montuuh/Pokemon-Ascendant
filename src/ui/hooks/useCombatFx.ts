@@ -21,7 +21,14 @@ import { CATCH_BREAK_LINE, DAMAGE_CAUSE_LABEL, EFFECTIVENESS_LABEL, PHASE_TEXT, 
 export type SpriteSlot = 'single' | 'lead' | 'support1' | 'support2' | 'player' | 'bench1' | 'bench2';
 
 /** A slot's sprite box on the stage, in the stage's own pixels: where every beat of that slot is drawn. */
-export type SlotBox = { left: number; top: number; width: number; height: number };
+export type SlotBox = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  /** The pixel scale its Pokémon is drawn at (its sprite's drawn width over its natural width), once it has loaded. */
+  pixel?: number;
+};
 
 /** Someone who has left the field, drawn for one more beat where it stood. */
 export interface Ghost {

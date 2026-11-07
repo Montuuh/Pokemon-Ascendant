@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.105 — Moves you can see · 2026-11-07
+
+A move's sprites are drawn bigger, at twice the Pokémon's pixel.
+
+- **Bigger effects.** Embers, stars and orbs read across the stage.
+- **Fit the card.** Jaws and barriers close within their target's card.
+- **Clearer numbers.** A thicker outline keeps them readable over a hit.
+
 ### v0.9.104 — Moves that move like the GBA · 2026-11-07
 
 Each FireRed move replays its own battle animation, sprite by sprite.

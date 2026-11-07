@@ -106,17 +106,30 @@ test.describe('Move animations — §9.9.2', () => {
 test.describe('The hand after the foes — D11', () => {
   test("the hand comes back with the foe's blow, while the rest of its choreography still plays", async ({ page }) => {
     await ready(page);
-    // Fire Spin replays its script: its embers circle for well over its blow, which lands early.
-    await page.evaluate(() => {
-      const a = window.__ascendant!;
-      a.intend('fire-spin');
-      a.dispatch({ type: 'end-turn' });
-    });
-    const fx = page.locator('[data-testid="move-fx"][data-move="fire-spin"]');
-    await expect(fx).toHaveCount(1, { timeout: 4_000 });
-    await expect(page.getByTestId('btn-end-turn')).toBeEnabled({ timeout: 4_000 });
-    // The hand is back while the embers are still on the field.
-    await expect(fx).toHaveCount(1);
+    // Fire Spin replays its script: its embers circle for well over its blow, which lands early. The page notes when
+    // the End Turn button comes back and when the move's layer goes, frame by frame.
+    const times = page.evaluate(
+      () =>
+        new Promise<{ back: number; gone: number }>((done) => {
+          const a = window.__ascendant!;
+          a.intend('fire-spin');
+          a.dispatch({ type: 'end-turn' });
+          let seen = false;
+          let back = 0;
+          const tick = () => {
+            const fx = document.querySelector('[data-testid="move-fx"][data-move="fire-spin"]');
+            const btn = document.querySelector<HTMLButtonElement>('[data-testid="btn-end-turn"]');
+            if (fx) seen = true;
+            if (seen && !back && btn && !btn.disabled) back = performance.now();
+            if (seen && !fx) return done({ back: back || Infinity, gone: performance.now() });
+            requestAnimationFrame(tick);
+          };
+          tick();
+        }),
+    );
+    const { back, gone } = await times;
+    // The hand is back before the embers have left the field.
+    expect(back).toBeLessThan(gone);
   });
 });
 

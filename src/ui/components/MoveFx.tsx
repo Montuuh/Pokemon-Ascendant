@@ -29,12 +29,41 @@ const spread = (i: number, salt = 1) => Math.sin((i + 1) * 12.9898 * salt) % 1;
 const inTheGround = (m: MoveFx) => m.motion.kind === 'area' && m.motion.style === 'quake';
 
 /**
- * The move's sprites at one pixel size for the whole beat (D9): the field's scale — a GBA battle sprite is 64 px tall,
- * so the box's height over 64, to the half step — and a half step more, since our field is far wider than the GBA's
- * 240 px and an ember at the Pokémon's own scale is lost across it.
+ * The move's sprites at two pixel scales (D9: each a whole or half multiple of the sprite's own pixel), both from
+ * `FX_ZOOM` times the mean scale its user and target are drawn at — so a small piece reads across our stage, far wider
+ * than the GBA's 240 px, where at the Pokémon's own pixel the review found 118 of 307 moves whose sprite could not be
+ * seen. What lands on a Pokémon (a jaw, a barrier, a splat) is capped so the move's biggest such piece stands within
+ * `FX_FIT` of its target's box, and the card's name and HP stay readable; what travels across the open field between
+ * them (an ember, a star, a drain's orbs) may stand up to `FX_FLY` of it, so a 32-px star still doubles where the
+ * Pokémon themselves are drawn small. Before a Pokémon's sprite has loaded, the box's own scale stands in.
  */
 const FX_STEP = 0.5;
-const pixelScale = (b: SlotBox) => Math.max(1, Math.floor((b.height / 64) / FX_STEP) * FX_STEP) + FX_STEP;
+const FX_ZOOM = 2;
+const FX_FIT = 0.9;
+const FX_FLY = 1.5;
+const boxScale = (b: SlotBox) => Math.max(1, Math.floor(b.height / 64 / FX_STEP) * FX_STEP);
+const step = (n: number) => Math.floor(n / FX_STEP) * FX_STEP;
+function pixelScales(user: SlotBox, target: SlotBox, pieces: { lands: number; flies: number }): { scale: number; travel: number } {
+  const of = (b: SlotBox) => b.pixel ?? boxScale(b);
+  const zoom = Math.round(((of(user) + of(target)) / 2) / FX_STEP) * FX_STEP * FX_ZOOM;
+  return {
+    scale: Math.max(1, Math.min(zoom, step((target.height * FX_FIT) / pieces.lands))),
+    travel: Math.max(1, Math.min(zoom, step((target.height * FX_FLY) / pieces.flies))),
+  };
+}
+/** The paths that carry a sprite across the field, not onto a Pokémon. */
+const FLIES = new Set(['line', 'wave', 'arc', 'absorb', 'out']);
+/** The kinds whose `main` sprite flies (a throw, a stream, a drain's motes, a hex's motes); in the rest it lands. */
+const THROWN = new Set(['projectile', 'beam', 'drain', 'hex']);
+/** The tallest frame among the move's sprites that land and among those that fly, in GBA pixels. */
+function biggestPieces(recipe: FxRecipe, kind: string, emits: readonly FxEmit[] | undefined): { lands: number; flies: number } {
+  const h = (p: FxPiece | undefined) => (p ? (fxSprite(p.sprite)?.h ?? 16) : 16);
+  const lands = [16, h(recipe.impact)];
+  const flies = [16];
+  if (emits) for (const e of emits) (FLIES.has(e.path) ? flies : lands).push(h(e.piece));
+  else (THROWN.has(kind) ? flies : lands).push(h(recipe.main));
+  return { lands: Math.max(...lands), flies: Math.max(...flies) };
+}
 
 /**
  * §9.9.2 — the beats of a move drawn with its own sprites, as `motionOf` times them: no charge before a throw, a stream,
@@ -52,12 +81,17 @@ function spriteBeats(look: { own: boolean; dash: boolean }): Record<string, stri
   };
 }
 
-/** What a move is drawn with: its pret sprites at the field's scale, and whose side throws it (the foe's are mirrored). */
+/** What a move is drawn with: its pret sprites at its one pixel scale (`pixelScale`), and whose side throws it (the foe's are mirrored). */
 interface Cast {
   recipe: FxRecipe;
+  /** The scale of what lands on a Pokémon. */
   scale: number;
+  /** The scale of what flies across the field (`pixelScales`). */
+  travel: number;
   flip: boolean;
 }
+/** The same cast, for a sprite on its way across the field. */
+const flying = (cast: Cast): Cast => ({ ...cast, scale: cast.travel });
 
 export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly MoveFx[]; boxes: Boxes; floor?: boolean }) {
   return (
@@ -76,7 +110,7 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
         const look = fxCastOf(m.moveId, m.motion.kind, m.cap);
         const choreo = fxChoreoOf(m.moveId, fxBeatOf(m.motion.kind, look.dash, m.cap));
         const vars = { '--mv-type': `var(--type-${m.type})`, '--mv-total': `${m.motion.totalMs}ms`, '--mv-impact-at': `${m.motion.impactMs}ms`, ...(look.sprites ? spriteBeats(look) : {}) } as CSSProperties;
-        const cast = recipe ? { recipe, scale: pixelScale(targets[0] ?? fromBox), flip: m.side === 'enemy' } : undefined;
+        const cast = recipe ? { recipe, ...pixelScales(fromBox, targets[0] ?? fromBox, biggestPieces(recipe, m.motion.kind, choreo?.emits)), flip: m.side === 'enemy' } : undefined;
         return (
           <div
             key={m.id}
@@ -103,7 +137,7 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
 }
 
 /**
- * §9.9.2 One of the move's pret sprites, at the field's scale: its frames played in steps (looping while it flies, or
+ * §9.9.2 One of the move's pret sprites, at the move's pixel scale: its frames played in steps (looping while it flies, or
  * once where it lands), or one frame held. Pixels are moved and mirrored, never turned or smoothed (D9).
  */
 function Sprite({ piece, cast, at, delay = '0ms', once = false, hold = false, until, className }: { piece: FxPiece; cast: Cast; at?: Point; delay?: string; once?: boolean; hold?: boolean; until?: string; className?: string }) {
@@ -170,8 +204,9 @@ function Choreographed({ m, fromBox, from, to, targets, cast, emits }: { m: Move
 }
 
 /** Where one sprite of a choreography starts and ends, in the stage's pixels, from its path and its GBA offset. */
-function Emit({ e, user, target, box, cast, stagger }: { e: FxEmit; user: Point; target: Point; box: SlotBox; cast: Cast; stagger: number }) {
-  // A GBA offset at the field's pixel scale, mirrored on the foe's side (x points toward the target).
+function Emit({ e, user, target, box, cast: landing, stagger }: { e: FxEmit; user: Point; target: Point; box: SlotBox; cast: Cast; stagger: number }) {
+  const cast = FLIES.has(e.path) ? flying(landing) : landing;
+  // A GBA offset at the move's pixel scale, mirrored on the foe's side (x points toward the target).
   const off = { x: e.dx * cast.scale * (cast.flip ? -1 : 1), y: e.dy * cast.scale };
   const plus = (p: Point, q: Point = off): Point => ({ x: p.x + q.x, y: p.y + q.y });
   const h = box.height;
@@ -353,7 +388,7 @@ function Projectile({ style, from, to, cast }: { style: ProjectileStyle; from: P
         {Array.from({ length: n }, (_, i) => (
           <span key={i} className={`${styles.flight} ${styles.spriteFlight}`} style={{ ...flight(from, to), '--i': i, '--off': px(n > 1 ? spread(i, 3) * 14 : 0) } as CSSProperties}>
             <span className={styles.upright}>
-              <Sprite piece={cast.recipe.main!} cast={cast} />
+              <Sprite piece={cast.recipe.main!} cast={flying(cast)} />
             </span>
           </span>
         ))}
@@ -394,7 +429,7 @@ function Beam({ from, to, cast }: { from: Point; to: Point; cast?: Cast }) {
         {Array.from({ length: STREAM }, (_, i) => (
           <span key={i} className={`${styles.flight} ${styles.streamFlight} ${styles.spriteFlight}`} style={{ ...flight(from, to), '--i': i, '--n': STREAM, '--off': px(spread(i, 6) * 10) } as CSSProperties}>
             <span className={styles.upright}>
-              <Sprite piece={cast.recipe.main!} cast={cast} />
+              <Sprite piece={cast.recipe.main!} cast={flying(cast)} />
             </span>
           </span>
         ))}
@@ -472,7 +507,7 @@ function Drain({ from, to, cast }: { from: Point; to: Point; cast?: Cast }) {
         <span key={i} className={`${styles.flight} ${styles.back} ${cast?.recipe.main ? styles.spriteFlight : ''}`} style={{ ...flight(to, from), '--i': i, '--off': px(spread(i, 5) * 18) } as CSSProperties}>
           {cast?.recipe.main ? (
             <span className={styles.upright}>
-              <Sprite piece={cast.recipe.main} cast={{ ...cast, flip: !cast.flip }} />
+              <Sprite piece={cast.recipe.main} cast={{ ...flying(cast), flip: !cast.flip }} />
             </span>
           ) : (
             <span className={`${styles.shot} ${styles.mote}`} />
@@ -497,7 +532,7 @@ function Hex({ from, to, cast }: { from: Point; to: Point[]; cast?: Cast }) {
             <span key={i} className={`${styles.flight} ${styles.hexFlight} ${main ? styles.spriteFlight : ''}`} style={{ ...flight(from, t), '--i': i, '--off': px(spread(i, 9) * 16) } as CSSProperties}>
               {main && cast ? (
                 <span className={styles.upright}>
-                  <Sprite piece={main} cast={cast} />
+                  <Sprite piece={main} cast={flying(cast)} />
                 </span>
               ) : (
                 <span className={`${styles.shot} ${styles.mote}`} />

@@ -704,8 +704,13 @@ card keeps the stage even where FRLG fades one in, because the stage is the heav
 every turn must not flood it (D12). The background rises to the impact and fades after it. The Gen IV moves
 FRLG never animated are composed from pret's sprites, some re-paletted as the GBA itself does (Fire, Ice and Thunder
 Fang are its fangs with embers, ice or sparks). Sprites keep their pixels: stepped through their frames, carried along
-the line without turning or scaling, mirrored on the foe's side, at the field's pixel scale (a small one a half step
-larger, to read across a field far wider than the GBA's). The 19 moves the GBA animates without sprites (Agility, Harden,
+the line without turning or scaling, mirrored on the foe's side, at a whole or half multiple of each sprite's own pixel
+(D9): twice the mean scale its user and target are drawn at (v0.9.105), since our stage is far wider than the GBA's
+240 px and at the Pokémon's own pixel a move's small pieces were lost across it (the review found 118 of 307 moves
+where the sprite could not be seen). What lands on a Pokémon is capped so the move's biggest such piece stands within
+nine tenths of its target's box — a 64-px jaw or barrier closes within the card's window, its name and HP readable —
+and what crosses the open field between them may stand up to one and a half times it, so a star or an ember still
+doubles where the Pokémon are drawn small. The 19 moves the GBA animates without sprites (Agility, Harden,
 Surf's wave, Earthquake…) keep the shapes in the table. Eight moves are being drawn new (`docs/art/fx/`) and use a pret
 stand-in until then. Recipes: `ui/fx/moveFx.ts`.
 

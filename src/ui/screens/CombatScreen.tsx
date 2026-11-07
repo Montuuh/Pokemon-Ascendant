@@ -102,7 +102,11 @@ export function CombatScreen() {
       const found: Partial<Record<SpriteSlot, SlotBox>> = {};
       stageEl.querySelectorAll<HTMLElement>('[data-fx-slot]').forEach((el) => {
         const r = el.getBoundingClientRect();
-        found[el.dataset.fxSlot as SpriteSlot] = { left: Math.round(r.left - base.left), top: Math.round(r.top - base.top), width: Math.round(r.width), height: Math.round(r.height) };
+        // §9.9.2 / D9 — the pixel scale its Pokémon stands at, so a move's sprites are drawn in pixels the same size.
+        const img = el.querySelector('img');
+        // Its layout width, not its box on screen: an entrance, a swap's glide or a hit's shake would skew the measure.
+        const pixel = img && img.naturalWidth && img.offsetWidth ? Math.round((img.offsetWidth / img.naturalWidth) * 2) / 2 : 0;
+        found[el.dataset.fxSlot as SpriteSlot] = { left: Math.round(r.left - base.left), top: Math.round(r.top - base.top), width: Math.round(r.width), height: Math.round(r.height), ...(pixel ? { pixel } : {}) };
       });
       setSlotBoxes((cur) => {
         const next = { ...cur, ...found };

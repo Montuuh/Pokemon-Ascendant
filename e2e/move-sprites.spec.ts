@@ -87,4 +87,47 @@ test.describe('Move animation sprites — §9.9.2', () => {
     expect(shown.some((o) => o > 0)).toBe(true);
     expect(shown.at(-1)).toBe(0);
   });
+
+  test("a move's small sprites are drawn at twice its Pokémon's pixel, its big ones within its target's box", async ({ page }) => {
+    await ready(page);
+    const fx = await frozen(page, 'swift', MOTION_MS.frames.flicker * 2);
+    const [sprite, mon] = await Promise.all([
+      fx.locator('[data-fx-sprite="yellow-star"]').first().evaluate((e) => e.getBoundingClientRect().width),
+      page.evaluate(() => {
+        const px = (slot: string) => {
+          const img = document.querySelector<HTMLImageElement>(`[data-fx-slot="${slot}"] img`)!;
+          return img.offsetWidth / img.naturalWidth;
+        };
+        return (px('player') + px('single')) / 2;
+      }),
+    ]);
+    // Swift's star is a 32-px frame crossing the field: at twice the Pokémon's pixel (to the half step), unless one and
+    // a half times its target's box caps it.
+    const box = await page.locator('[data-fx-slot="single"]').evaluate((e) => e.getBoundingClientRect().height);
+    expect(sprite).toBeGreaterThanOrEqual(Math.min(32 * 2 * (Math.floor(mon * 2) / 2), Math.floor((box * 1.5) / 32 / 0.5) * 0.5 * 32) - 0.5);
+    await settle(page);
+    // Bite's jaws are 64-px frames: they close on the foe within its box, never over its whole card.
+    const bite = await frozen(page, 'bite', MOTION_MS.frames.flicker);
+    const jaw = await bite.locator('[data-fx-sprite="sharp-teeth"]').first().evaluate((e) => e.getBoundingClientRect().height);
+    expect(jaw).toBeLessThanOrEqual(box);
+  });
+
+  test.describe('at 720p, the worst case', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+    test("Bite's jaws stay within the foe's box, or at their own 1× where the box is smaller; Swift's stars still double", async ({ page }) => {
+      await ready(page);
+      const bite = await frozen(page, 'bite', MOTION_MS.frames.flicker);
+      const [jaw, box] = await Promise.all([
+        bite.locator('[data-fx-sprite="sharp-teeth"]').first().evaluate((e) => e.getBoundingClientRect().height),
+        page.locator('[data-fx-slot="single"]').evaluate((e) => e.getBoundingClientRect().height),
+      ]);
+      // Pixel art is never drawn below its own pixel (D9): a 64-px jaw stands at 1× on a box under 64 px.
+      expect(jaw).toBeLessThanOrEqual(Math.max(box, 64) + 0.5);
+      await settle(page);
+      // A star crossing the open field is not capped by the card it lands on: twice its 32-px frame.
+      const swift = await frozen(page, 'swift', MOTION_MS.frames.flicker * 2);
+      const star = await swift.locator('[data-fx-sprite="yellow-star"]').first().evaluate((e) => e.getBoundingClientRect().width);
+      expect(star).toBeGreaterThanOrEqual(64 - 0.5);
+    });
+  });
 });
