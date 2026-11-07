@@ -47,6 +47,10 @@ export const MOTION_MS = {
    *  `lead` is how long it shows before it lands where it does not travel (a bite, a drain's hit) — pret's Bite lands
    *  its splat ten frames after its teeth. */
   sprite: { lead: 160 },
+  /** §9.9.2 — a move replaying its FRLG script's timeline (`fxChoreoOf`): a GBA frame in ms; the longest a script may
+   *  last once scaled down to fit the beat, by the card's weight (D12: `light` a routine card, `medium`, `max` a heavy
+   *  blow — pret's Thunderbolt runs over two seconds); and the shortest a sprite may live once scaled. */
+  choreo: { frame: 1000 / 60, max: 1400, minLife: 120, light: 800, medium: 1000 },
   /** The stage's own beats: Earthquake's shake (from `lead` before its impact to the end of its settle, so `shake` =
    *  `lead` + the settle), the white flash of an Explosion, the coloured one of a strike, stones jumping, a snowflake
    *  crossing; `spread`: how long a field of things (dust, flames, stones, rings) takes to all get going. */
@@ -70,10 +74,22 @@ const timing: Record<MotionKind, { impactMs: number; totalMs: number }> = {
   hex: { impactMs: T.hex.cast + T.hex.travel, totalMs: T.hex.cast + T.hex.travel + T.hex.swirl },
 };
 
+/**
+ * §9.9.2 / D12 — how long a move's choreography may last, by the card's weight: a status card or a light hit is
+ * routine (`choreo.light`), a strong hit `medium`, a 100-power blow or a move landing on several the heaviest (`max`).
+ */
+export function choreoCapOf(move: MoveDef, victims: number): number {
+  const C = MOTION_MS.choreo;
+  if (move.power >= 100 || victims > 1 || AREA_MOVES[baseMoveId(move.id)]) return C.max;
+  return move.power >= 70 ? C.medium : C.light;
+}
+
 /** How a move is drawn, from its pret recipe (`fxCastOf` in `ui/fx/moveFx.ts`): with its own sprites, whether its user
  *  dashes, how many it throws. A move drawn with the old shapes passes nothing. */
 export interface MoveLook {
   sprites: boolean;
+  /** Its FRLG script's own timeline, when it replays one: when it lands and when it is over. */
+  choreo?: { impactMs: number; totalMs: number };
   /** Its own sprite, not only its hit (Bite's teeth; Pound has only its splat). */
   own: boolean;
   dash: boolean;
@@ -191,7 +207,12 @@ export const baseMoveId = (id: string): string => id.replace(/(-plus)+$/, '');
  */
 export function motionOf(move: MoveDef, victims: number, look?: MoveLook): Motion {
   const id = baseMoveId(move.id);
-  const at = (kind: MotionKind, style?: Motion['style']): Motion => ({ kind, ...(style ? { style } : {}), ...(look?.sprites ? spriteTiming(kind, look) : timing[kind]) });
+  // A choreography sets its own beat — its sprites carry their own splat, so no drawn burst pads it; on several, its
+  // last target plays a stagger after the first.
+  const after = (kind: MotionKind) => (kind === 'area' ? Math.min(2, Math.max(0, victims - 1)) * T.impact.stagger : 0);
+  const beat = (kind: MotionKind) =>
+    look?.choreo ? { impactMs: look.choreo.impactMs, totalMs: look.choreo.totalMs + after(kind) } : look?.sprites ? spriteTiming(kind, look) : timing[kind];
+  const at = (kind: MotionKind, style?: Motion['style']): Motion => ({ kind, ...(style ? { style } : {}), ...beat(kind) });
   if (move.power > 0 && (AREA_MOVES[id] || move.targeting === 'cleave' || victims > 1)) return at('area', AREA_MOVES[id] ?? AREA_BY_TYPE[move.type]);
   if (move.power <= 0) {
     // Aimed at the other side: a status, a lowered stage (one foe or its whole side), a seed, a lock, a hazard laid on

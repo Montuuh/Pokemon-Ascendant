@@ -90,7 +90,8 @@ Pokémon.
   the number lands with the impact. Since v0.9.102 each move is drawn with FireRed's own battle-animation sprites and
   backgrounds (pret), Gen IV moves composed from them; since v0.9.103 the sprites are the whole picture (no drawn glow,
   rings or tint over them), only a move whose GBA script moves its attacker dashes, and a move's sprite is on the
-  field from its first frame.
+  field from its first frame; since v0.9.104 each FRLG move replays its own script's sprite timeline and paths, and
+  Gen IV moves borrow the script of the move they move like.
 - **Sound** (✅ v0.9.23, §9.5): every sound synthesised as it plays (Web Audio, no files) — a swish per type for every
   card, impacts by effectiveness, a sting per status, the ball's wobbles and click, level-up and evolution — and music
   composed in code per Region, City, Victory Road, League, fight, boss and Champion, with a tension layer under 30 % HP.

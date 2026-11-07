@@ -3,7 +3,7 @@
   "title": "La animación sigue siendo la misma de antes",
   "why": "Cada movimiento sigue usando uno de los 8 recorridos genéricos de antes: salto y vuelta, disparo en línea recta, chorro, rayo, drenaje, campo, aura o hechizo. Sólo cambió el dibujo que viaja. En la GBA cada sprite tiene su propia trayectoria según su script: Flamethrower en onda, Fire Spin en remolino, Rock Throw cayendo, Absorb en espiral de vuelta. Por eso 116 movimientos de contacto se ven como el mismo salto.",
   "fix": "Una capa de coreografía con unas 12 trayectorias (onda, arco, remolino, caída, brote, dispersión, espiral de vuelta, golpe en el sitio, embestida…), asignada a cada movimiento a partir de la función que mueve sus sprites en pret. Así cada uno se mueve como el suyo de la GBA.",
-  "meta": "Afecta a casi todos · el cambio de mayor impacto"
+  "meta": "Hecho en v0.9.104 · Afecta a casi todos · el cambio de mayor impacto"
  },
  {
   "title": "Los sprites son pequeños y pocos",

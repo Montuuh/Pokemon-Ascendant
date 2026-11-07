@@ -103,6 +103,23 @@ test.describe('Move animations — §9.9.2', () => {
   });
 });
 
+test.describe('The hand after the foes — D11', () => {
+  test("the hand comes back with the foe's blow, while the rest of its choreography still plays", async ({ page }) => {
+    await ready(page);
+    // Fire Spin replays its script: its embers circle for well over its blow, which lands early.
+    await page.evaluate(() => {
+      const a = window.__ascendant!;
+      a.intend('fire-spin');
+      a.dispatch({ type: 'end-turn' });
+    });
+    const fx = page.locator('[data-testid="move-fx"][data-move="fire-spin"]');
+    await expect(fx).toHaveCount(1, { timeout: 4_000 });
+    await expect(page.getByTestId('btn-end-turn')).toBeEnabled({ timeout: 4_000 });
+    // The hand is back while the embers are still on the field.
+    await expect(fx).toHaveCount(1);
+  });
+});
+
 test.describe('Move animations under reduced motion — §9.9', () => {
   test.use({ reducedMotion: 'reduce' });
   test('nothing dashes, flies or fills the stage', async ({ page }) => {

@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getContent } from '@/content/registry';
-import { composedRecipes, fxBgOf, fxCastOf, fxLunges, fxRecipeOf, fxSprite, fxSpriteFile, pretScriptOf } from './moveFx';
+import { MOTION_MS } from '@/ui/moveMotion';
+import { composedRecipes, fxBeatOf, fxBgOf, fxCastOf, fxChoreoOf, fxLunges, fxRecipeOf, fxSprite, fxSpriteFile, pretScriptOf } from './moveFx';
 
 // §9.9.2 — every move is drawn with FireRed's own battle-animation sprites (or pret's, composed for a Gen IV move),
 // except the few the GBA animates without any: those keep the drawn shapes.
@@ -88,12 +89,76 @@ describe('Move animation sprites — §9.9.2', () => {
     expect(fxRecipeOf('rock-tomb')?.main?.sprite).toBe('rocks');
     expect(fxRecipeOf('kinesis')?.main?.sprite).toBe('bent-spoon');
     expect(fxRecipeOf('crush-claw')?.main?.sprite).toBe('claw-slash');
-    expect(fxRecipeOf('wing-attack')?.main?.sprite).toBe('white-feather');
   });
 
   it('fxSprite_AnObjBlendSprite_IsSeeThrough', () => {
     expect(fxSprite('protect')?.blend).toBe(true);
     expect(fxSprite('protect@gold')?.blend).toBe(true);
     expect(fxSprite('small-ember')?.blend).toBeUndefined();
+  });
+
+  it('fxChoreoOf_AFrlgMove_ReplaysItsScriptsSprites_EachOnItsCallbacksPath', () => {
+    const paths = (id: string) => new Set(fxChoreoOf(id)!.emits.map((e) => e.path));
+    // Flamethrower's 22 embers pour in a wave; Fire Spin's circle its target; Rock Throw's fall on it; Absorb's flow back.
+    expect(fxChoreoOf('flamethrower')!.emits.filter((e) => e.path === 'wave')).toHaveLength(22);
+    expect(paths('fire-spin')).toEqual(new Set(['orbit']));
+    expect(paths('rock-throw')).toEqual(new Set(['fall']));
+    expect(paths('absorb').has('absorb')).toBe(true);
+    // Bite's jaws close on the foe, and it lands as they do.
+    const bite = fxChoreoOf('bite')!;
+    expect(bite.emits.filter((e) => e.path === 'close')).toHaveLength(2);
+    expect(bite.impactMs).toBeGreaterThan(0);
+  });
+
+  it('fxChoreoOf_EveryChoreography_FitsItsBeat_WithSpritesOnDisk', () => {
+    for (const m of moves) {
+      for (const dash of [false, true]) {
+        const c = fxChoreoOf(m.id, fxBeatOf('melee', dash, MOTION_MS.choreo.max));
+        if (!c) continue;
+        expect(c.totalMs, m.id).toBeLessThanOrEqual(MOTION_MS.choreo.max + MOTION_MS.melee.windup + MOTION_MS.melee.dash + 1);
+        expect(c.impactMs, m.id).toBeLessThanOrEqual(c.totalMs);
+        for (const e of c.emits) expect(fxSprite(e.piece.sprite), `${m.id} ${e.piece.sprite}`).toBeDefined();
+      }
+    }
+  });
+
+  it('fxChoreoOf_ADash_LandsItsSpritesWhenTheUserArrives', () => {
+    expect(fxChoreoOf('tackle', fxBeatOf('melee', true, MOTION_MS.choreo.max))!.impactMs).toBe(MOTION_MS.melee.windup + MOTION_MS.melee.dash);
+  });
+
+  it('fxChoreoOf_AGenIvMove_BorrowsTheScriptItMovesLike_ItsSpritesSwapped', () => {
+    const fang = fxChoreoOf('fire-fang')!;
+    expect(fang.emits.filter((e) => e.path === 'close').map((e) => e.piece.sprite)).toEqual(['fangs', 'fangs']);
+    expect(fang.emits.some((e) => e.piece.sprite === 'small-ember')).toBe(true);
+    expect(fxChoreoOf('aura-sphere')).toBeUndefined();
+  });
+
+  it('fxChoreoOf_AMoveLandsWithItsBlow_NotWithAPreamble', () => {
+    // Fire Punch circles its embers first: it lands with the fist's splat, not as the first ember shows.
+    const punch = fxChoreoOf('fire-punch')!;
+    expect(punch.impactMs).toBeGreaterThan(punch.emits[0]!.at);
+    // Lightning lands with its bolt's stroke, its sparks after it.
+    expect(fxChoreoOf('thunderbolt', fxBeatOf('bolt', false, MOTION_MS.choreo.max))!.impactMs).toBeGreaterThanOrEqual(MOTION_MS.bolt.strike);
+  });
+
+  it('fxChoreoOf_ASpriteThatDoesNotTravel_PlaysWhereItsCallbackPlacesIt', () => {
+    expect(fxChoreoOf('swords-dance')!.emits[0]).toMatchObject({ path: 'rise', on: 'user' });
+    expect(new Set(fxChoreoOf('petal-dance')!.emits.map((e) => `${e.path}:${e.on}`))).toContain('sway:user');
+    expect(fxChoreoOf('tackle')!.emits[0]!.on).toBe('target');
+  });
+
+  it('fxChoreoOf_EveryBeat_KeepsToItsCap_AndHolds_ItsLastSprite', () => {
+    for (const m of moves) {
+      const c = fxChoreoOf(m.id, fxBeatOf('melee', true, MOTION_MS.choreo.light));
+      if (!c) continue;
+      expect(c.totalMs, m.id).toBeLessThanOrEqual(MOTION_MS.choreo.light + 1);
+      for (const e of c.emits) expect(e.at + e.life, m.id).toBeLessThanOrEqual(c.totalMs + 0.001);
+    }
+  });
+
+  it('fxChoreoOf_WithNoBlow_LandsAsItReachesItsTarget', () => {
+    // Fire Blast's star of fire bursts on its target: it lands then, not as its fireball forms on its user.
+    const blast = fxChoreoOf('fire-blast')!;
+    expect(blast.impactMs).toBeGreaterThan(blast.emits[0]!.at);
   });
 });

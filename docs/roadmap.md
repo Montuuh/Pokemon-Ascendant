@@ -1540,6 +1540,18 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.104 — Moves that move like the GBA  ✅ 2026-11-07
+
+**Shipped.** The user picked cause 1 of the move review (every move rode one of eight generic paths). Each FRLG move
+now replays its own pret script (§9.9.2): `scripts/fx/choreo.mjs` walks the script and records every sprite it
+creates — when, along which of twelve paths its C callback gives it, on its user or its target, at the offset and for
+the duration its callback reads, and which sprite is the blow — into `pret-anims.json`; `fxChoreoOf` replays it,
+cutting the sprite-less opening, scaling to a cap by the card's weight (`choreoCapOf`: 800 / 1000 / 1400 ms) and
+waiting for a dash or lightning's stroke; the move lands with its blow. Gen IV moves borrow a script with `like` and
+`swap`. The hand returns at a foe's blow, not at its last sprite. UI review: Rework → Ship with fixes (the hand release,
+impact, field-move beats, caps, offsets, anchors and durations, then the no-blow landing, user-side sprites before a
+dash and the overall cap). Still open: sprite size and count, Pokémon-transform moves, Growl's stagger across targets.
+
 ### v0.9.103 — The move, not the template  ✅ 2026-11-07
 
 **Shipped.** The user (2026-11-07): "es como si no hubiera cambiado nada". Every base move was filmed in combat and

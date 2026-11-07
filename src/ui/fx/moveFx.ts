@@ -1,4 +1,5 @@
 import { asset } from '@/content/paths';
+import { MOTION_MS, type MotionKind } from '@/ui/moveMotion';
 import anims from './pret-anims.json';
 
 // §9.9.2 — what a move looks like, from FireRed / LeafGreen's own battle animations (pret/pokefirered, imported by
@@ -34,11 +35,20 @@ export interface FxRecipe {
   volley?: number;
   /** `main` is one jaw of a pair: drawn twice, the second turned over (Bite, Clamp), as pret's scripts do. */
   pair?: boolean;
+  /** A Gen IV move's choreography, borrowed from the FRLG move it moves like (Fire Fang bites as Bite does)… */
+  like?: string;
+  /** …with that script's sprites swapped for its own (Bite's teeth for the fangs, its splat for an ember). */
+  swap?: Record<string, string>;
 }
 
 const SPRITES = anims.sprites as Record<string, FxSpriteInfo>;
 const BGS = anims.bgs as Record<string, { w: number; h: number }>;
-const PRET = anims.moves as Record<string, { sprites: string[]; bgs: string[]; lunge?: boolean }>;
+/** A sprite a script creates: `[frame, sprite, path, dx, dy, on, life, hit]` (scripts/fx/choreo.mjs) — `on` 'u' its
+ *  user or 't' its target, `life` in GBA frames, `hit` 1 for the sprite that lands the blow. */
+type PretEmit = [number, string, string, number, number, string, number, number];
+const PRET = anims.moves as unknown as Record<string, { sprites: string[]; bgs: string[]; lunge?: boolean; choreo?: { frames: number; emits: PretEmit[] } }>;
+/** How long a sprite of each path lives, in GBA frames. */
+const PATH_LIFE = anims.paths as Record<string, number>;
 
 export const fxSprite = (key: string): FxSpriteInfo | undefined => SPRITES[key];
 /** A re-palette's file: `slash@dark` → `slash_dark.png` (static servers do not all decode `%40`). */
@@ -89,59 +99,57 @@ const CHOPS = new Set(['karate-chop', 'brick-break', 'cross-chop']);
  */
 const COMPOSED: Record<string, FxRecipe> = {
   // FRLG moves whose script loads a sprite that is not the move itself first (Rock Tomb's X, Kinesis' alert mark,
-  // Crush Claw's wall flash, Crabhammer's bubbles, Wing Attack's gust): drawn with the piece that is.
-  'rock-tomb': { main: piece('rocks'), impact: piece('hit') },
+  // Crush Claw's wall flash, Crabhammer's bubbles): drawn with the piece that is.
+  'rock-tomb': { main: piece('rocks'), impact: piece('hit'), like: 'rock-throw' },
   kinesis: { main: piece('bent-spoon'), bg: 'psychic' },
   'crush-claw': { main: piece('claw-slash'), impact: piece('impact') },
   crabhammer: { main: piece('water-impact'), impact: piece('impact') },
-  'wing-attack': { main: piece('white-feather'), impact: piece('impact') },
-  'steel-wing': { main: piece('white-feather'), impact: piece('impact') },
   'vine-whip': { main: piece('vine'), impact: piece('whip-hit') },
   'call-for-help': { main: piece('alert') },
-  cover: { main: piece('protect@gold') },
-  snarl: { main: piece('noise-line@dark'), bg: 'dark' },
-  'night-slash': { main: piece('slash@dark'), impact: piece('impact@dark'), bg: 'dark' },
-  'bullet-punch': { main: piece('punch-impact'), impact: piece('hit') },
+  cover: { main: piece('protect@gold'), like: 'protect', swap: { protect: 'protect@gold' } },
+  snarl: { main: piece('noise-line@dark'), bg: 'dark', like: 'growl', swap: { 'noise-line': 'noise-line@dark' } },
+  'night-slash': { main: piece('slash@dark'), impact: piece('impact@dark'), bg: 'dark', like: 'slash', swap: { slash: 'slash@dark' } },
+  'bullet-punch': { main: piece('punch-impact'), impact: piece('hit'), like: 'mach-punch' },
   'magnet-bomb': { main: piece('metal-ball'), impact: piece('spark-2') },
-  'iron-head': { main: piece('hit'), impact: piece('impact') },
-  'aqua-ring': { main: piece('guard-ring@water') },
-  roost: { main: piece('white-feather') },
+  'iron-head': { main: piece('hit'), impact: piece('impact'), like: 'headbutt' },
+  'aqua-ring': { main: piece('guard-ring@water'), like: 'safeguard', swap: { 'guard-ring': 'guard-ring@water' } },
+  roost: { main: piece('white-feather'), like: 'feather-dance' },
   'u-turn': { main: piece('hit'), impact: piece('impact') },
   'giga-impact': { main: piece('impact'), impact: piece('explosion-2'), bg: 'highspeed' },
   'draco-meteor': { main: piece('meteor@draco'), impact: piece('explosion-2') },
-  'leaf-storm': { main: piece('leaf'), impact: piece('hit') },
-  'close-combat': { main: piece('hands-and-feet', 0), impact: piece('hit') },
-  'flare-blitz': { main: piece('spinning-fire'), impact: piece('explosion-2') },
+  'leaf-storm': { main: piece('leaf'), impact: piece('hit'), like: 'razor-leaf' },
+  'close-combat': { main: piece('hands-and-feet', 0), impact: piece('hit'), like: 'arm-thrust' },
+  'flare-blitz': { main: piece('spinning-fire'), impact: piece('explosion-2'), like: 'flame-wheel' },
   'wood-hammer': { main: piece('slam-hit'), impact: piece('impact') },
-  'brave-bird': { main: piece('bird@brave'), impact: piece('hit') },
+  'brave-bird': { main: piece('bird@brave'), impact: piece('hit'), like: 'sky-attack', swap: { bird: 'bird@brave' } },
   'dragon-pulse': { main: piece('purple-flame'), impact: piece('hit') },
-  'shadow-claw': { main: piece('claw-slash@ghost'), impact: piece('impact@dark') },
+  'shadow-claw': { main: piece('claw-slash@ghost'), impact: piece('impact@dark'), like: 'metal-claw', swap: { 'claw-slash': 'claw-slash@ghost' } },
   'shadow-sneak': { main: piece('white-shadow@shade'), impact: piece('impact@dark') },
-  'seed-bomb': { main: piece('seed', 0), impact: piece('explosion-2') },
-  'energy-ball': { main: piece('shadow-ball@grass'), impact: piece('hit') },
+  'seed-bomb': { main: piece('seed', 0), impact: piece('explosion-2'), like: 'egg-bomb', swap: { 'large-fresh-egg': 'seed', explosion: 'explosion-2' } },
+  'energy-ball': { main: piece('shadow-ball@grass'), impact: piece('hit'), like: 'shadow-ball', swap: { 'shadow-ball': 'shadow-ball@grass' } },
   'power-whip': { main: piece('vine@power'), impact: piece('whip-hit') },
   'drain-punch': { main: piece('punch-impact'), impact: piece('hit') },
-  'vacuum-wave': { main: piece('air-wave@vacuum'), impact: piece('hit') },
+  'vacuum-wave': { main: piece('air-wave@vacuum'), impact: piece('hit'), like: 'sonic-boom', swap: { 'air-wave': 'air-wave@vacuum' } },
   'aura-sphere': { main: piece('bluegreen-orb'), impact: piece('hit') },
-  'double-hit': { main: piece('impact'), impact: piece('hit') },
+  'double-hit': { main: piece('impact'), impact: piece('hit'), like: 'double-slap' },
   'aqua-jet': { main: piece('water-column'), impact: piece('water-impact') },
   'aqua-tail': { main: piece('water-column'), impact: piece('water-impact') },
   'ice-shard': { main: piece('ice-chunk', 0), impact: piece('hit') },
-  'ice-fang': { main: piece('fangs'), impact: piece('ice-chunk') },
-  'fire-fang': { main: piece('fangs'), impact: piece('small-ember') },
+  'ice-fang': { main: piece('fangs'), impact: piece('ice-chunk'), like: 'bite', swap: { 'sharp-teeth': 'fangs', impact: 'ice-chunk' } },
+  'fire-fang': { main: piece('fangs'), impact: piece('small-ember'), like: 'bite', swap: { 'sharp-teeth': 'fangs', impact: 'small-ember' } },
   'lava-plume': { main: piece('fire-plume@lava'), impact: piece('explosion-2') },
-  'thunder-fang': { main: piece('fangs'), impact: piece('electricity') },
-  discharge: { main: piece('electricity'), impact: piece('spark-2') },
-  'poison-jab': { main: piece('horn-hit@poison'), impact: piece('poison-bubble') },
+  'thunder-fang': { main: piece('fangs'), impact: piece('electricity'), like: 'bite', swap: { 'sharp-teeth': 'fangs', impact: 'electricity' } },
+  discharge: { main: piece('electricity'), impact: piece('spark-2'), like: 'spark' },
+  'poison-jab': { main: piece('horn-hit@poison'), impact: piece('poison-bubble'), like: 'horn-attack', swap: { 'horn-hit': 'horn-hit@poison' } },
   'cross-poison': { main: piece('cross-impact@poison'), impact: piece('poison-bubble') },
   'gunk-shot': { main: piece('poison-bubble'), impact: piece('toxic-bubble') },
   'earth-power': { main: piece('fire-plume@earth'), impact: piece('flying-dirt') },
-  'mud-bomb': { main: piece('brown-orb'), impact: piece('explosion@mud') },
+  'mud-bomb': { main: piece('brown-orb'), impact: piece('explosion@mud'), like: 'sludge-bomb', swap: { 'poison-bubble': 'brown-orb' } },
   'air-slash': { main: piece('air-slash'), impact: piece('hit') },
   'zen-headbutt': { main: piece('impact'), impact: piece('hit'), bg: 'psychic' },
-  'psycho-cut': { main: piece('cut@psychic'), impact: piece('hit'), bg: 'psychic' },
-  'x-scissor': { main: piece('cut'), impact: piece('cross-impact') },
-  'bug-buzz': { main: piece('metal-sound-waves@bug'), bg: 'bug' },
+  'psycho-cut': { main: piece('cut@psychic'), impact: piece('hit'), bg: 'psychic', like: 'cut', swap: { cut: 'cut@psychic' } },
+  'x-scissor': { main: piece('cut'), impact: piece('cross-impact'), like: 'cut' },
+  'bug-buzz': { main: piece('metal-sound-waves@bug'), bg: 'bug', like: 'metal-sound', swap: { 'metal-sound-waves': 'metal-sound-waves@bug' } },
   'stone-edge': { main: piece('rocks@stone'), impact: piece('hit') },
   'power-gem': { main: piece('sparkle-4'), impact: piece('hit') },
   'rock-polish': { main: piece('sparkle-1@stone') },
@@ -153,8 +161,103 @@ const COMPOSED: Record<string, FxRecipe> = {
   'flash-cannon': { main: piece('gray-orb'), impact: piece('hit') },
   'dark-pulse': { main: piece('purple-ring'), impact: piece('impact@dark'), bg: 'dark' },
   brine: { main: piece('water-impact'), impact: piece('splash') },
-  avalanche: { main: piece('ice-chunk'), impact: piece('hit') },
+  avalanche: { main: piece('ice-chunk'), impact: piece('hit'), like: 'rock-throw', swap: { rocks: 'ice-chunk' } },
 };
+
+/** One sprite of a move's choreography: when it shows and for how long (ms), the piece, its path and its offset. */
+export interface FxEmit {
+  at: number;
+  life: number;
+  piece: FxPiece;
+  path: FxPath;
+  /** Its offset from where it starts or plays, in GBA pixels (x toward the target's side). */
+  dx: number;
+  dy: number;
+  /** Where it plays or starts when it does not travel: on its user or on its target. */
+  on: 'user' | 'target';
+  /** Its place in the script, for what spreads (a scatter's direction). */
+  i: number;
+  /** Where in its circle an orbit starts, 0–1: the sprites a script starts together spread round it. */
+  phase: number;
+}
+export type FxPath = 'on' | 'line' | 'wave' | 'arc' | 'fall' | 'rise' | 'scatter' | 'orbit' | 'absorb' | 'close' | 'out' | 'sway';
+/** The paths that end where they land (a throw, a fall, jaws closing): the blow is their arrival, not their start. */
+const ARRIVES = new Set<FxPath>(['line', 'wave', 'arc', 'fall', 'close', 'out']);
+
+/**
+ * §9.9.2 — a move's choreography: its FRLG script's own timeline of sprites (`choreo` in pret-anims.json), replayed —
+ * each sprite when the script creates it, for as long as its callback runs, along its callback's path, on its user or
+ * its target. A script's leading wait (a darkened stage, a bolt drawn by a task) is cut, and it is scaled to fit `cap`
+ * (`choreoCapOf`: a routine card shorter than a heavy blow). It lands with its blow — the hit's splat it creates — or,
+ * with none, the first sprite to arrive; never before `wait` (a dash's arrival, a bolt's stroke), which its sprites
+ * wait for. A Gen IV move borrows the script of the FRLG move it moves `like`, its sprites swapped; one without keeps
+ * the motion kind's own picture.
+ */
+export function fxChoreoOf(moveId: string, beat: { wait: number; cap: number } = { wait: 0, cap: MOTION_MS.choreo.max }): FxChoreo | undefined {
+  const id = moveId.replace(/(-plus)+$/, '');
+  const k = `${id}:${beat.wait}:${beat.cap}`;
+  if (!CHOREO.has(k)) CHOREO.set(k, choreoOf(id, beat.wait, beat.cap));
+  return CHOREO.get(k);
+}
+export interface FxChoreo {
+  emits: FxEmit[];
+  impactMs: number;
+  totalMs: number;
+}
+/** Each move's choreography, worked out once. */
+const CHOREO = new Map<string, FxChoreo | undefined>();
+function choreoOf(id: string, wait: number, cap: number): FxChoreo | undefined {
+  const own = COMPOSED[id];
+  if (own && !own.like) return undefined;
+  const c = pretScriptOf(own?.like ?? id)?.choreo;
+  const swap = own?.swap ?? {};
+  const raw = (c?.emits ?? []).map((e): PretEmit => [e[0], swap[e[1]] ?? e[1], e[2], e[3], e[4], e[5], e[6], e[7]]).filter((e) => SPRITES[e[1]]);
+  if (!c || !raw.length) return undefined;
+  const C = MOTION_MS.choreo;
+  const t0 = Math.min(...raw.map((e) => e[0]));
+  const frames = Math.max(...raw.map((e) => e[0] + (e[6] || PATH_LIFE[e[2]] || 0))) - t0;
+  // The whole beat keeps to its cap, a dash's or a bolt's wait included (at least half the cap is the script's).
+  const ms = C.frame * Math.min(1, Math.max(cap / 2, cap - wait) / (frames * C.frame));
+  // An orbit's sprites started on the same frame spread evenly round their circle.
+  const together = new Map<number, number>();
+  const emits = raw.map(([t, sprite, path, dx, dy, on, life], i): FxEmit => {
+    const rank = path === 'orbit' ? (together.get(t) ?? 0) : 0;
+    if (path === 'orbit') together.set(t, rank + 1);
+    return { at: (t - t0) * ms, life: Math.max(C.minLife, (life || PATH_LIFE[path] || 16) * ms), piece: piece(sprite), path: path as FxPath, dx, dy, on: on === 'u' ? 'user' : 'target', i, phase: rank };
+  });
+  for (const e of emits) if (e.path === 'orbit') e.phase /= together.get(raw[e.i]![0]) ?? 1;
+  // It lands with its blow; with none, as the first sprite reaches its target or plays on it; only a move that plays
+  // on its user alone (a raise) lands with its first sprite.
+  const hit = emits.filter((e, k) => raw[k]![7] === 1).map((e) => e.at);
+  const arrive = emits.filter((e) => ARRIVES.has(e.path) && e.path !== 'out').map((e) => e.at + e.life);
+  const onTarget = emits.filter((e) => e.on === 'target' && !ARRIVES.has(e.path) && e.path !== 'absorb').map((e) => e.at);
+  const first = (xs: number[]) => (xs.length ? Math.min(...xs) : undefined);
+  const lands = first(hit) ?? first(arrive) ?? first(onTarget) ?? Math.min(...emits.map((e) => e.at));
+  // A dash's arrival or a bolt's stroke comes first: what plays on or toward the target waits for it — and what plays
+  // on the target before the blow (a horn, a fist) shows only as the user is about to arrive. What plays on the user
+  // before the blow plays as it leaves, not later over its empty card.
+  const late = Math.max(0, wait - lands);
+  const lead = Math.max(0, wait - MOTION_MS.sprite.lead);
+  for (const e of emits) {
+    const userSide = e.on === 'user' && !ARRIVES.has(e.path) && e.path !== 'absorb' && e.at < lands;
+    if (userSide) continue;
+    e.at += late;
+    if (wait > 0 && e.on === 'target' && e.at < lands + late) e.at = Math.max(e.at, lead);
+  }
+  // Nothing outlasts the cap: a sprite stretched to its shortest life, or moved to wait, is trimmed to it.
+  for (const e of emits) {
+    e.at = Math.min(e.at, cap - C.minLife);
+    e.life = Math.min(e.life, cap - e.at);
+  }
+  const end = Math.max(...emits.map((e) => e.at + e.life));
+  return { emits, impactMs: Math.min(lands + late, end), totalMs: end };
+}
+
+/** §9.9.2 — what a choreography waits for before it lands (a dash's arrival, lightning's stroke), and its longest. */
+export function fxBeatOf(kind: MotionKind, dash: boolean, cap: number): { wait: number; cap: number } {
+  const wait = kind === 'melee' && dash ? MOTION_MS.melee.windup + MOTION_MS.melee.dash : kind === 'bolt' ? MOTION_MS.bolt.strike : 0;
+  return { wait, cap };
+}
 
 /** §9.9.2 — the Gen IV Melee moves whose user charges across the field, as pret's own lunging moves do. */
 const COMPOSED_LUNGES = new Set(['aqua-jet', 'brave-bird', 'flare-blitz', 'giga-impact', 'iron-head', 'u-turn', 'zen-headbutt', 'bullet-punch', 'sucker-punch', 'wood-hammer', 'double-hit']);
@@ -176,14 +279,15 @@ export function fxLunges(moveId: string): boolean {
  * Melee move that does not dash — only its hit, Pound's splat), whether that includes its own sprite, whether its user
  * dashes, and its volley.
  */
-export function fxCastOf(moveId: string): { sprites: boolean; own: boolean; dash: boolean; volley: number } {
+export function fxCastOf(moveId: string, kind: MotionKind = 'projectile', cap: number = MOTION_MS.choreo.max): { sprites: boolean; own: boolean; dash: boolean; volley: number; choreo?: { impactMs: number; totalMs: number } } {
   const r = fxRecipeOf(moveId);
   const dash = fxLunges(moveId);
-  return { sprites: !!r?.main || (!dash && !!r?.impact), own: !!r?.main, dash, volley: r?.main ? (r.volley ?? 1) : 1 };
+  const c = fxChoreoOf(moveId, fxBeatOf(kind, dash, cap));
+  return { sprites: !!r?.main || (!dash && !!r?.impact), own: !!r?.main, dash, volley: r?.main ? (r.volley ?? 1) : 1, ...(c ? { choreo: { impactMs: c.impactMs, totalMs: c.totalMs } } : {}) };
 }
 
 /** The move's pret script, by our id. */
-export function pretScriptOf(moveId: string): { sprites: string[]; bgs: string[]; lunge?: boolean } | undefined {
+export function pretScriptOf(moveId: string): { sprites: string[]; bgs: string[]; lunge?: boolean; choreo?: { frames: number; emits: PretEmit[] } } | undefined {
   const id = moveId.replace(/(-plus)+$/, '');
   return PRET[PRET_NAME[id] ?? id] ?? PRET[PRET_BY_NORM.get(norm(PRET_NAME[id] ?? id)) ?? ''];
 }

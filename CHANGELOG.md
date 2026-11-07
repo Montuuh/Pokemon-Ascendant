@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.104 — Moves that move like the GBA · 2026-11-07
+
+Each FireRed move replays its own battle animation, sprite by sprite.
+
+- **Their own paths.** Flamethrower waves, Fire Spin circles, rocks fall.
+- **Gen IV too.** Fire Fang bites like Bite; Night Slash slashes like Slash.
+- **Lands with its blow.** The number waits for the hit's own splat.
+- **Quicker turns.** Routine cards stay short; the hand returns at the hit.
+
 ### v0.9.103 — The move, not the template · 2026-11-07
 
 Each move's sprites are its whole picture: the shared drawn layer is gone.

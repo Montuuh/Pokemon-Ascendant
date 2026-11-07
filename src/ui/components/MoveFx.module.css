@@ -873,3 +873,79 @@
   90% { opacity: 1; }
   100% { opacity: 0; transform: translate(var(--dist), 0); }
 }
+
+/* ── A choreography (§9.9.2): each sprite of the move's FRLG script on its path ──────────────────────────────────
+   Placed by translation only (D9: pixels moved, never turned or scaled). Unseen until its moment, gone after its life.
+   --x0/--y0 → --x1/--y1 are its start and end in the stage's pixels; --amp a wave's or a sway's swing, --lift an
+   arc's rise, --r an orbit's reach. */
+.cho {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  animation: choLine var(--life) linear var(--at) both;
+}
+@keyframes choOn {
+  0% { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+  4%, 96% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+}
+@keyframes choLine {
+  0% { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+  4%, 96% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x1), var(--y1)); }
+}
+@keyframes choWave {
+  0% { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+  4% { opacity: 1; }
+  25% { transform: translate(calc(var(--x0) + (var(--x1) - var(--x0)) * 0.25), calc(var(--y0) + (var(--y1) - var(--y0)) * 0.25 - var(--amp))); }
+  50% { transform: translate(calc(var(--x0) + (var(--x1) - var(--x0)) * 0.5), calc(var(--y0) + (var(--y1) - var(--y0)) * 0.5)); }
+  75% { transform: translate(calc(var(--x0) + (var(--x1) - var(--x0)) * 0.75), calc(var(--y0) + (var(--y1) - var(--y0)) * 0.75 + var(--amp))); }
+  96% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x1), var(--y1)); }
+}
+@keyframes choArc {
+  0% { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+  4% { opacity: 1; }
+  50% { transform: translate(calc((var(--x0) + var(--x1)) / 2), calc((var(--y0) + var(--y1)) / 2 - var(--lift))); }
+  96% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x1), var(--y1)); }
+}
+.cho_on { animation-name: choOn; }
+.cho_wave { animation-name: choWave; }
+.cho_arc,
+.cho_absorb { animation-name: choArc; }
+/* A fall gathers speed toward the ground; a rise, a scatter and what goes out slow as they spend their push. */
+.cho_fall {
+  /* motion-ok: gravity — a rock or a powder falling gathers speed into its landing */
+  animation-timing-function: cubic-bezier(0.5, 0, 1, 1);
+}
+.cho_rise,
+.cho_scatter,
+.cho_out { animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+.cho_close { animation-timing-function: cubic-bezier(0.6, 0, 1, 1); }
+/* An orbit: the sprite stands on its point (`choOn`) and turns round it, from where its script started it in the
+   circle (`--spin-at`, earlier than its own moment by its phase), twice over its life. */
+.cho_orbit { animation-name: choOn; }
+.choSpin {
+  position: absolute;
+  animation: choSpin var(--life) linear var(--spin-at) 2 both;
+}
+@keyframes choSpin {
+  0% { transform: translate(var(--r), 0); }
+  25% { transform: translate(0, calc(var(--r) / 2)); }
+  50% { transform: translate(calc(var(--r) * -1), 0); }
+  75% { transform: translate(0, calc(var(--r) / -2)); }
+  100% { transform: translate(var(--r), 0); }
+}
+/* A sway: drifting down from above, swinging side to side as it falls. */
+.cho_sway { animation-name: choSway; }
+@keyframes choSway {
+  0% { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+  6% { opacity: 1; }
+  25% { transform: translate(calc(var(--x0) + var(--amp) * 2), calc(var(--y0) + (var(--y1) - var(--y0)) * 0.25)); }
+  50% { transform: translate(var(--x0), calc(var(--y0) + (var(--y1) - var(--y0)) * 0.5)); }
+  75% { transform: translate(calc(var(--x0) - var(--amp) * 2), calc(var(--y0) + (var(--y1) - var(--y0)) * 0.75)); }
+  94% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x0), var(--y1)); }
+}

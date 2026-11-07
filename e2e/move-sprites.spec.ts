@@ -36,14 +36,17 @@ async function settle(page: Page) {
 const after = (impact: number) => impact + MOTION_MS.frames.flicker;
 const CASES: { id: string; kind: string; ms: number; sprite?: string; bg?: string }[] = [
   { id: 'flamethrower', kind: 'beam', ms: MOTION_MS.beam.cast + MOTION_MS.beam.grow, sprite: 'small-ember' },
-  { id: 'bite', kind: 'melee', ms: after(MOTION_MS.melee.windup + MOTION_MS.melee.dash), sprite: 'sharp-teeth' },
+  // Bite replays its FRLG script from where its user stands: its jaws close and its splat lands a few frames in.
+  { id: 'bite', kind: 'melee', ms: MOTION_MS.frames.flicker * 2, sprite: 'sharp-teeth' },
   { id: 'mega-kick', kind: 'melee', ms: after(MOTION_MS.melee.windup + MOTION_MS.melee.dash), sprite: 'hands-and-feet', bg: 'none' },
   { id: 'ember', kind: 'projectile', ms: MOTION_MS.projectile.cast + MOTION_MS.projectile.travel / 2, sprite: 'small-ember' },
   { id: 'thunderbolt', kind: 'bolt', ms: after(MOTION_MS.bolt.cast + MOTION_MS.bolt.strike) },
   { id: 'psychic', kind: 'area', ms: MOTION_MS.area.build + MOTION_MS.area.peak, bg: 'psychic' },
-  { id: 'night-slash', kind: 'melee', ms: after(MOTION_MS.melee.windup + MOTION_MS.melee.dash), sprite: 'slash@dark', bg: 'none' },
+  // Its FRLG script's two slashes, a beat apart, from where its user stands (no dash): caught as the second lands.
+  { id: 'night-slash', kind: 'melee', ms: MOTION_MS.frames.flicker, sprite: 'slash@dark', bg: 'none' },
   { id: 'rock-slide', kind: 'area', ms: MOTION_MS.area.build + MOTION_MS.area.peak, sprite: 'rocks' },
-  { id: 'energy-ball', kind: 'projectile', ms: MOTION_MS.projectile.cast + MOTION_MS.projectile.travel / 2, sprite: 'shadow-ball@grass' },
+  // Energy Ball throws as Shadow Ball's script does: caught in flight.
+  { id: 'energy-ball', kind: 'projectile', ms: MOTION_MS.frames.flicker * 2, sprite: 'shadow-ball@grass' },
 ];
 
 test.describe('Move animation sprites — §9.9.2', () => {
@@ -72,18 +75,16 @@ test.describe('Move animation sprites — §9.9.2', () => {
   test('Bite lands on the foe from where its user stands; a volley waits unseen until it leaves', async ({ page }) => {
     await ready(page);
     // The GBA does not move Bite's user: no double crosses the field and the user's own sprite never hides.
-    const bite = await frozen(page, 'bite', after(MOTION_MS.melee.windup + MOTION_MS.melee.dash));
+    const bite = await frozen(page, 'bite', MOTION_MS.frames.flicker * 2);
     await expect(bite.locator('[data-fx-sprite="sharp-teeth"]').first()).toBeAttached();
     await expect(page.locator('.fx-dashing')).toHaveCount(0);
     await settle(page);
-    // Swift as its first star leaves (no drawn charge before a sprite move): the later stars have not left, so they
-    // are not drawn stacked on their user.
-    const swift = await frozen(page, 'swift', MOTION_MS.projectile.volley / 2);
-    // The stars in flight (the impact waits at the foe): each one's flight, unseen while it waits.
-    const shown = await swift.locator('[data-fx-sprite]').evaluateAll((els) =>
-      els.map((e) => e.closest('[class*=flight]')).filter((f): f is Element => !!f).map((f) => Number(getComputedStyle(f).opacity)),
-    );
-    expect(shown.length).toBe(3);
-    expect(shown.slice(1).every((o) => o === 0)).toBe(true);
+    // Swift replays its FRLG script: five stars in a wave, a few frames apart. Early in it the first are on their way
+    // and the later ones are unseen until their moment — never drawn stacked on their user.
+    const swift = await frozen(page, 'swift', MOTION_MS.frames.flicker * 2);
+    const shown = await swift.locator('[data-fx-path="wave"]').evaluateAll((els) => els.map((e) => Number(getComputedStyle(e).opacity)));
+    expect(shown.length).toBe(5);
+    expect(shown.some((o) => o > 0)).toBe(true);
+    expect(shown.at(-1)).toBe(0);
   });
 });

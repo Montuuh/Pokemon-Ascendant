@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { spriteOf } from '@/ui/art';
-import { fxBgOf, fxBgUrl, fxCastOf, fxRecipeOf, fxSprite, fxSpriteUrl, type FxPiece, type FxRecipe } from '@/ui/fx/moveFx';
+import { fxBeatOf, fxBgOf, fxBgUrl, fxCastOf, fxChoreoOf, fxRecipeOf, fxSprite, fxSpriteUrl, type FxEmit, type FxPiece, type FxRecipe } from '@/ui/fx/moveFx';
 import type { MoveFx, SlotBox, SpriteSlot } from '@/ui/hooks/useCombatFx';
-import { spriteLandsAt, type AreaStyle, type ProjectileStyle } from '@/ui/moveMotion';
+import { MOTION_MS, spriteLandsAt, type AreaStyle, type ProjectileStyle } from '@/ui/moveMotion';
 import { ArenaSprite } from './ArenaSprite';
 import styles from './MoveFx.module.css';
 
@@ -73,7 +73,8 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
         const from = centre(fromBox);
         const targets = m.to.map((s) => boxes[s]).filter((b): b is SlotBox => !!b);
         const to = targets.map(found ? body : centre);
-        const look = fxCastOf(m.moveId);
+        const look = fxCastOf(m.moveId, m.motion.kind, m.cap);
+        const choreo = fxChoreoOf(m.moveId, fxBeatOf(m.motion.kind, look.dash, m.cap));
         const vars = { '--mv-type': `var(--type-${m.type})`, '--mv-total': `${m.motion.totalMs}ms`, '--mv-impact-at': `${m.motion.impactMs}ms`, ...(look.sprites ? spriteBeats(look) : {}) } as CSSProperties;
         const cast = recipe ? { recipe, scale: pixelScale(targets[0] ?? fromBox), flip: m.side === 'enemy' } : undefined;
         return (
@@ -89,6 +90,8 @@ export function MoveFxLayer({ moves, boxes, floor = false }: { moves: readonly M
                 {bg && <span className={styles.fxBg} data-testid="move-fx-bg" style={{ '--fx-bg': `url(${fxBgUrl(bg)})` } as CSSProperties} />}
                 {inTheGround(m) && <Floor side={m.side} />}
               </>
+            ) : cast && choreo ? (
+              <Choreographed m={m} fromBox={fromBox} from={from} to={to} targets={targets} cast={cast} emits={choreo.emits} />
             ) : (
               draw(m, fromBox, from, to, targets, cast)
             )}
@@ -140,6 +143,108 @@ function SpriteImpact({ cast, at, delay, withMain = false, mainAt }: { cast: Cas
       {main && (withMain || !impact) && <Sprite piece={main} cast={cast} at={at} delay={own} once {...(mainAt && impact ? { until: delay } : {})} className={cast.recipe.pair ? styles.fxJawUpper : undefined} />}
       {main && (withMain || !impact) && cast.recipe.pair && <Sprite piece={main} cast={cast} at={at} delay={own} once {...(mainAt && impact ? { until: delay } : {})} className={styles.fxJawLower} />}
     </>
+  );
+}
+
+/**
+ * §9.9.2 — a move replaying its FRLG script: every sprite the script creates, when it creates it, along its
+ * callback's path (`fxChoreoOf`) — Flamethrower's embers in a wave, Fire Spin's circling its target, Rock Throw's
+ * rocks dropping on it, Absorb's orbs flowing back. A move landing on several plays on each a stagger apart. A dash
+ * (Tackle) still carries its user across, and lightning keeps its bolt: those the GBA draws with no sprite.
+ */
+function Choreographed({ m, fromBox, from, to, targets, cast, emits }: { m: MoveFx; fromBox: SlotBox; from: Point; to: Point[]; targets: SlotBox[]; cast: Cast; emits: FxEmit[] }) {
+  const user = body(fromBox);
+  return (
+    <>
+      {m.actor && <Melee m={m} box={fromBox} from={from} to={to[0] ?? user} dashOnly />}
+      {m.motion.kind === 'bolt' && to[0] && <BoltLine from={from} to={to[0]} />}
+      {to.map((t, k) => (
+        <span key={k}>
+          {emits.map((e) => (
+            <Emit key={e.i} e={e} user={user} target={t} box={targets[k] ?? fromBox} cast={cast} stagger={k * MOTION_MS.impact.stagger} />
+          ))}
+        </span>
+      ))}
+    </>
+  );
+}
+
+/** Where one sprite of a choreography starts and ends, in the stage's pixels, from its path and its GBA offset. */
+function Emit({ e, user, target, box, cast, stagger }: { e: FxEmit; user: Point; target: Point; box: SlotBox; cast: Cast; stagger: number }) {
+  // A GBA offset at the field's pixel scale, mirrored on the foe's side (x points toward the target).
+  const off = { x: e.dx * cast.scale * (cast.flip ? -1 : 1), y: e.dy * cast.scale };
+  const plus = (p: Point, q: Point = off): Point => ({ x: p.x + q.x, y: p.y + q.y });
+  const h = box.height;
+  // Where a sprite that does not travel plays: on its user or its target, as its callback places it.
+  const at = e.on === 'user' ? user : target;
+  let a: Point;
+  let b: Point;
+  switch (e.path) {
+    case 'line':
+    case 'wave':
+    case 'arc':
+      a = plus(user);
+      b = target;
+      break;
+    case 'absorb':
+      a = plus(target);
+      b = user;
+      break;
+    case 'out':
+      a = plus(user);
+      b = plus({ x: user.x + (target.x - user.x) * 0.4, y: user.y + (target.y - user.y) * 0.4 });
+      break;
+    case 'close':
+      a = plus(at);
+      b = at;
+      break;
+    case 'fall':
+      b = plus(at);
+      a = { x: b.x, y: b.y - h * 1.1 };
+      break;
+    case 'rise':
+      a = plus(at, { x: off.x, y: off.y + h * 0.2 });
+      b = { x: a.x, y: a.y - h * 0.6 };
+      break;
+    case 'sway':
+      // Drifting down from above its user, swaying as it falls (Petal Dance's flowers, a feather).
+      a = plus(at, { x: off.x, y: off.y - h * 0.7 });
+      b = { x: a.x, y: at.y + h * 0.25 };
+      break;
+    case 'scatter': {
+      a = plus(at);
+      const turn = e.i * 2.4;
+      b = { x: a.x + Math.cos(turn) * h * 0.45, y: a.y + Math.sin(turn) * h * 0.3 };
+      break;
+    }
+    case 'orbit':
+      // Round its point itself: the offset is the orbit's reach, not where it sits.
+      a = at;
+      b = a;
+      break;
+    default:
+      a = plus(at);
+      b = a;
+  }
+  const vars = {
+    '--x0': px(a.x),
+    '--y0': px(a.y),
+    '--x1': px(b.x),
+    '--y1': px(b.y),
+    '--at': `${Math.round(e.at + stagger)}ms`,
+    '--life': `${Math.round(e.life)}ms`,
+    // A wave's sway, an arc's or a drain's lift, an orbit's reach: from the target's size.
+    '--amp': px(h * 0.14),
+    '--lift': px(Math.max(h * 0.4, Math.abs(b.x - a.x) * 0.22)),
+    '--r': px(h * 0.32),
+    // An orbit starts where in its circle its script set it: its spin begins that far back in its turn.
+    '--spin-at': `${Math.round(e.at + stagger - e.phase * e.life)}ms`,
+  } as CSSProperties;
+  const sprite = <Sprite piece={e.piece} cast={cast} delay={`${Math.round(e.at + stagger)}ms`} />;
+  return (
+    <span className={`${styles.cho} ${styles[`cho_${e.path}`] ?? ''}`} style={vars} data-fx-path={e.path}>
+      {e.path === 'orbit' ? <span className={styles.choSpin}>{sprite}</span> : sprite}
+    </span>
   );
 }
 
@@ -210,7 +315,7 @@ const Cast = ({ at, kind }: { at: Point; kind: 'projectile' | 'beam' | 'bolt' | 
 );
 
 /** §9.9.2 Melee — the user winds up, dashes across to its target, jabs, and comes back to its card. */
-function Melee({ m, box, from, to, cast }: { m: MoveFx; box: SlotBox; from: Point; to: Point; cast?: Cast }) {
+function Melee({ m, box, from, to, cast, dashOnly = false }: { m: MoveFx; box: SlotBox; from: Point; to: Point; cast?: Cast; dashOnly?: boolean }) {
   const landed = 'calc(var(--mv-melee-windup) + var(--mv-melee-dash))';
   // It stops short of the target, so the two touch rather than overlap.
   const reach = 0.78;
@@ -225,7 +330,7 @@ function Melee({ m, box, from, to, cast }: { m: MoveFx; box: SlotBox; from: Poin
         </div>
       )}
       {/* Without a dash, the move's sprite is on the target from the first frame and its blow lands a lead later. */}
-      {cast ? <SpriteImpact cast={cast} at={to} delay={landed} withMain {...(m.actor ? {} : { mainAt: '0ms' })} /> : <Impact at={to} delay={landed} />}
+      {dashOnly ? null : cast ? <SpriteImpact cast={cast} at={to} delay={landed} withMain {...(m.actor ? {} : { mainAt: '0ms' })} /> : <Impact at={to} delay={landed} />}
     </>
   );
 }
@@ -325,17 +430,25 @@ function zigzag(a: Point, b: Point, steps: number, amp: number): string {
   return pts.join(' ');
 }
 
+/** Lightning's own line — the GBA draws it with a task, not a sprite, so a choreography's sparks keep it and wait for
+ *  its stroke (`fxBeatOf`). */
+function BoltLine({ from, to, steps = 8, amp = 18, className }: { from: Point; to: Point; steps?: number; amp?: number; className?: string }) {
+  const path = zigzag(from, to, steps, amp);
+  return (
+    <svg className={`${styles.svg} ${className ?? ''}`} aria-hidden="true">
+      <polyline className={styles.boltGlow} points={path} pathLength={1} />
+      <polyline className={styles.boltCore} points={path} pathLength={1} />
+    </svg>
+  );
+}
+
 /** §9.9.2 Lightning — a bolt drawn from the user to the target, flickering. */
 function Bolt({ from, to, cast }: { from: Point; to: Point; cast?: Cast }) {
-  const path = zigzag(from, to, 8, 18);
   const landed = 'calc(var(--mv-bolt-cast) + var(--mv-bolt-strike))';
   return (
     <>
       {!cast?.recipe.main && <Cast at={from} kind="bolt" />}
-      <svg className={styles.svg} aria-hidden="true">
-        <polyline className={styles.boltGlow} points={path} pathLength={1} />
-        <polyline className={styles.boltCore} points={path} pathLength={1} />
-      </svg>
+      <BoltLine from={from} to={to} />
       {cast ? <SpriteImpact cast={cast} at={to} delay={landed} withMain /> : <Impact at={to} delay={landed} big />}
     </>
   );
@@ -478,10 +591,7 @@ function Area({ style, side, from, to, boxes, cast }: { style: AreaStyle; side: 
       {drawn && style === 'storm' && (
         <>
           {to.map((t, k) => (
-            <svg key={k} className={`${styles.svg} ${styles.skyBolt}`} aria-hidden="true">
-              <polyline className={styles.boltGlow} points={zigzag({ x: t.x + 20 * spread(k), y: 0 }, t, 7, 16)} pathLength={1} />
-              <polyline className={styles.boltCore} points={zigzag({ x: t.x + 20 * spread(k), y: 0 }, t, 7, 16)} pathLength={1} />
-            </svg>
+            <BoltLine key={k} from={{ x: t.x + 20 * spread(k), y: 0 }} to={t} steps={7} amp={16} className={styles.skyBolt} />
           ))}
           <span className={styles.strikeFlash} />
         </>

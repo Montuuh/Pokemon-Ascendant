@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { AREA_MOVES, baseMoveId, MOTION_MS, motionOf, motionTimings } from './moveMotion';
+import { AREA_MOVES, baseMoveId, choreoCapOf, MOTION_MS, motionOf, motionTimings } from './moveMotion';
 
 // §9.9.2 — how a move moves: every move in the game has an animation, its impact inside its beat, and the great
 // moves fill the stage. Read from the content, so a new move cannot ship without one.
@@ -39,6 +39,21 @@ describe('Move motion — §9.9.2', () => {
     expect(motionOf(content.move('pound'), 1, { sprites: true, own: false, dash: false, volley: 1 }).impactMs).toBe(MOTION_MS.frames.flicker);
     // Tackle still dashes across first.
     expect(motionOf(content.move('tackle'), 1, { sprites: true, own: false, dash: true, volley: 1 }).impactMs).toBe(kindOf('tackle').impactMs);
+  });
+
+  it('ChoreoCapOf_ARoutineCard_IsShorterThanAHeavyBlow', () => {
+    expect(choreoCapOf(content.move('bubble'), 1)).toBe(MOTION_MS.choreo.light);
+    expect(choreoCapOf(content.move('thunderbolt'), 1)).toBe(MOTION_MS.choreo.medium);
+    expect(choreoCapOf(content.move('hyper-beam'), 1)).toBe(MOTION_MS.choreo.max);
+    expect(choreoCapOf(content.move('tackle'), 2)).toBe(MOTION_MS.choreo.max);
+  });
+
+  it('MotionOf_AFieldMoveWithAChoreography_IsTimedByIt', () => {
+    const look = { sprites: true, own: true, dash: false, volley: 1, choreo: { impactMs: 200, totalMs: 900 } };
+    const m = motionOf(content.move('fire-blast'), 2, look);
+    expect(m).toMatchObject({ kind: 'area', impactMs: 200 });
+    // Its second target plays a stagger after the first.
+    expect(m.totalMs).toBe(900 + MOTION_MS.impact.stagger);
   });
 
   it('TheGreatMoves_FillTheStage_AndAnythingHittingSeveral_Too', () => {

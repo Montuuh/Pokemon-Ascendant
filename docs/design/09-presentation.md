@@ -709,6 +709,24 @@ larger, to read across a field far wider than the GBA's). The 19 moves the GBA a
 Surf's wave, Earthquake…) keep the shapes in the table. Eight moves are being drawn new (`docs/art/fx/`) and use a pret
 stand-in until then. Recipes: `ui/fx/moveFx.ts`.
 
+**A move moves as it does on the GBA** (v0.9.104, the user's pick from the review). A move FRLG animates replays
+its own script's timeline (`scripts/fx/choreo.mjs` → `choreo` in `pret-anims.json`, `fxChoreoOf`): every sprite the
+script creates, when it creates it (its delays, in GBA frames), for as long as its callback runs, along the path its C
+callback gives it — straight, in a wave, in an arc, falling from above, swaying down, rising from the feet, scattering,
+circling, closing, going out from its user or flowing back to it — on its user or its target and at the offset its
+callback reads. So Flamethrower pours its 22 embers in a wave, Fire Spin's embers circle its target, Rock Throw's rocks
+drop on it, Bite's jaws close, Absorb's orbs flow back, Swords Dance's blade rises over its user, Petal Dance's
+flowers sway down round it and Growl's noise goes out from it. The move lands with its blow — the hit's splat its
+script creates — or, with none, its first sprite to arrive; never before a dash arrives or lightning's bolt (drawn by
+a task on the GBA, kept as our line) has struck, which its sprites wait for. A script's opening wait with no sprite is
+cut, and a long script is scaled down by the card's weight (`choreoCapOf`, D12): a routine card to
+`MOTION_MS.choreo.light`, a strong hit to `medium`, a 100-power blow or a field move to `max`. The hand comes back with
+a foe's blow and its number, while the rest of its choreography plays on (D11). The motion kinds above stay as the
+frame: who is aimed at, the dash, the bolt, a heavy move's background. A Gen IV move borrows the script of the FRLG
+move it moves `like` (Fire Fang bites as Bite does, with fangs and an ember), its sprites swapped; one with no such
+move keeps the kind's picture. Why the script and not a hand-made path per move: it is the GBA's own choreography,
+data the importer reads, so 300 moves each move like themselves without 300 hand-tuned animations.
+
 **A move's sprites are its whole picture** (v0.9.103, from the review of every move filmed, `docs/art/fx/move-fx-review.json`).
 Where a move has its pret sprites, the drawn layer that served every move alike goes: no glow gathers on the user
 before a throw, a raise shows its own sprite without the rings, a field move drops its type tint, a drain its tendril —

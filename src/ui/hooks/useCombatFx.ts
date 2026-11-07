@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from
 import type { CombatEvent, CombatState, EnemyCombatant, PokemonType } from '@/sim';
 import { benchIndices, bossArchetype, indexToSlot } from '@/sim';
 import { getContent } from '@/content/registry';
-import { MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
+import { choreoCapOf, MOTION_MS, motionOf, type Motion } from '@/ui/moveMotion';
 import { fxCastOf } from '@/ui/fx/moveFx';
 import { SHAKE_CHECKS, wobblesShown } from '@/sim/combat/catch';
 import type { FloatingFx } from '@/ui/components/FloatingNumbers';
@@ -86,6 +86,8 @@ export interface MoveFx {
   side: 'player' | 'enemy';
   /** The user, drawn as it dashes across the field (a Melee move): its real sprite waits hidden in its card. */
   actor?: { speciesId: string; shiny: boolean };
+  /** The longest its choreography may last (`choreoCapOf`), so the picture is timed as the beat was. */
+  cap: number;
 }
 
 export interface CombatFxState {
@@ -484,7 +486,9 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
         if (n.t === 'attack' && n.moveId === moveId && !hit.includes(n.targetUid)) hit.push(n.targetUid);
         if ((n.t === 'status-applied' || n.t === 'status-immune' || n.t === 'stage' || n.t === 'heal') && !touched.includes(n.targetUid)) touched.push(n.targetUid);
       }
-      const look = fxCastOf(moveId);
+      // How it is drawn depends on its kind only through its dash, and its kind never on how it is drawn.
+      const cap = choreoCapOf(move, hit.length);
+      const look = fxCastOf(moveId, motionOf(move, hit.length).kind, cap);
       const motion = motionOf(move, hit.length, look);
       // A Pokémon still dashing back from its last blow finishes coming back first.
       delay = Math.max(delay, (clock.current.dashes[userUid] ?? 0) - t0);
@@ -501,7 +505,7 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
       const dashing = motion.kind === 'melee' && look.dash;
       const actor = dashing ? actorOf(userUid) : null;
       const id = nextId.current++;
-      const fx: MoveFx = { id, moveId, type: move.type, motion, from: fromSlot, to, side: isMine(userUid) ? 'player' : 'enemy', ...(actor ? { actor } : {}) };
+      const fx: MoveFx = { id, moveId, type: move.type, motion, cap, from: fromSlot, to, side: isMine(userUid) ? 'player' : 'enemy', ...(actor ? { actor } : {}) };
       schedule(() => setMoves((ms) => [...ms, fx]), delay);
       schedule(() => setMoves((ms) => ms.filter((x) => x.id !== id)), delay + motion.totalMs);
       // A dash: the real sprite waits hidden in its card while its double crosses the field and comes back.
@@ -515,7 +519,8 @@ export function useCombatFx(state: CombatState | null, combatKey: number, animat
           if (clock.current.dashes[userUid] === back) setSprites((c) => (c[userUid] === 'fx-dashing' ? { ...c, [userUid]: '' } : c));
         }, delay + motion.totalMs);
       }
-      if (!isMine(userUid)) foesDone = Math.max(foesDone, delay + motion.totalMs);
+      // D11 — the hand waits for a foe's blow and its number, not for its last sprite to fade: what is left plays on.
+      if (!isMine(userUid)) foesDone = Math.max(foesDone, delay + Math.min(motion.totalMs, motion.impactMs + MOTION_MS.impact.ring));
       // Earthquake: the whole stage shakes from a beat before its impact to its end.
       if (motion.kind === 'area' && motion.style === 'quake') {
         const shakeAt = delay + motion.impactMs - MOTION_MS.stage.lead;

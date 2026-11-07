@@ -17,6 +17,7 @@ import { inflateSync } from 'node:zlib';
 import sharp from 'sharp';
 import { PRET_COMMIT, pretSource } from '../lib/frlg-map.mjs';
 import { VARIANTS } from './variants.mjs';
+import { LIFE, timeline } from './choreo.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const sources = new Map();
@@ -95,10 +96,18 @@ for (const m of table.matchAll(/\{(gBattleAnimSpritePal_\w+),\s*(ANIM_TAG_\w+)\}
 const sizes = {};
 // The C callback that moves each sprite template: a script that creates one of the attacker-moving ones lunges.
 const callbackOf = {};
+/** Each sprite template's sprite tag and callback, for the choreography (`scripts/fx/choreo.mjs`). */
+const templates = {};
 const blended = {};
+/** Each sprite callback's C body, for how it places and times its sprite (`readCallback` in choreo.mjs). */
+const bodies = {};
 for (const file of ANIM_C) {
   const c = await text(file);
-  for (const m of c.matchAll(/struct\s+SpriteTemplate\s+(\w+)\s*=\s*\{[\s\S]*?\.callback\s*=\s*(\w+)/g)) callbackOf[m[1]] = m[2];
+  for (const m of c.matchAll(/^(?:static )?void (\w+)\(struct Sprite \*sprite\)\r?\n\{([\s\S]*?)^\}/gm)) bodies[m[1]] = m[2];
+  for (const m of c.matchAll(/struct\s+SpriteTemplate\s+(\w+)\s*=\s*\{([\s\S]*?)\.callback\s*=\s*(\w+)/g)) {
+    callbackOf[m[1]] = m[3];
+    templates[m[1]] = { tag: /\.tileTag\s*=\s*(ANIM_TAG_\w+)/.exec(m[2])?.[1] ?? null, callback: m[3] };
+  }
   for (const m of c.matchAll(/\.tileTag\s*=\s*(ANIM_TAG_\w+)[\s\S]{0,200}?\.oam\s*=\s*&gOamData_(\w+?)_(\d+)x(\d+)/g)) {
     const s = (sizes[m[1]] ??= {});
     const k = `${m[3]}x${m[4]}`;
@@ -142,7 +151,9 @@ for (const label of Object.keys(labels)) {
   if (!label.startsWith('Move_') || label === 'Move_NONE') continue;
   const { sprites, bgs, lunge } = walk(label);
   const id = label.slice(5).toLowerCase().replace(/_/g, '-');
-  moves[id] = { sprites: [...sprites].filter((t) => tagGfx[t]?.includes('/sprites/')).map(key), bgs: [...bgs].map(bgKey), ...(lunge ? { lunge } : {}) };
+  // §9.9.2 — its choreography: each sprite it creates, when, along which path, where.
+  const choreo = timeline(labels, label, templates, (tag) => (tagGfx[tag]?.includes('/sprites/') ? key(tag) : null), bodies);
+  moves[id] = { sprites: [...sprites].filter((t) => tagGfx[t]?.includes('/sprites/')).map(key), bgs: [...bgs].map(bgKey), ...(lunge ? { lunge } : {}), ...(choreo.emits.length ? { choreo } : {}) };
   sprites.forEach((t) => usedTags.add(t));
   bgs.forEach((b) => b !== 'BG_NONE' && usedBgs.add(b));
 }
@@ -293,7 +304,7 @@ for (const mv of Object.values(moves)) mv.bgs = mv.bgs.filter((b) => bgs[b]);
 
 await writeFile(
   resolve(root, 'src/ui/fx/pret-anims.json'),
-  `${JSON.stringify({ commit: PRET_COMMIT, sprites, bgs, moves }, null, 1)}\n`,
+  `${JSON.stringify({ commit: PRET_COMMIT, paths: LIFE, sprites, bgs, moves }, null, 1)}\n`,
 );
 await writeFile(
   resolve(outDir, 'manifest.json'),

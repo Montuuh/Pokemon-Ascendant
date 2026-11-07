@@ -39,6 +39,11 @@ rooms (`PRET_COMMIT` in `scripts/lib/frlg-map.mjs`). The scripts and tables are 
   and cut into frames in the GBA's 1-D tile order, the 23 re-palettes of `scripts/fx/variants.mjs`, the 16 backgrounds
   (240 × 160), and per FRLG move script the sprites and backgrounds it loads → `src/ui/fx/pret-anims.json`.
   `node scripts/fx/contact-sheet.mjs [regex]` shows them in `playtest/fx-contact.png`.
+- The review tools: `node scripts/fx/film-moves.mjs [--only ids]` films every base move in combat (needs the dev
+  server) to `playtest/fx-report/film/<id>.webp`; `zoom-sheets.mjs`, `pick-sheet.mjs` and `strip.mjs <out> ids [ms]
+  [frames]` lay those films out as sheets; `gba-choreo.mjs` and `report-data.mjs` build the review report's data.
+- `scripts/fx/choreo.mjs`: each FRLG script's sprite timeline (path, anchor, offset, duration, blow), written into
+  `pret-anims.json` as `choreo` by `npm run art:fx` (§9.9.2).
 - `src/ui/fx/moveFx.ts`: the recipe per move (`main`, `impact`, `bg`); FRLG moves from their script, Gen IV moves and
   the ChatGPT stand-ins in `COMPOSED`.
 - `src/ui/components/MoveFx.tsx`: the sprite renderer over the existing choreography.
