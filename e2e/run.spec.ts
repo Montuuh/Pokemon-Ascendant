@@ -776,9 +776,49 @@ test('a cut tree closes its step until the Box holds a Grass- or Bug-type — §
   await expect(page.getByTestId('btn-enter-node')).toBeDisabled();
 });
 
-// §2.5.5 / §2.10 (v0.9.107) — the ledge and a Mystery's place say what they are: the ledge's bubble names it and the
-// landing's preview says it is one way; a Mystery stands as its place, and its preview names that place.
-test('the ledge and a Mystery place name themselves — §2.5.5, §2.10', async ({ page }) => {
+// §2.5.5 (v0.9.108) — an obstacle the Box can clear is gone, as a tree is once it is cut: no picture, no type box left on
+// the line ("tags de water en medio de la nada", the user). Squirtle clears deep water.
+test('an obstacle the Box can clear is not drawn — §2.5.5', async ({ page }) => {
+  await page.goto('/?screen=menu');
+  const found = await page.evaluate(() => {
+    const a = window.__ascendant!;
+    for (let seed = 1; seed <= 60; seed++) {
+      a.run.new('squirtle', seed);
+      const map = a.run.state()!.map;
+      if (!Object.values(map.nodes).some((n) => n.gates && Object.values(n.gates).includes('surf'))) continue;
+      a.goTo('map');
+      return seed;
+    }
+    return null;
+  });
+  expect(found, 'deep water within 60 routes').not.toBeNull();
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  await expect(page.locator('[data-testid="route-gate"][data-gate="surf"]')).toHaveCount(0);
+});
+
+// §2.5.4 / §2.6.1 (v0.9.108) — a Gym's field is drawn over its ground wherever it is painted, from the Y on, not only past
+// the point of no return: its weather layer starts at the Y.
+test('a Gym field is drawn from the Y, over its leaning track — §2.5.4', async ({ page }) => {
+  await page.goto('/?screen=menu');
+  const yX = await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.new('squirtle', 7);
+    a.goTo('map');
+    const map = a.run.state()!.map;
+    // The leaning track's first fight: the crossroads' stop before it may stand on the road still.
+    const lean = Object.values(map.nodes).filter((n) => n.lean === 0 && (n.kind === 'wild' || n.kind === 'trainer')).sort((p, q) => p.layer - q.layer)[0]!;
+    return lean.id;
+  });
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  const field = page.locator('[data-testid="route-field"][data-side="0"]');
+  await expect(field).toHaveCount(1);
+  const [fieldBox, leanBox] = [await field.boundingBox(), await page.getByTestId(`node-${yX}`).boundingBox()];
+  expect(fieldBox!.x).toBeLessThan(leanBox!.x);
+});
+
+// §2.5.5 / §2.10 — the ledge says what it is: its bubble names it and the landing's preview says it is one way. A Mystery
+// stays a "?" until it is entered (v0.9.108, the user; v0.9.107 showed its place).
+test('the ledge names itself and a Mystery stays a mystery — §2.5.5, §2.10', async ({ page }) => {
   await page.goto('/?screen=menu');
   const found = await page.evaluate(() => {
     const a = window.__ascendant!;
@@ -819,7 +859,7 @@ test('the ledge and a Mystery place name themselves — §2.5.5, §2.10', async 
     return id;
   });
   const node = page.getByTestId(`node-${mystery}`);
-  await expect(node).toHaveAttribute('data-art', 'place');
+  await expect(node).toHaveAttribute('data-art', 'sign');
   await node.click();
-  await expect(page.getByTestId('preview-place')).not.toBeEmpty();
+  await expect(page.getByTestId('node-preview')).toBeVisible();
 });

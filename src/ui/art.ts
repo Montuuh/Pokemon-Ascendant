@@ -54,8 +54,6 @@ export type NodeArt =
    */
   | { kind: 'habitat'; src: string; low: boolean; pool: string[] }
   | { kind: 'item'; src: string }
-  /** §2.10 — a Mystery's place: its scene's subject (`map/places`), drawn at the route's pixel (`tall`: a landmark's). */
-  | { kind: 'place'; src: string; tall: boolean }
   | { kind: 'sign'; src: string };
 /** §9.3 — the tall grass every Wild Area stands in, whatever its habitat: Route 1's own tufts (`npm run art:habitats`). */
 export const WILD_GRASS = asset('art/map/habitat/grass.png');

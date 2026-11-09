@@ -10,27 +10,29 @@ import { gymById, type MapNode, type RegionMap } from '@/sim';
 // clear of scenery.
 //
 // v0.9.107 (the route review, 2026-11-09) made the board a FireRed route. **One pixel density**: a tile is 16 px and a
-// person 16 × 32, drawn at the same multiple — the board is about twenty-five tiles tall, as a FRLG route strip is, so
-// that multiple is 1.5 at 720 p and 2 or 2.5 at 1080 p (`RouteView`). The route is **framed** top and bottom by its own scenery,
-// the trunk changes biome in **chapters**, fights stand on a **clearing**, the Gym, the nurse and the merchant stand at a
-// **building's front** cut from FRLG's own towns, **set pieces** cut from FRLG's routes (a house, a pond, a cottage) stand
-// in the open ground, and every node stands a seeded step off its grid point. The point of no return has no river: the
-// lanes' ridge and the Gym-coloured lines into them say it.
+// person 16 × 32, drawn at the same multiple — since v0.9.108 the map has seven rows and the board is about seventeen
+// tiles tall, so that multiple is 2 at 720 p and 3 at 1080 p (`RouteView`). The route is **framed** top and bottom by its
+// own scenery, the trunk changes biome in **chapters**, fights stand on a **clearing**, the Gym, the nurse and the merchant
+// stand at the door of a **whole FRLG building** cut from Pewter City, **set pieces** cut from FRLG's routes (a house, a
+// pond, a cottage) stand in the open ground, and every node stands on its grid point, so a track is a level road. The
+// point of no return has no river: the lanes' ridge and the Gym-coloured lines into them say it.
 
 /** Tiles per map column (left to right) and per map row (top to bottom). */
 export const COL_TILES = 6;
 export const ROW_TILES = 2;
 /** Tiles left of the first column and right of the last (where the Gym's front stands). */
 export const MARGIN_X = 5;
-/** Tiles below the last row: its feet's row and the caption under them. */
-export const MARGIN_BOTTOM = 1;
-/** How far above its point each kind of picture reaches, in tiles: a person two, a habitat's landmark (drawn half a step
- *  under the density, §9.3 — a cave's peak with the grass it stands in) three. */
-const REACH = { person: 2, habitat: 3, pokemon: 4, building: 2 } as const;
+/** Tiles below the last row: its feet's row and the caption under them, over a row of the route's frame. */
+export const MARGIN_BOTTOM = 2;
+/** How far above its point each kind of picture reaches, in tiles: a person two, a habitat's landmark (drawn a step under
+ *  the density, §9.3 — a cave's peak with the grass it stands in) three. A building, its height but its door's row. */
+const REACH = { person: 2, habitat: 3, pokemon: 4 } as const;
 
 /** §9.3 — how tall a node's picture stands above its point, in tiles. */
-export const reachOf = (node: Pick<MapNode, 'kind'>) =>
-  node.kind === 'wild' || node.kind === 'mystery' ? REACH.habitat : node.kind === 'elite-wild' ? REACH.pokemon : buildingOf(node) ? REACH.building : REACH.person;
+export const reachOf = (node: Pick<MapNode, 'kind'>) => {
+  const building = buildingOf(node);
+  return building ? BUILDINGS[building].h - 1 : node.kind === 'wild' ? REACH.habitat : node.kind === 'elite-wild' ? REACH.pokemon : REACH.person;
+};
 
 /** The margin above the first row, in tiles: enough for the tallest picture standing in the top rows, and one at least. */
 export const topMargin = (map: Pick<RegionMap, 'nodes'>) =>
@@ -112,9 +114,11 @@ export interface TerrainCell {
    * road crossing a meadow is cut against the meadow, not against a cave floor that is not there.
    */
   g?: TerrainId;
+  /** §2.5.4 — the Gym whose ground this is (0 or 1: its lane, or its leaning track's blend over the Y), under its field. */
+  s?: number;
 }
 
-/** §2.5.4 — a lane's stretch, for the weather drawn over it: tiles, inclusive-exclusive. */
+/** §2.5.4 — a lane's stretch, where its field is named: tiles, inclusive-exclusive. */
 export interface LaneZone {
   lane: number;
   x0: number;
@@ -123,8 +127,8 @@ export interface LaneZone {
   y1: number;
 }
 
-/** §2.5.4 — the FRLG building fronts a node stands at (`map/props/<id>.png`), their size in tiles. */
-export const BUILDINGS = { gym: { w: 7, h: 3 }, center: { w: 5, h: 3 }, mart: { w: 4, h: 3 } } as const;
+/** §2.5.4 — the FRLG buildings a node stands at the door of (`map/props/<id>.png`), whole, their size in tiles. */
+export const BUILDINGS = { gym: { w: 7, h: 5 }, center: { w: 5, h: 5 }, mart: { w: 4, h: 4 } } as const;
 export type BuildingId = keyof typeof BUILDINGS;
 /** §2.5.4 — the set pieces cut from FRLG's routes and towns (`map/props/<id>.png`), their size in tiles. */
 export const SET_PIECES = { house: { w: 5, h: 4 }, pond: { w: 6, h: 4 }, flowers: { w: 6, h: 4 }, cottage: { w: 5, h: 5 } } as const;
@@ -140,11 +144,11 @@ export interface MapTerrain {
   at: Record<string, { x: number; y: number }>;
   /** Each edge's polyline, in tiles, keyed `from>to`. The screen draws the edge along it. */
   edges: Record<string, { x: number; y: number }[]>;
-  /** The two lanes' stretches, past the point of no return. */
+  /** The two lanes' stretches, past the point of no return: where each names its field. */
   lanes: LaneZone[];
   /** The rows of the frame: scenery from row 0 up to `top` (exclusive), and from `bottom` to the last row. */
   frame: { top: number; bottom: number };
-  /** The building fronts, each standing over its node's point (`x`, `y`: the node's point; the front's foot is a row lower). */
+  /** The buildings, each standing over its node's point (`x`, `y`: the node's point; the building's foot is a row lower). */
   buildings: { id: BuildingId; node: string; x: number; y: number }[];
   /** The set pieces, by their top-left tile. */
   pieces: { id: SetPieceId; x: number; y: number }[];
@@ -179,20 +183,6 @@ export const nodeTile = (node: Pick<MapNode, 'layer' | 'row'>, top: number) => (
   x: MARGIN_X + node.layer * COL_TILES,
   y: top + node.row * ROW_TILES + 1,
 });
-
-/**
- * §9.3 (v0.9.107) — where a node actually stands: its grid point, a seeded step off it (a tile left or right, a tile
- * down or not), so a column of stops stops reading as a column of a table. Only ever down; a node on the last row stays on
- * it (its caption hangs into the margin), and a Gym stands square at its lane's end. `mapTerrain` takes a step back where
- * it would bring two pictures together.
- */
-export function nodeSpot(seed: number, node: Pick<MapNode, 'layer' | 'row' | 'kind'>, top: number, rows: number) {
-  const at = nodeTile(node, top);
-  if (node.kind === 'gym') return at;
-  const dx = Math.floor(cellHash(seed, node.layer, node.row, 41) * 3) - 1;
-  const dy = node.row >= rows - 1 ? 0 : cellHash(seed, node.layer, node.row, 43) < 0.5 ? 1 : 0;
-  return { x: at.x + dx, y: at.y + dy };
-}
 
 /** §2.5.4 — the stop column where the trunk's second chapter begins: its middle stop (column 5 or 6), or none. */
 function chapterLayer(map: RegionMap): number | null {
@@ -246,21 +236,10 @@ export function mapTerrain(map: RegionMap, tall = 0): MapTerrain {
   const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < w && y < h;
 
   const at: MapTerrain['at'] = {};
-  for (const n of nodes) at[n.id] = nodeSpot(seed, n, top, map.rows);
-  for (const n of nodes) {
-    for (const o of nodes) {
-      // Never nearer a neighbour than the grid had it: two nodes of adjacent columns two rows or less apart keep a full
-      // column between them, or a wide landmark covers the other's click (the audit's pointer at 720 p)…
-      if (o.layer === n.layer + 1 && Math.abs(o.row - n.row) <= 2 && at[o.id]!.x - at[n.id]!.x < COL_TILES) {
-        at[n.id] = { ...at[n.id]!, x: nodeTile(n, top).x };
-        at[o.id] = { ...at[o.id]!, x: nodeTile(o, top).x };
-      }
-      // …and a node never steps down onto a tall picture below it in its column (a habitat's peak, an Elite Wild, a
-      // guarded find's Pokémon), whose head would take the clicks meant for its feet (the UI review, 2026-11-09).
-      const tallBelow = o.kind === 'wild' || o.kind === 'elite-wild' || o.kind === 'mystery' || buildingOf(o) !== null || o.preview.objective?.kind === 'hold';
-      if (o.layer === n.layer && o.row > n.row && o.row - n.row <= 2 && tallBelow) at[n.id] = { ...at[n.id]!, y: nodeTile(n, top).y };
-    }
-  }
+  // §9.3 — every node stands on its grid point (v0.9.108): a track that keeps its row is a level road, its stops evenly
+  // along it, as a FRLG route's trainers stand. v0.9.107 stepped each a tile left or right; on seven rows nearly every
+  // node has a neighbour close enough that the step had to be taken back, and the few left read as mistakes.
+  for (const n of nodes) at[n.id] = nodeTile(n, top);
 
   // The edges: one straight line from node to node — a ledge's drop too, down across the column it skips, between that
   // column's tracks, through the ledge drawn across its middle.
@@ -285,8 +264,8 @@ export function mapTerrain(map: RegionMap, tall = 0): MapTerrain {
     });
   }
 
-  // §2.5.4 — the building fronts: over the node's point, the door's foot a row under its feet, so the figure stands in the
-  // doorway and the caption of the node above stays clear of the eave. The ground under them is theirs.
+  // §2.5.4 — the buildings: over the node's point, the door's foot a row under its feet, so the figure stands in the
+  // doorway. Whole since v0.9.108 (the user: "parecen cortados"); the ground under them is theirs.
   const prop = Array.from({ length: h }, () => new Uint8Array(w));
   const buildings: MapTerrain['buildings'] = [];
   for (const n of nodes) {
@@ -340,19 +319,21 @@ export function mapTerrain(map: RegionMap, tall = 0): MapTerrain {
   const roadAt = (x: number, y: number) => (x >= xChapter + (blob(seed, 0, y, 4, 31) - 0.5) * 3 ? roadB : roadA);
   /**
    * Which lane's terrain a tile wears, or null for the road. On the Y each outer third turns into its Gym's terrain
-   * along one **frontier** that wanders up and down the Y, so the change reads as a coast or a cave mouth you walk
-   * into, not as a scatter of patches. `wobble` lets the line between two stretches meander by a tile on open ground; a
-   * path keeps the straight line, so a road never changes material under your feet halfway across.
+   * along one **frontier** that wanders up and down the Y's first column, so the change reads as a coast or a cave mouth
+   * you walk into, not as a scatter of patches — and every leaning track's fight stands on its Gym's ground, under its
+   * field (v0.9.108). `wobble` lets the line between two stretches meander by a tile on open ground; a path keeps the
+   * straight line, so a road never changes material under your feet halfway across.
    */
   const sideOf = (x: number, y: number, wobble: boolean): number | null => {
     // §2.12 — a map without Gyms (Victory Road) has no lanes: it is all road.
     if (!laneTerrain.length || x < xY) return null;
     const layer = colOf(x);
-    const bend = wobble ? (blob(seed, x, 0, 5, 17) - 0.5) * 2.5 : 0;
+    // Under a tile either way: between two tracks four tiles apart it never reaches a node's own tile (v0.9.108).
+    const bend = wobble ? (blob(seed, x, 0, 5, 17) - 0.5) * 2 : 0;
     if (x >= xFork || layer > noReturn) return y < laneLine(x) + bend ? 0 : 1;
     const up = split(layer, (n) => n.lean === 0, (n) => n.lean === undefined && n.lane === undefined);
     const down = split(layer, (n) => n.lean === undefined && n.lane === undefined, (n) => n.lean === 1);
-    const frontier = (lane: number) => xY + (xFork - xY) * (0.1 + 0.55 * blob(seed, lane * 97, y, 4, 23));
+    const frontier = (lane: number) => xY + COL_TILES * (0.25 + 0.75 * blob(seed, lane * 97, y, 4, 23));
     if (up !== null && y < up + bend) return x >= frontier(0) ? 0 : null;
     if (down !== null && y >= down + bend) return x >= frontier(1) ? 1 : null;
     return null;
@@ -411,7 +392,7 @@ export function mapTerrain(map: RegionMap, tall = 0): MapTerrain {
         const scale = t === 'lake' || t === 'coast' ? 5 : 3;
         k = wall || (far && blob(seed, x, y, scale, 11) < FILL_DENSITY[t]) ? 'fill' : 'ground';
       }
-      row.push({ t, k, n, m: blob(seed, x, y, 3, 29), ...(k === 'path' && open !== t ? { g: open } : {}) });
+      row.push({ t, k, n, m: blob(seed, x, y, 3, 29), ...(k === 'path' && open !== t ? { g: open } : {}), ...(side !== null ? { s: side } : {}) });
     }
     cells.push(row);
   }
@@ -469,9 +450,9 @@ export function mapTerrain(map: RegionMap, tall = 0): MapTerrain {
   const lanes: LaneZone[] = [];
   if (map.forkLayer < map.layers) {
     const line = split(map.forkLayer, (n) => n.lane === 0, (n) => n.lane === 1) ?? h / 2;
-    // The weather starts where the lanes' ridge does, so no field's edge stands across open ground (the UI review).
-    const x0 = ridgeFrom;
-    lanes.push({ lane: 0, x0, x1: w, y0: 0, y1: Math.round(line) }, { lane: 1, x0, x1: w, y0: Math.round(line), y1: h });
+    // Named where its Gym's ground starts (v0.9.108: on the Y), as its field is drawn over every tile of that ground (`s`).
+    const from = (lane: number) => Math.min(ridgeFrom, ...cells.flatMap((row) => row.flatMap((c, x) => (c.s === lane ? [x] : []))));
+    lanes.push({ lane: 0, x0: from(0), x1: w, y0: 0, y1: Math.round(line) }, { lane: 1, x0: from(1), x1: w, y0: Math.round(line), y1: h });
   }
 
   return { w, h, cells, at, edges, lanes, frame, buildings, pieces };

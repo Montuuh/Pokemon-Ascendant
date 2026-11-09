@@ -37,30 +37,26 @@ describe('The route terrain — §2.5.4', () => {
     }
   });
 
-  it('NodesStandOffTheirGridPoints_AndAColumnsNodesStayFiveTilesApart', () => {
-    // §9.3 (v0.9.107) — a seeded step off the grid, so the columns stop reading as a table; never down so far that a
-    // figure meets the caption of the node above it.
-    let moved = 0;
-    let total = 0;
+  it('EveryNodeStandsOnItsGridPoint_SoATrackThatKeepsItsRowIsALevelRoad', () => {
+    // §9.3 (v0.9.108, the user: "más recto") — no step off the grid: a track's nodes on one row stand on one line.
     for (const m of maps) {
       const t = mapTerrain(m);
-      const byLayer = new Map<number, number[]>();
+      for (const n of Object.values(m.nodes)) expect(t.at[n.id], `${m.seed} ${n.id}`).toEqual(nodeTile(n, topMargin(m)));
+    }
+  });
+
+  it('EveryFightOnAGymsSide_StandsOnItsGround_AndNoOtherNodeDoes', () => {
+    // §2.5.4 / §2.6.1 (v0.9.108) — the field is drawn over the Gym's ground (`s`) and fought on its lane and leaning track:
+    // every such fight stands under it, and no trunk or middle-track fight does, or the weather would lie (Pillar 1).
+    for (const m of maps) {
+      const t = mapTerrain(m);
       for (const n of Object.values(m.nodes)) {
-        const [spot, grid] = [t.at[n.id]!, nodeTile(n, topMargin(m))];
-        total++;
-        if (spot.x !== grid.x || spot.y !== grid.y) moved++;
-        expect(Math.abs(spot.x - grid.x), `${m.seed} ${n.id}`).toBeLessThanOrEqual(1);
-        expect(spot.y - grid.y, `${m.seed} ${n.id}`).toBeGreaterThanOrEqual(0);
-        if (n.kind === 'gym') expect(spot).toEqual(grid);
-        byLayer.set(n.layer, [...(byLayer.get(n.layer) ?? []), spot.y]);
-      }
-      for (const ys of byLayer.values()) {
-        const sorted = [...ys].sort((a, b) => a - b);
-        for (let i = 1; i < sorted.length; i++) expect(sorted[i]! - sorted[i - 1]!, `${m.seed}`).toBeGreaterThanOrEqual(3);
+        if (!['wild', 'trainer', 'elite', 'elite-wild', 'gym'].includes(n.kind)) continue;
+        const { x, y } = t.at[n.id]!;
+        // The tile the figure stands on, just above its point.
+        expect(t.cells[y - 1]![x]!.s, `${m.seed} ${n.id}`).toBe(n.lane ?? n.lean);
       }
     }
-    // About half step off their point: the rest are held back where a step would crowd a neighbour.
-    expect(moved / total).toBeGreaterThan(0.35);
   });
 
   it('EveryPictureAndBuildingStandsWhole_UnderTheBoardsTopEdge', () => {
@@ -100,7 +96,8 @@ describe('The route terrain — §2.5.4', () => {
             }
       }
     }
-    expect(pieces).toBeGreaterThan(30);
+    // About one map in two holds one: seven rows leave less open ground than eleven did.
+    expect(pieces).toBeGreaterThan(12);
   });
 
   it('TheRouteIsFramed_TopAndBottom_ByItsScenery', () => {

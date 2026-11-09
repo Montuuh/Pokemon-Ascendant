@@ -1,8 +1,8 @@
 // §2.5.4 / §9.3 — the route's buildings, set pieces and obstacles, cut from FireRed's own maps in pret (v0.9.107):
-//   · building fronts a node stands at — Pewter City's Pokémon Center, Poké Mart and Gym, their bottom three rows (the
-//     eave, the sign, the door): the whole building is five tiles tall and the tracks are four apart;
+//   · the buildings a node stands at the door of — Pewter City's Pokémon Center, Poké Mart and Gym, whole (v0.9.108: the
+//     bottom three rows alone read as cut off, the user's words);
 //   · set pieces for the open ground — Pewter's house, Route 25's pond and Bill's cottage, a flower bed from Route 1;
-//   · a ledge from Route 1, for the route's one-way drop;
+//   · a ledge from Route 1 (its two ends), for the route's one-way drop;
 //   · the field moves' obstacles — the cut tree and the cracked rock (pret's object sprites) and a pool of Route 25's water.
 // Every pixel is a FRLG tile pixel; nothing is resampled. The grass round a piece is keyed out to alpha, so it stands on
 // any ground (the route's own tiles show through), and the screen draws it at the terrain's pixel scale.
@@ -64,17 +64,28 @@ async function cut(id, map, [mx, my, mw, mh], { keyGrass = true } = {}) {
   outputs.push({ id, map, metatiles: [mx, my, mw, mh], size: [W, H], sha256: sha(bytes) });
 }
 
-// Building fronts: the bottom three rows of each (eave, sign, door).
-await cut('gym', 'PewterCity', [12, 14, 7, 3]);
-await cut('center', 'PewterCity', [15, 23, 5, 3]);
-await cut('mart', 'PewterCity', [26, 16, 4, 3]);
+// The buildings, whole: roof, walls, sign and door.
+await cut('gym', 'PewterCity', [12, 12, 7, 5]);
+await cut('center', 'PewterCity', [15, 21, 5, 5]);
+await cut('mart', 'PewterCity', [26, 15, 4, 4]);
 // Set pieces.
 await cut('house', 'PewterCity', [32, 8, 5, 4]);
 await cut('pond', 'Route25', [43, 9, 6, 4]);
 await cut('cottage', 'Route25', [49, 1, 5, 5]);
 await cut('flowers', 'Route1', [2, 6, 6, 4]);
-// The ledge: a stretch of Route 1's, its ends included.
+// The ledge: Route 1's, cut to its two ends (v0.9.108) — two tiles stand a quarter of the way down its drop, clear of the
+// column it skips and of the nodes either side.
 await cut('ledge', 'Route1', [2, 5, 6, 1]);
+{
+  const long = await readFile(resolve(out, 'ledge.png'));
+  const ends = await Promise.all([0, 80].map((left) => sharp(long).extract({ left, top: 0, width: 16, height: 16 }).toBuffer()));
+  const bytes = await sharp({ create: { width: 32, height: 16, channels: 4, background: '#00000000' } })
+    .composite(ends.map((input, i) => ({ input, left: i * 16, top: 0 })))
+    .png()
+    .toBuffer();
+  await writeFile(resolve(out, 'ledge.png'), bytes);
+  Object.assign(outputs.find((o) => o.id === 'ledge'), { ends: [0, 5], size: [32, 16], sha256: sha(bytes) });
+}
 
 // The obstacles: pret's own object sprites (their first 16 × 16 frame, colour 0 keyed out), and a pool of Route 25's water.
 const origin = 'https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/misc';

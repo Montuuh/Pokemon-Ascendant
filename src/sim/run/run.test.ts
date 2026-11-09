@@ -1104,7 +1104,7 @@ describe('Node badges — §2.5, Pillar 1', () => {
     // A badge is only overridden when the node kind alone does not say who is waiting: a Trainer node names
     // its archetype, and the Elite names itself because "trainer" would undersell the hardest fight but one.
     for (const n of Object.values(s.map.nodes)) {
-      if (['trainer', 'elite', 'elite-wild', 'wild', 'gym', 'cache'].includes(n.kind)) continue;
+      if (['trainer', 'elite', 'elite-wild', 'wild', 'gym', 'cache', 'trader'].includes(n.kind)) continue;
       expect(n.preview.icon, n.id).toBeUndefined();
     }
     expect(Object.values(s.map.nodes).find((n) => n.kind === 'elite')!.preview.icon).toBe('elite');

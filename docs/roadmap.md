@@ -1540,6 +1540,25 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.108 — Straight roads  ✅ 2026-11-10
+
+**Shipped.** The user's five notes on v0.9.107 (2026-11-09). "Water" tags in the middle of nowhere: a cleared obstacle
+left its type box under a pool on a grass line — an obstacle the Box can clear is now gone from the map. "Too much
+useless vertical space… straighter": the row grid is seven rows, not eleven (`MAP_ROWS`, the bands), tracks drift less,
+nodes stand on their grid points, and the density is the largest half step that fits, three at most (2 at 720 p, 3 at
+1080 p); the board fills its box to a whole tile and crops the frame's last row. "Gym biome effects over all the ground
+painted in that biome": each Gym's field is drawn over every tile of its ground (`TerrainCell.s`, a mask one pixel a tile)
+from the Y's first column, and the leaning track's fights are fought under it (`fieldsFor`; harness R1 23 → 22 %, R2|R1
+4 %). "The Mart and the Center look cut": the buildings are whole (7 × 5, 5 × 5, 4 × 4 from Pewter). "Mysteries should
+stay mysteries": the "?" again, the place art and its preview line gone (the event is still rolled with the map). Also:
+the ledge is FRLG's two ends a quarter down its drop (the middle took a skipped node's pointer); Wild landmarks a whole
+step under the density so a caption clears a cave two rows below. UI review: Ship with fixes — the Blocker (the board
+overshooting its box, hidden on the axis that does not scroll) and one Should (Sun and Grassy Terrain all but vanishing
+in a board-tall layer: each field's layer now sized to its ground) fixed, the stale comments cleared, the field named where
+its ground starts. Left: the landmarks' pixel a step finer than the tiles' (D9 Should — at the tiles' own, or half a step
+under, a cave overlaps the caption of the node two rows up on every lane; the fix is an art pass cropping eight
+landmarks), weather edges on meadow next to meadow, Labels chips over the service doors, ~5.5 columns in view at 1080 p.
+
 ### v0.9.107 — Routes you walk  ✅ 2026-11-09
 
 **Shipped.** The route review (the user, 2026-11-09: "no me parece que tenga un fondo bonito, y los nodos se ven

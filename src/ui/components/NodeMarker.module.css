@@ -64,13 +64,6 @@
   height: 32px;
   bottom: 0;
 }
-/* §2.10 — a Mystery's place: its scene's subject at the route's density (`--place-k` 2, once `.art` scales it), and a tall
-   one — a cave's mouth, a truck, a spring — half a step under it, as a Wild Area's landmark, so it clears the node above. */
-.place img {
-  bottom: 0;
-  transform: translateX(-50%) scale(var(--place-k, 2));
-  transform-origin: 50% 100%;
-}
 .node[data-kind='summit'] .sign img { width: 48px; height: 48px; }
 
 /* The ring on the ground: where you stand, and where you can step to next. */

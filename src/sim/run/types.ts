@@ -34,8 +34,8 @@ export interface MapNode {
   lane?: number;
   /**
    * §2.5 — on the Y, before the point of no return: the Gym lane this track leans toward. Its wilds and trainers
-   * already wear that Gym's theme, but it has not committed, so `lane` is still undefined and its fights are on
-   * neutral ground (§2.5.4). Undefined on the middle track and everywhere else.
+   * already wear that Gym's theme and its fights its field (v0.9.108, §2.6.1), but it has not committed, so `lane` is
+   * still undefined. Undefined on the middle track and everywhere else.
    */
   lean?: number;
   /**
@@ -100,7 +100,7 @@ export interface NodePreview {
    * from before it still hold.
    */
   reel?: FindTile[];
-  /** §2.10 — a Mystery's place: the event it holds, rolled with the map (v0.9.107), so the map can show the place. */
+  /** §2.10 — a Mystery's event, rolled with the map (v0.9.107) so one map never holds it twice; hidden until entered. */
   event?: string;
   find?: { items: string[]; money: number };
   /**

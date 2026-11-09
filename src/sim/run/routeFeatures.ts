@@ -2,13 +2,13 @@ import type { ContentRegistry } from '../content/defs';
 import { GameRng } from '../rng/gameRng';
 import { fmix32, fnv1a } from '../rng/rngStreams';
 import type { PokemonType } from '../types';
-import { MYSTERY_EVENTS, STONE_CACHE } from './events';
+import { MYSTERY_EVENTS } from './events';
 import type { GateKind, MapNode, RegionMap, RunState } from './types';
 
 // §2.5.5 — what a route holds besides its nodes (v0.9.107, the user's "all phases" of the route review, 2026-11-09):
 // the field moves' obstacles that close a crossing until the party can clear it, a ledge that drops past a column one
-// way, and every Mystery's place, rolled with the map so the map can show it. Each is placed on a stream of its own off
-// the map's cursor, as the trader and the reels are, so placing one never moves another.
+// way, and every Mystery's event, rolled with the map. Each is placed on a stream of its own off the map's cursor, as
+// the trader and the reels are, so placing one never moves another.
 
 /** §2.5.5 — the obstacles, and the types in the party that clear each: the games' field moves, by who can learn them. */
 export const GATES: Readonly<Record<GateKind, { types: readonly PokemonType[] }>> = {
@@ -97,9 +97,9 @@ export function placeLedge(map: Pick<RegionMap, 'nodes'>, mapCursor: number, isS
 }
 
 /**
- * §2.10 — every Mystery's place, rolled with the map: the event it holds, drawn without replacement against the run's
- * seen events and the map's own, so the map shows a shrine, a spring or a stranger rather than a "?" (Pillar 1: the
- * kind of thing is telegraphed; what it offers is the event's to say).
+ * §2.10 — every Mystery's event, rolled with the map: drawn without replacement against the run's seen events and the
+ * map's own, so one map never holds the same event twice. It stays a "?" until it is entered (the user, 2026-11-09: "los
+ * mystery deberían seguir siendo mystery"); v0.9.107 showed it as its place.
  */
 export function placeEvents(map: Pick<RegionMap, 'nodes'>, mapCursor: number, seen: readonly string[]): void {
   const rng = streamOf(mapCursor, 'PlaceRNG');
@@ -116,12 +116,3 @@ export function placeEvents(map: Pick<RegionMap, 'nodes'>, mapCursor: number, se
   }
 }
 
-/**
- * §2.10 / §8.5.3 — the event a Mystery node holds for this run: an Eevee run's first Mystery is the Stone Cache whichever
- * it is, so while the cache is unopened every Mystery shows it; otherwise the place rolled with the map.
- */
-export function mysteryEventOf(run: Pick<RunState, 'starter' | 'seenEvents'>, node: MapNode, content: ContentRegistry): string | null {
-  if (node.kind !== 'mystery') return null;
-  if (content.lineBase(run.starter) === 'eevee' && !run.seenEvents.includes(STONE_CACHE)) return STONE_CACHE;
-  return node.preview.event ?? null;
-}

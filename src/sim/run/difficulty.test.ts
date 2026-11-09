@@ -61,8 +61,9 @@ describe('Enemies at the forms their levels warrant — §2.7.3', () => {
         if (n.kind === 'elite-wild') continue;
         expect(evolvedAt(e.species, e.level, content), `${n.id} ${e.species}@${e.level}`).toBe(e.species);
       }
-      // …and its Wild nodes the middle of the lines (§2.6.3, v0.9.7): no basic that still has a form ahead of it.
-      if (n.kind === 'wild') for (const id of n.preview.speciesIds) {
+      // …and its Wild nodes the middle of the lines (§2.6.3, v0.9.7): no basic that still has a form ahead of it. A runner
+      // is its objective's own species at the form its level warrants (§5.6.5), not the pool.
+      if (n.kind === 'wild' && n.preview.objective?.kind !== 'flee') for (const id of n.preview.speciesIds) {
         const s = content.species(id);
         expect(s.stage === 'basic' && s.evolvesTo.length > 0, `${n.id} ${id}`).toBe(false);
       }

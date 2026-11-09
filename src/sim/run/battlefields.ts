@@ -51,7 +51,7 @@ const FAVOURED: Partial<Record<PokemonType, Battlefield>> = {
 };
 
 /**
- * §2.6.1 / §4.3.5 — the fields a node's fight opens under. A biome's Battlefield stands past the fork, in every
+ * §2.6.1 / §4.3.5 — the fields a node's fight opens under. A biome's Battlefield stands on its Gym's ground (a lane and its leaning track), in every
  * Region (the lane telegraphs its Gym); a Gym Leader brings a Home Field of its type, an
  * Elite Trainer one of its lead Pokémon's type. The Elite Wild is a wild Pokémon and brings none.
  */
@@ -65,9 +65,12 @@ export function fieldsFor(node: MapNode, run: RunState, content: ContentRegistry
   }
   if (!['wild', 'trainer', 'elite', 'gym', 'elite-wild'].includes(node.kind)) return {};
   const out: Battlefield = {};
-  // Past the fork only: the lane telegraphs its Gym, and the trunk — where you plan — stays open ground. Measured
-  // (v0.8.4): the Battlefield across Region 3's trunk too cost it seven more points (41 → 34 %).
-  if (node.lane !== undefined) Object.assign(out, laneField(run, node.lane));
+  // Wherever the ground is the Gym's (v0.9.108): its lane, and the leaning track that blends into it over the Y — the
+  // field is drawn over every tile of the Gym's terrain, so a fight there is fought under it. The trunk and the middle
+  // track — where you plan — stay open ground. Measured (v0.8.4): the Battlefield across Region 3's whole trunk cost it
+  // seven points (41 → 34 %); the leaning tracks are two tracks of the Y.
+  const side = node.lane ?? node.lean;
+  if (side !== undefined) Object.assign(out, laneField(run, side));
   if (node.kind === 'gym') {
     const gym = node.lane !== undefined ? gymById(run.map.gyms[node.lane] ?? GYM.id) : GYM;
     out.home = gym.type as PokemonType;

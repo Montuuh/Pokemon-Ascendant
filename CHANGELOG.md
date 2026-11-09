@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.108 — Straight roads · 2026-11-10
+
+The route map is flatter and straighter, and a Gym's ground carries its field.
+
+- **Straighter routes.** Seven rows instead of eleven; tracks run level.
+- **Whole buildings.** The Gym, Center and Mart stand roof and all.
+- **Gym ground.** Its weather covers its whole biome; leaning fights too.
+- **Cleaner map.** Cleared obstacles vanish; Mysteries are "?" again.
+
 ### v0.9.107 — Routes you walk · 2026-11-09
 
 The route map is drawn as a FireRed route, and the route holds more than nodes.

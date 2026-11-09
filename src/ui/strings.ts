@@ -352,7 +352,6 @@ export const GATE_TEXT = {
   cut: { title: 'A small tree', body: 'It closes this step until one of these types in your Box cuts it down.' },
   smash: { title: 'A cracked rock', body: 'It closes this step until one of these types in your Box smashes it.' },
   surf: { title: 'Deep water', body: 'It closes this step until one of these types in your Box swims you across.' },
-  cleared: 'Your Box can clear it: the step is open.',
   ledge: { title: 'A ledge', body: 'Jump down past the next column, skipping its fight and what it pays. There is no climbing back.' },
   /** The preview of a step an obstacle closes. */
   closed: (title: string) => `${title} closes this step: nothing in your Box can clear it.`,

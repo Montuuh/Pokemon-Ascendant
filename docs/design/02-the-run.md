@@ -416,8 +416,11 @@ alike. Rules:
 - **No edge crosses another.** Edges are monotone top to bottom, which the generator guarantees by construction.
 - **No edge crosses lanes** past the point of no return; every track reaches the Gyms; nothing is unreachable
   and nothing before a Gym is a dead end.
-- Tracks keep a clear row between them on the 11-row grid the map is drawn on, so the terrain has room for a
-  path, a verge and the scenery between two routes.
+- Tracks keep a clear row between them on the **7-row** grid the map is drawn on, so the terrain has room for a
+  path, a verge and the scenery between two routes. Seven since v0.9.108 (eleven before; the user, 2026-11-09:
+  "demasiado espacio inútil vertical… que sea más recto"): the lanes' four tracks and the ridge between them need
+  exactly seven, and every row more was open ground the route wandered into. A track keeps its row about five columns
+  in six, so a route runs straight and changes track at its crossings.
 
 **No three in a row.** In a fight column, no three vertically adjacent nodes share a type. Canon said "no two"
 until v0.5, and it *overrode* the weighting rather than seasoning it: at column 0's 9:2 Wild bias it fired on
@@ -517,16 +520,18 @@ within a tile of it is kept clear of scenery and tall grass.
 drawn as a FRLG route strip is, and with the same parts:
 
 - **One pixel density.** A tile is 16 px and a person 16 × 32, both at the same multiple (§9.3). A column is six tiles,
-  a row of the map's grid two, so the board is about twenty-five tiles tall, as FRLG's routes are (Route 4 is twenty).
+  a row of the map's grid two, so the board is about eighteen tiles tall (twenty-five on eleven rows until v0.9.108), as
+  FRLG's routes are (Route 4 is twenty).
 - **A frame.** The route's scenery walls its top and bottom rows (Route 4's cliffs, Viridian Forest's trees); a board
   taller than the route grows its frame, never an empty band.
 - **Chapters.** The trunk is the Region's road, and the road changes once, past the trunk's middle stop: Region 1's
   route into the edge of a wood, Region 2's coast up onto the cliffs, Region 3's highland down to the lava. The Region
   moves on as you walk it, not only at its lanes.
-- **Buildings.** The Gym, the field nurse and the travelling merchant stand in the doorway of a FRLG building's front —
-  the Gym's own, a Pokémon Center's, a Poké Mart's — cut from Pewter City's map in pret (its bottom three rows: the eave,
-  the sign, the door; the whole building is five tiles and the tracks four apart). The front's foot is a row under the
-  figure's, so the caption of the node above clears its eave, and no node steps down onto it.
+- **Buildings.** The Gym, the field nurse and the travelling merchant stand in the doorway of a whole FRLG building —
+  the Gym's own (7 × 5 tiles), a Pokémon Center (5 × 5), a Poké Mart (4 × 4) — cut from Pewter City's map in pret. The
+  building's foot is a row under the figure's. Until v0.9.108 only its bottom three rows stood (the whole was thought too
+  tall for tracks four tiles apart), and the user read them as cut off: the roof is what makes it a Pokémon Center. The
+  node above stands at its roof's edge, as a FRLG route's trainers stand behind a house.
 - **Set pieces.** Where open grassy ground has room, a piece cut whole from FRLG's own maps stands in it: Pewter's house,
   Bill's cottage and its pond from Route 25, a flower bed from Route 1 — one at most in two columns, never the same one
   twice running, off every line. They are what a route's eye rests on.
@@ -535,15 +540,19 @@ drawn as a FRLG route strip is, and with the same parts:
 - **The lanes' ridge.** Past the point of no return a band of the lanes' scenery runs between them to the Gyms, so
   "they never meet again" is drawn rather than written.
 
-On a leaning track the road **blends** into its Gym's terrain over the Y, and past the point of no return each lane is
-its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power plant for Electric. Every terrain
-is FireRed's own ground; until v0.9.107 Fire's was Route 1 tinted brown, which FRLG never drew.
+On a leaning track the road **blends** into its Gym's terrain from the Y's first column, and past the point of no
+return each lane is its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power plant for
+Electric. Every terrain is FireRed's own ground; until v0.9.107 Fire's was Route 1 tinted brown, which FRLG never drew.
 
-The terrain is a telegraph, not decoration (Pillar 1). Every lane carries its **Gym's own Battlefield** (§4.3.14) —
-rain on the water, a sandstorm in the cave, a Sticky Web in the forest, hail in the ice cave — and the lane shows it:
-weather drawn over the lane's tiles, named at the lane's mouth and on its nodes, so you know which ground you are
-choosing before you choose it. A field starts where the commitment starts: a leaning track wears the Gym's
-species and terrain, but its fights are on neutral ground until the point of no return.
+The terrain is a telegraph, not decoration (Pillar 1). Every Gym's ground carries its **Gym's own Battlefield**
+(§4.3.14) — rain on the water, a sandstorm in the cave, a Sticky Web in the forest, hail in the ice cave — and shows it:
+weather drawn over **every tile of that ground**, named at the lane's mouth and on its nodes, so you know which ground
+you are choosing before you choose it. The Gym's ground is its lane and the leaning track that blends into it, so a
+leaning track's fights are fought under the field too; the trunk and the Y's middle track — where you plan — stay open
+ground. *Why (v0.9.108, the user: "que los efectos de bioma de gimnasio apliquen a todo el suelo pintado de ese
+bioma").* Until then the weather was a rectangle at the lanes and a leaning track's fights were neutral: the Y wore the
+Gym's terrain with no weather over it, and drawing the weather there without the field would have lied. The field
+arriving with the lean makes the lean a real taste of the lane; the harness moved a point (R1 23 → 22 %).
 
 | Gym type | Lane terrain | Field (§4.3.14) |
 |---|---|---|
@@ -566,8 +575,9 @@ can field, and several types share one where the Region has few, but every Gym g
 ## §2.5.5 What a route holds besides its nodes
 
 > ✅ **v0.9.107** — the route review's third phase (the user, 2026-11-09: "continúa con todas las fases"). Code:
-> `run/routeFeatures.ts` (`placeGates`, `placeLedge`, `placeEvents`, `stepOpen`, `mysteryEventOf`), the `gate-closed`
-> refusal on `begin-combat`; UI `RouteView` (the obstacles, the ledge), `NodePreviewCard`, `MapScreen`.
+> `run/routeFeatures.ts` (`placeGates`, `placeLedge`, `placeEvents`, `stepOpen`), the `gate-closed` refusal on
+> `begin-combat`; UI `RouteView` (the obstacles, the ledge), `NodePreviewCard`, `MapScreen`. v0.9.108: a cleared
+> obstacle is not drawn, and a Mystery is a "?" again.
 
 **The field moves' obstacles.** A crossing — the step that changes track — may be closed by what closes a FRLG route: a
 small tree, a cracked rock, deep water. It opens only to a Box that holds a type that clears it, the games' field moves
@@ -582,19 +592,22 @@ by who learns them:
 An obstacle is never the only way on — the node it stands on always has a second, open child — never on the step into a
 lane (the middle track must keep offering both), never into a Gym or the lanes' last nurse, and never before the first
 stop. About two and a half a map, three at most. Its preview still opens — what lies beyond is shown (Pillar 1) — and
-says what closes the step; walking in is what the obstacle refuses. *Why (Pillar 3).* The Box changes the map: a team
-sculpted with a Water-type opens a shortcut a team without one walks round, and a catch can be worth a road as well as
-a slot. The obstacle closes a choice, never the route.
+says what closes the step; walking in is what the obstacle refuses. Once the Box can clear it, it is gone from the map,
+as a tree is once it is cut: the step is a plain line. (v0.9.107 left the obstacle standing with the type box of what
+clears it under it; on a Water starter's coast that read as "water" tags in the middle of nowhere — the user.) *Why
+(Pillar 3).* The Box changes the map: a team sculpted with a Water-type opens a shortcut a team without one walks
+round, and a catch can be worth a road as well as a slot. The obstacle closes a choice, never the route.
 
 **The ledge.** On about seven maps in ten, one trunk node has a **ledge**: a one-way drop past the next column onto the
 track below, two columns on — down, as FRLG's ledges drop south (`MapNode.ledge`, also in `next`). It skips that column's fight — never a stop column, never into
 the Y — and that is the point: a way past a fight the team is too hurt for, paid for in the fight's XP and prize. It is
 the one edge that skips a column; the stop columns still keep every other route's fights the same (§2.5.1).
 
-**Every Mystery's place.** A Mystery node's event is rolled with the map (§2.10.4: without replacement, against the
-run's seen events and the map's own), so the map shows its place — a shrine, a spring, a stranger on the road, a crate —
-and its preview names it. What it offers is still the event's to say. An Eevee run's first Mystery is the Stone Cache
-(§8.5.3) whichever it is, so while the cache is unopened every Mystery shows the cache.
+**Every Mystery's event.** A Mystery node's event is rolled with the map (§2.10.4: without replacement, against the
+run's seen events and the map's own), so one map never holds the same event twice. It stays a **"?"** until it is
+entered: the not-knowing is the node (the user, 2026-11-09: "los mystery deberían seguir siendo mystery"). v0.9.107
+drew each as its place — a shrine, a spring, a stranger — and named it in its preview, which made it one more stop you
+could read; that is withdrawn. An Eevee run's first Mystery is still the Stone Cache (§8.5.3) whichever it is.
 
 ---
 
@@ -663,11 +676,13 @@ do.
 **A lane carries its Gym's field** (§4.3.14 — until v0.8.7 it was its biome's, and five Gyms stood on open ground),
 so the ground you fight on is part of what a lane telegraphs (§2.5.0).
 
-**Past the fork only, in every Region.** Every fight in a lane — wild, trainer, Elite, Gym — stands on the Gym's
-field, so its Battlefield is the lane's promise and the Gym's ground; the trunk and the Y, where you plan, stay open
-ground. A node's preview card names its field. *(Decided 2026-09-29, closing the OPEN of
-2026-09-22. Measured: the Battlefield across Region 3's trunk too cost it seven points of §2.2.1's curve, 41 → 34 %.
-Region 3's accent is its largest groups (§5.6.3) and its lanes' fields, not a field on every node.)*
+**On the Gym's ground only, in every Region.** Every fight in a lane — wild, trainer, Elite, Gym — and on the leaning
+track that blends into it (v0.9.108, §2.5.4) stands on the Gym's field, so its Battlefield is the lane's promise and
+the Gym's ground; the trunk and the Y's middle track, where you plan, stay open ground. A node's preview card names its
+field. *(Decided 2026-09-29 for the lanes, closing the OPEN of 2026-09-22; the leaning tracks joined them when the
+weather came to cover all of the Gym's painted ground. Measured: the Battlefield across Region 3's whole trunk cost it
+seven points of §2.2.1's curve, 41 → 34 %; the two leaning tracks cost Region 1 one, 23 → 22 %. Region 3's accent is its
+largest groups (§5.6.3) and its Gyms' fields, not a field on every node.)*
 
 ## §2.6.2 What a Wild node offers
 
@@ -1405,8 +1420,8 @@ what *kind* of uncertainty you are walking into.
 ## §2.10.4 Repeatability
 
 An event fires at most once per run — it leaves the seeded pool as soon as it is used. Since v0.9.107 it is drawn with
-the map, one per Mystery node, against the events the run has seen and the ones already on the map (§2.5.5), so the
-map can show its place; a save from before rolls on entry as it did. Each is drawn by a
+the map, one per Mystery node, against the events the run has seen and the ones already on the map (§2.5.5), and stays
+hidden until entered; a save from before rolls on entry as it did. Each is drawn by a
 **weight**, 1 for most; the events that hand over a relic (the roadside trader, the Cursed Trinket) are drawn at
 **0.35**, so a relic from a Mystery node is a surprise rather than a habit (v0.8.6: relics are scarce, §7.3.1). Three
 supplies events joined them in v0.8.6 — a Ranger's medkit, a fallen Mart crate, a closing apothecary — because

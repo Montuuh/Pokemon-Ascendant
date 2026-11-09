@@ -42,8 +42,10 @@ Pokémon.
 - **A Region:** a seeded **20-column route walked left to right**, scrolled, on tracks that split, merge and cross
   — the trunk (0–7), a **Y** whose outer tracks lean toward the two Gyms (8 to the point of no return at 11–13),
   two themed lanes, two Gyms at 19, both announced. Six **stop columns**; ~12 fights a route. *(v0.8.7.)* Drawn as a
-  FireRed route at one pixel density, framed, in two chapters, with buildings, set pieces, the field moves' obstacles
-  (a Box type clears them), a ledge and every Mystery's place on it (§2.5.4–§2.5.5, v0.9.107).
+  FireRed route on a seven-row grid at one pixel density, framed, in two chapters, with whole buildings, set pieces, the
+  field moves' obstacles (a Box type clears them, and they are gone) and a ledge; each Gym's field drawn as weather over
+  all its ground, its leaning track included, whose fights are fought under it; a Mystery stays a "?" (§2.5.4–§2.5.5,
+  v0.9.107–v0.9.108).
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
   gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
@@ -145,7 +147,7 @@ stop — the field nurse (one per lane at 18, guaranteed), the merchant (≥1 in
 ball** (§2.9.5: a reel of seven prizes shown on the map — supplies, money, a TM, a stone, a held item, a relic — that
 spins as you pick it up), and on about half the routes, from column 8, the **roadside
 trader** (§2.9.6: give one of your Box for one of three face-down offers — a type each, arriving two levels above the one
-you gave). So every route walks ~12 fights and ~7 stops. ~65 nodes. The
+you gave). So every route walks ~12 fights and ~7 stops. ~60 nodes. The
 map is **painted from a tileset** by a pure function of the map (§2.5.4) and saved whole in the run. Since v0.9.14
 (§9.3, after Pokelike) every edge is a **straight line** node to node and every node is drawn **as what it is** — the
 trainer, the Leader at 2×, a Wild Area its habitat's landmark in one grass (the Pokémon Tower, a cave's mouth) with its pool's Pokémon going round at its sides, the item ball — full colour on the routes still open, faded behind; the nodes you can step to wear their chip as a gold button; a **Labels** toggle (L) puts a chip with its kind's icon and word under every node (Wild, Trainer, Nurse…). Art scales with the route viewport in native half steps; equal-sized captions stay below the sprites. Hover cards explain each stop and its availability without revealing hidden teams. There is no miniature strip; Labels stays in the lower-right corner.

@@ -374,20 +374,25 @@ in the lower-right corner, above the terrain and outside the scrolling content. 
 a road.
 
 **One pixel density** (v0.9.107). Tiles and people are drawn at the same multiple of their FRLG pixel — the largest
-half step at which the route's own height fits the board: 1.5 at 720 p, 2 or 2.5 at 1080 p — so a pine and the hiker beside it
-share a pixel, as on the GBA. (Until v0.9.107 the tiles stood at 1.05, the people at 3 and the Leaders at 6: three pixel
-sizes on one screen, the cheapest look pixel art has.) Rows the board has left over go to the route's frame. The terrain
+half step at which the route's own height fits the board, three at most: 2 at 720 p, 3 at 1080 p since the seven-row map
+(v0.9.108; 1.5 and 2 on eleven rows) — so a pine and the hiker beside it share a pixel, as on the GBA. At three a column
+is 288 px and about five and a half fit a 1080 p screen: the next stop, the one after and the Y behind them; past three
+the board would show less road, not more of it. (Until v0.9.107 the tiles stood at 1.05, the people at 3 and the Leaders at 6: three pixel
+sizes on one screen, the cheapest look pixel art has.) Rows the board has left over go to the route's frame, rounded up
+to a whole tile — the frame's last row is cut by the board's edge rather than leaving a band of backdrop. The terrain
 is drawn from tiles at that scale (§2.5.4): open ground, the scenery between the routes, the trunk's two chapters, each
-lane in its Gym's terrain, a frame of scenery along the top and the bottom, a ridge between the two lanes, the buildings'
-fronts, the set pieces, and a lane's Battlefield drawn over it as weather — FireRed's own rain, sandstorm, snow and fog
-(`scripts/build-route-weather.mjs`) where FireRed draws that weather, repeated at the terrain's pixel, each loop ending on
-a whole period of its tile; the weather starts where the lanes' ridge does. Every node stands a seeded step off its grid
-point (a tile left or right, a tile down or not; never onto a tall picture below it, never nearer a neighbour than the
-grid had it, never onto a building's front), so a column of stops reads as places along a road rather than a column of a
-table. §2.5.5's obstacles stand on their crossing — a small tree, a cracked rock, deep water — at full colour, with the
-FRLG type box of the type that clears it standing under it once the Box holds one (a fade alone would say it by opacity,
-D5), and a bubble naming what closes the step and what clears it; the ledge lies across the middle of its drop, which
-crosses it from the track above to the track below, its steps spaced wider, as a jump is. (A bird's shadow that crossed
+Gym's terrain on its leaning track and its lane, a frame of scenery along the top and the bottom, a ridge between the
+two lanes, the whole buildings, the set pieces, and each Gym's Battlefield drawn as weather over every tile of its ground
+(§2.5.4) — FireRed's own rain, sandstorm, snow and fog (`scripts/build-route-weather.mjs`) where FireRed draws that
+weather, repeated at the terrain's pixel, each loop ending on a whole period of its tile, through a mask one pixel a tile
+that the board stretches, so the weather fades out over a tile where the Gym's ground ends. Every node stands on its grid
+point (v0.9.108; v0.9.107 stepped each a tile left or right, but on seven rows nearly every step had to be taken back to
+keep a neighbour's click), so a track that keeps its row is a level road with its stops along it. §2.5.5's obstacles
+stand on their crossing — a small tree, a cracked rock, deep water — at full colour while nothing in the Box can clear
+them, with a bubble naming what closes the step and what clears it; once the Box can, the obstacle is gone and the step
+is a plain line. The ledge — FRLG's own two ends — lies a quarter of the way down its drop, which crosses it from the
+track above to the track below, its steps spaced wider, as a jump is (at the middle it stood on the skipped column, where
+a node took its pointer). (A bird's shadow that crossed
 the route was cut in review: a loop with no state on the screen the player studies, and not pixel art.)
 
 **The routes are lines, the nodes are the things themselves** (v0.9.14, the user's note after Pokelike's map: "es
@@ -425,14 +430,14 @@ three pines, flowers, a pond, a reef, a sandbank, a marsh, an ice-green pool, sa
 the plain Tall Grass a stand of it rustling as the games draw grass with a Pokémon in it (`npm run art:habitats`,
 FireRed's own pixels). A runner (§5.6.5) and the Elite Wild are the Pokémon itself, in the same grass — there the
 Pokémon is the point; the nurse and the merchant are themselves, at their door; an item ball the Poké Ball lying there; a
-Mystery its **place** — its event's scene's subject, rolled with the map (§2.5.5): a shrine's statue, a spring, a
-stranger, a crate — and the overworld's "?" only on a save from before. State reads through the picture — full colour on every route still open from where you stand
+Mystery the overworld's **"?"** (§2.5.5: its event stays hidden until entered). State reads through the picture — full colour on every route still open from where you stand
 (`nodesAhead`), faded where you can no longer go, darkened with a tick once cleared — and through a ring on the
 ground: pulsing gold where you stand, gold under the nodes you can step to next. People keep their feet on the ground, including on hover.
 
-Node artwork scales with the board's one density: people, buildings and Mystery places at the tiles' multiple; a Wild
-Area's landmark, and a place taller than a person (a cave, a truck, a spring), half a step under it (1 at 720 p — at full
-density a cave's peak is taller than the four tiles between two tracks and stood over the caption of the node above); habitat residents (battle sprites, a different register) at half
+Node artwork scales with the board's one density: people and buildings at the tiles' multiple; a Wild Area's landmark
+a whole step under it (1 at 720 p, 2 at 1080 p — any nearer, a cave's peak is taller than the four tiles between two
+tracks less the caption of the node above, and on seven rows every lane's two tracks are four tiles apart; half a step
+under until v0.9.108); habitat residents (battle sprites, a different register) at half
 the landmark's, snapped to whole/half multiples of their own pixels. Every caption has the same minimum size and lies below the complete
 artwork; a gold choice chip never moves up over its sprite. Hover and keyboard focus strengthen the ground ring
 and open a compact place card: the node's status, visible level band, combat shape/fields and service details,

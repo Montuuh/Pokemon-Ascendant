@@ -17,7 +17,7 @@ import type { PokemonType } from '../types';
 
 // §2.5 — the Region map, v3 (v0.8.7): a route of twenty columns walked left to right.
 //
-//   0–7     THE TRUNK. Three or four tracks that drift, split, merge and cross. Wild-heavy at 0–1.
+//   0–7     THE TRUNK. Two or three tracks that drift, split, merge and cross. Wild-heavy at 0–1.
 //   8       the crossroads: a stop column at the mouth of the Y.
 //   8–p     THE Y. Exactly three tracks: the top one leans toward the first Gym, the bottom one toward the
 //           second (their wilds and trainers already wear its theme), the middle one stays neutral and carries
@@ -49,23 +49,27 @@ export const Y_LAYER = 8;
 const NO_RETURN_LAYERS = [11, 12, 13] as const;
 /** §2.8.1 — the guaranteed Elite stands on the Y's middle track at one of these columns. */
 const ELITE_LAYERS = [9, 10] as const;
-/** §2.5 — the row grid the tracks are laid on, top to bottom. */
-export const MAP_ROWS = 11;
+/**
+ * §2.5 — the row grid the tracks are laid on, top to bottom. Seven since v0.9.108 (eleven before): the lanes' four tracks
+ * and the ridge between them need exactly seven, and every row more was open ground the route wandered into — "too
+ * much useless vertical space" (the user, 2026-11-09). The route runs straighter and fills the screen.
+ */
+export const MAP_ROWS = 7;
 /** One clear row between two tracks, so the terrain has room for the scenery between two routes. */
 export const TRACK_GAP = 2;
 
 /** Where each kind of track may sit on the row grid. */
 type Group = 'trunk' | 'lean0' | 'mid' | 'lean1' | 'lane0' | 'lane1';
 const ROW_BAND: Record<Group, readonly [number, number]> = {
-  trunk: [1, 9],
-  lean0: [0, 3],
-  mid: [5, 5],
-  lean1: [7, 10],
-  lane0: [0, 4],
-  lane1: [6, 10],
+  trunk: [0, 6],
+  lean0: [0, 1],
+  mid: [3, 3],
+  lean1: [5, 6],
+  lane0: [0, 2],
+  lane1: [4, 6],
 };
 /** On the Y the leaning tracks drift outward, toward their lanes: the split is something you watch happen. */
-const ROW_PULL: Partial<Record<Group, number>> = { lean0: 1, lean1: 9 };
+const ROW_PULL: Partial<Record<Group, number>> = { lean0: 0, lean1: 6 };
 
 /**
  * §2.5 — how often an adjacent pair of tracks carries a crossing in a column. The Y is the busiest: it is where a
@@ -386,9 +390,10 @@ function settle(slots: Slot[]): void {
 function carry(rng: GameRng, prev: Slot[], from: number[], op: 'none' | 'split' | 'merge', group: (i: number, n: number) => Group, out: Column): void {
   const n = from.length;
   const at = op === 'none' ? -1 : Math.floor(rng.range01() * (op === 'split' ? n : n - 1));
+  // A track keeps its row about five columns in six (v0.9.108: eight in ten before), so a road runs straight.
   const drift = () => {
     const r = rng.range01();
-    return r < 0.12 ? -1 : r > 0.88 ? 1 : 0;
+    return r < 0.08 ? -1 : r > 0.92 ? 1 : 0;
   };
   const count = op === 'split' ? n + 1 : op === 'merge' ? n - 1 : n;
   let child = 0;
@@ -425,7 +430,10 @@ function nextColumn(rng: GameRng, prev: Slot[], layer: number, noReturn: number)
     // Every lane track walks into its own Gym. The Gym sits where its lane's tracks come in.
     for (const lane of [0, 1] as const) {
       const from = all.filter((i) => prev[i]!.group === `lane${lane}`);
-      const row = Math.round(from.reduce((a, i) => a + prev[i]!.row, 0) / from.length);
+      // At its lane's outer half, so the two Gyms' buildings (five tiles tall) stand two tracks apart, never one.
+      const [lo, hi] = ROW_BAND[`lane${lane}`];
+      const mean = Math.round(from.reduce((a, i) => a + prev[i]!.row, 0) / from.length);
+      const row = lane === 0 ? Math.min(mean, Math.floor((lo + hi) / 2)) : Math.max(mean, Math.ceil((lo + hi) / 2));
       out.slots.push({ row, group: `lane${lane}` });
       for (const p of from) out.edges.push([p, out.slots.length - 1]);
     }
@@ -435,8 +443,10 @@ function nextColumn(rng: GameRng, prev: Slot[], layer: number, noReturn: number)
   if (layer === noReturn + 1) {
     // §2.5 — the point of no return. The leaning tracks enter their own lane; the middle track's last node offers
     // both, one edge into each — the one node on the map where the choice is a single click.
-    const top = ROW_BAND.lane0[0] + Math.floor(rng.range01() * 3);
-    const bottom = ROW_BAND.lane1[0] + Math.floor(rng.range01() * 3);
+    // Each lane's two tracks as high in its band as the band allows them (on seven rows, exactly at its ends).
+    const room = (band: readonly [number, number]) => band[1] - band[0] - TRACK_GAP + 1;
+    const top = ROW_BAND.lane0[0] + Math.floor(rng.range01() * room(ROW_BAND.lane0));
+    const bottom = ROW_BAND.lane1[0] + Math.floor(rng.range01() * room(ROW_BAND.lane1));
     out.slots.push({ row: top, group: 'lane0' }, { row: top + TRACK_GAP, group: 'lane0' });
     out.slots.push({ row: bottom, group: 'lane1' }, { row: bottom + TRACK_GAP, group: 'lane1' });
     const [a, m, b] = [0, 1, 2];
@@ -449,7 +459,7 @@ function nextColumn(rng: GameRng, prev: Slot[], layer: number, noReturn: number)
   }
 
   if (layer <= Y_LAYER) {
-    // The trunk: drift, and now and then a split or a merge — three or four tracks, never fewer than two. Into the
+    // The trunk: drift, and now and then a split or a merge — two or three tracks, never more (v0.9.107). Into the
     // crossroads it settles on exactly three, which become the Y's leaning, middle and leaning tracks.
     const n = prev.length;
     let op: 'none' | 'split' | 'merge' = 'none';
@@ -731,7 +741,7 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   placeTrader({ nodes }, rng.cursor);
   // §2.9.5 — every plain find's reel, each on a stream of its own.
   placeReels({ nodes }, rng.cursor, regionIndex, content);
-  // §2.5.5 — the ledge, then the field moves' obstacles; §2.10 — and every Mystery's place.
+  // §2.5.5 — the ledge, then the field moves' obstacles; §2.10 — and every Mystery's event.
   placeLedge({ nodes }, rng.cursor, (layer) => stops.has(layer), Y_LAYER - 1);
   placeGates({ nodes, regionIndex }, rng.cursor);
   placeEvents({ nodes }, rng.cursor, seenEvents);

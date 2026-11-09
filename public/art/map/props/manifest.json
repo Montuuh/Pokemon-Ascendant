@@ -416,45 +416,45 @@
       "map": "PewterCity",
       "metatiles": [
         12,
-        14,
+        12,
         7,
-        3
+        5
       ],
       "size": [
         112,
-        48
+        80
       ],
-      "sha256": "f0d643baa947f2d7664adc3c9bd8372acfd26f84b513e826b24c8b64e6002758"
+      "sha256": "7cb1902ab5bcd637dfdefab40615aaa36eab0e56cbfdf8f972ffcc7a39ccfdb4"
     },
     {
       "id": "center",
       "map": "PewterCity",
       "metatiles": [
         15,
-        23,
+        21,
         5,
-        3
+        5
       ],
       "size": [
         80,
-        48
+        80
       ],
-      "sha256": "83f1a99b5c84dd6302cd33a676e8bccb8d2d56d081367fe3a6753bce9fb1855c"
+      "sha256": "ba01e1c1cce11ae7ae4a9d0479eb00234cf3c2ac2b36595fffbf098d45ab4cc9"
     },
     {
       "id": "mart",
       "map": "PewterCity",
       "metatiles": [
         26,
-        16,
+        15,
         4,
-        3
+        4
       ],
       "size": [
         64,
-        48
+        64
       ],
-      "sha256": "f95552ada28427ef0a7d355882cc5ee2aede35324d024ea8b08bc6c167c79231"
+      "sha256": "c93e882510e68ab95cd8d7f9bbbdf70afb25645ce748c903e1161b366194d647"
     },
     {
       "id": "house",
@@ -526,10 +526,14 @@
         1
       ],
       "size": [
-        96,
+        32,
         16
       ],
-      "sha256": "34882da05559f5320b12849a2c5977979af737c13c36447b2616ed929d4c7afe"
+      "sha256": "969fc891787a2db0aeb7bac5ffda4fe0cf7509571f464e46ea2b34893dae5ca2",
+      "ends": [
+        0,
+        5
+      ]
     },
     {
       "id": "gate-cut",

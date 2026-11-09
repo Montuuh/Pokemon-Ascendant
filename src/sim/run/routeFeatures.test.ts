@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { produce } from 'immer';
 import { buildRegistry } from '@/content/registry';
-import { createRun, defaultRunCtx, generateRegion, mysteryEventOf, runReducer, stepOpen, type RegionMap, type RunState } from '@/sim';
+import { createRun, defaultRunCtx, generateRegion, runReducer, stepOpen, type RegionMap, type RunState } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
 import { GATES, partyClears } from './routeFeatures';
-import { MYSTERY_EVENTS, STONE_CACHE } from './events';
+import { MYSTERY_EVENTS } from './events';
 
 // §2.5.5 / §2.10 — what a route holds besides its nodes (v0.9.107): the field moves' obstacles, the ledge, and every
-// Mystery's place rolled with the map.
+// Mystery's event rolled with the map.
 
 const content = buildRegistry();
 const ctx = defaultRunCtx(content);
@@ -87,7 +87,7 @@ describe('The ledge — §2.5.5', () => {
   });
 });
 
-describe('Mystery places — §2.10', () => {
+describe('Mystery events — §2.10', () => {
   it('EveryMystery_HoldsAnEventRolledWithTheMap_NoneTwiceOnAMap', () => {
     for (const m of maps) {
       const events = Object.values(m.nodes).filter((n) => n.kind === 'mystery').map((n) => n.preview.event);
@@ -96,7 +96,7 @@ describe('Mystery places — §2.10', () => {
     }
   });
 
-  it('EnteringAMystery_KeepsThePlaceTheMapShowed', () => {
+  it('EnteringAMystery_FiresTheEventRolledWithTheMap', () => {
     for (let seed = 1; seed <= 40; seed++) {
       const fresh = createRun('squirtle', seed, ctx);
       const parent = Object.values(fresh.map.nodes).find((n) => n.next.some((x) => fresh.map.nodes[x]!.kind === 'mystery'));
@@ -108,8 +108,8 @@ describe('Mystery places — §2.10', () => {
         d.visited.push(parent.id);
         d.reachable = [...parent.next];
       });
-      const promised = mysteryEventOf(s, s.map.nodes[id]!, content);
-      expect(promised).toBe(s.map.nodes[id]!.preview.event);
+      const promised = s.map.nodes[id]!.preview.event;
+      expect(promised).toBeTruthy();
       s = runReducer(s, { type: 'enter-node', nodeId: id }, ctx).state;
       s = runReducer(s, { type: 'begin-combat' }, ctx).state;
       expect(s.pendingEvent).toBe(promised);
@@ -118,13 +118,4 @@ describe('Mystery places — §2.10', () => {
     throw new Error('no Mystery on 40 routes');
   });
 
-  it('AnEeveeRun_ShowsTheStoneCache_UntilItIsOpened', () => {
-    const s = createRun('eevee', 3, ctx);
-    const mystery = Object.values(s.map.nodes).find((n) => n.kind === 'mystery')!;
-    expect(mysteryEventOf(s, mystery, content)).toBe(STONE_CACHE);
-    const opened = produce(s, (d) => {
-      d.seenEvents.push(STONE_CACHE);
-    });
-    expect(mysteryEventOf(opened, mystery, content)).toBe(mystery.preview.event);
-  });
 });

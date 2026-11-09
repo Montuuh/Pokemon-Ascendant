@@ -107,7 +107,7 @@ export function NodeMarker({
       className={[styles.node, styles[status], gone ? styles.gone : '', landmark ? styles.landmark : '', node.kind === 'gym' ? styles.climax : '']
         .filter(Boolean)
         .join(' ')}
-      style={{ ...style, '--habitat-scale': habitatScale(artScale), '--place-k': picture.kind === 'place' && picture.tall ? (2 * habitatScale(artScale)) / artScale : 2 } as React.CSSProperties}
+      style={{ ...style, '--habitat-scale': habitatScale(artScale) } as React.CSSProperties}
       onClick={enterable ? onClick : undefined}
       aria-disabled={enterable ? undefined : true}
       tabIndex={enterable ? undefined : -1}

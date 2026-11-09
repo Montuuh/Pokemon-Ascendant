@@ -6,23 +6,25 @@ import { buildScenario } from './encounter';
 import { REGIONS, gymById } from './region';
 import { createRun, defaultRunCtx } from './run';
 
-// §4.3.14 / §4.3 — the ground a node's fight is fought on: its Gym's own Battlefield past the river, a Home Field at
-// the Gym and the Elite, nothing in the trunk or on the Y.
+// §4.3.14 / §4.3 — the ground a node's fight is fought on: its Gym's own Battlefield on its lane and leaning track, a Home
+// Field at the Gym and the Elite, nothing in the trunk or on the Y's middle track.
 
 const ctx = defaultRunCtx(content);
 
 describe('Battlefields across the run — §2.6.1, §4.3', () => {
-  it('Trunk_IsOpenGround_EveryLaneCarriesItsGymsField', () => {
+  it('TrunkAndMiddleTrack_AreOpenGround_EveryLaneAndLeaningTrackCarriesItsGymsField', () => {
     for (let seed = 1; seed <= 30; seed++) {
       const run = createRun('squirtle', seed, ctx);
       for (const node of Object.values(run.map.nodes)) {
         if (!['wild', 'trainer', 'gym'].includes(node.kind)) continue;
         const f = fieldsFor(node, run, content);
-        if (node.lane === undefined) expect(f, `${node.id} in the trunk`).toEqual({});
+        // §2.6.1 (v0.9.108) — the Gym's ground is its lane and the leaning track that blends into it.
+        const side = node.lane ?? node.lean;
+        if (side === undefined) expect(f, `${node.id} in the trunk`).toEqual({});
         else {
           const ground = { ...f };
           delete ground.home;
-          expect(ground, `${node.id} in lane ${node.lane}`).toEqual(laneField(run, node.lane));
+          expect(ground, `${node.id} on side ${side}`).toEqual(laneField(run, side));
           expect(Object.keys(ground).length, `${node.id} has no field`).toBe(1);
         }
       }

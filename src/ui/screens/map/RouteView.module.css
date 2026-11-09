@@ -61,9 +61,11 @@
 }
 
 /* A board narrower than its window (Victory Road's five columns) stands in its middle; a wider one scrolls. */
+/* The board crops the frame's last row it paints past the box (`viewH`): clipped here, on the axis that does not scroll. */
 .board {
   position: relative;
   margin-inline: auto;
+  overflow-y: clip;
 }
 
 /* FRLG's pixel, kept a block at every size: the canvas is drawn at 16 px a tile and scaled here. */
@@ -184,23 +186,16 @@
   width: 100%;
   image-rendering: pixelated;
 }
-/* Once the Box can clear it, the type that does stands under it: an FRLG type box, not a fade (D5). */
-.gate .gateBy {
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: auto;
-  height: calc(var(--tile) * 0.75);
-  transform: translateX(-50%);
-}
 .propGone {
   filter: grayscale(0.7);
   opacity: 0.6;
 }
 
-/* §2.5.4 — a lane's Battlefield as weather: drawn, not written, with its name tagged at the lane's mouth. Since v0.9.107
+/* §2.5.4 — a Gym's Battlefield as weather: drawn, not written, with its name tagged at the lane's mouth. Since v0.9.107
    the fields FireRed draws as weather wear its own sprites (`--weather-img`, `npm run art:weather`): a 64-px tile repeated
-   at the terrain's pixel (`--tile` is one 16-px tile on screen), drifting the way the games' weather drifts. */
+   at the terrain's pixel (`--tile` is one 16-px tile on screen), drifting the way the games' weather drifts. Since
+   v0.9.108 it covers its Gym's ground, wherever that is painted (`--field-mask`, one pixel a tile, stretched at the
+   board's pixel, so its edge is a tile's edge). */
 .weather {
   position: absolute;
   pointer-events: none;
@@ -208,6 +203,10 @@
   image-rendering: pixelated;
   background-image: var(--weather-img, none);
   background-size: calc(var(--tile) * 4) calc(var(--tile) * 4);
+  -webkit-mask-image: var(--field-mask);
+  mask-image: var(--field-mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 /* Above the nodes (their hover lifts them to 2, a chip to 3), to be read; a label, so the pointer passes through to the
    node under it. */

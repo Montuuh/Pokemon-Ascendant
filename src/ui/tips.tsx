@@ -934,9 +934,9 @@ export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNo
 }
 
 /** §2.5.5 — a field move's obstacle on a step: what closes it, and which types in the Box clear it. */
-export function gateTip(kind: GateKind, cleared: boolean): ReactNode {
+export function gateTip(kind: GateKind): ReactNode {
   const types = GATES[kind].types.map((t) => capitalise(t)).join(', ');
-  return <Tip title={GATE_TEXT[kind].title} meta={[types]} body={cleared ? GATE_TEXT.cleared : GATE_TEXT[kind].body} />;
+  return <Tip title={GATE_TEXT[kind].title} meta={[types]} body={GATE_TEXT[kind].body} />;
 }
 
 /** §2.5.5 — the route's ledge: a one-way drop past a column. */
