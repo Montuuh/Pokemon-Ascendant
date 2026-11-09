@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-07 · **Version:** v0.9.106 (*Moves on the Pokémon*).
+**Date:** 2026-11-09 · **Version:** v0.9.106 (*Moves on the Pokémon*).
+**Route map review 2026-11-09 (no code yet):** user: background not pretty, nodes repetitive, drop the point of no return visually. Report claude.ai/artifact/XW2ciawxqoNer3HW7eKySU — 3 densities on screen (tiles 1.05×, people 1.5×, leaders 3×), board 36 tiles tall vs FRLG's 20, noise terrain, "?"+ball 22–29 % of nodes, one trainer class per lane. Proposed: direction A (real FRLG route from pret), phase 1 cleanup incl. PONR removal, phase 2 one-density board + relief + pret set pieces, phase 3 HM-gate edges (backlog). **Waiting on the user's direction.**
 **Shipped 2026-11-07 (v0.9.106):** FRLG visual tasks on a Pokémon play on its sprite (`MON_TASKS`, `mons` in useCombatFx, `.fx-mon-*` in motion.css, §9.9.2). All five causes of the move review are now addressed (report artifact claude.ai/artifact/MB5SLkZH3qHyK2LT85KZVa). **Waiting on the user's look.**
 **Shipped 2026-11-07 (v0.9.105):** move sprites at twice the Pokémon's pixel (`pixelScales` in MoveFx.tsx: landing pieces fit the target's box, flying ones 1.5×), number outline 2 px. Superseded by v0.9.106.
 **Shipped 2026-11-07 (v0.9.104):** each FRLG move replays its pret script's sprite timeline (`scripts/fx/choreo.mjs`, `fxChoreoOf`, §9.9.2), Gen IV moves borrow one (`like`/`swap`), caps by weight, hand back at a foe's blow. UI review Ship with fixes. Superseded by v0.9.105.
