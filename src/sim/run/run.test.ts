@@ -442,7 +442,17 @@ describe('Catching and the Box — §2.6.4, §2.3.1', () => {
       while (s.phase === 'evolution') s = apply(s, { type: 'choose-branch', uid: s.pendingEvolutions[0]!.uid, branchId: s.pendingEvolutions[0]!.branchIds[0]! });
       return s;
     };
-    let s = catchOne(start(), 'pidgey', 6);
+    // A map whose opening Wild leads straight on to another (the map's shape is the seed's, so the seed is chosen by it).
+    const seed = Array.from({ length: 40 }, (_, i) => i + 1).find((n) => {
+      const m = start(n).map;
+      return m.entry.some((id) => m.nodes[id]!.kind === 'wild' && m.nodes[id]!.next.some((c) => m.nodes[c]!.kind === 'wild'));
+    })!;
+    let s = start(seed);
+    s = apply(s, { type: 'enter-node', nodeId: s.map.entry.find((id) => s.map.nodes[id]!.kind === 'wild' && s.map.nodes[id]!.next.some((c) => s.map.nodes[c]!.kind === 'wild'))! });
+    s = apply(s, { type: 'begin-combat' });
+    s = apply(s, { type: 'finish-combat', report: { ...caughtReport(s), caught: { speciesId: 'pidgey', level: 6 } } });
+    s = apply(s, { type: 'claim-reward' });
+    while (s.phase === 'evolution') s = apply(s, { type: 'choose-branch', uid: s.pendingEvolutions[0]!.uid, branchId: s.pendingEvolutions[0]!.branchIds[0]! });
     expect(s.box).toHaveLength(2);
     resetUidCounter(); // what a page reload does to module state
     const loaded = deserialiseRun(serialiseRun(s), content);

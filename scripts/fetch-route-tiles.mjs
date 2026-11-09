@@ -97,14 +97,6 @@ const TERRAINS = {
   highland: { ground: ['ember', 13, 37], 'ground-2': ['ember', 10, 40], deco: ['route1', 3, 6], ...SAND_ROUTE1, tall: ['ember', 7, 40], fill: ['ember', 7, 32], 'fill-2': ['ember', 11, 39], 'fill-3': ['ember', 6, 35] },
 };
 
-/** §2.5.4 — the point of no return: Route 24's water, and Nugget Bridge turned to run east–west. */
-const RIVER = {
-  ...WATER_ROUTE24,
-  bridge: ['route24', 11, 30, 1, 1, 'rot'],
-  'bridge-n': ['route24', 10, 30, 1, 1, 'rot'],
-  'bridge-s': ['route24', 10, 30, 1, 1, 'rotflip'],
-};
-
 function download(title) {
   const json = execFileSync('curl', ['-s', '-L', '-A', UA, `${API}?action=query&titles=${encodeURIComponent(title)}&prop=imageinfo&iiprop=url&format=json`], { encoding: 'utf8' });
   const info = Object.values(JSON.parse(json).query.pages)[0].imageinfo?.[0];
@@ -119,7 +111,8 @@ if (!force && (await exists(resolve(OUT, 'route/path-c.png')))) {
 }
 
 const maps = {};
-const need = new Set([...Object.values(TERRAINS).flatMap((t) => Object.values(t).map((p) => p[0])), ...Object.values(RIVER).map((p) => p[0])]);
+// (The point of no return's river and its bridges were cut here until v0.9.107, when the map stopped drawing them.)
+const need = new Set(Object.values(TERRAINS).flatMap((t) => Object.values(t).map((p) => p[0])));
 for (const key of need) {
   maps[key] = download(SOURCES[key]);
   console.log(`fetched ${SOURCES[key]}`);
@@ -156,7 +149,7 @@ async function cut([src, x, y, w = 1, h = 1, how, extra]) {
   return img.png();
 }
 
-for (const [terrain, pieces] of [...Object.entries(TERRAINS), ['river', RIVER]]) {
+for (const [terrain, pieces] of Object.entries(TERRAINS)) {
   await mkdir(resolve(OUT, terrain), { recursive: true });
   for (const [name, spec] of Object.entries(pieces)) await writeFile(resolve(OUT, terrain, `${name}.png`), await (await cut(spec)).toBuffer());
   console.log(`cut ${terrain}: ${Object.keys(pieces).length} pieces`);

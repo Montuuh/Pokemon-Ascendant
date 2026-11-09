@@ -81,64 +81,133 @@
   pointer-events: none;
   overflow: visible;
 }
-/* §9.3 (v0.9.14, after Pokelike's map) — every edge is a straight line from node to node, so a route reads as a line
-   you can follow and no two edges share a stretch. A dark casing under each keeps it 3:1 on grass, sand and water.
-   The steps you can take now are solid gold and march toward where they lead; the routes still open are dashed cream;
-   the road behind you is solid and dark; a route you can no longer take is a faint dotted trace. */
+/* §9.3 — every edge is a straight line from node to node (v0.9.14, after Pokelike's map), so a route reads as a line
+   you can follow and no two edges share a stretch. Since v0.9.107 the lines belong to the ground rather than float over
+   it, and each is drawn twice: a casing in screen pixels under it (`.casing`: wider, the halo's colour), then the line —
+   a filter here would blur in the viewBox's tile units (the UI review, 2026-11-09). The routes still open are a trail of
+   square steps in the ground's dark on a pale edge; the road behind you a solid trodden line; a route you can no longer
+   take nearly gone. Only the steps you can take now stand out: solid gold, marching toward where they lead. A step into
+   a lane is the same trail of steps in its Gym's colour (`--lane-ink`) on a dark edge, so the point of no return reads by
+   shape and colour both, and never as the gold of a step you can take. */
 .edge,
 .edgeLive,
 .edgeWalked,
 .edgeGone {
   fill: none;
-  stroke-linecap: round;
   stroke-linejoin: round;
 }
 .edge {
-  stroke: color-mix(in srgb, var(--ink-primary) 95%, transparent);
+  stroke: color-mix(in srgb, var(--surface-sunken) 85%, transparent);
   stroke-width: 3;
-  stroke-dasharray: 7 7;
-  filter: drop-shadow(0 0 1.5px var(--surface-sunken));
+  stroke-dasharray: 3 6;
+  stroke-linecap: butt;
+}
+.edge.casing {
+  stroke: color-mix(in srgb, var(--ink-primary) 62%, transparent);
+  stroke-width: 4.5;
+  stroke-linecap: square;
+}
+.edge[data-commit] {
+  stroke: var(--lane-ink);
+  stroke-width: 3.5;
+}
+.edge[data-commit].casing {
+  stroke: color-mix(in srgb, var(--surface-sunken) 85%, transparent);
+  stroke-width: 5.5;
+  stroke-linecap: square;
 }
 .edgeLive {
   stroke: var(--accent-action);
   stroke-width: 4.5;
   stroke-dasharray: 12 6;
-  filter: drop-shadow(0 0 2px var(--surface-sunken));
+  stroke-linecap: round;
   animation: global(dashFlow) var(--motion-dash-flow) linear infinite;
 }
+.edgeLive.casing {
+  stroke: var(--surface-sunken);
+  stroke-width: 7.5;
+}
 .edgeWalked {
-  stroke: color-mix(in srgb, var(--surface-sunken) 85%, transparent);
-  stroke-width: 4;
-  filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--ink-primary) 80%, transparent));
+  stroke: color-mix(in srgb, var(--surface-sunken) 80%, transparent);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.edgeWalked.casing {
+  stroke: color-mix(in srgb, var(--ink-primary) 50%, transparent);
+  stroke-width: 5;
 }
 .edgeGone {
-  stroke: color-mix(in srgb, var(--ink-primary) 50%, transparent);
+  stroke: color-mix(in srgb, var(--surface-sunken) 32%, transparent);
   stroke-width: 2;
   stroke-dasharray: 2 8;
-  filter: drop-shadow(0 0 1px color-mix(in srgb, var(--surface-sunken) 60%, transparent));
+  stroke-linecap: butt;
+}
+.edgeGone.casing {
+  stroke: none;
+}
+.edgeGone[data-commit] {
+  stroke: color-mix(in srgb, var(--lane-ink) 40%, transparent);
+}
+/* §2.5.5 — the ledge's drop: the same registers, its steps spaced wider, as a jump is. */
+.edge[data-ledge],
+.edgeGone[data-ledge] {
+  stroke-dasharray: 3 10;
 }
 
-.noReturn {
+/* §2.5.4 — the buildings' fronts a Gym, a nurse and a merchant stand at, the ledge, and the field moves' obstacles: FRLG's
+   own pixels at the terrain's (their size is set in tiles). Over the lines, under the nodes. */
+.building,
+.ledge {
   position: absolute;
-  transform: translateX(-50%);
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+.ledge {
+  pointer-events: auto;
   cursor: help;
-  padding: 2px var(--sp-3);
-  border-radius: var(--radius-pill);
-  background: var(--surface-0);
-  color: var(--ink-primary);
-  border: 2px solid var(--accent-warning);
-  font-family: var(--font-display);
-  font-size: var(--type-caption);
-  font-weight: 700;
-  white-space: nowrap;
+}
+.ledge img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.gate {
+  position: absolute;
+  width: var(--gate-w);
+  transform: translate(-50%, -75%);
+  cursor: help;
   z-index: 1;
 }
+.gate img {
+  display: block;
+  width: 100%;
+  image-rendering: pixelated;
+}
+/* Once the Box can clear it, the type that does stands under it: an FRLG type box, not a fade (D5). */
+.gate .gateBy {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: auto;
+  height: calc(var(--tile) * 0.75);
+  transform: translateX(-50%);
+}
+.propGone {
+  filter: grayscale(0.7);
+  opacity: 0.6;
+}
 
-/* §2.5.4 — a lane's Battlefield as weather: drawn, not written, with its name tagged at the lane's mouth. */
+/* §2.5.4 — a lane's Battlefield as weather: drawn, not written, with its name tagged at the lane's mouth. Since v0.9.107
+   the fields FireRed draws as weather wear its own sprites (`--weather-img`, `npm run art:weather`): a 64-px tile repeated
+   at the terrain's pixel (`--tile` is one 16-px tile on screen), drifting the way the games' weather drifts. */
 .weather {
   position: absolute;
   pointer-events: none;
   overflow: hidden;
+  image-rendering: pixelated;
+  background-image: var(--weather-img, none);
+  background-size: calc(var(--tile) * 4) calc(var(--tile) * 4);
 }
 /* Above the nodes (their hover lifts them to 2, a chip to 3), to be read; a label, so the pointer passes through to the
    node under it. */
@@ -157,26 +226,23 @@
   box-shadow: 0 2px 6px rgba(26, 18, 28, 0.4);
 }
 .rain {
-  background-image: repeating-linear-gradient(105deg, rgba(190, 220, 255, 0.0) 0 14px, rgba(190, 220, 255, 0.45) 14px 16px);
-  background-size: 64px 64px;
-  animation: rain var(--motion-weather-rain) linear infinite;
+  animation: rain calc(var(--motion-weather-rain) * 2) linear infinite;
 }
 .weatherTag[data-field='rain-dance'] { border: 2px solid var(--type-water); }
+/* Each loop ends on a whole period of the 4-tile weather tile, so it has no seam (the UI review). */
 @keyframes rain {
-  to { background-position: -18px 64px; }
+  to { background-position: calc(var(--tile) * -4) calc(var(--tile) * 8); }
 }
 .sun {
   background: radial-gradient(ellipse at 70% 0%, rgba(255, 214, 120, 0.42), rgba(255, 170, 60, 0.12) 55%, transparent 80%);
 }
 .weatherTag[data-field='sunny-day'] { border: 2px solid var(--type-fire); }
 .sand {
-  background-image: repeating-linear-gradient(170deg, rgba(214, 180, 120, 0.0) 0 22px, rgba(214, 180, 120, 0.4) 22px 25px);
-  background-size: 96px 48px;
   animation: sand var(--motion-weather-sand) linear infinite;
 }
 .weatherTag[data-field='sandstorm'] { border: 2px solid var(--type-rock); }
 @keyframes sand {
-  to { background-position: 96px 8px; }
+  to { background-position: calc(var(--tile) * 4) 0; }
 }
 .spark {
   background: linear-gradient(180deg, rgba(255, 236, 110, 0.12), rgba(255, 236, 110, 0.04));
@@ -188,40 +254,28 @@
   48% { background-color: rgba(255, 245, 160, 0.16); }
   52% { background-color: transparent; }
 }
-
-/* The v0.8.7 fields: each drawn as a shape, not only a tint, so it reads on any ground; colours from the type tokens. */
 .hail {
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--surface-1) 90%, transparent) 0 1.5px, transparent 2px);
-  background-size: 22px 26px;
-  animation: hail var(--motion-weather-sand) linear infinite;
+  animation: hail var(--motion-weather-snow) linear infinite;
 }
 .weatherTag[data-field='hail'] { border: 2px solid var(--type-ice); }
 @keyframes hail {
-  to { background-position: -10px 26px; }
+  to { background-position: calc(var(--tile) * -4) calc(var(--tile) * 16); }
 }
 .grassy {
-  background-image: linear-gradient(0deg, color-mix(in srgb, var(--type-grass) 22%, transparent), transparent 70%),
-    radial-gradient(ellipse 2px 4px, color-mix(in srgb, var(--type-grass) 85%, var(--ink-primary)) 0 100%, transparent 100%);
-  background-size: 100% 100%, 26px 30px;
+  background-image: linear-gradient(0deg, color-mix(in srgb, var(--type-grass) 22%, transparent), transparent 70%);
 }
 .weatherTag[data-field='grassy-terrain'] { border: 2px solid var(--type-grass); }
-.psychic {
-  background-image: radial-gradient(circle, transparent 0 9px, color-mix(in srgb, var(--type-psychic) 45%, transparent) 9px 11px, transparent 11px);
-  background-size: 64px 64px;
-  animation: pulse var(--motion-weather-spark) ease-in-out infinite;
+/* The fogs drift sideways, slowly: the games' fog layer scrolls; it never pulses. */
+.psychic,
+.misty,
+.toxic {
+  animation: fog var(--motion-weather-fog) linear infinite;
+}
+@keyframes fog {
+  to { background-position: calc(var(--tile) * 4) 0; }
 }
 .weatherTag[data-field='psychic-terrain'] { border: 2px solid var(--type-psychic); }
-@keyframes pulse {
-  50% { opacity: 0.45; }
-}
-.misty {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--status-confusion) 30%, transparent), color-mix(in srgb, var(--status-confusion) 12%, transparent));
-}
 .weatherTag[data-field='misty-terrain'] { border: 2px solid var(--status-confusion); }
-.toxic {
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--type-poison) 75%, var(--surface-1)) 0 2.5px, color-mix(in srgb, var(--type-poison) 80%, var(--ink-primary)) 2.5px 3.5px, transparent 4px);
-  background-size: 34px 30px;
-}
 .weatherTag[data-field='toxic-spikes'] { border: 2px solid var(--type-poison); }
 .web {
   background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--surface-1) 22%, transparent) 0 1px, transparent 1px 18px),

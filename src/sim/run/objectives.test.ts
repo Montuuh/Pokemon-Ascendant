@@ -5,6 +5,7 @@ import {
   type CombatOutcomeReport, type MapNode, type RunAction, type RunState,
 } from '@/sim';
 import { RngStreams } from '@/sim/rng/rngStreams';
+import { evolvedAt } from './region';
 import { GameRng } from '@/sim/rng/gameRng';
 
 // §5.6.5 — fights with another objective, the run's half: where the map places them, the fight each builds, and what
@@ -56,7 +57,10 @@ describe('Objectives on the map — §5.6.5', () => {
         expect(n.layer).toBeGreaterThanOrEqual(FLEE_RACE.firstLayer);
         const o = n.preview.objective!;
         const row = FLEE_RACE.runners.find((r) => o.kind === 'flee' && r.id === o.runner)!;
-        expect(n.preview.enemies?.[0]?.species).toBe(row.forms[map.regionIndex]);
+        // The Region's form, or the later one of its own its level warrants (§2.7.3, v0.9.107).
+        const base = row.forms[map.regionIndex]!;
+        const grown = evolvedAt(base, n.preview.enemies![0]!.level, content);
+        expect(n.preview.enemies?.[0]?.species).toBe(row.forms.includes(grown) ? grown : base);
         expect(n.preview.wild).toBeUndefined();
       }
     }

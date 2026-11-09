@@ -1,6 +1,6 @@
 {
   "build": "node scripts/build-map-people.mjs",
-  "processing": "First south-facing 16x32 frame, exact palette-zero transparency; no resampling, no colour edits. Render at 2x on the map. Battle portraits remain in the preview.",
+  "processing": "One 16x32 frame: the west-facing one (the third) for route trainers, the south-facing first for Leaders and services; exact palette-zero transparency; no resampling, no colour edits. Render at 2x on the map. Battle portraits remain in the preview.",
   "aliases": "Johto and role-only identities use the matching FRLG trainer class, with their real name, rank, type and portrait retained in the preview.",
   "sources": [
     {
@@ -219,6 +219,27 @@
       "sha256": "0f5b22e8cad76ff95ed064fa317260bff8c7744a5575a8b04b997d4d3a6108f0",
       "width": 160,
       "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/swimmer_m_land.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/swimmer_m_land.png",
+      "sha256": "917b5f1291524b16768da0518d9c41ceaa8b591894e8d4fb143eeb71eb910c2c",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/worker_m.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/worker_m.png",
+      "sha256": "2cea07c7b0e96fd2823415c65b7adec48a7daa2fdea707d7c5b8053ac0204366",
+      "width": 160,
+      "height": 32
+    },
+    {
+      "path": "public/art/map/people/sources/crush_girl.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/object_events/pics/people/crush_girl.png",
+      "sha256": "76bd1ddce01546a801bc641fc15fd3d0fe93506a53ac9c093ae1959fceb47874",
+      "width": 160,
+      "height": 32
     }
   ],
   "outputs": [
@@ -227,96 +248,96 @@
       "file": "youngster.png",
       "source": "sources/youngster.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "170ab0eafe2da45a25062fabeb30ad7a3a30b6e4b490d1d131ee2ae69be55345"
+      "sha256": "ace5808801cb7dade7fc7a16e348845661a40fbbfbea17787f00edef3c263d15"
     },
     {
       "id": "lass",
       "file": "lass.png",
       "source": "sources/lass.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "b07ede9452c61eb62b63899a0dff99c00dd4565a83a51b5c3c91acd142105e02"
+      "sha256": "9cd74567fe4602b8ee06bf7cde74fc1861267933ff31483b6b9f887cfeb020d0"
     },
     {
       "id": "bug-catcher",
       "file": "bug-catcher.png",
       "source": "sources/bug_catcher.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "40a463c5cc77d6dbe18184b0d4cc2dabcbe9ed3e36ba0875fd6ae3440fcbf15a"
+      "sha256": "7af536b9d9cfb72922c294fc050632022bb896a257dfc98f7bef33193f49d9f5"
     },
     {
       "id": "hiker",
       "file": "hiker.png",
       "source": "sources/hiker.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "c019b652b80b248345623605353e07fa94673ead23725e2433a12f28f4942e12"
+      "sha256": "7332d82d389d810814862134d94c3102bce2203fa04276ef75b85deb9a38eb52"
     },
     {
       "id": "camper",
       "file": "camper.png",
       "source": "sources/camper.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "da84e69c90341c9155179d959ae25a027390cd2bf90d6518fa543fbc70b9dde0"
+      "sha256": "cd656a56476224698c5042d20763abbc8952fba966f6c49339ea766c2bcbcdca"
     },
     {
       "id": "picnicker",
       "file": "picnicker.png",
       "source": "sources/picnicker.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "2830b2d0b277a973246e9ce0f2957449908b04d55e17c96116602555277b4f61"
+      "sha256": "33751a58dba1068c6083b078227f66e435b39ea66dae4df356107900a21f4d2f"
     },
     {
       "id": "acetrainer",
       "file": "acetrainer.png",
       "source": "sources/cooltrainer_f.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "e523832d7c089e83691744b6bb294d849bc896be45d5d6b2570073a3d607c42d"
+      "sha256": "930d1c19b104b1980f62bcd457c3d1d32093b7e56bfe2338e8ab040c1d5351f9"
     },
     {
       "id": "swimmer",
       "file": "swimmer.png",
       "source": "sources/swimmer_f_land.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "f80354e665c77b30a7a4e15f94cb855aee3d56b0f49d65a5386d2809f5506563"
+      "sha256": "34a0aea241f32dd7e1ddc35d8cc027d3173b00bfbbc4aaf8531bf73b8a459c88"
     },
     {
       "id": "nurse",
@@ -359,60 +380,60 @@
       "file": "scientist.png",
       "source": "sources/scientist.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "ee125e9aaf1917a3bf09d4596281b8070e3adade10b9c9519915430db376afa5"
+      "sha256": "d05dfc641a5bcd46150bd5915d52b0ee89869f197308a1b08859e4b425735c18"
     },
     {
       "id": "rocketgrunt",
       "file": "rocketgrunt.png",
       "source": "sources/rocket_m.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "d2e26f9053be225906975aecca3ae374eb324f2f0b1e7371f4e9475a47e8ab63"
+      "sha256": "fb13f1a95083b5e6185cb68db872b0d5539210fee64acf2a51a9ca9636065ed8"
     },
     {
       "id": "rocketgruntf",
       "file": "rocketgruntf.png",
       "source": "sources/rocket_f.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "0f2208e7510c1c560f6637d92931fe8eb4299ab339bacf0bae794738077ac142"
+      "sha256": "6c3f40a13e7cd6ecafea0cbb6106f744f6ddb052681738a8fb3ef7102b403543"
     },
     {
       "id": "blackbelt",
       "file": "blackbelt.png",
       "source": "sources/black_belt.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "02c3ce73ef4e04f89fa9fe47d3fc59020b8878b7ac9309ea4d3e19d7fd2ba560"
+      "sha256": "b94ea98cea2ddb5c4f3b57327c6539c4fb9cfa72f166c7159f948fecb957b464"
     },
     {
       "id": "hexmaniac",
       "file": "hexmaniac.png",
       "source": "sources/channeler.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "efbf7812d518ff7c225f3e98464ff96634a8aedd960a9c21f68653bf199e0620"
+      "sha256": "918ae60ec86b2aaa3c2e05ab8937aa45c39e0cc905c08d722e87e44ee7229359"
     },
     {
       "id": "brock",
@@ -635,24 +656,72 @@
       "file": "gambler.png",
       "source": "sources/gentleman.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "97235bbe7763ba16b7697feff31e9a5600e55292eae7e4e5d517e930fbe48dd3"
+      "sha256": "34c6d8a7f8a153508fa6c419f959c367821f6975101414a23fce7043da950532"
     },
     {
       "id": "archer",
       "file": "archer.png",
       "source": "sources/rocket_m.png",
       "crop": [
-        0,
+        32,
         0,
         16,
         32
       ],
-      "sha256": "d2e26f9053be225906975aecca3ae374eb324f2f0b1e7371f4e9475a47e8ab63"
+      "sha256": "fb13f1a95083b5e6185cb68db872b0d5539210fee64acf2a51a9ca9636065ed8"
+    },
+    {
+      "id": "swimmerm",
+      "file": "swimmerm.png",
+      "source": "sources/swimmer_m_land.png",
+      "crop": [
+        32,
+        0,
+        16,
+        32
+      ],
+      "sha256": "fc8910af4a24dc1ae1f9f3ad35e377de1b0bdb25b8cbddcb8b9e505ba2d267f6"
+    },
+    {
+      "id": "acetrainerm",
+      "file": "acetrainerm.png",
+      "source": "sources/cooltrainer_m.png",
+      "crop": [
+        32,
+        0,
+        16,
+        32
+      ],
+      "sha256": "4d556be7f9023f40cf5311ce89428aee7a45715b66f55909ff7cc22fd0945939"
+    },
+    {
+      "id": "engineer",
+      "file": "engineer.png",
+      "source": "sources/worker_m.png",
+      "crop": [
+        32,
+        0,
+        16,
+        32
+      ],
+      "sha256": "4f36df5f2f5fa2aa1da151d5d3e528c8686297e91642bcacee26c5677fe6ca52"
+    },
+    {
+      "id": "battlegirl",
+      "file": "battlegirl.png",
+      "source": "sources/crush_girl.png",
+      "crop": [
+        32,
+        0,
+        16,
+        32
+      ],
+      "sha256": "2647c102c18283bdad66da5b2f25e2bc1ffc3391efb3b0a2738d3d2bc7a4c443"
     }
   ],
   "ball": {

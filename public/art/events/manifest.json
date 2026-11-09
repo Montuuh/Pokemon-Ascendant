@@ -169,12 +169,17 @@
     },
     {
       "file": "../mart/mart.png",
-      "sha256": "67fe3939a467d19b0e55258eed9fedec3184ddff7fd5b53d3ba399f88027e79b",
+      "sha256": "536ca67181f4824c7069fe54785570dcdd56f3b9ba2b5dcad667fe27ba11c6be",
       "attribution": "docs/art/ATTRIBUTION.md"
     },
     {
       "file": "../route/route/tall.png",
       "sha256": "c74040cfe2e558bd871420acfb925b8ab40958663b268c7266171d52d7d861d2",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../items/thunder-stone.png",
+      "sha256": "74fa4c73cad9285a250f8f7e8e434409b3e89670adc6f30b419b709fce1bad10",
       "attribution": "docs/art/ATTRIBUTION.md"
     },
     {
@@ -185,11 +190,6 @@
     {
       "file": "../items/water-stone.png",
       "sha256": "a213ec2d62b816073a9a78bf659b436de8e196df3b14437b3d768f466b3e9616",
-      "attribution": "docs/art/ATTRIBUTION.md"
-    },
-    {
-      "file": "../items/thunder-stone.png",
-      "sha256": "74fa4c73cad9285a250f8f7e8e434409b3e89670adc6f30b419b709fce1bad10",
       "attribution": "docs/art/ATTRIBUTION.md"
     },
     {
@@ -240,6 +240,11 @@
     {
       "file": "../map/habitat/cave.png",
       "sha256": "5519530156080550065fa5e6d715657079ab606c75d850d8a222bad5b7cc5b27",
+      "attribution": "docs/art/ATTRIBUTION.md"
+    },
+    {
+      "file": "../map/habitat/lake.png",
+      "sha256": "7b7a0658bcffb224bd3e0f41381eb097079bfabb87d0b987c42015def7a50246",
       "attribution": "docs/art/ATTRIBUTION.md"
     }
   ],
@@ -380,6 +385,96 @@
       "width": 256,
       "height": 112,
       "sha256": "3a82121abd986af7c0a00bc4ba98da331e4d2c5c365056f776afeb61000c1b53"
+    },
+    {
+      "file": "../map/places/traveling-apothecary.png",
+      "width": 32,
+      "height": 32,
+      "sha256": "c0db4373d8da365d107f69de8c9ef7f0145579af840ff3c183876111e1649675"
+    },
+    {
+      "file": "../map/places/roadside-trader.png",
+      "width": 32,
+      "height": 32,
+      "sha256": "5edd0a2c1f46b0fe8d0a98d763130a0f606a995b1038d53f6fc5dd08307d47f4"
+    },
+    {
+      "file": "../map/places/field-medic.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "2921c3e6298b85fcc2c274a42a6c3fa95a6dcf2b8496dcd18ef4e0f08bfddb05"
+    },
+    {
+      "file": "../map/places/lost-backpack.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "e6e769b23f0afa43185005f0652d654634611da70592d009343d141199cf616f"
+    },
+    {
+      "file": "../map/places/fallen-crate.png",
+      "width": 32,
+      "height": 24,
+      "sha256": "8787d06b0b098b0e1f27480bfe9c02efd8066444e2458eb0ad45ab0e33f2dcb3"
+    },
+    {
+      "file": "../map/places/abandoned-pokeball.png",
+      "width": 32,
+      "height": 24,
+      "sha256": "68428e80d4a56a47a794c8d9df17c6b315bcc03fa4f838a6d3745b2f085e0f1d"
+    },
+    {
+      "file": "../map/places/berry-bush.png",
+      "width": 32,
+      "height": 32,
+      "sha256": "e17ada9cea2464833c746bd658253d63124486af4c79ce101ef3022b38c14aba"
+    },
+    {
+      "file": "../map/places/moving-truck.png",
+      "width": 48,
+      "height": 48,
+      "sha256": "316064c40586d1a297da7b00c2d8f5f59cdc9c9abf6265871112129f2a6a182c"
+    },
+    {
+      "file": "../map/places/daycare-recovery.png",
+      "width": 32,
+      "height": 32,
+      "sha256": "c92f588254c43af03b4e8381c9c937e66bc936b0ba60243fe0810d4b46cd3e6b"
+    },
+    {
+      "file": "../map/places/hot-spring.png",
+      "width": 48,
+      "height": 38,
+      "sha256": "d746fe1df70b5eba81ea856d8364798775a2bd2c62c568d31feaee42ef9b9f09"
+    },
+    {
+      "file": "../map/places/slot-booth.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "6e7f8c7230c4903c7426ccc7ec235e46005015206ffdb7581ee85cd3c5ca03e9"
+    },
+    {
+      "file": "../map/places/cursed-trinket.png",
+      "width": 32,
+      "height": 40,
+      "sha256": "27844cfd87a7eb9d8b4e5351f0a43945ce4bd821b03e34de499af5df1c24e355"
+    },
+    {
+      "file": "../map/places/mysterious-stone.png",
+      "width": 32,
+      "height": 24,
+      "sha256": "b5d2787c362dbefbd77e1d51b95684271f2ae9d307325ad82c58aa4339165c8e"
+    },
+    {
+      "file": "../map/places/unmarked-cave.png",
+      "width": 56,
+      "height": 62,
+      "sha256": "5519530156080550065fa5e6d715657079ab606c75d850d8a222bad5b7cc5b27"
+    },
+    {
+      "file": "../map/places/stone-cache.png",
+      "width": 64,
+      "height": 36,
+      "sha256": "5201a4cc392c0fa70c199efbfeacb1aa52ea9fc46d49324b4e656a3a1f978d12"
     }
   ]
 }

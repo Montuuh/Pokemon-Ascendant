@@ -165,7 +165,8 @@ test('the new-run flow reaches a twenty-column route with three or four first ch
   await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
   const [board, scroller] = await Promise.all([page.getByTestId('route-board').boundingBox(), page.getByTestId('route-scroller').boundingBox()]);
   expect(board!.width).toBeGreaterThan(scroller!.width);
-  await expect(page.getByTestId('no-return')).toBeAttached();
+  // §2.5 (v0.9.107) — the steps into the lanes wear their Gyms' colours; the preview of one says it commits (below).
+  expect(await page.locator('[data-edge][data-commit]').count()).toBeGreaterThanOrEqual(2);
   // §2.5 — BOTH Gyms are on the board from the start and both are named in the header, because the fork is
   // the largest thing the map can telegraph and it decides what you recruit for ten nodes before you arrive.
   await expect(page.locator('[data-kind="gym"]')).toHaveCount(2);
@@ -389,7 +390,7 @@ for (const [seed, region] of [[2, 1], [7, 1], [4, 2]] as const) test(`the map ke
   const tops = await page.locator('[data-testid^="node-"][data-kind] img').evaluateAll((imgs) => imgs.map((i) => i.getBoundingClientRect().top));
   expect(tops.length).toBeGreaterThan(0);
   expect(Math.min(...tops)).toBeGreaterThanOrEqual(board.y);
-  const hung = await page.locator('[data-testid^="node-"][data-kind] [data-chip], [data-testid="weather-tag"], [data-testid="no-return"]').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => ({ top: r.top, bottom: r.bottom })));
+  const hung = await page.locator('[data-testid^="node-"][data-kind] [data-chip], [data-testid="weather-tag"]').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => ({ top: r.top, bottom: r.bottom })));
   expect(hung.length).toBeGreaterThan(0);
   expect(Math.max(...hung.map((r) => r.bottom))).toBeLessThanOrEqual(board.y + board.height);
   expect(Math.min(...hung.map((r) => r.top))).toBeGreaterThanOrEqual(board.y);
@@ -432,7 +433,7 @@ for (const [seed, region] of [[2, 1], [7, 1], [4, 2]] as const) test(`the map ke
         const x = (b.left + b.right) / 2, y = (b.top + b.bottom) / 2;
         if (x < sc.left || x > sc.right) return false;
         const hit = document.elementFromPoint(x, y);
-        return !!hit && hit !== n && !n.contains(hit) && !!hit.closest('[data-testid="weather-tag"], [data-testid="no-return"]');
+        return !!hit && hit !== n && !n.contains(hit) && !!hit.closest('[data-testid="weather-tag"]');
       }).map((n) => n.getAttribute('data-testid'));
     });
     expect(lost, `scrolled to ${left}`).toEqual([]);
@@ -721,4 +722,104 @@ test('the third Gym leads to Victory Road, the Summit to the League, and the Cha
   await page.getByTestId('btn-run-record').click();
   await expect(page.getByTestId('run-record')).toContainText('Regions');
   await expect(page.getByTestId('run-record')).toContainText('3 / 3');
+});
+
+// §2.5 / §9.3 (v0.9.107) — no river and no pill: the point of no return is said by the step that takes it. Standing on
+// the middle track's last node, the preview of a lane's first node names the Gym it commits you to.
+test('the step into a lane says which Gym it commits you to — §2.5', async ({ page }) => {
+  await page.goto('/?screen=menu');
+  const id = await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.new('squirtle', 7);
+    a.run.patch((d) => {
+      const mid = Object.values(d.map.nodes).find((n) => n.layer === d.map.forkLayer - 1 && n.lane === undefined && n.next.every((c) => d.map.nodes[c]!.lane !== undefined) && n.next.length === 2)!;
+      d.position = mid.id;
+      d.visited.push(mid.id);
+      d.reachable = [...mid.next];
+    });
+    a.goTo('map');
+    return a.run.state()!.reachable[0]!;
+  });
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  await page.getByTestId(`node-${id}`).click();
+  await expect(page.getByTestId('preview-commits')).toContainText('commits you to');
+  await expect(page.getByTestId('btn-enter-node')).toBeEnabled();
+});
+
+// §2.5.5 (v0.9.107) — a field move's obstacle: the step's preview still opens and says what closes it, and Enter waits
+// for a Box that can clear it. Squirtle cannot cut a tree.
+test('a cut tree closes its step until the Box holds a Grass- or Bug-type — §2.5.5', async ({ page }) => {
+  await page.goto('/?screen=menu');
+  const found = await page.evaluate(() => {
+    const a = window.__ascendant!;
+    for (let seed = 1; seed <= 60; seed++) {
+      a.run.new('squirtle', seed);
+      const map = a.run.state()!.map;
+      const from = Object.values(map.nodes).find((n) => n.gates && Object.values(n.gates).includes('cut'));
+      if (!from) continue;
+      const to = Object.keys(from.gates!).find((k) => from.gates![k] === 'cut')!;
+      a.run.patch((d) => {
+        d.position = from.id;
+        d.visited.push(from.id);
+        d.reachable = [...from.next];
+      });
+      a.goTo('map');
+      return { seed, to };
+    }
+    return null;
+  });
+  expect(found, 'a cut tree within 60 routes').not.toBeNull();
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  await expect(page.locator('[data-testid="route-gate"][data-gate="cut"]').first()).toBeAttached();
+  await page.getByTestId(`node-${found!.to}`).click();
+  await expect(page.getByTestId('node-preview')).toContainText('A small tree closes this step');
+  await expect(page.getByTestId('btn-enter-node')).toBeDisabled();
+});
+
+// §2.5.5 / §2.10 (v0.9.107) — the ledge and a Mystery's place say what they are: the ledge's bubble names it and the
+// landing's preview says it is one way; a Mystery stands as its place, and its preview names that place.
+test('the ledge and a Mystery place name themselves — §2.5.5, §2.10', async ({ page }) => {
+  await page.goto('/?screen=menu');
+  const found = await page.evaluate(() => {
+    const a = window.__ascendant!;
+    for (let seed = 1; seed <= 60; seed++) {
+      a.run.new('squirtle', seed);
+      const map = a.run.state()!.map;
+      const from = Object.values(map.nodes).find((n) => n.ledge);
+      if (!from) continue;
+      a.run.patch((d) => {
+        d.position = from.id;
+        d.visited.push(from.id);
+        d.reachable = [...from.next];
+      });
+      a.goTo('map');
+      return { landing: from.ledge! };
+    }
+    return null;
+  });
+  expect(found, 'a ledge within 60 routes').not.toBeNull();
+  await expect(page.getByTestId('route-board')).toHaveAttribute('data-painted', 'true');
+  const ledge = page.getByTestId('route-ledge');
+  await expect(ledge).toHaveAttribute('aria-label', 'A ledge');
+  await ledge.hover();
+  await expect(page.getByRole('tooltip')).toContainText('There is no climbing back');
+  await page.getByTestId(`node-${found!.landing}`).click();
+  await expect(page.getByTestId('preview-ledge')).toBeVisible();
+  await page.getByTestId('btn-cancel-node').click();
+
+  const mystery = await page.evaluate(() => {
+    const a = window.__ascendant!;
+    const map = a.run.state()!.map;
+    const parent = Object.values(map.nodes).find((n) => n.next.some((c) => map.nodes[c]!.kind === 'mystery'))!;
+    const id = parent.next.find((c) => map.nodes[c]!.kind === 'mystery')!;
+    a.run.patch((d) => {
+      d.position = parent.id;
+      d.reachable = [...parent.next];
+    });
+    return id;
+  });
+  const node = page.getByTestId(`node-${mystery}`);
+  await expect(node).toHaveAttribute('data-art', 'place');
+  await node.click();
+  await expect(page.getByTestId('preview-place')).not.toBeEmpty();
 });

@@ -1,21 +1,24 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, wildFor, type FieldId, type MapNode, type RunState } from '@/sim';
+import { battlefields, GATES, gymById, laneField as laneBattlefield, mysteryEventOf, nodesAhead, partyClears, stepOpen, wildFor, type FieldId, type GateKind, type MapNode, type RunState } from '@/sim';
 import { getContent } from '@/content/registry';
 import { IconTag } from '@tabler/icons-react';
 import { useSettingsStore } from '@/app/settingsStore';
 import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
 import { landmarkName, nodeArt, nodeLabel } from '@/ui/components/nodeArt';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
-import { FIELD_LABEL, ROUTE_TEXT } from '@/ui/strings';
-import { mapLabelsTip, noReturnTip } from '@/ui/tips';
+import { FIELD_LABEL, GATE_TEXT, ROUTE_TEXT } from '@/ui/strings';
+import { typeGlyph } from '@/ui/art';
+import { gateTip, ledgeTip, mapLabelsTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
-import { mapTerrain, COL_TILES } from './terrain';
+import { asset } from '@/content/paths';
+import { BUILDINGS, COL_TILES, mapTerrain, naturalHeight } from './terrain';
 import { loadPieces, paintTerrain, piecesFor, TILE } from './tileset';
 import styles from './RouteView.module.css';
 
 // §9.3 — the route, left to right, wider than the screen: the painted terrain (§2.5.4) on a canvas, the edges drawn
-// along its paths, responsive nodes on top and each lane's Battlefield as weather. Dragged, wheeled or keyed;
-// the view follows the player. Labels stays in the board's corner; the user removed the miniature route strip.
+// along its paths, the buildings' fronts and the field moves' obstacles over them, the nodes on top, and each lane's
+// Battlefield as weather. Dragged, wheeled or keyed; the view follows the player; Labels stays in the board's corner.
+// Tiles and people share one pixel density (v0.9.107): the largest half step at which the route fits the height.
 
 interface Props {
   run: RunState;
@@ -41,15 +44,34 @@ const WEATHER_CLASS: Record<FieldId, string | undefined> = {
   'sticky-web': styles.web,
 };
 
+/**
+ * §2.5.4 (v0.9.107) — the fields FireRed itself draws as weather wear its own sprites (`scripts/build-route-weather.mjs`): rain,
+ * the sandstorm, snow for hail, and its fog — white for Misty Terrain, the field's colour for the Psychic Terrain and the
+ * Toxic Spikes' miasma. Repeated at the terrain's pixel scale, so a raindrop's pixel is a tile's pixel.
+ */
+const WEATHER_IMG: Partial<Record<FieldId, string>> = {
+  'rain-dance': 'rain',
+  sandstorm: 'sand',
+  hail: 'snow',
+  'misty-terrain': 'fog-misty',
+  'psychic-terrain': 'fog-psychic',
+  'toxic-spikes': 'fog-toxic',
+};
+
 /** §9.3 — an edge's look: the road walked, the steps you can take now, the routes still open, and the rest. */
 const EDGE_CLASS = { walked: styles.edgeWalked, live: styles.edgeLive, open: styles.edge, gone: styles.edgeGone } as const;
 
 export function RouteView({ run, statusOf, onEnter }: Props) {
-  const terrain = useMemo(() => mapTerrain(run.map), [run.map]);
+  const content = getContent();
   const canvas = useRef<HTMLCanvasElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const animate = useMotionPref();
-  const [scale, setScale] = useState(2);
+  // §9.3 (v0.9.107) — one pixel density for tiles and people: the largest half step at which the route's natural height
+  // fits the board (1.5 at 720 p, 2 or 2.5 at 1080 p); the rows left over go to the route's own frame, never to an empty band.
+  const [boxH, setBoxH] = useState(0);
+  const scale = boxH ? Math.max(1, Math.floor((boxH / (naturalHeight(run.map) * TILE)) * 2) / 2) : 1.5;
+  const tall = boxH ? Math.floor(boxH / (TILE * scale)) : 0;
+  const terrain = useMemo(() => mapTerrain(run.map, tall), [run.map, tall]);
   // Which terrain the canvas holds: the board says it is painted only once this map's tiles are down.
   const [paintedFor, setPaintedFor] = useState<object | null>(null);
   const painted = paintedFor === terrain;
@@ -85,17 +107,15 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const fit = () => {
-      setScale(el.clientHeight / (terrain.h * TILE));
-    };
+    const fit = () => setBoxH(el.clientHeight);
     fit();
     const obs = new ResizeObserver(fit);
     obs.observe(el);
     return () => obs.disconnect();
-  }, [terrain.h, terrain.w]);
+  }, []);
 
-  // Native half steps grow the artwork with the route, rather than leaving fixed 32px people on a large board.
-  const nodeScale = Math.max(1.5, Math.round(scale * 1.25 * 2) / 2);
+  // The node art's CSS is written at twice its native size; half the density draws it at the tiles' own pixel.
+  const nodeScale = scale / 2;
   const px = TILE * scale;
   const boardW = terrain.w * px;
   const behavior: ScrollBehavior = animate ? 'smooth' : 'auto';
@@ -116,7 +136,6 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
       ...nodes.map((b) => ({ left: (b.left + b.right) / 2 - reach, right: (b.left + b.right) / 2 + reach, top: b.bottom, bottom: b.bottom + px * 1.75 })),
       ...[...el.querySelectorAll('[data-testid^="node-"][data-kind] [data-chip]')].map((b) => b.getBoundingClientRect()),
     ];
-    const pill = [...el.querySelectorAll('[data-testid="no-return"]')].map((b) => b.getBoundingClientRect());
     const gymX = (lane: number) => Math.min(...Object.values(run.map.nodes).filter((n) => n.kind === 'gym' && n.lane === lane).map((n) => terrain.at[n.id]!.x));
     // A person's head is the top of its box: covering it is worse than covering the ground at its feet.
     const heads = nodes.map((b) => ({ left: b.left, right: b.right, top: b.top, bottom: b.top + (b.bottom - b.top) * 0.6 }));
@@ -138,12 +157,12 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
       const last = Math.min(2 * COL_TILES, gymX(lane) - COL_TILES / 2 - (zone.x0 + 4) - box.width / px);
       const spots: { step: number; top: number; cost: number }[] = [];
       for (const top of edges) {
-        // From the lane's own edge by the river (its mouth sits four tiles in), never back across it.
+        // From the lane's own edge where its ridge begins (its mouth sits four tiles in), never back out of it.
         for (let step = -3.5; step <= last; step += 0.5) {
-          const blocked = [...nodes, ...captions, ...pill].reduce((n, b) => n + area(b, step, top), 0);
+          const blocked = [...nodes, ...captions].reduce((n, b) => n + area(b, step, top), 0);
           // Clear of everything wins at once; otherwise the least of heads and words covered.
           // A covered word cannot be read; a covered head is often its transparent margin — words weigh four times.
-          const cost = blocked === 0 ? 0 : 1 + heads.reduce((n, b) => n + area(b, step, top), 0) + 4 * [...captions, ...pill].reduce((n, b) => n + area(b, step, top), 0);
+          const cost = blocked === 0 ? 0 : 1 + heads.reduce((n, b) => n + area(b, step, top), 0) + 4 * captions.reduce((n, b) => n + area(b, step, top), 0);
           spots.push({ step, top, cost });
         }
       }
@@ -172,8 +191,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     el.scrollTo({ left: Math.max(0, target), behavior: focusId ? behavior : 'auto' });
   }, [focusId, px, terrain, behavior]);
 
-  // A mouse wheel scrolls the route sideways; dragging the terrain pans it. A press on a node or the river's pill is
-  // theirs, not a drag (a lane's tag takes no pointer: a press there is the node's under it, or the terrain's).
+  // A mouse wheel scrolls the route sideways; dragging the terrain pans it. A press on a node is its own, not a drag (a lane's tag takes no pointer: a press there is the node's under it, or the terrain's).
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
@@ -228,44 +246,94 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   const edges = nodes.flatMap((n) =>
     n.next.map((id) => {
       const walked = run.visited.includes(n.id) && (run.visited.includes(id) || run.position === id);
-      const live = run.phase === 'map' && run.position === n.id && run.reachable.includes(id);
+      // §2.5.5 — a step an obstacle closes is no step to take while the Box cannot clear it.
+      const live = run.phase === 'map' && run.position === n.id && run.reachable.includes(id) && stepOpen(run, id, content);
       const open = ahead.has(id) && (ahead.has(n.id) || n.id === run.position);
+      // §2.5 / §9.3 (v0.9.107) — a step from the shared tracks into a lane is the commitment: it wears its Gym's colour.
+      const into = run.map.nodes[id]!.lane;
+      const commit = n.lane === undefined && into !== undefined && run.map.gyms[into] ? gymById(run.map.gyms[into]!).type : null;
       return {
         key: `${n.id}>${id}`,
         points: (terrain.edges[`${n.id}>${id}`] ?? []).map((p) => `${p.x},${p.y}`).join(' '),
         state: walked ? 'walked' : live ? 'live' : open ? 'open' : 'gone',
+        commit,
+        ledge: n.ledge === id,
       } as const;
     }),
   );
-  const gymNames = run.map.gyms.map((id) => gymById(id).name.replace(/^Leader /, ''));
+  // §2.5.5 — the obstacles, each standing at its edge's middle; once the Box can clear one, the type that does stands
+  // under it (its FRLG type box), never a fade alone (D5).
+  const gates = nodes.flatMap((n) =>
+    Object.entries(n.gates ?? {}).map(([to, kind]) => {
+      const line = terrain.edges[`${n.id}>${to}`] ?? [];
+      const [p, q] = [line[0], line[line.length - 1]];
+      const gate = kind as GateKind;
+      const by = partyClears(run, gate, content) ? GATES[gate].types.find((t) => run.box.some((m) => content.species(m.speciesId).types.includes(t))) ?? null : null;
+      return p && q ? { key: `${n.id}>${to}`, kind: gate, x: (p.x + q.x) / 2, y: (p.y + q.y) / 2, by, gone: !ahead.has(to) } : null;
+    }),
+  ).filter((g) => g !== null);
+  // §2.5.5 — the ledge, across the middle of its drop, which crosses it from the track above to the track below.
+  const ledges = nodes.filter((n) => n.ledge).map((n) => {
+    const line = terrain.edges[`${n.id}>${n.ledge}`] ?? [];
+    const [a, b] = [line[0], line[line.length - 1]];
+    return a && b ? { key: n.id, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, gone: !ahead.has(n.ledge!) } : null;
+  }).filter((l) => l !== null);
 
   return (
     <div className={styles.root}>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
-        <div ref={board} className={styles.board} style={{ width: boardW, height: terrain.h * px, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + nodeScale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
+        <div ref={board} className={styles.board} style={{ width: boardW, height: terrain.h * px, '--tile': `${px}px`, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + scale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
 
           {/* §2.5.4 — each lane's Battlefield, drawn over its stretch as weather (named after the nodes, below). */}
           {terrain.lanes.map((z) => {
             const field = laneField(run, z.lane);
             if (!field) return null;
-            const style: CSSProperties = { left: z.x0 * px, top: z.y0 * px, width: (z.x1 - z.x0) * px, height: (z.y1 - z.y0) * px };
+            const img = WEATHER_IMG[field];
+            const style = { left: z.x0 * px, top: z.y0 * px, width: (z.x1 - z.x0) * px, height: (z.y1 - z.y0) * px, ...(img ? { '--weather-img': `url(${asset(`art/map/weather/${img}.png`)})` } : {}) } as CSSProperties;
             return (
               <div key={z.lane} className={`${styles.weather} ${WEATHER_CLASS[field] ?? ''}`} style={style} />
             );
           })}
 
+          {/* §2.5.5 — the ledge: FRLG's own, across the middle of its drop. */}
+          {ledges.map((l) => (
+            <Tipped key={l.key} tip={ledgeTip()} role="img" aria-label={GATE_TEXT.ledge.title} className={`${styles.ledge} ${l.gone ? styles.propGone : ''}`} style={{ left: (l.x - 3) * px, top: (l.y - 0.5) * px, width: 6 * px, height: px }} data-testid="route-ledge">
+              <img className="pixel" src={asset('art/map/props/ledge.png')} alt="" />
+            </Tipped>
+          ))}
+
+          {/* §9.3 — each line drawn twice: a crisp casing under it in screen pixels (a filter here would blur in the
+              viewBox's tile units — the UI review), then the line. */}
           <svg className={styles.edges} viewBox={`0 0 ${terrain.w} ${terrain.h}`} preserveAspectRatio="none" aria-hidden="true">
-            {edges.map((e) => (
-              <polyline key={e.key} points={e.points} className={EDGE_CLASS[e.state]} vectorEffect="non-scaling-stroke" data-edge={e.state} />
-            ))}
+            {edges.map((e) => {
+              const shared = { points: e.points, vectorEffect: 'non-scaling-stroke' as const, 'data-commit': e.commit ?? undefined, 'data-ledge': e.ledge || undefined, style: e.commit ? ({ '--lane-ink': `var(--type-${e.commit})` } as CSSProperties) : undefined };
+              return (
+                <g key={e.key} data-edge={e.state} data-commit={e.commit ?? undefined}>
+                  <polyline {...shared} className={`${EDGE_CLASS[e.state]} ${styles.casing}`} />
+                  <polyline {...shared} className={EDGE_CLASS[e.state]} />
+                </g>
+              );
+            })}
           </svg>
 
-          {terrain.river && (
-            <Tipped tip={noReturnTip(gymNames)} className={styles.noReturn} style={{ left: ((terrain.river.x0 + terrain.river.x1) / 2) * px, top: px * 0.5 }} data-testid="no-return">
-              {ROUTE_TEXT.noReturn}
+          {/* §2.5.4 — the buildings' fronts a Gym, a nurse and a merchant stand at: over the lines that reach their door. */}
+          {terrain.buildings.map((b) => {
+            const { w, h } = BUILDINGS[b.id];
+            const node = run.map.nodes[b.node]!;
+            const gone = statusOf(node) === 'locked' && !ahead.has(node.id);
+            return (
+              <img key={b.node} className={`${styles.building} pixel ${gone ? styles.propGone : ''}`} src={asset(`art/map/props/${b.id}.png`)} alt="" aria-hidden="true" style={{ left: (b.x - Math.floor(w / 2)) * px, top: (b.y + 1 - h) * px, width: w * px, height: h * px }} />
+            );
+          })}
+
+          {/* §2.5.5 — the field moves' obstacles, each with its bubble: what closes the step, and what clears it. */}
+          {gates.map((g) => (
+            <Tipped key={g.key} tip={gateTip(g.kind, g.by !== null)} role="img" aria-label={GATE_TEXT[g.kind].title} className={`${styles.gate} ${g.gone ? styles.propGone : ''}`} style={{ left: g.x * px, top: g.y * px, '--gate-w': `${(g.kind === 'surf' ? 2 : 1) * px}px` } as CSSProperties} data-testid="route-gate" data-gate={g.kind} data-cleared={g.by ?? undefined}>
+              <img className="pixel" src={asset(`art/map/props/gate-${g.kind}.png`)} alt="" />
+              {g.by && <img className={`pixel ${styles.gateBy}`} src={typeGlyph(g.by)} alt="" />}
             </Tipped>
-          )}
+          ))}
 
           {nodes.map((node) => {
             const at = terrain.at[node.id]!;
@@ -274,9 +342,9 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
                 key={node.id}
                 node={node}
                 run={run}
-                artScale={nodeScale}
+                artScale={scale}
                 status={statusOf(node)}
-                art={nodeArt(node, run.map, wildFor(node, run, getContent()))}
+                art={nodeArt(node, run.map, wildFor(node, run, content), mysteryEventOf(run, node, content))}
                 ahead={ahead.has(node.id)}
                 caption={labels ? nodeLabel(node, run.map) : (landmarkName(node, run.map) ?? (statusOf(node) === 'reachable' ? nodeLabel(node, run.map) : null))}
                 style={{ left: at.x * px, top: at.y * px, '--node-top': `${at.y * px}px` } as CSSProperties}

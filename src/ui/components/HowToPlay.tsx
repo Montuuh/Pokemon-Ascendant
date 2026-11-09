@@ -56,7 +56,7 @@ const ROUTE_RULES = [
   {
     icon: IconMap2,
     title: 'The route forks once',
-    body: 'You take one node per column, left to right. Some columns are all stops — a nurse, a merchant, a Mystery, something on the ground — so there you choose which rest, not whether to fight. Halfway along, the tracks lean toward the two Gyms at the end; the river is the point of no return. The map shows every node from the start, so you can plan the run before you take the first step.',
+    body: 'You take one node per column, left to right. Some columns are all stops — a nurse, a merchant, a Mystery, something on the ground — so there you choose which rest, not whether to fight. Halfway along, the tracks lean toward the two Gyms at the end; a line in the colour of a Gym is the point of no return, and past it a ridge keeps the two lanes apart. A small tree, a cracked rock or deep water closes some shortcuts until your Box holds a type that clears it, and a ledge drops past a fight, one way. The map shows every node from the start, so you can plan the run before you take the first step.',
   },
   {
     icon: IconCoins,

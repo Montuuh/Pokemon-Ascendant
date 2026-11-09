@@ -64,6 +64,12 @@ const TRAINERS = {
   will: 'will',
   lance: 'lance',
   blue: 'blue',
+  // v0.9.107 — the route's trainers in pairs (§9.3): the men among the Swimmer, Ace Trainer and Engineer rosters (an
+  // Engineer is a hard-hatted Worker, as FRLG draws its Engineers), and the Battle Girl beside the Black Belt.
+  swimmerm: 'swimmer',
+  acetrainerm: 'acetrainer',
+  engineer: 'worker',
+  battlegirl: 'battlegirl',
 };
 
 const url = (id) => `https://play.pokemonshowdown.com/sprites/trainers/${id}.png`;

@@ -39,7 +39,11 @@ test('The console retains AP provenance from the opening turn through a long fig
     const a = window.__ascendant!;
     a.run.new('snorlax', 7); a.run.levelTo(60); a.run.heal(); a.run.grantRelic('sages-tome');
     a.run.patch((d) => { d.box[0]!.abilityId = 'immunity'; });
-    a.run.jump('wild'); a.run.dispatch({ type: 'enter-node', nodeId: a.run.state()!.reachable[0]! }); a.goTo('map');
+    a.run.jump('wild');
+    // A Caterpie's PP outlasts forty turns; a pool that rolls a frailer foe ends the fixture early (the map is the seed's).
+    const id = a.run.state()!.reachable[0]!;
+    a.run.patch((d) => { d.map.nodes[id]!.preview.wild!.pool = { common: ['caterpie'], uncommon: ['caterpie'], rare: ['caterpie'] }; });
+    a.run.dispatch({ type: 'enter-node', nodeId: id }); a.goTo('map');
   });
   await page.getByTestId('btn-enter-node').click();
   await expect(page.getByTestId('log-ticker')).toBeVisible();

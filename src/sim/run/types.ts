@@ -38,9 +38,19 @@ export interface MapNode {
    * neutral ground (§2.5.4). Undefined on the middle track and everywhere else.
    */
   lean?: number;
+  /**
+   * §2.5.5 — the obstacles on this node's edges, by the child they close: a cut tree, a cracked rock, deep water. The
+   * step stays shut until the Box holds a type that clears it. Absent on almost every node.
+   */
+  gates?: Record<string, GateKind>;
+  /** §2.5.5 — the child two columns on that this node's ledge drops to (also in `next`): one way, past a fight column. */
+  ledge?: string;
   /** What the Node Preview shows before you commit (§2.5, Pillar 1). */
   preview: NodePreview;
 }
+
+/** §2.5.5 — the field moves' obstacles a crossing can hold. */
+export type GateKind = 'cut' | 'smash' | 'surf';
 
 export interface NodePreview {
   title: string;
@@ -90,6 +100,8 @@ export interface NodePreview {
    * from before it still hold.
    */
   reel?: FindTile[];
+  /** §2.10 — a Mystery's place: the event it holds, rolled with the map (v0.9.107), so the map can show the place. */
+  event?: string;
   find?: { items: string[]; money: number };
   /**
    * §5.6.5 — a fight with another objective, placed with the map and named on it: a Wild Area whose Pokémon is a
@@ -920,6 +932,8 @@ export type RunRejectReason =
   | 'ability-locked'
   | 'not-on-map'
   | 'node-unreachable'
+  /** §2.5.5 — an obstacle on the step that nothing in the Box can clear. */
+  | 'gate-closed'
   | 'wrong-phase'
   | 'no-healthy-pokemon'
   | 'team-too-large'

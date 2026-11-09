@@ -61,6 +61,7 @@ export { objectiveTurnsLeft } from './combat/objective';
 export { teamStats, matchupAgainst, matchupAgainstSpecies, type TeamStats, type Matchup } from './run/team';
 export { FIND_REEL, REEL_SHAPE, buildReel, placeReels, prizeLabel, reelChances, spinReel } from './run/finds';
 export { TRADER, TRADER_PREVIEW, rollTradeOffers, tradeLevel, tradeRefusal, type TradeOffer } from './run/trader';
+export { GATES, ROUTE_FEATURES, gateOn, mysteryEventOf, partyClears, stepOpen } from './run/routeFeatures';
 export { VICTORY_ROAD, TRAINING_UPGRADES, TRAINING_PREVIEW, SUMMIT_PREVIEW, generateVictoryRoad, apexPreview, trainingOptions, perfectClearBadge, victoryRoadLevel, type TrainingUpgrade } from './run/victoryRoad';
 export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type SaveEnvelope, type LoadResult } from './run/save';
 

@@ -224,6 +224,8 @@ export const MAP_TEXT = {
   guarded: 'Guarded find',
   /** A Gym keeps its Leader's name: which lane ends at whom is the choice the board is for. */
   gym: (leader: string) => `${leader}'s Gym`,
+  /** §2.5 — the point of no return, said on the preview of the step that takes it. */
+  commits: (leader: string) => `This step commits you to ${leader}'s Gym. The lanes never meet again.`,
 };
 
 export const NODE_LABEL: Record<string, string> = {
@@ -345,9 +347,21 @@ export const TRADER_TEXT = {
   walkOn: 'Walk on',
 } as const;
 
+/** §2.5.5 — the route's obstacles and its ledge, in words (v0.9.107). */
+export const GATE_TEXT = {
+  cut: { title: 'A small tree', body: 'It closes this step until one of these types in your Box cuts it down.' },
+  smash: { title: 'A cracked rock', body: 'It closes this step until one of these types in your Box smashes it.' },
+  surf: { title: 'Deep water', body: 'It closes this step until one of these types in your Box swims you across.' },
+  cleared: 'Your Box can clear it: the step is open.',
+  ledge: { title: 'A ledge', body: 'Jump down past the next column, skipping its fight and what it pays. There is no climbing back.' },
+  /** The preview of a step an obstacle closes. */
+  closed: (title: string) => `${title} closes this step: nothing in your Box can clear it.`,
+  /** The preview of the ledge's landing. */
+  drop: 'You reach it by the ledge: one way, past the column before it.',
+} as const;
+
 /** §9.3 — the route board's own words. */
 export const ROUTE_TEXT = {
-  noReturn: 'Point of no return',
   labels: 'Labels',
   scroller: 'The route. Arrow keys, Home and End scroll it.',
   found: (what: string) => `You picked up ${what}.`,
@@ -595,6 +609,7 @@ export const NODE_HINT: Record<string, string> = {
 
 export const RUN_REJECT_TEXT: Record<string, string> = {
   'already-traded': 'One trade a visit.',
+  'gate-closed': 'Something on the way closes this step: nothing in your Box can clear it.',
   'last-standing': 'Not your last Pokémon standing.',
   'internal-error': 'Something went wrong. Reload the page — the run is saved.',
   'not-a-field-item': 'That one only works in a fight.',

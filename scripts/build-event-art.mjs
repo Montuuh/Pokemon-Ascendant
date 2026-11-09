@@ -308,6 +308,34 @@ await scene('unmarked-cave', async (put) => {
   put(boulder, 168, 56);
 });
 
+// §2.10 / §9.3 (v0.9.107) — every Mystery's place on the route: its scene's subject alone, on no ground, so the map node
+// shows a shrine, a spring or a stranger instead of a "?". The same sprites at their native size; the map scales them.
+const places = resolve(root, 'public/art/map/places');
+await mkdir(places, { recursive: true });
+async function place(id, w, h, build) {
+  const layers = [];
+  const put = (input, left, top) => layers.push({ input, left, top });
+  await build(put);
+  const bytes = await sharp({ create: { width: w, height: h, channels: 4, background: '#00000000' } }).composite(layers).png({ palette: true, dither: 0 }).toBuffer();
+  await writeFile(resolve(places, `${id}.png`), bytes);
+  outputs.push({ file: `../map/places/${id}.png`, width: w, height: h, sha256: sha(bytes) });
+}
+await place('traveling-apothecary', 32, 32, (put) => { put(npc.apothecary, 0, 0); put(box, 16, 16); });
+await place('roadside-trader', 32, 32, (put) => { put(npc.salesman, 0, 0); put(box, 16, 16); });
+await place('field-medic', 16, 32, (put) => put(npc.ranger, 0, 0));
+await place('lost-backpack', 16, 32, (put) => { put(question, 0, 0); put(bag, 0, 16); });
+await place('fallen-crate', 32, 24, (put) => { put(ball, 8, 0); put(box, 0, 8); put(box, 16, 8); });
+await place('abandoned-pokeball', 32, 24, (put) => { put(ball, 0, 8); put(glint, 16, 0); });
+await place('berry-bush', 32, 32, (put) => { put(berry, 0, 0); put(berry, 16, 0); });
+await place('moving-truck', 48, 48, async (put) => { const meta = await sharp(truck).metadata(); put(await frame(truck, meta.width, meta.height), 0, 0); });
+await place('daycare-recovery', 32, 32, (put) => { put(npc.grandfather, 0, 0); put(pikachu, 16, 16); });
+await place('hot-spring', 48, 38, async (put) => { put(await local('map/habitat/lake.png'), 0, 0); put(npc.springWoman, 16, 2); });
+await place('slot-booth', 16, 32, (put) => put(npc.carny, 0, 0));
+await place('cursed-trinket', 32, 40, (put) => { put(statue, 8, 8); put(glint, 0, 0); });
+await place('mysterious-stone', 32, 24, (put) => { put(boulder, 8, 8); put(glint, 0, 0); put(glintSmall, 20, 4); });
+await place('unmarked-cave', 56, 62, async (put) => put(await local('map/habitat/cave.png'), 0, 0));
+await place('stone-cache', 64, 36, (put) => { put(stones[0], 0, 6); put(stones[1], 17, 0); put(stones[2], 34, 6); });
+
 await writeFile(
   resolve(out, 'manifest.json'),
   `${JSON.stringify(

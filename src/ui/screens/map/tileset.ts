@@ -1,4 +1,5 @@
 import { routeArt } from '@/ui/art';
+import { asset } from '@/content/paths';
 import type { MapTerrain, TerrainCell, TerrainId } from './terrain';
 
 // §2.5.4 / §9.3 — how each terrain is drawn: which of its FRLG tiles (`npm run art:route`) stand for open ground,
@@ -54,13 +55,9 @@ const ART: Record<TerrainId, TerrainArt> = {
   plant: { art: 'plant', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
   volcano: { art: 'volcano', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
   tower: { art: 'tower', filter: 'saturate(0.8) brightness(0.96)', ...GRASS, path: 'plain', fill: ROCKS },
-  // One terrain wears a neighbour's tiles under a tint: a scorched grassland is a route burnt brown. FRLG never drew one.
-  scorched: { art: 'route', filter: 'sepia(0.75) saturate(1.7) hue-rotate(-28deg)', ...GRASS, tall: 'tall', path: 'edged', fill: { kind: 'trees', w: 2 } },
   'dank-cave': { art: 'dank-cave', grounds: ['ground', 'ground-2'], path: 'plain', fill: ROCKS },
 };
 
-/** The river at the point of no return, and its bridges. */
-const RIVER_PIECES = ['water-c', 'water-n', 'water-s', 'water-w', 'water-e', 'water-nw', 'water-ne', 'water-sw', 'water-se', 'water-inw', 'water-ine', 'water-isw', 'water-ise', 'bridge', 'bridge-n', 'bridge-s'];
 const EDGE_SUFFIX = ['c', 'n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se', 'inw', 'ine', 'isw', 'ise'];
 /** The fringe every masked join is cut with: Route 1's own sand road. */
 const MASK_ART = 'route';
@@ -81,7 +78,8 @@ export function piecesFor(terrain: MapTerrain): string[] {
     if (a.fill.kind === 'tiles') for (const p of a.fill.pieces) out.add(`${a.art}/${p}`);
     if (a.fill.kind === 'water') for (const s of [...EDGE_SUFFIX, ...(a.fill.rock ? ['rock'] : [])]) out.add(`${a.art}/water-${s}`);
   }
-  if (terrain.river) for (const p of RIVER_PIECES) out.add(`river/${p}`);
+  // §2.5.4 — the set pieces standing on it (`map/props`, cut from FRLG's routes and towns).
+  for (const p of terrain.pieces) out.add(`props/${p.id}`);
   return [...out];
 }
 
@@ -95,7 +93,7 @@ function load(key: string): Promise<HTMLImageElement | null> {
       img.onload = () => done(img);
       img.onerror = () => done(null);
       const [folder, piece] = key.split('/') as [string, string];
-      img.src = routeArt(folder, piece);
+      img.src = folder === 'props' ? asset(`art/map/props/${piece}.png`) : routeArt(folder, piece);
     });
     cache.set(key, p);
   }
@@ -249,7 +247,7 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
   // Off the edge of the map counts as more of the same, so nothing draws a rim along the border.
   const isPath: Mask = (x, y) => {
     const c = at(x, y);
-    return !c || c.k === 'path' || c.k === 'bridge';
+    return !c || c.k === 'path';
   };
   const draw = (img: Source | undefined, x: number, y: number) => {
     if (img) ctx.drawImage(img, x * TILE, y * TILE);
@@ -265,12 +263,11 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
   for (let y = 0; y < terrain.h; y++) {
     for (let x = 0; x < terrain.w; x++) {
       const c = at(x, y)!;
-      if (c.k === 'river' || c.k === 'bridge') continue;
       const mine = rank.get(groundTerrain(c))!;
       let under: TerrainCell | undefined;
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
         const o = at(x + dx, y + dy);
-        if (o && o.k !== 'river' && o.k !== 'bridge' && rank.get(groundTerrain(o))! < mine && (!under || rank.get(groundTerrain(o))! < rank.get(groundTerrain(under))!)) under = o;
+        if (o && rank.get(groundTerrain(o))! < mine && (!under || rank.get(groundTerrain(o))! < rank.get(groundTerrain(under))!)) under = o;
       }
       if (!under) {
         draw(groundOf(P, c), x, y);
@@ -280,7 +277,7 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
       const below = groundOf(P, { ...under, n: c.n });
       const inside: Mask = (mx, my) => {
         const o = at(mx, my);
-        return !o || o.k === 'river' || o.k === 'bridge' || rank.get(groundTerrain(o))! >= mine;
+        return !o || rank.get(groundTerrain(o))! >= mine;
       };
       drawAuto(ctx, (s) => P.joined(ground, below, s, `${groundTerrain(c)}/${groundTerrain(under)}/${c.n < 0.86 ? 0 : 1}`), inside, x, y);
     }
@@ -332,8 +329,10 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
   }
 
   // 4 — trees, top row first, so each crown stands over the trunk of the tree above it. A tree is planted where its
-  // two-row plot is mostly scenery and none of it is road or tall grass; its crown reaches one row above the plot.
-  for (let by = 0; by < terrain.h; by += 2) {
+  // two-row plot is mostly scenery and none of it is road or tall grass; its crown reaches one row above the plot. The
+  // bottom frame's row is planted last, on its own rows whatever their parity, so the frame is a whole wood.
+  const plotRows = [...Array.from({ length: Math.ceil(terrain.frame.bottom / 2) }, (_, i) => i * 2).filter((by) => by + 1 < terrain.frame.bottom), terrain.frame.bottom];
+  for (const by of plotRows) {
     for (let x = 0; x < terrain.w; x++) {
       const c = at(x, by)!;
       const a = ART[c.t];
@@ -355,21 +354,9 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
     }
   }
 
-  // 5 — the river at the point of no return, and a bridge wherever a path crosses it.
-  if (terrain.river) {
-    const water: Mask = (x, y) => {
-      const c = at(x, y);
-      return !c || c.k === 'river' || c.k === 'bridge';
-    };
-    for (let y = 0; y < terrain.h; y++) {
-      for (let x = terrain.river.x0; x < terrain.river.x1; x++) {
-        const c = at(x, y)!;
-        drawAuto(ctx, (s) => P.raw(`river/water-${s}`), water, x, y);
-        if (c.k !== 'bridge') continue;
-        const up = at(x, y - 1)?.k === 'bridge';
-        const down = at(x, y + 1)?.k === 'bridge';
-        draw(P.raw(!up ? 'river/bridge-n' : !down ? 'river/bridge-s' : 'river/bridge') ?? P.raw('river/bridge'), x, y);
-      }
-    }
+  // 5 — the set pieces, last: a house, a pond, a garden from FRLG's own maps, at their tiles, over the ground they stand on.
+  for (const p of terrain.pieces) {
+    const img = P.raw(`props/${p.id}`);
+    if (img) ctx.drawImage(img, p.x * TILE, p.y * TILE);
   }
 }

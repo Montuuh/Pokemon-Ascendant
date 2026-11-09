@@ -64,6 +64,13 @@
   height: 32px;
   bottom: 0;
 }
+/* §2.10 — a Mystery's place: its scene's subject at the route's density (`--place-k` 2, once `.art` scales it), and a tall
+   one — a cave's mouth, a truck, a spring — half a step under it, as a Wild Area's landmark, so it clears the node above. */
+.place img {
+  bottom: 0;
+  transform: translateX(-50%) scale(var(--place-k, 2));
+  transform-origin: 50% 100%;
+}
 .node[data-kind='summit'] .sign img { width: 48px; height: 48px; }
 
 /* The ring on the ground: where you stand, and where you can step to next. */
@@ -86,10 +93,11 @@
   height: calc(14px * var(--node-scale, 1));
   bottom: -8px;
 }
+/* The gold ring wears the chip's dark rim, so it holds on a fight's sand clearing as on grass (the UI review, D5). */
 .reachable .ground,
 .current .ground {
   background: color-mix(in srgb, var(--accent-action) 38%, transparent);
-  box-shadow: 0 0 0 2px var(--accent-action);
+  box-shadow: 0 0 0 2px var(--accent-action), 0 0 0 4px var(--surface-sunken);
 }
 .current .ground {
   animation: global(pulseRing) var(--motion-ring-pulse) ease-in-out infinite;
@@ -137,17 +145,31 @@
   border: 2px solid var(--surface-1);
 }
 
-/* The Gym's Leader stands at twice the size, and so does its hit target: the Region's climax, visible from anywhere on
-   the route and taken by its head as well as its feet. */
-.climax {
-  width: calc(112px * var(--node-scale, 1));
-  height: min(calc(112px * var(--node-scale, 1)), var(--node-top));
-  margin: calc(-1 * min(112px * var(--node-scale, 1), var(--node-top))) 0 0 calc(-56px * var(--node-scale, 1));
+/* §2.5.4 — a nurse's, a merchant's and a Gym's front is their picture as much as the figure at its door: the hit target
+   takes the whole front down to the figure's feet (its tiles, at --node-scale's 32 px a tile), not the doorway alone (the
+   UI review, D8); the front's last row, under the feet, is left to the caption, which hangs where every node's does. */
+.node[data-building='center'] {
+  width: calc(160px * var(--node-scale, 1));
+  height: calc(64px * var(--node-scale, 1));
+  margin: calc(-64px * var(--node-scale, 1)) 0 0 calc(-80px * var(--node-scale, 1));
 }
-.climax .trainer img {
-  width: 64px;
-  height: 128px;
-  bottom: 0;
+.node[data-building='mart'] {
+  width: calc(128px * var(--node-scale, 1));
+  height: calc(64px * var(--node-scale, 1));
+  margin: calc(-64px * var(--node-scale, 1)) 0 0 calc(-64px * var(--node-scale, 1));
+}
+.node[data-building='gym'].climax {
+  width: calc(224px * var(--node-scale, 1));
+  height: calc(64px * var(--node-scale, 1));
+  margin: calc(-64px * var(--node-scale, 1)) 0 0 calc(-96px * var(--node-scale, 1));
+}
+
+/* The Gym's Leader stands at its door, at the route's one pixel density (v0.9.107: its building's front is the climax's
+   size now, where twice a person's size used to be); its hit target takes the door and the Leader. */
+.climax {
+  width: calc(96px * var(--node-scale, 1));
+  height: min(calc(80px * var(--node-scale, 1)), var(--node-top));
+  margin: calc(-1 * min(80px * var(--node-scale, 1), var(--node-top))) 0 0 calc(-48px * var(--node-scale, 1));
 }
 .climax .ground {
   width: calc(96px * var(--node-scale, 1));

@@ -10,6 +10,7 @@ import { maxHpOf } from '../run/encounter';
 import { PRICES, slotPrice, therapyPrice } from '../run/economy';
 import { BLACK_MARKET, candyPrice } from '../run/blackMarket';
 import { fillTeam } from '../run/legendaries';
+import { stepOpen } from '../run/routeFeatures';
 import { regionModifierOffer } from '../run/regionModifiers';
 import { allOutcomes, mysteryEvent } from '../run/events';
 import type { MapNode, PartyMon, RunPerks, RunState, SafariSpot, ShopSlot } from '../run/types';
@@ -178,7 +179,8 @@ function gymMatchup(run: RunState, content: CombatCtx['content'], gymId: string)
 
 /** Route policy: rest when hurt, recruit while the team is thin, otherwise take the richest fight. */
 function chooseNode(run: RunState, content: CombatCtx['content'], policy: RunPolicy): MapNode {
-  const options = run.reachable.map((id) => run.map.nodes[id]!);
+  // §2.5.5 — an obstacle the Box cannot clear is not a step it can take.
+  const options = run.reachable.filter((id) => stepOpen(run, id, content)).map((id) => run.map.nodes[id]!);
   const gym = options.find((n) => n.kind === 'gym');
   if (gym) return gym;
   // §2.5 — THE Y. From the crossroads on, every step either keeps both Gyms open or leans toward one, and the point

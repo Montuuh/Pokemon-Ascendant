@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import { DEFAULT_PROGRESSION, controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, wildFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
-import { MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
+import { GATE_TEXT, MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
+import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
 import { describeMoveDef, disruptRule } from '@/ui/moveText';
 import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
@@ -932,14 +933,20 @@ export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNo
   return <Tip title={name ? `Region ${regionIndex + 1} — ${name}` : `Region ${regionIndex + 1}`} meta={biomes} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
 }
 
-/** §2.5 — the footer of a Gym's tooltip in the map header: where the route leans toward it, and where it commits. */
-export function forkFooter(yColumn: number, noReturnColumn: number): string {
-  return `Two of the four Gyms are drawn each run. The tracks lean toward them from column ${yColumn}; the river at column ${noReturnColumn} is the point of no return.`;
+/** §2.5.5 — a field move's obstacle on a step: what closes it, and which types in the Box clear it. */
+export function gateTip(kind: GateKind, cleared: boolean): ReactNode {
+  const types = GATES[kind].types.map((t) => capitalise(t)).join(', ');
+  return <Tip title={GATE_TEXT[kind].title} meta={[types]} body={cleared ? GATE_TEXT.cleared : GATE_TEXT[kind].body} />;
 }
 
-/** §2.5 — the river at the point of no return. */
-export function noReturnTip(gyms: readonly string[]): ReactNode {
-  return <Tip title="Point of no return" body={`Past the river the two lanes never meet again: the top one ends at ${gyms[0]}, the bottom one at ${gyms[1]}. The middle track's last stop offers both.`} />;
+/** §2.5.5 — the route's ledge: a one-way drop past a column. */
+export function ledgeTip(): ReactNode {
+  return <Tip title={GATE_TEXT.ledge.title} body={GATE_TEXT.ledge.body} />;
+}
+
+/** §2.5 — the footer of a Gym's tooltip in the map header: where the route leans toward it, and where it commits. */
+export function forkFooter(yColumn: number, noReturnColumn: number): string {
+  return `Two of the four Gyms are drawn each run. The tracks lean toward them from column ${yColumn}; the step out of column ${noReturnColumn} is the point of no return, and its line wears the colour of the Gym it leads to.`;
 }
 
 /** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */

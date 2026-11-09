@@ -84,6 +84,9 @@ export function groupPlanFor(node: MapNode, run: RunState): GroupPlan {
   const rng = rngFor(node, run);
   switch (node.kind) {
     case 'wild': {
+      // §5.6.5 — a runner is the one Pokémon, racing to flee: it never calls or comes in a pack (the encounter builds it
+      // alone, so the preview must not promise a group — v0.9.107 found a runner whose card said it called for help).
+      if (node.preview.objective?.kind === 'flee') return { kind: 'single' };
       const roll = rng.range01();
       const three = rng.range01() < r.packOfThree;
       if (roll < r.wildPack) return { kind: 'pack', size: three ? 3 : 2 };

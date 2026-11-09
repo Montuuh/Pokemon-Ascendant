@@ -19,6 +19,7 @@ import { priceFor, regionModifierOffer, traumaZone1Pct, victoryHealPct } from '.
 import { FLEE_TOLL, describeToll, fleeTierFor } from './flee';
 import { runnerById } from './objectives';
 import { rollTradeOffers, tradeLevel, tradeRefusal } from './trader';
+import { stepOpen } from './routeFeatures';
 import { VICTORY_ROAD, generateVictoryRoad, perfectClearBadge, trainingOptions } from './victoryRoad';
 import { ACTIVE_TEAM, fillTeam, hasPlaceFor, placesTaken, rollLegendary } from './legendaries';
 import { generateLeague, microRestPct } from './league';
@@ -953,7 +954,8 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           const rng = encounterRng(draft);
           // §8.5.3 — an Eevee run's first Mystery node is the Stone Cache: a free stone, its choice of three.
           const cache = ctx.content.lineBase(draft.starter) === 'eevee' && !draft.seenEvents.includes(STONE_CACHE);
-          draft.pendingEvent = cache ? STONE_CACHE : rollEvent(rng, draft.seenEvents);
+          // §2.10 (v0.9.107) — the place the map showed is the event it holds; a save from before rolls as it did.
+          draft.pendingEvent = cache ? STONE_CACHE : node.preview.event && !draft.seenEvents.includes(node.preview.event) ? node.preview.event : rollEvent(rng, draft.seenEvents);
           draft.seenEvents.push(draft.pendingEvent);
           draft.cursors.EncounterRNG = rng.cursor;
           draft.phase = 'event';
@@ -2020,7 +2022,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
         // §2.1 placeholder — a Gym whose Badge you hold is not drawn again (Region 3 still draws Region 1's pool).
         const beaten = ALL_GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
-        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten, wildRareChance(draft.regionModifier, ctx.content));
+        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten, wildRareChance(draft.regionModifier, ctx.content), draft.seenEvents);
         // §2.12.6 — the Gyms this Region offers, for a Perfect Clear to pay the one passed by.
         draft.gymsOffered = [...(draft.gymsOffered ?? []), [...draft.map.gyms]];
         draft.cursors.MapRNG = mapRng.cursor;
@@ -2241,6 +2243,8 @@ export function validateRunAction(state: RunState, action: RunAction, ctx: RunCt
     case 'begin-combat': {
       if (state.phase !== 'preview' || !state.pendingNodeId) return 'wrong-phase';
       const node = state.map.nodes[state.pendingNodeId];
+      // §2.5.5 — a step an obstacle closes opens only to a Box that can clear it; its preview still opens, and says so.
+      if (!stepOpen(state, state.pendingNodeId, ctx.content)) return 'gate-closed';
       // A service needs no one standing: the nurse is where a battered team goes, and the merchant does not fight.
       if (node && !isServiceNode(node.kind) && !state.activeUids.some((u) => (state.box.find((m) => m.uid === u)?.hp ?? 0) > 0))
         return 'no-healthy-pokemon';

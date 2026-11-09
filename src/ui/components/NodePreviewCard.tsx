@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { getContent } from '@/content/registry';
 import { IconRepeat, IconUserPlus, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import { useRunStore } from '@/app/runStore';
-import { fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, wildFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId, leagueMemberOf } from '@/sim';
+import { mysteryEvent, mysteryEventOf, fieldsFor, doubleActorFor, gymById, groupPlanFor, isServiceNode, perfectClearBadge, wildChancesFor, wildFor, type MapNode, type PartyMon, LEGENDARY_ARENAS, type LegendaryId, leagueMemberOf } from '@/sim';
 import { FieldChips } from './FieldChips';
 import { RuleChip } from './RuleChip';
 import { MetronomeChip } from './MetronomeChip';
@@ -11,7 +11,7 @@ import { doubleActorTip, groupTip, guestTip, perfectClearTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import { itemIcon, mysterySign, nodeBadge } from '@/ui/art';
 import { kindName, nodeArt, titleSays } from './nodeArt';
-import { DOUBLE_ACTOR_LABEL, groupLabel, nodeHint, PREVIEW_TEXT, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
+import { DOUBLE_ACTOR_LABEL, GATE_TEXT, groupLabel, nodeHint, MAP_TEXT, PREVIEW_TEXT, VICTORY_TEXT, WILD_TEXT, LEAGUE_TEXT, FIND_TEXT } from '@/ui/strings';
 import { MonIcon } from './MonIcon';
 import { WildPool } from './WildPool';
 import { ReelPool } from './FindPrize';
@@ -26,7 +26,7 @@ import styles from './NodePreviewCard.module.css';
 /** The disc's picture at its own scale: a trainer sprite at 80 px, a Pokémon at a whole multiple of its own size. */
 /** The height a Pokémon may stand to in the 72-px disc. */
 const DISC_FIT = 64;
-const ART_CLASS = { trainer: styles.artTrainer, pokemon: styles.artPokemon, habitat: styles.artHabitat, item: styles.artItem, sign: styles.artSign } as const;
+const ART_CLASS = { trainer: styles.artTrainer, pokemon: styles.artPokemon, habitat: styles.artHabitat, place: styles.artHabitat, item: styles.artItem, sign: styles.artSign } as const;
 
 interface Props {
   node: MapNode;
@@ -56,7 +56,8 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         : plan.kind === 'pack' || plan.kind === 'trio'
           ? IconUsersGroup
           : IconUsers;
-  const art = run ? nodeArt(node, run.map, wildFor(node, run, content)) : { kind: 'sign' as const, src: mysterySign() };
+  const event = run ? mysteryEventOf(run, node, content) : null;
+  const art = run ? nodeArt(node, run.map, wildFor(node, run, content), event) : { kind: 'sign' as const, src: mysterySign() };
   const [artScale, setArtScale] = useState(1);
   // §5.9.5 — the Gym's own rule, promised on its preview like its field and its team.
   const gymId = node.kind === 'gym' && run && node.lane !== undefined ? run.map.gyms[node.lane] : undefined;
@@ -66,6 +67,11 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
   // §2.12.2.1 — the Apex's arena: its rule, and Mew's Metronome, promised as a Gym's rule is.
   const arena = node.kind === 'apex' && node.preview.legendary ? LEGENDARY_ARENAS[node.preview.legendary as LegendaryId] : null;
   const hint = nodeHint(node);
+  // §2.5 — the point of no return, said on the step that takes it: a lane's first node, entered from the shared tracks.
+  const from = run?.position ? run.map.nodes[run.position] : undefined;
+  const commitsTo = run && node.lane !== undefined && node.kind !== 'gym' && from && from.lane === undefined && run.map.gyms[node.lane]
+    ? gymById(run.map.gyms[node.lane]!).name.replace(/^Leader /, '')
+    : null;
 
   useEffect(() => {
     enterRef.current?.focus();
@@ -112,7 +118,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
               onLoad={(e) => {
                 const side = Math.max(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight);
                 if (art.kind === 'pokemon') setArtScale(Math.max(1, Math.floor(DISC_FIT / side)));
-                if (art.kind === 'habitat') setArtScale(side > DISC_FIT ? 0.5 : 1);
+                if (art.kind === 'habitat' || art.kind === 'place') setArtScale(side > DISC_FIT ? 0.5 : 1);
               }}
             />
           </span>
@@ -126,6 +132,10 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
 
         {detail && (!node.preview.find || objective) && !node.preview.wild && <p className={styles.detail}>{detail}</p>}
         {hint && <p className={styles.hint}>{hint}</p>}
+        {commitsTo && <p className={styles.hint} data-testid="preview-commits">{MAP_TEXT.commits(commitsTo)}</p>}
+        {/* §2.10 — a Mystery's place, named (what it offers is the event's to say); §2.5.5 — the ledge's landing. */}
+        {event && <p className={styles.hint} data-testid="preview-place">{mysteryEvent(event).title}</p>}
+        {from?.ledge === node.id && <p className={styles.hint} data-testid="preview-ledge">{GATE_TEXT.drop}</p>}
         {/* §2.6.1 / §4.3 — the ground it is fought on, promised like the rest. */}
         <div className={styles.chipRow}>
           <FieldChips fields={fields} compact />

@@ -1540,6 +1540,26 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.107 — Routes you walk  ✅ 2026-11-09
+
+**Shipped.** The route review (the user, 2026-11-09: "no me parece que tenga un fondo bonito, y los nodos se ven
+repetitivos"; report claude.ai/artifact/XW2ciawxqoNer3HW7eKySU), all three phases in one version at the user's word.
+Phase 1: the point of no return's river and pill gone (the step into a lane wears its Gym's colour and its preview says
+it; a ridge parts the lanes), a frame of scenery, nodes a seeded step off the grid, the lines a dark trail with crisp
+casings, FRLG's own weather, trainers facing the road with their own figures, sibling classes in the lanes (Campers,
+Picnickers, a Black Belt, a Battle Girl), rosters met in turn, a stop column's stops all different. Phase 2: one pixel
+density (§9.3: 1.5 at 720 p, 2 at 1080 p), a column six tiles and a row two, the trunk in two chapters, clearings under
+fights, the Gym, Center and Mart fronts and set pieces cut from pret (`npm run art:props`), Fire on real volcanic tiles.
+Phase 3 (§2.5.5): the field moves' obstacles, the ledge, every Mystery's place rolled with the map, three trunk tracks.
+Fixed on the way: a runner past its threshold stands at its warranted form; a runner never promises a group.
+UI review: Ship with fixes (phase 1: edge casings without filters, commit lines as Gym-coloured steps, no step onto tall
+art, an e2e for the commit line) → Ship with fixes (all phases: the obstacles and the ledge named for screen readers, the
+ledge a drop onto the track below, places at the route's density unless tall, no step onto a building, the whole front
+a node's hit target, a cleared obstacle shown by its type box, the ring's dark rim on sand, the bird's shadow cut).
+Harness R1 23 % (was 20 %). The full e2e still has 26 failures that fail on HEAD as well (badge layout, Gym guest,
+Ring art, Training visits, rewards, results, item pixels, supplies, targeting, the nurse visit). Not done from the report: the stops' whole buildings (their fronts only — five tiles would
+not fit tracks four apart), a set piece in every gap, the psychic lane's second figure (FRLG has no Psychic overworld).
+
 ### v0.9.106 — Moves on the Pokémon  ✅ 2026-11-07
 
 **Shipped.** The user picked cause 5 of the move review (moves the GBA plays on the Pokémon itself showed only rings).

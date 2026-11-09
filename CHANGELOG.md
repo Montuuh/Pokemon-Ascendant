@@ -13,6 +13,15 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.107 — Routes you walk · 2026-11-09
+
+The route map is drawn as a FireRed route, and the route holds more than nodes.
+
+- **A real route.** One pixel size, biome chapters, buildings, houses and ponds.
+- **No river.** The step into a lane wears its Gym's colour; a ridge parts the lanes.
+- **Field moves.** Trees, rocks and water close shortcuts until your Box can clear them.
+- **Ledges and places.** A one-way ledge skips a fight; Mysteries show their place.
+
 ### v0.9.106 — Moves on the Pokémon · 2026-11-07
 
 Moves the GBA plays on the Pokémon itself now move its sprite.

@@ -1,0 +1,68 @@
+{
+  "build": "npm run art:weather",
+  "processing": "Sprites copied pixel for pixel into 64x64 repeating tiles, colour 0 keyed out; fog grey mapped to alpha over one tint. No resampling.",
+  "sources": [
+    {
+      "path": "public/art/map/weather/sources/rain.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/weather/rain.png",
+      "sha256": "844a050526cc99e1253dcf37205061ffab0ae8a12cd105dd751cd920ecc4da52"
+    },
+    {
+      "path": "public/art/map/weather/sources/sandstorm.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/weather/sandstorm.png",
+      "sha256": "d0ab7bf9ae6523719ecae007b5e9fbe29a8a6392e07a7a277a667bd36a87335a"
+    },
+    {
+      "path": "public/art/map/weather/sources/snow0.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/weather/snow0.png",
+      "sha256": "92cf40c1f41d13d48077a74edff125a6779080ab58582607b492de9bb47d61d8"
+    },
+    {
+      "path": "public/art/map/weather/sources/snow1.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/weather/snow1.png",
+      "sha256": "5036d46fe1fe98bf5691fe6b642a2b454fcbce6ec0f6bce55994c2b0668d417d"
+    },
+    {
+      "path": "public/art/map/weather/sources/fog_horizontal.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/weather/fog_horizontal.png",
+      "sha256": "8003147c5092d3db6439f1380cb5f5d4ab68815fafaa3fd3edd2e490b5d60706"
+    },
+    {
+      "path": "public/art/map/weather/sources/fog_diagonal.png",
+      "url": "https://raw.githubusercontent.com/pret/pokefirered/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/graphics/weather/fog_diagonal.png",
+      "sha256": "dd1316a2f55d445d097ea22dea305bdae6c4f0d545de3c43e94a4482374a8e07"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "rain.png",
+      "note": "rain.png frame 0 (16x32) x3",
+      "sha256": "e342bb4b91b56994e9f963b06f743690105110f47ff63afd16603c108b4ca16d"
+    },
+    {
+      "file": "sand.png",
+      "note": "sandstorm.png rows 0-63",
+      "sha256": "b09377dea9e02ef8d48c2fa55e405dbf820c5b3969d0a2fabacd8f9ab974f70a"
+    },
+    {
+      "file": "snow.png",
+      "note": "snow0.png x3, snow1.png x3",
+      "sha256": "2ee441fc5ef366eed007ee301f314d2460ca4f7b0648f9dd4282dd8ca32ca89d"
+    },
+    {
+      "file": "fog-misty.png",
+      "note": "fog_horizontal.png, grey as alpha, Misty Terrain pink",
+      "sha256": "91d58ed9bfb11d8f8a33577c6eececef875935eb71b4e0bd38078c1288a1847c"
+    },
+    {
+      "file": "fog-psychic.png",
+      "note": "fog_horizontal.png, grey as alpha, Psychic Terrain",
+      "sha256": "c42bbc386181225736e88c4aa57081dafb9c3ba6427de3358f91db4961a73747"
+    },
+    {
+      "file": "fog-toxic.png",
+      "note": "fog_diagonal.png, grey as alpha, Toxic Spikes",
+      "sha256": "1dc6309f6fc0d525cf3e3db724b2b0f9aa1564d3e5c196198012c8e95928e20c"
+    }
+  ]
+}

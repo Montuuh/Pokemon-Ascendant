@@ -150,6 +150,9 @@ presented as a fully pinned per-item provenance record. See [the verified invent
 | All item, TM, stone, ball & relic pixel icons | `npm run art:items` | `public/art/items/<id>.png` |
 | Move card pixel art | `npm run art:moves [id…]` · `npm run art:moves -- --sheet` | `public/art/moves/<move-id>.png` |
 | Route FRLG tileset | `npm run art:route` | `public/art/route/**` |
+| Route buildings, set pieces, ledge, obstacles (v0.9.107, from pret) | `npm run art:route-props` | `public/art/map/props/**` |
+| Route weather (FRLG rain, sand, snow, fog; v0.9.107) | `npm run art:weather` | `public/art/map/weather/**` |
+| Mystery places on the route (v0.9.107; with the event scenes) | `node scripts/build-event-art.mjs` | `public/art/map/places/**` |
 | Wild Area FRLG habitat props | `npm run art:habitats` · `node scripts/habitat-gallery.mjs` | `public/art/map/habitat/*.png` |
 | The FRLG interiors: Center, Mart and Department Store floors, Game Corner (three states), Dojo, Trainer Hub | `npm run art:rooms` (or `art:center` · `art:mart` · `art:rocket` · `art:dojo` · `art:hub`; the Black Market is `node scripts/build-black-market-art.mjs`; people sprites `art:people`) | `public/art/{center,mart,game-corner,dojo,hub,black-market}`; pret sources in `public/art/black-market/sources/pret`, grids, pieces and hashes in each `manifest.json` |
 | Safari FRLG tiles | `npm run art:safari` | `public/art/safari` |

@@ -260,8 +260,15 @@ export const TRAINERS: TrainerRoster[] = [
     team: [{ species: 'diglett', level: 14 }, { species: 'geodude', level: 16 }] },
   { id: 'swimmer-a', archetype: 'swimmer', name: 'Swimmer Cass', sprite: 'swimmer', line: 'The water is warmer than it looks. Come in.',
     team: [{ species: 'poliwag', level: 14 }, { species: 'magikarp', level: 12 }] },
-  { id: 'swimmer-b', archetype: 'swimmer', name: 'Swimmer Tomas', sprite: 'swimmer', line: 'I train out past the shelf. You would not last.',
+  { id: 'swimmer-b', archetype: 'swimmer', name: 'Swimmer Tomas', sprite: 'swimmerm', line: 'I train out past the shelf. You would not last.',
     team: [{ species: 'psyduck', level: 15 }, { species: 'krabby', level: 15 }] },
+  // §2.7.1 (v0.9.107) — an archetype fields sibling classes, so a lane of one archetype is not one figure eight times
+  // (the user, 2026-11-09: "los nodos se ven repetitivos"): a Camper walks with the Hikers, a Picnicker with the Bug
+  // Catchers. Same identity, same band, a face of their own.
+  { id: 'hiker-c', archetype: 'hiker', name: 'Camper Liam', sprite: 'camper', line: 'I pitched my tent by the cave. These two keep watch.',
+    team: [{ species: 'geodude', level: 14 }, { species: 'zubat', level: 15 }] },
+  { id: 'bug-catcher-c', archetype: 'bug-catcher', name: 'Picnicker Kelsey', sprite: 'picnicker', line: 'I came for the flowers and stayed for the bugs.',
+    team: [{ species: 'caterpie', level: 12 }, { species: 'oddish', level: 13 }] },
 ];
 
 /** The rosters of one archetype, for the lane themes. */
@@ -690,7 +697,7 @@ export const TRAINERS_R2: TrainerRoster[] = [
   // §5.6.1 — an Ace Trainer's Lead acts twice from Region 2 (v0.9.12): two Pokémon at their best, one of them fast.
   { id: 'ace-trainer-r2-a', archetype: 'ace-trainer', name: 'Ace Trainer Iris', sprite: 'acetrainer', line: 'I train for the turn nobody sees coming.',
     team: [{ species: 'pidgeotto', level: 23 }, { species: 'wartortle', level: 25 }] },
-  { id: 'ace-trainer-r2-b', archetype: 'ace-trainer', name: 'Ace Trainer Marco', sprite: 'acetrainer', line: 'Two moves a turn. Keep up.',
+  { id: 'ace-trainer-r2-b', archetype: 'ace-trainer', name: 'Ace Trainer Marco', sprite: 'acetrainerm', line: 'Two moves a turn. Keep up.',
     team: [{ species: 'kadabra', level: 23 }, { species: 'charmeleon', level: 25 }] },
   { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'I have been training since Pallet. Look how big they got!',
     team: [{ species: 'raticate', level: 21 }, { species: 'pidgeotto', level: 22 }] },
@@ -700,21 +707,26 @@ export const TRAINERS_R2: TrainerRoster[] = [
     team: [{ species: 'gloom', level: 22 }, { species: 'starmie', level: 23 }] },
   { id: 'lass-r2-b', archetype: 'lass', name: 'Lass Mei', sprite: 'lass', line: 'Careful — mine sting.',
     team: [{ species: 'weepinbell', level: 22 }, { species: 'raichu', level: 23 }] },
+  // §2.7.1 (v0.9.107) — sibling classes: a Camper with the Youngsters, a Picnicker with the Lasses (Erika's Gym has both).
+  { id: 'youngster-r2-c', archetype: 'youngster', name: 'Camper Ryan', sprite: 'camper', line: 'Nothing beats a campfire. Except my Growlithe.',
+    team: [{ species: 'growlithe', level: 22 }, { species: 'raticate', level: 22 }] },
+  { id: 'lass-r2-c', archetype: 'lass', name: 'Picnicker Alicia', sprite: 'picnicker', line: 'Lunch in the meadow, then a nap. Yours.',
+    team: [{ species: 'gloom', level: 22 }, { species: 'weepinbell', level: 23 }] },
   { id: 'hiker-r2-a', archetype: 'hiker', name: 'Hiker Bruno', sprite: 'hiker', line: 'These cliffs are softer than my Pokémon.',
     team: [{ species: 'graveler', level: 23 }, { species: 'machoke', level: 23 }] },
   { id: 'hiker-r2-b', archetype: 'hiker', name: 'Hiker Alan', sprite: 'hiker', line: 'The tide cannot move a mountain.',
     team: [{ species: 'onix', level: 23 }, { species: 'graveler', level: 25 }] },
-  { id: 'swimmer-r2-a', archetype: 'swimmer', name: 'Swimmer Luis', sprite: 'swimmer', line: 'Out here the water bites back.',
+  { id: 'swimmer-r2-a', archetype: 'swimmer', name: 'Swimmer Luis', sprite: 'swimmerm', line: 'Out here the water bites back.',
     team: [{ species: 'dewgong', level: 22 }, { species: 'tentacruel', level: 23 }] },
   { id: 'swimmer-r2-b', archetype: 'swimmer', name: 'Swimmer Paula', sprite: 'swimmer', line: 'I race the Seadra to the point every morning.',
     team: [{ species: 'seadra', level: 22 }, { species: 'cloyster', level: 23 }] },
-  { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'scientist', line: 'Give me two turns and I will show you a real current.',
+  { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'engineer', line: 'Give me two turns and I will show you a real current.',
     team: [{ species: 'magneton', level: 23 }, { species: 'electrode', level: 25 }] },
   { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'The plant never sleeps. Neither do I.',
     team: [{ species: 'electrode', level: 23 }, { species: 'electabuzz', level: 25 }] },
   { id: 'rocket-grunt-r2-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Hand over anything rare and nobody gets poisoned.',
     team: [{ species: 'weezing', level: 25 }, { species: 'golbat', level: 25 }] },
-  { id: 'rocket-grunt-r2-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'You picked the wrong pier, kid.',
+  { id: 'rocket-grunt-r2-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgruntf', line: 'You picked the wrong pier, kid.',
     team: [{ species: 'raticate', level: 23 }, { species: 'weezing', level: 25 }] },
 ];
 
@@ -894,7 +906,7 @@ export const REGION3_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
 export const TRAINERS_R3: TrainerRoster[] = [
   { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: 'Two Pokémon, both at their best. That is all an Ace needs.',
     team: [{ species: 'pidgeot', level: 42 }, { species: 'arcanine', level: 44 }] },
-  { id: 'ace-trainer-r3-b', archetype: 'ace-trainer', name: 'Ace Trainer Dario', sprite: 'acetrainer', line: 'Mind or muscle? I brought both.',
+  { id: 'ace-trainer-r3-b', archetype: 'ace-trainer', name: 'Ace Trainer Dario', sprite: 'acetrainerm', line: 'Mind or muscle? I brought both.',
     team: [{ species: 'alakazam', level: 43 }, { species: 'machamp', level: 44 }] },
   { id: 'hex-maniac-r3-a', archetype: 'hex-maniac', name: 'Hex Maniac Vera', sprite: 'hexmaniac', line: 'You cannot see what they are planning. That is the point.', veiled: true,
     team: [{ species: 'hypno', level: 42 }, { species: 'gengar', level: 43 }] },
@@ -902,9 +914,9 @@ export const TRAINERS_R3: TrainerRoster[] = [
     team: [{ species: 'mr-mime', level: 42 }, { species: 'slowbro', level: 43 }] },
   { id: 'rocket-grunt-r3-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'The Boss wants this mountain. You are standing on it.',
     team: [{ species: 'weezing', level: 42 }, { species: 'arbok', level: 43 }] },
-  { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Team Rocket never loses twice. Well — never three times.',
+  { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgruntf', line: 'Team Rocket never loses twice. Well — never three times.',
     team: [{ species: 'golbat', level: 42 }, { species: 'muk', level: 43 }] },
-  { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'scientist', line: 'The geothermal plant runs on these two. So do I.',
+  { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'engineer', line: 'The geothermal plant runs on these two. So do I.',
     team: [{ species: 'electrode', level: 42 }, { species: 'electabuzz', level: 43 }] },
   { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: 'Porygon was built at Silph. I rebuilt it better.',
     team: [{ species: 'porygon', level: 42 }, { species: 'raichu', level: 43 }] },
@@ -912,9 +924,15 @@ export const TRAINERS_R3: TrainerRoster[] = [
     team: [{ species: 'rhyhorn', level: 43 }, { species: 'golem', level: 44 }] },
   { id: 'hiker-r3-b', archetype: 'hiker', name: 'Hiker Ivan', sprite: 'hiker', line: 'I carried Machamp up here. Then it carried me.',
     team: [{ species: 'rhydon', level: 42 }, { species: 'machamp', level: 44 }] },
+  // §2.7.1 (v0.9.107) — sibling classes: the Fighting lane's cave is Kiyo's dojo road, so a Black Belt and a Battle Girl
+  // climb it with the Hikers.
+  { id: 'hiker-r3-c', archetype: 'hiker', name: 'Black Belt Kenji', sprite: 'blackbelt', line: 'Ten thousand punches a day. You are the next one.',
+    team: [{ species: 'primeape', level: 42 }, { species: 'machamp', level: 44 }] },
+  { id: 'hiker-r3-d', archetype: 'hiker', name: 'Battle Girl Mika', sprite: 'battlegirl', line: 'I trained under the Karate King. Now I train past him.',
+    team: [{ species: 'hitmonchan', level: 43 }, { species: 'primeape', level: 43 }] },
   { id: 'swimmer-r3-a', archetype: 'swimmer', name: 'Swimmer Nerea', sprite: 'swimmer', line: 'The water under the ice is freezing. You get used to it.',
     team: [{ species: 'dewgong', level: 42 }, { species: 'seaking', level: 43 }] },
-  { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmer', line: 'Swim the ice caves long enough and nothing scares you.',
+  { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmerm', line: 'Swim the ice caves long enough and nothing scares you.',
     team: [{ species: 'cloyster', level: 42 }, { species: 'starmie', level: 43 }] },
 ];
 

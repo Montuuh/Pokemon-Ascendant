@@ -41,7 +41,9 @@ Pokémon.
   **locks the seed and generates the map**. The Box holds only the starter.
 - **A Region:** a seeded **20-column route walked left to right**, scrolled, on tracks that split, merge and cross
   — the trunk (0–7), a **Y** whose outer tracks lean toward the two Gyms (8 to the point of no return at 11–13),
-  two themed lanes, two Gyms at 19, both announced. Six **stop columns**; ~12 fights a route. *(v0.8.7.)*
+  two themed lanes, two Gyms at 19, both announced. Six **stop columns**; ~12 fights a route. *(v0.8.7.)* Drawn as a
+  FireRed route at one pixel density, framed, in two chapters, with buildings, set pieces, the field moves' obstacles
+  (a Box type clears them), a ledge and every Mystery's place on it (§2.5.4–§2.5.5, v0.9.107).
 - **A City** (after Gyms 1 and 2) is a **lobby** — a drawn town whose buildings are doors, no visit budget, the
   gate leaves when you say so. **Pallet Town** (5 doors) then **Celadon City** (more, dearer). Routes keep only a
   nurse (+50 % HP) and a travelling merchant; the shop and the only Dojo are in the Cities. *(2026-09-22.)*
@@ -135,8 +137,8 @@ Pokémon's sheet — its stats, ability, held item, cards, evolution and its mat
 **20 columns, left to right** (§2.5, v0.8.7). Tracks, not a lattice: a node usually has one child on its own track;
 the choices are **crossings** to an adjacent track (one per pair per column, never two columns running), splits and
 merges — so pivoting from the top track to the bottom takes at least two steps, and no edge crosses another. Trunk
-0–7 (wild-heavy at 0–1) · the crossroads at 8 · **the Y** to the **point of no return** (col 11–13, seeded, a
-landmark): the top track leans to Gym A, the bottom to Gym B (their species and trainers), the middle stays neutral
+0–7 (wild-heavy at 0–1) · the crossroads at 8 · **the Y** to the **point of no return** (col 11–13, seeded; its lines
+wear their Gyms' colours, and past it a ridge parts the lanes): the top track leans to Gym A, the bottom to Gym B (their species and trainers), the middle stays neutral
 and carries the **Elite** (col 9–10) · two lanes of two tracks, each **in its Gym's terrain** with its biome's
 **field** drawn as weather · **two Gyms at 19**. **Stop columns** at 2|3, 5|6, 8, p, p+2|p+3 and 18: every node a
 stop — the field nurse (one per lane at 18, guaranteed), the merchant (≥1 in the trunk), a Mystery, or **an item

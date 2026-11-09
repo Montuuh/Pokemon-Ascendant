@@ -11,6 +11,12 @@ import { asset } from '@/content/paths';
 /** Its animated Gen V battle sprite, cropped tight to the Pokémon: the same sprite the arena shows. */
 const pokemonIcon = (speciesId: string) => battleSpriteUrl(getContent().species(speciesId).id, 'front');
 
+/**
+ * §9.3 — a Wild Area's landmark, and a tall Mystery place, stand half a step under the route's density (1 at 720 p): a cave's peak at full density is taller than the four tiles between two tracks, and stood over the feet and the
+ * caption of the node above it (v0.9.107, the route-readability guard). Every other picture is at the density itself.
+ */
+export const habitatScale = (density: number) => Math.max(1, density - 0.5);
+
 /** §9.3 / D9 — the route is an overworld; its preview keeps the battle portrait and full encounter detail. */
 export function routeNodeArt(art: NodeArt, node: MapNode): NodeArt {
   if (art.kind === 'trainer') {
@@ -32,6 +38,9 @@ export function nodeHash(id: string): number {
   h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
   return (h ^ (h >>> 16)) >>> 0;
 }
+
+/** §2.10 — the places taller than a person (over 32 px), drawn at a landmark's scale rather than the route's density. */
+const TALL_PLACES: ReadonlySet<string> = new Set(['unmarked-cave', 'moving-truck', 'hot-spring', 'stone-cache']);
 
 /** §9.3 — the habitats whose landmark lies flat on the ground: water, sand, flowers. */
 const LOW_PROPS: ReadonlySet<BiomeId> = new Set(['meadow', 'river', 'shore', 'sea', 'swamp', 'lake']);
@@ -65,8 +74,11 @@ export function nodeLabel(node: MapNode, map: RegionMap): string {
   return MAP_LABEL[node.kind] ?? kindName(node);
 }
 
-/** `wild` is the pool as this run meets it (`wildFor`, §2.6.2.1); absent, the node's own. */
-export function nodeArt(node: MapNode, map: RegionMap, wild = node.preview.wild): NodeArt {
+/**
+ * `wild` is the pool as this run meets it (`wildFor`, §2.6.2.1); absent, the node's own. `event` is a Mystery's place as
+ * this run sees it (`mysteryEventOf`, §2.10): its scene's subject stands on the map; absent, the "?".
+ */
+export function nodeArt(node: MapNode, map: RegionMap, wild = node.preview.wild, event: string | null = node.preview.event ?? null): NodeArt {
   const p = node.preview;
   switch (node.kind) {
     case 'trainer': {
@@ -126,6 +138,8 @@ export function nodeArt(node: MapNode, map: RegionMap, wild = node.preview.wild)
       return { kind: 'item', src: itemIcon(item ?? 'poke-ball') };
     }
     case 'mystery':
+      // §2.10 (v0.9.107) — the place rolled with the map: a shrine, a spring, a stranger on the road.
+      return event ? { kind: 'place', src: asset(`art/map/places/${event}.png`), tall: TALL_PLACES.has(event) } : { kind: 'sign', src: mysterySign() };
     default:
       return { kind: 'sign', src: mysterySign() };
   }

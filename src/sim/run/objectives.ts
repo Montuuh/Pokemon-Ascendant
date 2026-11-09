@@ -1,7 +1,7 @@
 import type { ContentRegistry } from '../content/defs';
 import { GameRng } from '../rng/gameRng';
 import { fmix32, fnv1a } from '../rng/rngStreams';
-import { regionContent, wildBandFor } from './region';
+import { evolvedAt, regionContent, wildBandFor } from './region';
 import { supplyLabel } from './rewards';
 import type { MapNode, NodeObjective, NodePreview, RegionMap } from './types';
 
@@ -134,8 +134,12 @@ export function placeObjectives(map: Pick<RegionMap, 'nodes' | 'entry'>, mapCurs
 }
 
 function runnerPreview(node: MapNode, runner: RunnerDef, regionIndex: number, content: ContentRegistry): NodePreview {
-  const species = runner.forms[Math.min(regionIndex, runner.forms.length - 1)]!;
   const level = node.preview.levelBand[1];
+  // §2.7.3 — at the form its level warrants, as every enemy is: an Abra met past Lv 16 is a Kadabra (v0.9.107, when a
+  // map with fewer tracks first rolled its runner deep in a lane), still one of the runner's own forms.
+  const base = runner.forms[Math.min(regionIndex, runner.forms.length - 1)]!;
+  const grown = evolvedAt(base, level, content);
+  const species = runner.forms.includes(grown) ? grown : base;
   const name = content.species(species).name;
   const objective: NodeObjective = { kind: 'flee', runner: runner.id, turns: runner.turns };
   return {

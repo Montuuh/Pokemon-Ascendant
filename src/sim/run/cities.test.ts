@@ -30,6 +30,8 @@ function drain(s: RunState): RunState {
     else if (s.phase === 'shop') s = apply(s, { type: 'leave-shop' });
     else if (s.phase === 'aid') s = apply(s, { type: 'leave-aid' });
     else if (s.phase === 'find') s = apply(s, { type: 'leave-find' });
+    // §2.9.6 — the route Trader, which a stop column offers more often since its stops differ (v0.9.107).
+    else if (s.phase === 'trader') s = apply(s, { type: 'leave-trader' });
     else if (s.phase === 'event') s = apply(apply(s, { type: 'choose-event', option: 0 }), { type: 'leave-event' });
     else if (s.phase === 'swap-or-skip') s = apply(s, { type: 'resolve-recruit', releaseUid: null });
     else break;

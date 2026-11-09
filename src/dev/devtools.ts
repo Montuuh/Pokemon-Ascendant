@@ -341,7 +341,9 @@ export function installDevTools(): void {
 
       jump: (kind) => {
         const run = useRunStore.getState().run;
-        const node = run && Object.values(run.map.nodes).find((n) => n.kind === kind);
+        // The plain one of its kind where there is one: a runner or a guarded find is a different fight (§5.6.5).
+        const all = run ? Object.values(run.map.nodes).filter((n) => n.kind === kind) : [];
+        const node = all.find((n) => !n.preview.objective) ?? all[0];
         if (!run || !node || run.phase !== 'map') return false;
         useRunStore.setState({ run: { ...run, reachable: [node.id] } });
         return true;

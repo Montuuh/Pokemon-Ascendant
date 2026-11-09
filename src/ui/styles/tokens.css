@@ -176,6 +176,10 @@
   --motion-weather-rain: 600ms;
   --motion-weather-sand: 1100ms;
   --motion-weather-spark: 2400ms;
+  /* §9.3 (v0.9.107) — the route's slow world loops: the snow (hail) falls a 4-tile period in 8.8 s, the fog drifts one in
+     14.4 s. */
+  --motion-weather-snow: 8800ms;
+  --motion-weather-fog: 14400ms;
   /* §9.3 — the map: the ring where you stand breathes, the steps you can take march. */
   --motion-ring-pulse: 1600ms;
   --motion-dash-flow: 900ms;
@@ -234,6 +238,8 @@
     --motion-weather-rain: 0ms;
     --motion-weather-sand: 0ms;
     --motion-weather-spark: 0ms;
+    --motion-weather-snow: 0ms;
+    --motion-weather-fog: 0ms;
     --motion-ring-pulse: 0ms;
     --motion-dash-flow: 0ms;
     --motion-loop-pulse: 0ms;
@@ -251,6 +257,8 @@
   --motion-weather-rain: 0ms;
   --motion-weather-sand: 0ms;
   --motion-weather-spark: 0ms;
+  --motion-weather-snow: 0ms;
+  --motion-weather-fog: 0ms;
   --motion-ring-pulse: 0ms;
   --motion-dash-flow: 0ms;
   --motion-loop-pulse: 0ms;

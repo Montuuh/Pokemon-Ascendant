@@ -3,7 +3,7 @@ import { IconMenu2, IconBackpack, IconCrown, IconSparkles } from '@tabler/icons-
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { ballsIn, boxCapacity, gymById, isServiceNode, noReturnLayer, regionName, supplyLabel, type MapNode, type PartyMon } from '@/sim';
+import { ballsIn, boxCapacity, gymById, isServiceNode, noReturnLayer, regionName, stepOpen, supplyLabel, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
@@ -14,7 +14,7 @@ import { TeamScreen } from '@/ui/components/TeamScreen';
 import { useTeamKey } from '@/ui/hooks/useTeamKey';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
-import { LEAGUE_TEXT, ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
+import { GATE_TEXT, LEAGUE_TEXT, ROUTE_TEXT, RUN_REJECT_TEXT, VICTORY_TEXT } from '@/ui/strings';
 import { LeagueHall } from './map/LeagueHall';
 import { apexRevealTip, bagTip, ballsTip, forkFooter, forkGymTip, moneyTip, regionTip, victoryRoadTip, leagueTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
@@ -109,6 +109,10 @@ export function MapScreen() {
   const locked = run.phase !== 'map';
   const active = run.activeUids.map((uid) => run.box.find((m) => m.uid === uid)).filter((m): m is PartyMon => !!m);
   const pending = run.pendingNodeId ? run.map.nodes[run.pendingNodeId]! : null;
+  // §2.5.5 — the obstacle on the step to the pending node, if the Box cannot clear it.
+  const gateOnStep = pending && run.position ? run.map.nodes[run.position]?.gates?.[pending.id] : undefined;
+  const shutBy = gateOnStep && pending && !stepOpen(run, pending.id, getContent()) ? gateOnStep : null;
+  const shut = shutBy !== null;
   const healthy = active.some((m) => m.hp > 0);
   const standingLayer = run.position ? run.map.nodes[run.position]!.layer : -1;
   // §2.9.5 — what the last find on the ground held, said once as you walk on.
@@ -149,7 +153,7 @@ export function MapScreen() {
 
         {/* §2.5 — both Gyms, named from the first column. Pillar 1 telegraphs every intent inside a fight; the
             Region's two possible climaxes are the largest thing it can telegraph, and they decide what you recruit
-            in the trunk and which side of the Y you lean to. The banner stops offering both past the river. */}
+            in the trunk and which side of the Y you lean to. The banner stops offering both past the point of no return. */}
         {!run.zone && (
         <div className={styles.fork} data-testid="fork-banner">
           <span className={styles.forkLabel}>{committedLane === null ? 'This route ends at one of' : 'You committed to'}</span>
@@ -259,12 +263,13 @@ export function MapScreen() {
         </section>
       </div>
 
+      {/* §2.5.5 — a step an obstacle closes: its preview opens, and says what closes it. */}
       {pending && run.phase === 'preview' && (
         <NodePreviewCard
           node={pending}
           active={active}
-          canEnter={isServiceNode(pending.kind) || healthy}
-          blockedReason={!isServiceNode(pending.kind) && !healthy ? RUN_REJECT_TEXT['no-healthy-pokemon']! : null}
+          canEnter={!shut && (isServiceNode(pending.kind) || healthy)}
+          blockedReason={shutBy ? GATE_TEXT.closed(GATE_TEXT[shutBy].title) : !isServiceNode(pending.kind) && !healthy ? RUN_REJECT_TEXT['no-healthy-pokemon']! : null}
           onEnter={() => beginCombat()}
           onCancel={() => dispatch({ type: 'cancel-preview' })}
         />

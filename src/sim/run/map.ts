@@ -11,6 +11,7 @@ import { rollGroundFind, type GroundFind } from './rewards';
 import { placeReels } from './finds';
 import { placeObjectives } from './objectives';
 import { placeTrader } from './trader';
+import { placeEvents, placeGates, placeLedge } from './routeFeatures';
 import type { MapNode, NodeKind, NodePreview, RegionMap } from './types';
 import type { PokemonType } from '../types';
 
@@ -229,13 +230,15 @@ function usualTypes(species: readonly string[], content: ContentRegistry): Pokem
 }
 
 /** A trainer node. In a lane, the archetype is the Gym's; in the trunk, anything the Region fields. */
-function trainerPreview(rng: GameRng, content: ContentRegistry, used: Set<string>, layer: number, lane: GymDef | null, region: RegionContent): NodePreview {
+function trainerPreview(rng: GameRng, content: ContentRegistry, used: Map<string, number>, layer: number, lane: GymDef | null, region: RegionContent): NodePreview {
   const themed = lane ? region.laneThemes[lane.type]!.trainers.flatMap((a) => region.trainers.filter((t) => t.archetype === a)) : region.trainers;
-  const unused = themed.filter((t) => !used.has(t.id));
-  // A lane has only two rosters of its archetype, so a long lane will repeat one; that is better than a
-  // Swimmer lane with a Hiker in the middle of it, which would break the telegraph the lane exists to give.
-  const roster: TrainerRoster = pickOne(rng, unused.length ? unused : themed.length ? themed : region.trainers);
-  used.add(roster.id);
+  const pool = themed.length ? themed : region.trainers;
+  // A lane has only a few rosters of its archetype, so a long lane will repeat them; that is better than a Swimmer
+  // lane with a Hiker in the middle of it, which would break the telegraph the lane exists to give. It repeats them in
+  // turn (v0.9.107): the least-met roster next, so a lane is never one trainer four times while three others wait.
+  const fewest = Math.min(...pool.map((t) => used.get(t.id) ?? 0));
+  const roster: TrainerRoster = pickOne(rng, pool.filter((t) => (used.get(t.id) ?? 0) === fewest));
+  used.set(roster.id, (used.get(roster.id) ?? 0) + 1);
 
   const team = evolveTeam(trainerTeamFor(roster, layer, region.wildBand), content);
   const levels = team.map((m) => m.level);
@@ -453,7 +456,7 @@ function nextColumn(rng: GameRng, prev: Slot[], layer: number, noReturn: number)
     if (layer === Y_LAYER) op = n > 3 ? 'merge' : n < 3 ? 'split' : 'none';
     else {
       const r = rng.range01();
-      if (r < TRUNK_SPLIT_CHANCE && n < 4) op = 'split';
+      if (r < TRUNK_SPLIT_CHANCE && n < 3) op = 'split';
       else if (r < TRUNK_SPLIT_CHANCE + TRUNK_MERGE_CHANCE && n > 2) op = 'merge';
     }
     const yGroups: Group[] = ['lean0', 'mid', 'lean1'];
@@ -544,12 +547,19 @@ function stopColumns(rng: GameRng, noReturn: number): Map<number, StopMix> {
   return stops;
 }
 
-/** A stop: weighted by where it stands, never the same as the stop above it, and one nurse and one merchant a column at most. */
+/**
+ * A stop: weighted by where it stands, and one nurse and one merchant a column at most. Per §2.5.1 (v0.9.107) a stop
+ * column offers **different** stops while its mix has one left — "which rest" is a choice only if the rests differ (two
+ * Mysteries side by side were one Mystery and a wasted node) — and once every kind is out, never the same as the one
+ * above it.
+ */
 function rolledStop(rng: GameRng, mix: StopMix, column: readonly NodeKind[]): NodeKind {
   const above = column[column.length - 1];
-  const entries = Object.entries(STOP_MIX[mix])
+  const all = Object.entries(STOP_MIX[mix])
     .map(([value, weight]) => ({ value: value as NodeKind, weight: weight! }))
-    .filter((e) => e.value !== above && !(ONE_PER_COLUMN.includes(e.value) && column.includes(e.value)));
+    .filter((e) => !(ONE_PER_COLUMN.includes(e.value) && column.includes(e.value)));
+  const fresh = all.filter((e) => !column.includes(e.value));
+  const entries = fresh.length ? fresh : all.filter((e) => e.value !== above);
   return entries.length ? pickWeighted(rng, entries) : 'cache';
 }
 
@@ -605,7 +615,7 @@ function shifted(preview: NodePreview, offset: number, content: ContentRegistry)
 }
 
 /** §2.5 — build a Region. Deterministic in `rng`, which the caller seeds from the run seed. */
-export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = [], rareChance = WILD_RARE_CHANCE): RegionMap {
+export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = [], rareChance = WILD_RARE_CHANCE, seenEvents: readonly string[] = []): RegionMap {
   // §2.1 — which Region's tables this route is built from.
   const region = regionContent(regionIndex);
   // §5.9.2 — two distinct Gyms, drawn before anything else so every lane node can be themed by its own.
@@ -619,7 +629,8 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   const noReturn = pickOne(rng, NO_RETURN_LAYERS);
   const eliteLayer = pickOne(rng, ELITE_LAYERS);
   const stops = stopColumns(rng, noReturn);
-  const entryTracks = rng.range01() < 0.6 ? 3 : 4;
+  // §2.5 (v0.9.107) — three tracks at the start, and never more than three in the trunk: fewer nodes, each one read.
+  const entryTracks = 3;
   // The entry tracks sit about the middle of the trunk's band, nudged a row either way.
   const [lo, hi] = ROW_BAND.trunk;
   const free = hi - lo - (entryTracks - 1) * TRACK_GAP;
@@ -644,7 +655,7 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   if (eliteWild && extraElite && eliteWild.lane === extraElite.lane) eliteWild.lane = 1 - extraElite.lane;
 
   const nodes: Record<string, MapNode> = {};
-  const usedTrainers = new Set<string>();
+  const usedTrainers = new Map<string, number>();
   const ids = columns.map((c, layer) => c.slots.map((_, col) => `n${layer}-${col}`));
   // Placed before any node is built, because placing her may add the edge that lets every lane track reach her.
   const nurses = ([0, 1] as const).map((lane) => placeNurse(rng, columns, GYM_LAYER - 1, lane));
@@ -720,6 +731,10 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   placeTrader({ nodes }, rng.cursor);
   // §2.9.5 — every plain find's reel, each on a stream of its own.
   placeReels({ nodes }, rng.cursor, regionIndex, content);
+  // §2.5.5 — the ledge, then the field moves' obstacles; §2.10 — and every Mystery's place.
+  placeLedge({ nodes }, rng.cursor, (layer) => stops.has(layer), Y_LAYER - 1);
+  placeGates({ nodes, regionIndex }, rng.cursor);
+  placeEvents({ nodes }, rng.cursor, seenEvents);
 
   return {
     seed,

@@ -1,4 +1,4 @@
-# Trainer catalog — 8 archetypes × 3 regions = 21 rosters
+# Trainer catalog — 9 archetypes, 42 rosters across 3 regions
 
 > Implements §2.7 (archetypes, rewards, generation) and §2.7.3 (per-Region eligibility). A Trainer node fields
 > **1–2 Pokémon sequentially** (the second enters the moment the first faints, §2.8 reserves 2-phase profiles
@@ -41,9 +41,17 @@
 | `hiker-b` | `diglett` + `geodude` | 9, 11 | 110–160 | 30 % common relic |
 | `swimmer` | `poliwag` + `magikarp` | 9, 8 | 100–160 | 50 % common |
 | `swimmer-b` | `psyduck` + `krabby` | 11, 11 | 130–180 | 20 % uncommon item |
+| `hiker-c` | `geodude` + `zubat` (Camper Liam) | 10, 11 | 120–175 | 30 % common relic |
+| `bug-catcher-c` | `caterpie` + `oddish` (Picnicker Kelsey) | 9, 10 | 50–80 | 50 % common item |
 
-Each archetype has two variants so a Region with 4 trainer nodes never repeats a roster. The generator picks
-without replacement (§2.7.3, seeded).
+Each archetype has two variants or more so a Region with 4 trainer nodes never repeats a roster. The generator
+picks without replacement (§2.7.3, seeded).
+
+**Sibling classes and figures (§2.7.1, v0.9.107).** The third Hiker is a Camper and the third Bug Catcher a
+Picnicker: the archetype's identity, band and repertoire under a class of its own, so the Rock and Bug lanes are not one
+figure eight times. Every roster wears its own figure (its sprite names both its battle portrait and its FRLG overworld
+person): the men among the Swimmers, the Ace Trainers and the Engineers (an Engineer is FRLG's hard-hatted Worker), and
+a woman as the second Rocket Grunt of Regions 2 and 3.
 
 ## 3. Region 2 rosters (levels 14–22 on the old scale; 19–30 since v0.9.90, §6.2.4) ✅ v0.7.3
 
@@ -66,6 +74,8 @@ line's thresholds at the level the layer gives them (§2.7.3). Species rows: `sp
 | `rocket-grunt-r2-b` | Rocket Grunt | `raticate` + `weezing` | 17, 18 |
 | `ace-trainer-r2-a` | Ace Trainer | `pidgeotto` + `wartortle` | 17, 18 |
 | `ace-trainer-r2-b` | Ace Trainer | `kadabra` + `charmeleon` | 17, 18 |
+| `youngster-r2-c` | Youngster (Camper Ryan) | `growlithe` + `raticate` | 16, 16 |
+| `lass-r2-c` | Lass (Picnicker Alicia) | `gloom` + `weepinbell` | 16, 17 |
 
 **The Gym lanes** (§2.5): Youngsters walk the Fire lane, Lasses the Grass lane, Engineers the Electric lane and
 Rocket Grunts the Poison lane; Hikers, Swimmers and the Ace Trainers (v0.9.12, whose Lead acts twice) are the trunk's. **Three substitutions**, because their lines
@@ -92,6 +102,8 @@ same identity. Levels here are the spread; the band places them (§2.7.3).
 | `hiker-r3-b` | Hiker | `rhydon` + `machamp` | 30, 32 |
 | `swimmer-r3-a` | Swimmer | `dewgong` + `seaking` | 30, 31 |
 | `swimmer-r3-b` | Swimmer | `cloyster` + `starmie` | 30, 31 |
+| `hiker-r3-c` | Hiker (Black Belt Kenji) | `primeape` + `machamp` | 30, 32 |
+| `hiker-r3-d` | Hiker (Battle Girl Mika) | `hitmonchan` + `primeape` | 31, 31 |
 
 **The Gym lanes** (§2.5): Hex Maniacs climb the Psychic lane's Tower, Rocket Grunts guard the Ground lane's
 Volcano (they are Giovanni's), Hikers walk the Fighting lane's Cave and Swimmers the Ice lane's; the Ace

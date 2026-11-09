@@ -382,10 +382,10 @@ col  0 ─────────── 7 │ 8 ───────── p �
 
 | Columns | What it is | Terrain |
 |---|---|---|
-| **0–7 — the trunk** | Three or four **tracks** that drift, split, merge and cross. Wild-heavy at 0–1; you recruit and build the counter here | The Region's own road (§2.13): a grass route, a cliff coast, a volcanic highland |
+| **0–7 — the trunk** | Three **tracks** (two after a merge) that drift, split, merge and cross. Wild-heavy at 0–1; you recruit and build the counter here | The Region's own road (§2.13) in two chapters (§2.5.4): a grass route into a wood, a coast up onto cliffs, a highland down to lava |
 | **8 — the crossroads** | A stop column (below) at the mouth of the Y: the last look at both Gyms before the tracks lean | The road still |
 | **8–p — the Y** | Exactly three tracks. The top one **leans** toward the first Gym and the bottom one toward the second: their wilds and trainers already wear that Gym's theme. The middle track stays neutral and carries the **Elite Trainer** (col 9 or 10). Crossing between tracks is still allowed | The top and bottom tracks blend into their Gym's terrain; the middle stays the road |
-| **p — the point of no return** | Column 11, 12 or 13 (seeded), drawn as a landmark — a bridge, a cave mouth, a gate. A stop column. Every edge leaving it enters one lane or the other; the middle track's last node offers both | — |
+| **p — the point of no return** | Column 11, 12 or 13 (seeded). A stop column. Every edge leaving it enters one lane or the other and is drawn in that lane's Gym's colour; the middle track's last node offers both | — |
 | **p+1–18 — the lanes** | Two independent lanes of two tracks each, **themed after their own Gym** (§2.5.0). Edges never leave a lane. Column 18 is a stop with the lane's **field nurse** on one track | Fully the Gym's terrain, and the Gym's field (§2.5.4) |
 | **19** | Two terminal Gym nodes, one per lane. The unchosen one is abandoned for the run | The Gym's |
 
@@ -394,7 +394,12 @@ one step you were neutral, the next you were committed for good, and what follow
 spreads the commitment over four or five columns. The outer tracks *lean* — their nodes already offer the Gym's
 species and trainers — so committing early is rewarded with three columns of on-theme recruits, and the middle
 track lets you defer the choice at the price of meeting the Elite and of recruiting off-theme. The irreversible
-moment is still one place on the map, and the map draws it as one.
+moment is still one place on the map, and the map draws it as one: the lines out of it wear their Gyms' colours, the
+step's preview says it in words, and past it a ridge parts the two lanes all the way to the Gyms. *(A river across the
+whole map, with a pill, drew it until v0.9.107; the user, 2026-11-09, found it outweighed the Gyms themselves.)*
+
+**Three tracks** (v0.9.107). The route starts on three tracks and the trunk never holds more than three: fewer nodes,
+each one read — about sixty a map where sixty-five stood, the rest of the route unchanged.
 
 **Tracks, not a lattice.** The map is a set of tracks that run left to right, the way a Pokémon route runs; a
 route is a line you follow, and changing line is a decision rather than the default. A node usually has **one**
@@ -440,12 +445,13 @@ Region share a type — except under the **One Path** difficulty modifier, which
 
 ## §2.5.1 Node distribution
 
-A map holds about **65 nodes**, of which a run walks twenty (nineteen and a Gym). The route you did not take is
+A map holds about **60 nodes**, of which a run walks twenty (nineteen and a Gym; one less down a ledge, §2.5.5). The route you did not take is
 visible the whole way, which is what makes the one you did feel chosen.
 
 **Stop columns.** Six columns are **stops**: every node in them is a non-fight stop — a nurse, a merchant, a
 Mystery or something on the ground (§2.9). They sit at column 2 or 3, 5 or 6, the crossroads (8), the point of
-no return (p), p+2 or p+3, and 18. The other thirteen columns are **fight columns**, mostly Wild and Trainer, with
+no return (p), p+2 or p+3, and 18. A stop column offers **different** stops while its mix has a kind left (v0.9.107):
+"which rest" is a choice only if the rests differ, and two Mysteries side by side were one Mystery and a wasted node. The other thirteen columns are **fight columns**, mostly Wild and Trainer, with
 an occasional Mystery or find. So every route walks about **twelve fights** before the Gym and about seven stops:
 the stops are the route's breathing, and which stop is the choice — you cannot skip them to fight more, and you
 cannot rest more by walking past fights.
@@ -505,11 +511,33 @@ the new screen with rows derived from its columns.
 The map is painted from a **tileset**, not a backdrop: a pure function of the map (`mapTerrain`) lays a tile
 grid under the nodes — the open ground the routes run over, the scenery between them, and the terrain of each stretch.
 Since v0.9.14 the routes are not roads: every edge is a **straight line** from node to node (§9.3), and the ground
-within a tile of it is kept clear of scenery and tall grass; where a line crosses the river at the point of no return,
-a bridge spans it. The trunk
-is the Region's road. On a leaning track the road **blends** into its Gym's terrain over the Y, and past the point
-of no return each lane is its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power
-plant for Electric. The point of no return is drawn as a landmark across the whole map.
+within a tile of it is kept clear of scenery and tall grass.
+
+**A FireRed route** (v0.9.107, the route review of 2026-11-09: "no me parece que tenga un fondo bonito"). The board is
+drawn as a FRLG route strip is, and with the same parts:
+
+- **One pixel density.** A tile is 16 px and a person 16 × 32, both at the same multiple (§9.3). A column is six tiles,
+  a row of the map's grid two, so the board is about twenty-five tiles tall, as FRLG's routes are (Route 4 is twenty).
+- **A frame.** The route's scenery walls its top and bottom rows (Route 4's cliffs, Viridian Forest's trees); a board
+  taller than the route grows its frame, never an empty band.
+- **Chapters.** The trunk is the Region's road, and the road changes once, past the trunk's middle stop: Region 1's
+  route into the edge of a wood, Region 2's coast up onto the cliffs, Region 3's highland down to the lava. The Region
+  moves on as you walk it, not only at its lanes.
+- **Buildings.** The Gym, the field nurse and the travelling merchant stand in the doorway of a FRLG building's front —
+  the Gym's own, a Pokémon Center's, a Poké Mart's — cut from Pewter City's map in pret (its bottom three rows: the eave,
+  the sign, the door; the whole building is five tiles and the tracks four apart). The front's foot is a row under the
+  figure's, so the caption of the node above clears its eave, and no node steps down onto it.
+- **Set pieces.** Where open grassy ground has room, a piece cut whole from FRLG's own maps stands in it: Pewter's house,
+  Bill's cottage and its pond from Route 25, a flower bed from Route 1 — one at most in two columns, never the same one
+  twice running, off every line. They are what a route's eye rests on.
+- **Clearings.** A trainer stands on two tiles of the road's sand, the Elite on four, the Gym on six; a Wild Area stands
+  in its tall grass. The fight reads as a place before its picture is read.
+- **The lanes' ridge.** Past the point of no return a band of the lanes' scenery runs between them to the Gyms, so
+  "they never meet again" is drawn rather than written.
+
+On a leaning track the road **blends** into its Gym's terrain over the Y, and past the point of no return each lane is
+its Gym's terrain outright: water for Water, a cave for Rock, a forest for Bug, a power plant for Electric. Every terrain
+is FireRed's own ground; until v0.9.107 Fire's was Route 1 tinted brown, which FRLG never drew.
 
 The terrain is a telegraph, not decoration (Pillar 1). Every lane carries its **Gym's own Battlefield** (§4.3.14) —
 rain on the water, a sandstorm in the cave, a Sticky Web in the forest, hail in the ice cave — and the lane shows it:
@@ -529,11 +557,44 @@ species and terrain, but its fights are on neutral ground until the point of no 
 | Bug | A forest | Sticky Web |
 | Normal | A meadow of flowers and tall grass | Misty Terrain |
 | Grass | A meadow of flowers and tall grass | Grassy Terrain |
-| Fire | Scorched grassland | Sun |
+| Fire | A volcanic slope (Blaine's Cinnabar; Fire and Ground never share a Region) | Sun |
 | Psychic | A tower's grounds | Psychic Terrain |
 
 Both the terrain and the field are chosen per **type**: the lane's wild biome (§2.6.1) is what the Region's tables
 can field, and several types share one where the Region has few, but every Gym gets its own look and its own ground.
+
+## §2.5.5 What a route holds besides its nodes
+
+> ✅ **v0.9.107** — the route review's third phase (the user, 2026-11-09: "continúa con todas las fases"). Code:
+> `run/routeFeatures.ts` (`placeGates`, `placeLedge`, `placeEvents`, `stepOpen`, `mysteryEventOf`), the `gate-closed`
+> refusal on `begin-combat`; UI `RouteView` (the obstacles, the ledge), `NodePreviewCard`, `MapScreen`.
+
+**The field moves' obstacles.** A crossing — the step that changes track — may be closed by what closes a FRLG route: a
+small tree, a cracked rock, deep water. It opens only to a Box that holds a type that clears it, the games' field moves
+by who learns them:
+
+| Obstacle | Cleared by a … in the Box | Most often in |
+|---|---|---|
+| A small tree (Cut) | Grass- or Bug-type | Region 1's grass |
+| A cracked rock (Rock Smash) | Fighting-, Rock- or Ground-type | Region 3's highland |
+| Deep water (Surf) | Water-type | Region 2's coast |
+
+An obstacle is never the only way on — the node it stands on always has a second, open child — never on the step into a
+lane (the middle track must keep offering both), never into a Gym or the lanes' last nurse, and never before the first
+stop. About two and a half a map, three at most. Its preview still opens — what lies beyond is shown (Pillar 1) — and
+says what closes the step; walking in is what the obstacle refuses. *Why (Pillar 3).* The Box changes the map: a team
+sculpted with a Water-type opens a shortcut a team without one walks round, and a catch can be worth a road as well as
+a slot. The obstacle closes a choice, never the route.
+
+**The ledge.** On about seven maps in ten, one trunk node has a **ledge**: a one-way drop past the next column onto the
+track below, two columns on — down, as FRLG's ledges drop south (`MapNode.ledge`, also in `next`). It skips that column's fight — never a stop column, never into
+the Y — and that is the point: a way past a fight the team is too hurt for, paid for in the fight's XP and prize. It is
+the one edge that skips a column; the stop columns still keep every other route's fights the same (§2.5.1).
+
+**Every Mystery's place.** A Mystery node's event is rolled with the map (§2.10.4: without replacement, against the
+run's seen events and the map's own), so the map shows its place — a shrine, a spring, a stranger on the road, a crate —
+and its preview names it. What it offers is still the event's to say. An Eevee run's first Mystery is the Stone Cache
+(§8.5.3) whichever it is, so while the cache is unopened every Mystery shows the cache.
 
 ---
 
@@ -875,8 +936,14 @@ Region) or **three at once** (a quarter / 40 % / half of those), §5.6.3. Distin
 | **Rocket Grunt** | Aggressive Cleave and Backstrike kits, Poison | R2, R3 |
 | **Ace Trainer** | Two high-stat Pokémon, multi-type | R3 |
 
-Rosters, levels and rewards: [`catalogs/trainers.md`](catalogs/trainers.md). Each archetype has two variants per
-Region so a Region with four trainer nodes never repeats a team.
+Rosters, levels and rewards: [`catalogs/trainers.md`](catalogs/trainers.md). Each archetype has two variants or more
+per Region so a Region with four trainer nodes never repeats a team.
+
+**Sibling classes (v0.9.107).** An archetype may field a sibling class: a Camper walks with Region 1's Hikers and
+Region 2's Youngsters, a Picnicker with Region 1's Bug Catchers and Region 2's Lasses, a Black Belt and a Battle Girl
+with Region 3's Hikers on the Fighting lane. Same identity, same band, same repertoire, a face of its own. A lane is one
+archetype, and the same figure eight times down it read as a copy, not a theme (the user, 2026-11-09: "los nodos se ven
+repetitivos"); each roster also wears its own figure, a man or a woman as its name says.
 
 ## §2.7.2 Rewards
 
@@ -1337,7 +1404,9 @@ what *kind* of uncertainty you are walking into.
 
 ## §2.10.4 Repeatability
 
-An event fires at most once per run — it leaves the seeded pool as soon as it is used. Each is drawn by a
+An event fires at most once per run — it leaves the seeded pool as soon as it is used. Since v0.9.107 it is drawn with
+the map, one per Mystery node, against the events the run has seen and the ones already on the map (§2.5.5), so the
+map can show its place; a save from before rolls on entry as it did. Each is drawn by a
 **weight**, 1 for most; the events that hand over a relic (the roadside trader, the Cursed Trinket) are drawn at
 **0.35**, so a relic from a Mystery node is a surprise rather than a habit (v0.8.6: relics are scarce, §7.3.1). Three
 supplies events joined them in v0.8.6 — a Ranger's medkit, a fallen Mart crate, a closing apothecary — because

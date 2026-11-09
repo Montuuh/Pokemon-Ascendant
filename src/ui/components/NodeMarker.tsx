@@ -22,7 +22,8 @@ import { WILD_GRASS, type NodeArt } from '@/ui/art';
 import { useTip } from '@/ui/tooltip';
 import { routeNodeTip } from '@/ui/tips';
 import { HabitatArt } from './HabitatArt';
-import { kindName, nodeHash, routeNodeArt, titleSays } from './nodeArt';
+import { habitatScale, kindName, nodeHash, routeNodeArt, titleSays } from './nodeArt';
+import { buildingOf } from '@/ui/screens/map/terrain';
 import styles from './NodeMarker.module.css';
 
 export type NodeStatus = 'reachable' | 'locked' | 'visited' | 'current';
@@ -106,7 +107,7 @@ export function NodeMarker({
       className={[styles.node, styles[status], gone ? styles.gone : '', landmark ? styles.landmark : '', node.kind === 'gym' ? styles.climax : '']
         .filter(Boolean)
         .join(' ')}
-      style={{ ...style, '--habitat-scale': Math.max(1, artScale - 0.5) } as React.CSSProperties}
+      style={{ ...style, '--habitat-scale': habitatScale(artScale), '--place-k': picture.kind === 'place' && picture.tall ? (2 * habitatScale(artScale)) / artScale : 2 } as React.CSSProperties}
       onClick={enterable ? onClick : undefined}
       aria-disabled={enterable ? undefined : true}
       tabIndex={enterable ? undefined : -1}
@@ -120,12 +121,13 @@ export function NodeMarker({
       data-status={status}
       data-ahead={ahead || undefined}
       data-art={art.kind}
+      data-building={buildingOf(node) ?? undefined}
     >
       <span className={styles.ground} aria-hidden="true" />
       <span className={[styles.art, styles[art.kind]].filter(Boolean).join(' ')} aria-hidden="true">
         {picture.kind === 'habitat' ? (
           // A Wild Area: its landmark, its residents going round, out of step with the nodes round it.
-          <HabitatArt artScale={Math.max(1, artScale - 0.5)} src={picture.src} low={picture.low} pool={picture.pool} seed={nodeHash(node.id)} />
+          <HabitatArt artScale={habitatScale(artScale)} src={picture.src} low={picture.low} pool={picture.pool} seed={nodeHash(node.id)} />
         ) : (
           <>
             <img className="pixel" src={picture.src} alt="" draggable={false} />

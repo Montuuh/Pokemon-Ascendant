@@ -3,8 +3,11 @@ import { buildRegistry } from '@/content/registry';
 import { GYM_LEVEL_PREMIUM, TEAM_SIZE } from './region';
 import {
   LANE_THEME, LAYERS, MAP_ROWS, ROUTE_LAYERS, TRACK_GAP, Y_LAYER, drawGymPair, generateRegion, gymById, gymTeamFor,
-  noReturnLayer, nodesInLayer, wildBandFor,
+  noReturnLayer, nodesInLayer, regionContent, wildBandFor,
 } from '@/sim';
+
+/** A Region's lane themes, by Gym type. */
+const LANE_THEMES_OF = (region: number) => regionContent(region).laneThemes;
 import { RngStreams } from '@/sim/rng/rngStreams';
 
 // §2.5 — the generation rules, each one asserted over enough seeds that a roll cannot fake it.
@@ -160,16 +163,19 @@ describe('Map generation rules — §2.5', () => {
     for (const m of maps) {
       for (let layer = 0; layer < LAYERS - 1; layer++) {
         const from = nodesInLayer(m, layer);
-        const pairs = from.flatMap((n) => n.next.map((id) => [n.col, m.nodes[id]!.col] as const));
+        // §2.5.5 — a ledge is the one edge that skips a column; it is counted apart.
+        const step = (n: (typeof from)[number]) => n.next.filter((id) => id !== n.ledge);
+        const pairs = from.flatMap((n) => step(n).map((id) => [n.col, m.nodes[id]!.col] as const));
         for (const n of from) {
           nodes++;
-          edges += n.next.length;
+          edges += step(n).length;
           expect(n.next.length, `seed ${m.seed} ${n.id} is a dead end`).toBeGreaterThan(0);
-          expect(n.next.length, `seed ${m.seed} ${n.id} children`).toBeLessThanOrEqual(2);
-          for (const id of n.next) expect(m.nodes[id]!.layer, `${n.id} → ${id}`).toBe(layer + 1);
+          expect(step(n).length, `seed ${m.seed} ${n.id} children`).toBeLessThanOrEqual(2);
+          for (const id of step(n)) expect(m.nodes[id]!.layer, `${n.id} → ${id}`).toBe(layer + 1);
+          if (n.ledge) expect(m.nodes[n.ledge]!.layer, `${n.id} ledge`).toBe(layer + 2);
         }
         for (const [a1, b1] of pairs) for (const [a2, b2] of pairs) if (a1 < a2) expect(b1, `seed ${m.seed} column ${layer}: crossed edges`).toBeLessThanOrEqual(b2);
-        for (const t of nodesInLayer(m, layer + 1)) expect(from.filter((n) => n.next.includes(t.id)).length, `${t.id} parents`).toBeLessThanOrEqual(3);
+        for (const t of nodesInLayer(m, layer + 1)) expect(from.filter((n) => step(n).includes(t.id)).length, `${t.id} parents`).toBeLessThanOrEqual(3);
       }
     }
     // Not a corridor (every node one child) and not a lattice (v0.5 read 1.6+): a choice every few steps.
@@ -197,8 +203,9 @@ describe('Map generation rules — §2.5', () => {
     expect(shapes.size, 'distinct shapes across 200 seeds').toBeGreaterThan(190);
     const noReturn = new Set(maps.map((m) => noReturnLayer(m)));
     expect([...noReturn].sort()).toEqual([11, 12, 13]);
+    // §2.5 (v0.9.107) — three tracks at the start, every map: the shape varies in its drifts, merges and crossings.
     const entries = new Set(maps.map((m) => m.entry.length));
-    expect([...entries].sort()).toEqual([3, 4]);
+    expect([...entries].sort()).toEqual([3]);
   });
 
   it('RowsAreOrdered_WithAClearRowBetweenTracks_AndTheLanesApart', () => {
@@ -260,6 +267,38 @@ describe('Map generation rules — §2.5', () => {
         for (const n of nodesInLayer(m, LAYERS - 3).filter((x) => x.lane === lane)) expect(n.next, `seed ${m.seed} ${n.id}`).toContain(nurse[0]!.id);
       }
       expect(Object.values(m.nodes).some((n) => n.kind === 'merchant' && n.layer >= 2 && n.layer <= 6), `seed ${m.seed}`).toBe(true);
+    }
+  });
+
+  it('AStopColumnOffersDifferentStops_WhileItsMixHasOneLeft_§2.5.1', () => {
+    // v0.9.107 — "which rest" is a choice only if the rests differ. Every mix holds at least three kinds, so a column
+    // repeats one only past its third stop; the last column's two nurses are one per lane, and its other stops differ.
+    for (const m of maps) {
+      for (let layer = 0; layer < LAYERS - 1; layer++) {
+        const col = nodesInLayer(m, layer);
+        if (!col.every((n) => STOPS.has(n.kind))) continue;
+        const kinds = (layer === LAYERS - 2 ? col.filter((n) => n.kind !== 'aid') : col).map((n) => n.kind);
+        const repeats = kinds.length - new Set(kinds).size;
+        expect(repeats, `seed ${m.seed} column ${layer}: ${kinds.join(', ')}`).toBeLessThanOrEqual(layer === LAYERS - 2 ? 0 : Math.max(0, kinds.length - 3));
+      }
+    }
+  });
+
+  it('ALaneMeetsItsRostersInTurn_NeverOneTrainerOverAndOver_§2.7.3', () => {
+    // v0.9.107 — the least-met roster next: down a lane of n trainers drawn from k rosters, none stands more than
+    // ceil(n / k) + 1 times (the trunk may have met some first). Over Regions 1 and 3, whose Rock and Fighting lanes
+    // gained sibling classes.
+    for (const region of [0, 2]) {
+      for (let i = 1; i <= 60; i++) {
+        const m = region === 0 ? maps[i - 1]! : generateRegion(new RngStreams(i).get('MapRNG'), content, region, i);
+        for (const lane of [0, 1]) {
+          const nodes = Object.values(m.nodes).filter((n) => n.kind === 'trainer' && n.lane === lane);
+          const k = regionContent(region).trainers.filter((t) => LANE_THEMES_OF(region)[gymById(m.gyms[lane]!).type]!.trainers.includes(t.archetype)).length;
+          const counts = new Map<string, number>();
+          for (const n of nodes) counts.set(n.preview.rosterId!, (counts.get(n.preview.rosterId!) ?? 0) + 1);
+          expect(Math.max(0, ...counts.values()), `R${region + 1} seed ${i} lane ${lane}`).toBeLessThanOrEqual(Math.ceil(nodes.length / k) + 1);
+        }
+      }
     }
   });
 
