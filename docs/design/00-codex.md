@@ -42,7 +42,8 @@ Pokémon.
 - **A Region:** a seeded **20-column route walked left to right**, scrolled, on tracks that split, merge and cross
   — the trunk (0–7), a **Y** whose outer tracks lean toward the two Gyms (8 to the point of no return at 11–13),
   two themed lanes, two Gyms at 19, both announced. Six **stop columns**; ~12 fights a route. *(v0.8.7.)* Drawn as a
-  FireRed route on a seven-row grid at one pixel density, framed, in two chapters, with whole buildings, set pieces, the
+  FireRed route on a seven-row grid, its ground at one pixel density and its people a third larger, facing you; framed,
+  in two chapters, with the Gym's whole building and no other, flower beds, the
   field moves' obstacles (a Box type clears them, and they are gone) and a ledge; each Gym's field drawn as weather over
   all its ground, its leaning track included, whose fights are fought under it; a Mystery stays a "?" (§2.5.4–§2.5.5,
   v0.9.107–v0.9.108).

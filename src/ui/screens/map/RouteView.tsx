@@ -15,10 +15,10 @@ import { loadPieces, paintTerrain, piecesFor, TILE } from './tileset';
 import styles from './RouteView.module.css';
 
 // §9.3 — the route, left to right, wider than the screen: the painted terrain (§2.5.4) on a canvas, the edges drawn
-// along its paths, the buildings' fronts and the field moves' obstacles over them, the nodes on top, and each lane's
-// Battlefield as weather over its Gym's ground. Dragged, wheeled or keyed; the view follows the player; Labels stays in
-// the board's corner. Tiles and people share one pixel density (v0.9.107): the largest half step at which the route fits
-// the height, three at most.
+// along its paths, the Gym's building and the field moves' obstacles over them, the nodes on top, and each Gym's
+// Battlefield as weather over its ground. Dragged, wheeled or keyed; the view follows the player; Labels stays in the
+// board's corner. The ground has one pixel density (v0.9.107): the largest half step at which the route fits the height,
+// three at most; its people stand a third larger (v0.9.109).
 
 interface Props {
   run: RunState;
@@ -65,6 +65,14 @@ const WEATHER_IMG: Partial<Record<FieldId, string>> = {
 const MAX_DENSITY = 3;
 
 /**
+ * §9.3 (v0.9.109) — the route's people stand a third larger than the tiles: the largest half step of their pixel at most
+ * four thirds of the density (2.5 at 720 p, 4 at 1080 p). At the tiles' own they read small on a board the height of the
+ * screen (the user, 2026-11-10: "los veo pequeños"); at four thirds a figure and the caption of the node two rows above
+ * still fit the four tiles between two tracks.
+ */
+const personScale = (density: number) => Math.max(density, Math.floor(((density * 4) / 3) * 2) / 2);
+
+/**
  * §2.5.4 (v0.9.108) — where a Gym's field is drawn: every tile of its ground (`TerrainCell.s`) — its lane, and its leaning
  * track's blend over the Y — not a rectangle at the lanes (the user, 2026-11-09). A mask one pixel a tile, stretched at
  * the board's pixel, so the field's edge is a tile's edge. The layer is sized to its own ground, never the board: a field
@@ -96,9 +104,9 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const animate = useMotionPref();
-  // §9.3 (v0.9.107) — one pixel density for tiles and people: the largest half step at which the route's natural height
-  // fits the board, three at most (2 at 720 p, 3 at 1080 p); the rows left over go to the route's own frame, never to an
-  // empty band.
+  // §9.3 (v0.9.107) — one pixel density for the ground: the largest half step at which the route's natural height fits
+  // the board, three at most (2 at 720 p, 3 at 1080 p); the rows left over go to the route's own frame, never to an empty
+  // band. People are drawn at `personScale` of it.
   const [boxH, setBoxH] = useState(0);
   const scale = boxH ? Math.min(MAX_DENSITY, Math.max(1, Math.floor((boxH / (naturalHeight(run.map) * TILE)) * 2) / 2)) : 2;
   // A whole tile over the box rather than a band of backdrop under the board (v0.9.108: at 720 p a tile is 32 px). The board
@@ -149,7 +157,8 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  // The node art's CSS is written at twice its native size; half the density draws it at the tiles' own pixel.
+  // The node art's CSS is written at twice its native size; half the density draws it at the tiles' own pixel (a person's
+  // then `--person-k` larger).
   const nodeScale = scale / 2;
   const px = TILE * scale;
   const boardW = terrain.w * px;
@@ -320,7 +329,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   return (
     <div className={styles.root}>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
-        <div ref={board} className={styles.board} style={{ width: boardW, height: viewH, '--tile': `${px}px`, '--node-scale': nodeScale, '--node-label-size': `${Math.min(16, 12 + scale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
+        <div ref={board} className={styles.board} style={{ width: boardW, height: viewH, '--tile': `${px}px`, '--node-scale': nodeScale, '--person-k': personScale(scale) / scale, '--node-label-size': `${Math.min(16, 12 + scale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
 
           {/* §2.5.4 — each Gym's Battlefield, drawn as weather over every tile of its ground (named at its lane's mouth, below). */}
@@ -353,7 +362,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
             })}
           </svg>
 
-          {/* §2.5.4 — the buildings' fronts a Gym, a nurse and a merchant stand at: over the lines that reach their door. */}
+          {/* §2.5.4 — the Gym's building, its Leader at the door: over the lines that reach it. */}
           {terrain.buildings.map((b) => {
             const { w, h } = BUILDINGS[b.id];
             const node = run.map.nodes[b.node]!;

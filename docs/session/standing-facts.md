@@ -79,11 +79,12 @@
   fights; the harness read R3 78 % before XP came down ×0.9. Stop columns keep the fight count path-independent.
 - **A guaranteed service has to be reachable from every track**, not just present in the column (`placeNurse`).
 - **One pixel density is a height budget** (v0.9.107). Tiles at 1.05× under people at 3× and Leaders at 6× was the
-  cheapest look on the screen. Tiles and people now share the largest half step at which the route's natural height fits
-  the board, so every tile of height costs density: at 720 p the board holds 25 tiles at 1.5×, and a twenty-sixth drops
-  it to 1×. A row is two tiles, a column six; `reachOf` sets the top margin from the tallest picture in the top rows.
-- **A FRLG building does not fit between tracks** four tiles apart (a Center is five tall): the stops stand at its front,
-  its bottom three rows. Set pieces go only where open grassy ground holds them whole, off every line.
+  cheapest look on the screen. The ground takes the largest half step at which the route's natural height fits the
+  board (three at most), so every tile of height costs density; people stand a third larger (`personScale`, the user's
+  "los veo pequeños"). A row is two tiles, a column six; `reachOf` sets the top margin from the tallest picture in the
+  top rows. A person's hit box must grow with `--person-k`, or its face answers nothing.
+- **The route's only building is the Gym** (the user, 2026-11-10): no houses, no Center or Mart behind the nurse and the
+  merchant — anything that is not a stop and draws the eye costs the stops. A flower bed is the one set piece.
 - **`build-event-art.mjs` re-cuts two scenes wrong** since the v0.9.101 Mart room: rebuilding it changes `slot-booth.png`
   and `traveling-apothecary.png` (their counter and shelf crops land on the new room's goods). Restore those two from git
   after a rebuild until the crops are re-pinned.

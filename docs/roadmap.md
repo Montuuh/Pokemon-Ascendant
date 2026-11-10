@@ -1540,6 +1540,19 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.109 — Faces on the road  ✅ 2026-11-10
+
+**Shipped.** The user's three notes on v0.9.108 (2026-11-10): "no me gusta que haya edificios sueltos" — no house or
+cottage set pieces (and no pond, the UI review's reading of the same reason; a flower bed is the one set piece); "la
+enfermera Joy y el trader de ruta… no me gusta que tengan el edificio detrás" — the nurse and the merchant stand on the
+road, the Gym is the route's only building (`BUILDINGS`); "los trainers todos mirando de cara a la pantalla… los veo
+pequeños" — every route person faces the viewer (`build-map-people.mjs`, the south frame) and stands a third larger than
+the tiles at a half step of its pixel (`personScale`: 2.5× at 720 p, 4× at 1080 p; `--person-k`, applied as a transform so
+it lands on whole pixels). UI review: Ship with fixes — the Blocker (a figure's face outside its hit box) fixed with the box
+grown by `--person-k` and an e2e that hovers every face; the canon's density rule restated once; stale comments and the
+people manifest cleared. Left for the user: a Wild Area's power-plant landmark is a building too; the merchant reads as a
+villager until hovered.
+
 ### v0.9.108 — Straight roads  ✅ 2026-11-10
 
 **Shipped.** The user's five notes on v0.9.107 (2026-11-09). "Water" tags in the middle of nowhere: a cleared obstacle

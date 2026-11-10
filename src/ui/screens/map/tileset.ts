@@ -354,7 +354,7 @@ export function paintTerrain(canvas: HTMLCanvasElement, terrain: MapTerrain, pie
     }
   }
 
-  // 5 — the set pieces, last: a house, a pond, a garden from FRLG's own maps, at their tiles, over the ground they stand on.
+  // 5 — the set pieces, last: a flower bed from FRLG's own maps, at its tiles, over the ground it stands on.
   for (const p of terrain.pieces) {
     const img = P.raw(`props/${p.id}`);
     if (img) ctx.drawImage(img, p.x * TILE, p.y * TILE);

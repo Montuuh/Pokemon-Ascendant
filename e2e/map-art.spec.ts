@@ -53,10 +53,24 @@ for (const size of [{ width: 1280, height: 720 }, { width: 1920, height: 1080 }]
     expect(await people.evaluateAll((images) => images.every((image) => {
       const im = image as HTMLImageElement;
       const b = im.getBoundingClientRect();
-      // §9.3 (v0.9.107) — one pixel density: every person, the Leaders too, at the tiles' own multiple (`--tile` / 16).
-      const scale = Number.parseFloat(getComputedStyle(im.closest('[data-testid="route-board"]')!).getPropertyValue('--tile')) / 16;
-      return im.src.includes('/art/map/people/') && b.width === im.naturalWidth * scale && b.height === im.naturalHeight * scale;
+      // §9.3 (v0.9.109) — every person, the Leaders too, a third larger than the tiles (`--tile` / 16 × `--person-k`), at a
+      // half step of their own pixel, never between.
+      const style = getComputedStyle(im.closest('[data-testid="route-board"]')!);
+      const scale = (Number.parseFloat(style.getPropertyValue('--tile')) / 16) * Number.parseFloat(style.getPropertyValue('--person-k'));
+      const close = (a: number, z: number) => Math.abs(a - z) < 0.01;
+      return im.src.includes('/art/map/people/') && close(scale * 2, Math.round(scale * 2)) && close(b.width, im.naturalWidth * scale) && close(b.height, im.naturalHeight * scale) && scale > Number.parseFloat(style.getPropertyValue('--tile')) / 16;
     }))).toBe(true);
+    // §9.3 (v0.9.109) — a person's face answers the pointer as its feet do: the box grows with `--person-k` (the UI review,
+    // D8). Every figure the route shows, a quarter of the way down from its head.
+    const faceless = await people.evaluateAll((images) => images.flatMap((image) => {
+      const b = image.getBoundingClientRect();
+      const view = document.querySelector('[data-testid="route-scroller"]')!.getBoundingClientRect();
+      const [x, y] = [b.left + b.width / 2, b.top + b.height / 4];
+      if (x < view.left || y < view.top || x >= view.right || y >= view.bottom) return [];
+      const own = image.closest('[data-testid^="node-"]');
+      return document.elementFromPoint(x, y)?.closest('[data-testid^="node-"]') === own ? [] : [own?.getAttribute('data-testid')];
+    }));
+    expect(faceless).toEqual([]);
     for (const node of await board.locator('[data-kind="wild"][data-art="habitat"]').all()) {
       await expect(node.getByTestId('habitat-art')).toBeAttached();
       expect(await node.locator('[data-resident]').count()).toBeGreaterThan(0);

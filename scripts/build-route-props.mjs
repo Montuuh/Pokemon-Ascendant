@@ -1,7 +1,8 @@
 // §2.5.4 / §9.3 — the route's buildings, set pieces and obstacles, cut from FireRed's own maps in pret (v0.9.107):
-//   · the buildings a node stands at the door of — Pewter City's Pokémon Center, Poké Mart and Gym, whole (v0.9.108: the
-//     bottom three rows alone read as cut off, the user's words);
-//   · set pieces for the open ground — Pewter's house, Route 25's pond and Bill's cottage, a flower bed from Route 1;
+//   · the Gym a Leader stands at the door of — Pewter City's, whole (v0.9.108: the bottom three rows alone read as cut
+//     off, the user's words). The nurse and the merchant stand on the road (v0.9.109: a building behind them "no encaja");
+//   · a set piece for the open ground — a flower bed from Route 1. No house or cottage (v0.9.109: a building that is no
+//     stop "le quita atención a lo importante", the user), and no pond, by the same reason (the UI review);
 //   · a ledge from Route 1 (its two ends), for the route's one-way drop;
 //   · the field moves' obstacles — the cut tree and the cracked rock (pret's object sprites) and a pool of Route 25's water.
 // Every pixel is a FRLG tile pixel; nothing is resampled. The grass round a piece is keyed out to alpha, so it stands on
@@ -64,14 +65,9 @@ async function cut(id, map, [mx, my, mw, mh], { keyGrass = true } = {}) {
   outputs.push({ id, map, metatiles: [mx, my, mw, mh], size: [W, H], sha256: sha(bytes) });
 }
 
-// The buildings, whole: roof, walls, sign and door.
+// The Gym, whole: roof, walls, sign and door.
 await cut('gym', 'PewterCity', [12, 12, 7, 5]);
-await cut('center', 'PewterCity', [15, 21, 5, 5]);
-await cut('mart', 'PewterCity', [26, 15, 4, 4]);
 // Set pieces.
-await cut('house', 'PewterCity', [32, 8, 5, 4]);
-await cut('pond', 'Route25', [43, 9, 6, 4]);
-await cut('cottage', 'Route25', [49, 1, 5, 5]);
 await cut('flowers', 'Route1', [2, 6, 6, 4]);
 // The ledge: Route 1's, cut to its two ends (v0.9.108) — two tiles stand a quarter of the way down its drop, clear of the
 // column it skips and of the nodes either side.

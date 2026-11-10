@@ -9,12 +9,12 @@ import { gymById, type MapNode, type RegionMap } from '@/sim';
 // tall. An edge is a straight line from node to node (v0.9.14, after Pokelike's map), and the ground along it is kept
 // clear of scenery.
 //
-// v0.9.107 (the route review, 2026-11-09) made the board a FireRed route. **One pixel density**: a tile is 16 px and a
-// person 16 × 32, drawn at the same multiple — since v0.9.108 the map has seven rows and the board is about seventeen
-// tiles tall, so that multiple is 2 at 720 p and 3 at 1080 p (`RouteView`). The route is **framed** top and bottom by its
-// own scenery, the trunk changes biome in **chapters**, fights stand on a **clearing**, the Gym, the nurse and the merchant
-// stand at the door of a **whole FRLG building** cut from Pewter City, **set pieces** cut from FRLG's routes (a house, a
-// pond, a cottage) stand in the open ground, and every node stands on its grid point, so a track is a level road. The
+// v0.9.107 (the route review, 2026-11-09) made the board a FireRed route. **One pixel density** for the ground: a tile is
+// 16 px, drawn at the largest half step that fits — since v0.9.108 the map has seven rows and the board is about
+// eighteen tiles tall, so that multiple is 2 at 720 p and 3 at 1080 p (`RouteView`); its people stand a third larger
+// (`personScale`, v0.9.109). The route is **framed** top and bottom by its own scenery, the trunk changes biome in
+// **chapters**, fights stand on a **clearing**, the Leader stands at the door of its **whole FRLG Gym** cut from Pewter
+// City, a **set piece** cut from FRLG's routes (a flower bed) stands in the open ground, and every node stands on its grid point, so a track is a level road. The
 // point of no return has no river: the lanes' ridge and the Gym-coloured lines into them say it.
 
 /** Tiles per map column (left to right) and per map row (top to bottom). */
@@ -24,9 +24,10 @@ export const ROW_TILES = 2;
 export const MARGIN_X = 5;
 /** Tiles below the last row: its feet's row and the caption under them, over a row of the route's frame. */
 export const MARGIN_BOTTOM = 2;
-/** How far above its point each kind of picture reaches, in tiles: a person two, a habitat's landmark (drawn a step under
- *  the density, §9.3 — a cave's peak with the grass it stands in) three. A building, its height but its door's row. */
-const REACH = { person: 2, habitat: 3, pokemon: 4 } as const;
+/** How far above its point each kind of picture reaches, in tiles: a person 8/3 (two tiles' height drawn at four thirds
+ *  of the density, §9.3 `personScale`), a habitat's landmark (drawn a step under the density — a cave's peak with the
+ *  grass it stands in) three. A building, its height but its door's row. */
+const REACH = { person: 8 / 3, habitat: 3, pokemon: 4 } as const;
 
 /** §9.3 — how tall a node's picture stands above its point, in tiles. */
 export const reachOf = (node: Pick<MapNode, 'kind'>) => {
@@ -127,11 +128,19 @@ export interface LaneZone {
   y1: number;
 }
 
-/** §2.5.4 — the FRLG buildings a node stands at the door of (`map/props/<id>.png`), whole, their size in tiles. */
-export const BUILDINGS = { gym: { w: 7, h: 5 }, center: { w: 5, h: 5 }, mart: { w: 4, h: 4 } } as const;
+/**
+ * §2.5.4 — the FRLG building a node stands at the door of (`map/props/<id>.png`), whole, its size in tiles: the Gym's own.
+ * The nurse and the merchant had a Pokémon Center and a Poké Mart behind them in v0.9.107–v0.9.108; the user found they
+ * did not fit (2026-11-10) — a stop is a person on the road.
+ */
+export const BUILDINGS = { gym: { w: 7, h: 5 } } as const;
 export type BuildingId = keyof typeof BUILDINGS;
-/** §2.5.4 — the set pieces cut from FRLG's routes and towns (`map/props/<id>.png`), their size in tiles. */
-export const SET_PIECES = { house: { w: 5, h: 4 }, pond: { w: 6, h: 4 }, flowers: { w: 6, h: 4 }, cottage: { w: 5, h: 5 } } as const;
+/**
+ * §2.5.4 — the set piece cut from FRLG's routes (`map/props/<id>.png`), its size in tiles: a flower bed. Never a building —
+ * a house or a cottage that is no stop drew the eye from the stops (the user, 2026-11-10) — and no longer Route 25's pond,
+ * a flat blue block louder than any stop beside it (the UI review, by the same reason).
+ */
+export const SET_PIECES = { flowers: { w: 6, h: 4 } } as const;
 export type SetPieceId = keyof typeof SET_PIECES;
 
 export interface MapTerrain {
@@ -206,9 +215,8 @@ export function terrainOfNode(map: RegionMap, node: MapNode): TerrainId {
   return TERRAIN_BY_TYPE[gymById(map.gyms[side]!).type] ?? first;
 }
 
-/** §2.5.4 — the building a node stands at: the Gym its own, the nurse a Pokémon Center's, the merchant a Poké Mart's. */
-export const buildingOf = (node: Pick<MapNode, 'kind'>): BuildingId | null =>
-  node.kind === 'gym' ? 'gym' : node.kind === 'aid' ? 'center' : node.kind === 'merchant' ? 'mart' : null;
+/** §2.5.4 — the building a node stands at: the Gym its own; every other node stands on the road. */
+export const buildingOf = (node: Pick<MapNode, 'kind'>): BuildingId | null => (node.kind === 'gym' ? 'gym' : null);
 
 /** Points along a polyline every quarter tile, for whatever must follow a line (its corridor). */
 function along(points: readonly { x: number; y: number }[], each: (x: number, y: number) => void): void {
@@ -417,7 +425,7 @@ export function mapTerrain(map: RegionMap, tall = 0): MapTerrain {
     }
   }
 
-  // §2.5.4 — the set pieces: a house, a pond, a cottage or a flower bed from FRLG's own routes and towns, where a stretch of grassy
+  // §2.5.4 — the set pieces: a flower bed from FRLG's own routes, where a stretch of grassy
   // open ground (or scenery to clear for it) holds one whole with a tile of room round it, off every line, at most one
   // in a column's width and never the same one twice running. They are what a FRLG route's eye rests on.
   const pieces: MapTerrain['pieces'] = [];

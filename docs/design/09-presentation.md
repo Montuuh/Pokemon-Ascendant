@@ -373,16 +373,20 @@ preview. The route fills the available height; there is no miniature summary str
 in the lower-right corner, above the terrain and outside the scrolling content. The vertical map was a roguelike convention borrowed from a game about climbing a tower; a route is
 a road.
 
-**One pixel density** (v0.9.107). Tiles and people are drawn at the same multiple of their FRLG pixel — the largest
-half step at which the route's own height fits the board, three at most: 2 at 720 p, 3 at 1080 p since the seven-row map
-(v0.9.108; 1.5 and 2 on eleven rows) — so a pine and the hiker beside it share a pixel, as on the GBA. At three a column
-is 288 px and about five and a half fit a 1080 p screen: the next stop, the one after and the Y behind them; past three
-the board would show less road, not more of it. (Until v0.9.107 the tiles stood at 1.05, the people at 3 and the Leaders at 6: three pixel
-sizes on one screen, the cheapest look pixel art has.) Rows the board has left over go to the route's frame, rounded up
+**The route's pixel** (v0.9.107–v0.9.109). The ground — tiles, the Gym's building, the set pieces — is drawn at one
+multiple of its FRLG pixel: the largest half step at which the route's own height fits the board, three at most: 2 at
+720 p, 3 at 1080 p since the seven-row map (v0.9.108; 1.5 and 2 on eleven rows). At three a column is 288 px and about
+five and a half fit a 1080 p screen: the next stop, the one after and the Y behind them; past three the board would show
+less road, not more of it. **People stand a third larger** — the largest half step of their own pixel at most four thirds
+of it (2.5 at 720 p, 4 at 1080 p): at the ground's own they read small on a board the screen's height (the user,
+2026-11-10), and at four thirds a figure and the caption of the node two rows above still share the four tiles between two
+tracks. A Wild Area's landmark stands a step under the ground (below). Three related multiples, each a clean step of its
+own pixel; until v0.9.107 the tiles stood at 1.05, the people at 3 and the Leaders at 6 — unrelated sizes, which is what
+read as cheap. Rows the board has left over go to the route's frame, rounded up
 to a whole tile — the frame's last row is cut by the board's edge rather than leaving a band of backdrop. The terrain
 is drawn from tiles at that scale (§2.5.4): open ground, the scenery between the routes, the trunk's two chapters, each
 Gym's terrain on its leaning track and its lane, a frame of scenery along the top and the bottom, a ridge between the
-two lanes, the whole buildings, the set pieces, and each Gym's Battlefield drawn as weather over every tile of its ground
+two lanes, the Gym's whole building, the set pieces, and each Gym's Battlefield drawn as weather over every tile of its ground
 (§2.5.4) — FireRed's own rain, sandstorm, snow and fog (`scripts/build-route-weather.mjs`) where FireRed draws that
 weather, repeated at the terrain's pixel, each loop ending on a whole period of its tile, through a mask one pixel a tile
 that the board stretches, so the weather fades out over a tile where the Gym's ground ends. Every node stands on its grid
@@ -410,9 +414,10 @@ its Gym's type colour on a dark casing — never the gold of a step you can take
 "This step commits you to Brock's Gym" (§2.5).
 
 A node is drawn as **what it is**, standing on its point with a shadow under it: a trainer is its roster's own figure
-(FRLG's overworld sprite, facing west, the way the player comes — a route's trainers stand watching the road), the
-Elite its trainer, a Gym its Leader in its building's doorway with a gold glow (the nurse and the merchant in a Pokémon
-Center's and a Poké Mart's, §2.5.4; the whole front is the node's hit target); a **Wild Area its habitat**, with **its pool
+(FRLG's overworld sprite, **facing the viewer** — v0.9.107 turned trainers west to watch the road, and side-on they read
+small; the user, 2026-11-10: "todos mirando de cara a la pantalla"), the Elite its trainer, the nurse and the merchant
+their own figures on the road, a Gym its Leader in its building's doorway with a gold glow (§2.5.4; the whole front is
+the node's hit target); a **Wild Area its habitat**, with **its pool
 going round at its sides** — the habitat's landmark in front, in the middle, standing in **one grass every Wild Area
 shares**, and either side of it one of its pool's Pokémon at half size (a small one, under 40 px, at its own: halved,
 a Diglett is a speck), each going round the whole pool (Commons first), the two half a pool apart so they never show
@@ -429,12 +434,16 @@ the Pokémon Tower's dome, the Power Plant, a cave's mouth in a peak, a cone wit
 three pines, flowers, a pond, a reef, a sandbank, a marsh, an ice-green pool, sandstone, spires above cloud, and for
 the plain Tall Grass a stand of it rustling as the games draw grass with a Pokémon in it (`npm run art:habitats`,
 FireRed's own pixels). A runner (§5.6.5) and the Elite Wild are the Pokémon itself, in the same grass — there the
-Pokémon is the point; the nurse and the merchant are themselves, at their door; an item ball the Poké Ball lying there; a
+Pokémon is the point; the nurse and the merchant are themselves, on the road; an item ball the Poké Ball lying there; a
 Mystery the overworld's **"?"** (§2.5.5: its event stays hidden until entered). State reads through the picture — full colour on every route still open from where you stand
 (`nodesAhead`), faded where you can no longer go, darkened with a tick once cleared — and through a ring on the
 ground: pulsing gold where you stand, gold under the nodes you can step to next. People keep their feet on the ground, including on hover.
 
-Node artwork scales with the board's one density: people and buildings at the tiles' multiple; a Wild Area's landmark
+Node artwork scales with the board's one density: the Gym's building at the tiles' multiple; **people a third larger**
+— the largest half step of their own pixel at most four thirds of the density, 2.5 at 720 p and 4 at 1080 p (v0.9.109,
+the user: "que escalen en base al tamaño del panel, los veo pequeños"; at the tiles' own a figure was a sixth of the
+board's height between two tracks, and four thirds is the most at which a figure and the caption of the node two rows
+above still share those four tiles); a Wild Area's landmark
 a whole step under it (1 at 720 p, 2 at 1080 p — any nearer, a cave's peak is taller than the four tiles between two
 tracks less the caption of the node above, and on seven rows every lane's two tracks are four tiles apart; half a step
 under until v0.9.108); habitat residents (battle sprites, a different register) at half

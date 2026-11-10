@@ -78,12 +78,12 @@ describe('The route terrain — §2.5.4', () => {
     expect(tall.at[id]!.y - natural.at[id]!.y).toBe(2);
   });
 
-  it('StopsStandAtABuildingsFront_AndSetPiecesStandOffEveryLine', () => {
+  it('OnlyAGymStandsAtABuilding_AndSetPiecesStandOffEveryLine', () => {
+    // §2.5.4 (v0.9.109) — the nurse and the merchant stand on the road; no building stands that is not a Gym.
     let pieces = 0;
     for (const m of maps.slice(0, 30)) {
       const t = mapTerrain(m);
-      for (const n of Object.values(m.nodes).filter((x) => x.kind === 'aid' || x.kind === 'merchant' || x.kind === 'gym'))
-        expect(t.buildings.some((b) => b.node === n.id), `${m.seed} ${n.id}`).toBe(true);
+      for (const n of Object.values(m.nodes)) expect(t.buildings.some((b) => b.node === n.id), `${m.seed} ${n.id}`).toBe(n.kind === 'gym');
       for (const p of t.pieces) {
         pieces++;
         const { w, h } = SET_PIECES[p.id];
@@ -106,9 +106,9 @@ describe('The route terrain — §2.5.4', () => {
       const t = mapTerrain(m);
       const rows = [...Array.from({ length: t.frame.top }, (_, y) => y), ...Array.from({ length: t.h - t.frame.bottom }, (_, i) => t.frame.bottom + i)];
       const cells = rows.flatMap((y) => t.cells[y]!);
-      // Scenery, but for the top row's own ground and lines, and a building's front, which stand in it.
+      // Scenery, but for the top and bottom rows' own ground and lines, which open it where a stop stands in it.
       const walled = cells.filter((c) => c.k === 'fill' || c.k === 'prop').length / cells.length;
-      expect(walled, `${m.seed}`).toBeGreaterThan(0.7);
+      expect(walled, `${m.seed}`).toBeGreaterThan(0.65);
     }
   });
 

@@ -7,9 +7,9 @@ const out='public/art/map/people';
 const commit='ce6406d8c2eaf46d543c8a2606de0c3cb1951982';
 const origin=`https://raw.githubusercontent.com/pret/pokefirered/${commit}/graphics/object_events/pics/people`;
 const ids={youngster:'youngster',lass:'lass','bug-catcher':'bug_catcher',hiker:'hiker',camper:'camper',picnicker:'picnicker',acetrainer:'cooltrainer_f',swimmer:'swimmer_f_land',nurse:'nurse',merchant:'clerk',pokefan:'fat_man',scientist:'scientist',rocketgrunt:'rocket_m',rocketgruntf:'rocket_f',blackbelt:'black_belt',hexmaniac:'channeler',brock:'brock',misty:'misty',bugsy:'bug_catcher',whitney:'lass',blaine:'blaine',erika:'erika',ltsurge:'lt_surge',koga:'koga',giovanni:'giovanni','giovanni-rocket':'giovanni',kiyo:'black_belt',sabrina:'sabrina',lorelei:'lorelei',lance:'lance',bruno:'bruno',agatha:'agatha',blue:'blue',will:'cooltrainer_m',gambler:'gentleman',archer:'rocket_m',swimmerm:'swimmer_m_land',acetrainerm:'cooltrainer_m',engineer:'worker_m',battlegirl:'crush_girl'};
-// v0.9.107 (§9.3) — a route's trainers face the way the player comes from, the west, as FRLG's trainers stand watching
-// the road; Leaders, the nurse, the merchant and the Trader face the viewer. FRLG's sheets run south, north, west.
-const west=new Set(['youngster','lass','bug-catcher','hiker','camper','picnicker','acetrainer','acetrainerm','swimmer','swimmerm','scientist','engineer','rocketgrunt','rocketgruntf','blackbelt','battlegirl','hexmaniac','gambler','archer']);
+// v0.9.109 (§9.3) — everyone on the route faces the viewer, the south-facing first frame (the user, 2026-11-10: "todos
+// mirando de cara a la pantalla"). v0.9.107 turned the route's trainers west, to watch the road; seen side-on they read
+// small. FRLG's sheets run south, north, west.
 await mkdir(`${out}/sources`,{recursive:true});
 const exists=(p)=>access(p).then(()=>true,()=>false);
 const sha=(b)=>createHash('sha256').update(b).digest('hex');
@@ -25,13 +25,12 @@ for(const file of new Set(Object.values(ids))){
   sources.push({path,url,sha256:sha(bytes),width:meta.width,height:meta.height});
 }
 for(const [id,file]of Object.entries(ids)){
-  const left=west.has(id)?32:0;
-  const {data,info}=await sharp(`${out}/sources/${file}.png`).extract({left,top:0,width:16,height:32}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  const {data,info}=await sharp(`${out}/sources/${file}.png`).extract({left:0,top:0,width:16,height:32}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   const key=[...data.subarray(0,3)];
   for(let p=0;p<data.length;p+=4)if(data[p]===key[0]&&data[p+1]===key[1]&&data[p+2]===key[2])data[p+3]=0;
   const bytes=await sharp(data,{raw:info}).png({palette:true}).toBuffer();
   await writeFile(`${out}/${id}.png`,bytes);
-  outputs.push({id,file:`${id}.png`,source:`sources/${file}.png`,crop:[left,0,16,32],sha256:sha(bytes)});
+  outputs.push({id,file:`${id}.png`,source:`sources/${file}.png`,crop:[0,0,16,32],sha256:sha(bytes)});
 }
 // The authentic overworld item ball is a world object rather than the bag's ball icon.
 const ballSource='public/art/events/sources/ball.png';
@@ -41,5 +40,5 @@ const key=[...data.subarray(0,3)];
 for(let p=0;p<data.length;p+=4)if(data[p]===key[0]&&data[p+1]===key[1]&&data[p+2]===key[2])data[p+3]=0;
 const ballOutput=await sharp(data,{raw:info}).png({palette:true}).toBuffer();
 await writeFile(`${out}/item-ball.png`,ballOutput);
-await writeFile(`${out}/manifest.json`,JSON.stringify({build:'node scripts/build-map-people.mjs',processing:'One 16x32 frame: the west-facing one (the third) for route trainers, the south-facing first for Leaders and services; exact palette-zero transparency; no resampling, no colour edits. Render at 2x on the map. Battle portraits remain in the preview.',aliases:'Johto and role-only identities use the matching FRLG trainer class, with their real name, rank, type and portrait retained in the preview.',sources,outputs,ball:{file:'item-ball.png',source:ballSource,sourceSha256:sha(ball),sha256:sha(ballOutput),crop:[0,0,16,16],url:'https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/item_ball.png'}},null,2)+'\n');
+await writeFile(`${out}/manifest.json`,JSON.stringify({build:'node scripts/build-map-people.mjs',processing:'One 16x32 frame: the south-facing first, for everyone on the route; exact palette-zero transparency; no resampling, no colour edits. The map draws them a third larger than its tiles, at a half step of their own pixel (2.5x at 720p, 4x at 1080p). Battle portraits remain in the preview.',aliases:'Johto and role-only identities use the matching FRLG trainer class, with their real name, rank, type and portrait retained in the preview.',sources,outputs,ball:{file:'item-ball.png',source:ballSource,sourceSha256:sha(ball),sha256:sha(ballOutput),crop:[0,0,16,16],url:'https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/graphics/object_events/pics/misc/item_ball.png'}},null,2)+'\n');
 console.log(`Built ${outputs.length} native route NPCs and one item ball.`);

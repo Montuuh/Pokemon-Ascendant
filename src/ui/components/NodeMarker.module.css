@@ -1,5 +1,5 @@
 /* §9.3 (v0.9.14) — a node is the thing itself standing on the route: its picture's feet on the node's point, its hit
-   target the picture's own size, a ring on the ground under it. State reads through the picture (full, faded,
+   target the picture's own size (a person's grown with `--person-k`, below), a ring on the ground under it. State reads through the picture (full, faded,
    cleared) and the ring, never through colour alone; the Gym and the Elite always carry a caption — the Leader's or the
    Elite's name — and with the map's Labels toggle on, every node carries its short name (`.label`). */
 .node {
@@ -40,11 +40,23 @@
   /* The picture keeps its own size: wider than the hit target is fine, squashed into it is not. */
   max-width: none;
 }
-/* Authentic 16×32 overworld frames at 2×: the route's people share the tiles' pixel register. */
+/* A person's hit target is its whole figure, head included, at the size `--person-k` draws it (v0.9.109: at the old 48 px
+   the face of a figure a third larger than the tiles answered nothing — the UI review, D8). Four tiles stand between two
+   tracks; the box takes under three. */
+.node[data-art='trainer']:not(.climax) {
+  height: calc(64px * var(--node-scale, 1) * var(--person-k, 1));
+  margin-top: calc(-64px * var(--node-scale, 1) * var(--person-k, 1));
+}
+
+/* Authentic 16×32 overworld frames, facing the viewer: at 2× the tiles' register, times the route's `--person-k` (§9.3,
+   v0.9.109: a third larger than the tiles, at a half step of their own pixel). Scaled, not sized: a width of 32 × 4/3 px
+   is snapped to the layout's 1/64 px and lands a hair off the whole pixel, where a transform keeps it exact. */
 .trainer img {
   width: 32px;
   height: 64px;
   bottom: 0;
+  transform: translateX(-50%) scale(var(--person-k, 1));
+  transform-origin: 50% 100%;
 }
 /* A Gen V battle sprite, cropped to the Pokémon, at its own size: a Caterpie small, a Snorlax big, as they are. */
 .pokemon img {
@@ -138,27 +150,18 @@
   border: 2px solid var(--surface-1);
 }
 
-/* §2.5.4 — a nurse's, a merchant's and a Gym's front is their picture as much as the figure at its door: the hit target
-   takes the whole front down to the figure's feet (its tiles, at --node-scale's 32 px a tile), not the doorway alone (the
-   UI review, D8); the front's last row, under the feet, is left to the caption, which hangs where every node's does. */
-.node[data-building='center'] {
-  width: calc(160px * var(--node-scale, 1));
-  height: calc(64px * var(--node-scale, 1));
-  margin: calc(-64px * var(--node-scale, 1)) 0 0 calc(-80px * var(--node-scale, 1));
-}
-.node[data-building='mart'] {
-  width: calc(128px * var(--node-scale, 1));
-  height: calc(64px * var(--node-scale, 1));
-  margin: calc(-64px * var(--node-scale, 1)) 0 0 calc(-64px * var(--node-scale, 1));
-}
+/* §2.5.4 — the Gym's front is its picture as much as the Leader at its door: the hit target takes the whole front down
+   to the figure's feet (its tiles, at --node-scale's 32 px a tile), and as tall as the Leader standing in it (a third
+   larger than the tiles, `--person-k`), not the doorway alone (the UI review, D8); the front's last row, under the feet,
+   is left to the caption, which hangs where every node's does. */
 .node[data-building='gym'].climax {
   width: calc(224px * var(--node-scale, 1));
-  height: calc(64px * var(--node-scale, 1));
-  margin: calc(-64px * var(--node-scale, 1)) 0 0 calc(-96px * var(--node-scale, 1));
+  height: calc(64px * var(--node-scale, 1) * var(--person-k, 1));
+  margin: calc(-64px * var(--node-scale, 1) * var(--person-k, 1)) 0 0 calc(-96px * var(--node-scale, 1));
 }
 
-/* The Gym's Leader stands at its door, at the route's one pixel density (v0.9.107: its building's front is the climax's
-   size now, where twice a person's size used to be); its hit target takes the door and the Leader. */
+/* The Gym's Leader stands at its door, a third larger than the tiles as every person on the route (v0.9.109); its hit
+   target takes the door and the Leader. */
 .climax {
   width: calc(96px * var(--node-scale, 1));
   height: min(calc(80px * var(--node-scale, 1)), var(--node-top));

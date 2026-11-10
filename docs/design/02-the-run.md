@@ -527,14 +527,14 @@ drawn as a FRLG route strip is, and with the same parts:
 - **Chapters.** The trunk is the Region's road, and the road changes once, past the trunk's middle stop: Region 1's
   route into the edge of a wood, Region 2's coast up onto the cliffs, Region 3's highland down to the lava. The Region
   moves on as you walk it, not only at its lanes.
-- **Buildings.** The Gym, the field nurse and the travelling merchant stand in the doorway of a whole FRLG building —
-  the Gym's own (7 × 5 tiles), a Pokémon Center (5 × 5), a Poké Mart (4 × 4) — cut from Pewter City's map in pret. The
-  building's foot is a row under the figure's. Until v0.9.108 only its bottom three rows stood (the whole was thought too
-  tall for tracks four tiles apart), and the user read them as cut off: the roof is what makes it a Pokémon Center. The
-  node above stands at its roof's edge, as a FRLG route's trainers stand behind a house.
-- **Set pieces.** Where open grassy ground has room, a piece cut whole from FRLG's own maps stands in it: Pewter's house,
-  Bill's cottage and its pond from Route 25, a flower bed from Route 1 — one at most in two columns, never the same one
-  twice running, off every line. They are what a route's eye rests on.
+- **The Gym's building.** The Leader stands in the doorway of its whole FRLG Gym (7 × 5 tiles, cut from Pewter City's
+  map in pret), the building's foot a row under the figure's — the route's one building. The field nurse and the
+  travelling merchant stand on the road as people, like every other stop: v0.9.107 put them at a Pokémon Center's and a
+  Poké Mart's front and v0.9.108 drew those whole, and the user found a building behind them did not fit (2026-11-10).
+- **Set pieces.** Where open grassy ground has room, a flower bed cut whole from Route 1 stands in it — one at most in
+  two columns, off every line. Never a building: Pewter's house and Bill's cottage stood here in v0.9.107–v0.9.108, and a
+  building that is no stop "le quita atención a lo importante" (the user, 2026-11-10); Route 25's pond went with them, a
+  flat blue block louder than any stop beside it.
 - **Clearings.** A trainer stands on two tiles of the road's sand, the Elite on four, the Gym on six; a Wild Area stands
   in its tall grass. The fight reads as a place before its picture is read.
 - **The lanes' ridge.** Past the point of no return a band of the lanes' scenery runs between them to the Gyms, so

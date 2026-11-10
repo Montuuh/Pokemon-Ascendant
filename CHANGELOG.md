@@ -13,6 +13,14 @@
 
 The account's systems revisited, and the road to the Champion.
 
+### v0.9.109 — Faces on the road · 2026-11-10
+
+The route's people face you and stand larger; the only building is the Gym.
+
+- **Facing you.** Every trainer on the route faces the screen.
+- **Bigger people.** They stand a third larger than the tiles.
+- **Fewer buildings.** No houses; the nurse and merchant stand on the road.
+
 ### v0.9.108 — Straight roads · 2026-11-10
 
 The route map is flatter and straighter, and a Gym's ground carries its field.
