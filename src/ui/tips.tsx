@@ -4,13 +4,13 @@ import { GATE_TEXT, MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIEL
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, PARCEL, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
 import { describeMoveDef, disruptRule } from '@/ui/moveText';
 import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
-import { COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { JOURNEY_TEXT, COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -760,34 +760,115 @@ export function trainerXpTip(footer?: string): ReactNode {
   );
 }
 
-/** §8.4.2 — the services. */
-export function hubUpgradesTip(onSale: number): ReactNode {
-  return <Tip title="Services" body={`${onSale} sold at the Poké Mart. A service is yours for every run from then on and needs no Kit slot: a bigger Box, two starters, a second modifier slot.`} />;
-}
-
 /** §8.4.5 — the Trainer Kit. */
 export function kitTip(slots: number): ReactNode {
   return <Tip title="Trainer Kit" meta={[`${slots} slot${slots === 1 ? '' : 's'}`]} body={`Perks you pack before a run. Each changes what the run starts with — ₽, Potions, a TM, a peek — and none touches damage or HP. One slot at ${rankRow(KIT_SLOT_RANKS[0]).name}, two at ${rankRow(KIT_SLOT_RANKS[1]).name}, three at ${rankRow(KIT_SLOT_RANKS[2]).name}.`} footer="Bought at the Poké Mart, or handed over by Professor Oak's aide as your Pokédex fills." />;
 }
 
-/** §8.3.4 — the run's leftover ₽ and what it became, on the Field Report. */
-export function moneyTokensTip(money: number, tokens: number): ReactNode {
-  return <Tip title={`${money} ₽ → ${tokens} Token${tokens === 1 ? '' : 's'}`} body={`The ₽ a run ends with, won or lost, becomes Tokens: one for every ${TOKENS.moneyPer} ₽, up to ${TOKENS.moneyCap} a run.`} footer="₽ spent in the run is worth more than ₽ carried out." />;
+/** §8.4.5 — one of the Kit's three places. */
+export function kitSlotTip(open: boolean, rankName: string): ReactNode {
+  return <Tip title={open ? 'Kit slot' : 'Kit slot — locked'} body={open ? JOURNEY_TEXT.kit.slotOpen : JOURNEY_TEXT.kit.slotLocked(rankName)} />;
+}
+
+/** §8.6.2 — Research, wherever its bar is drawn. */
+export function researchTip(): ReactNode {
+  return <Tip title={JOURNEY_TEXT.research} body={JOURNEY_TEXT.researchTip(PARCEL.earlyCost, PARCEL.earlyCount, PARCEL.cost)} />;
+}
+
+/** §8.3.4 — the Tokens a run paid, by where each came from. The figure on the screen is the sum of these lines. */
+export function reportTokensTip(total: number, report: number, moneyTokens: number, money: number): ReactNode {
+  const other = Math.max(0, total - report - moneyTokens);
+  const lines: ReactNode[] = [
+    <div key="r">{report} from the run's XP: one for every {TOKENS.perRunXp}.</div>,
+    <div key="m">{moneyTokens} from the {money} ₽ it ended with: one for every {TOKENS.moneyPer}, up to {TOKENS.moneyCap}.</div>,
+    ...(other > 0 ? [<div key="o">{other} from ranks, the Journal and the League Ladder.</div>] : []),
+  ];
+  return <Tip title={`+${total} Token${total === 1 ? '' : 's'}`} body={lines} footer="Spent at the Poké Mart." />;
+}
+
+/** §6.8.1 — how Bond grows, as a bubble. */
+export function bondRulesTip(): ReactNode {
+  return <Tip title="Bond" body={bondRulesText()} />;
+}
+
+/** §8.7 — the Journal, and what a pin is. */
+export function journalTip(): ReactNode {
+  return <Tip title={JOURNEY_TEXT.journal.title} body={JOURNEY_TEXT.journal.tip} />;
+}
+export function journalShelfTip(name: string, about: string): ReactNode {
+  return <Tip title={name} body={about} />;
+}
+
+/** §8.7.2 — one Journal entry: the deed, how far along it is, and what it hands over. */
+export function journalEntryTip(entry: { name: string; description: string; prize: string; hidden: boolean; done: boolean; have: number; goal: number }): ReactNode {
+  const secret = entry.hidden && !entry.done;
+  return <Tip title={entry.name} meta={[entry.done ? JOURNEY_TEXT.journal.done : `${entry.have} / ${entry.goal}`]} body={secret ? JOURNEY_TEXT.journal.hidden : entry.description} footer={entry.prize} />;
+}
+
+/** §8.7.2 — the pin on a Journal entry: what it does, or why it will not take. */
+export function pinTip(pinned: boolean, canPin: boolean): ReactNode {
+  return <Tip title={JOURNEY_TEXT.journal.pinTitle(pinned)} body={JOURNEY_TEXT.journal.pinBody(pinned, canPin)} />;
+}
+
+/** §8.8.5 — the League Ladder's next rung: the stack it carries, row by row. */
+export function ladderTip(rung: number, rows: readonly { name: string; effect: ReactNode }[], top: boolean): ReactNode {
+  return <Tip title={JOURNEY_TEXT.ladder.tipTitle(rung)} body={rows.map((r) => <div key={r.name}><b>{r.name}</b> — {r.effect}</div>)} footer={JOURNEY_TEXT.ladder.win(top)} />;
+}
+
+/** §8.4.5, §8.7.2 — what the account sends with a run, on the new-run screen's header. */
+export function preflightKitTip(perks: readonly { name: string; effect: string }[]): ReactNode {
+  return <Tip title={JOURNEY_TEXT.preflight.kitTitle} body={perks.length ? perks.map((p) => <div key={p.name}><b>{p.name}</b> — {p.effect}</div>) : JOURNEY_TEXT.preflight.kitEmpty} />;
+}
+export function preflightGoalsTip(goals: readonly { name: string; description: string; have: number; goal: number }[]): ReactNode {
+  return <Tip title={JOURNEY_TEXT.preflight.goalsTitle} body={goals.map((g) => <div key={g.name}><b>{g.name}</b> ({g.have} / {g.goal}) — {g.description}</div>)} />;
+}
+
+/** §8.3.5 — the rank road, on the Trainer Card. */
+export function rankRoadTip(tokens: number, last: string): ReactNode {
+  return <Tip title="The rank road" body={JOURNEY_TEXT.card.roadTip} footer={JOURNEY_TEXT.card.roadTotal(tokens, last)} />;
+}
+
+/** §8.15 — one of the Trainer Card's four stars. */
+export function starTip(name: string, earned: string, got: boolean): ReactNode {
+  return <Tip title={`${name} star`} body={JOURNEY_TEXT.card.star(earned, got)} />;
+}
+
+/** §8.14 — the Badge Case, and one place in it. */
+export function badgeCaseTip(): ReactNode {
+  return <Tip title={JOURNEY_TEXT.card.badgeCase} body={JOURNEY_TEXT.card.badgeCaseTip} />;
+}
+export function badgeSlotTip(name: string, region: number, tm: string, won: boolean): ReactNode {
+  return <Tip title={won ? name : '???'} meta={[`Region ${region}`]} body={won ? JOURNEY_TEXT.card.badgeGot(tm) : JOURNEY_TEXT.card.badgeNot(tm)} />;
+}
+
+/** §8.15 — one run in the Hall of Fame. */
+export function hallRunTip(run: number, seed: number): ReactNode {
+  return <Tip title={JOURNEY_TEXT.hall.run(run)} body={JOURNEY_TEXT.hall.tip(seed)} />;
+}
+
+/** §8.3.6 — the run's XP, line by line: the figure on the Field Report is the sum of these. */
+export function reportXpTip(total: number, rows: readonly { label: string; xp: number }[]): ReactNode {
+  return <Tip title={`+${total} XP`} body={rows.length ? rows.map((r) => <div key={r.label}>{r.label} <b>+{r.xp}</b></div>) : JOURNEY_TEXT.report.nothing} footer={JOURNEY_TEXT.report.xpFooter} />;
+}
+
+/** §8.4.3 — one tile of the Trainer Card's record. */
+export function cardFactTip(label: string, body: string): ReactNode {
+  return <Tip title={label} body={body} />;
 }
 
 /** §8.3.5 — one stop of the rank road. */
 export function trackRewardTip(level: number, label: string, state: 'claimed' | 'next' | 'locked', xpNeeded: number): ReactNode {
-  const footer = state === 'claimed' ? 'Reached.' : state === 'next' ? `${xpNeeded} XP away.` : `${xpNeeded} XP away.`;
+  const footer = state === 'claimed' ? 'Reached.' : `${xpNeeded} XP away.`;
   return <Tip title={`${rankRow(level).name} · Rank ${level}`} body={label} footer={footer} />;
 }
 
 /** §8.4.2, §8.4.5 — a service or a Kit perk: what it does, and where it comes from. */
-export function hubUpgradeTip(name: string, effect: string, price: number | null, shelfLevel: number, owned: boolean, pending?: string, perk = false): ReactNode {
+export function hubUpgradeTip(name: string, effect: string, price: number | null, shelfLevel: number, owned: boolean, pending?: string, perk = false, aideOwned?: number): ReactNode {
   const footer = pending
     ? (owned ? `Yours, but waiting: ${pending}.` : `Not sold yet: ${pending}.`)
     : perk ? 'A Kit perk: in force only while it is packed in a slot.' : 'A service: in force for every run, no slot needed.';
   const source = price === null ? "Professor Oak's aide" : `Poké Mart · Rank ${shelfLevel}`;
-  return <Tip title={name} meta={[owned ? 'Yours' : price === null ? 'A Pokédex prize' : `${price} Tokens`, source]} body={effect} footer={footer} />;
+  return <Tip title={name} meta={[owned ? 'Yours' : price === null ? (aideOwned ? JOURNEY_TEXT.kit.atAideTip(aideOwned) : 'A Pokédex prize') : `${price} Tokens`, source]} body={effect} footer={footer} />;
 }
 
 /** §8.4.4 — a cosmetic on the Trainer's Corner shelf. */
@@ -820,27 +901,28 @@ export function dexCardTip(name: string, dex: number, types: readonly string[], 
 }
 
 /** §8.4 — the Trainer Hub's doors, in the lobby. */
-export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aide' | 'kit' | 'case' | 'hall', tokens: number, extra?: { parcels?: number; slots?: number; badges?: number; wins?: number }): ReactNode {
+export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aide' | 'kit', tokens: number, extra?: { parcels?: number; slots?: number }): ReactNode {
   switch (spot) {
     case 'mart':
       return <Tip title="Poké Mart" meta={[`${tokens} Tokens`]} body="Spend Tokens on starters, services, Kit perks and things for your Trainer Card." />;
     case 'card':
-      return <Tip title="Trainer Card" body="The nurse keeps the League's register: your rank, the road ahead, your stars and your record." />;
+      return <Tip title="Trainer Card" body="The nurse keeps the League's register: your rank, the road ahead, your stars, your Badge Case and your record." />;
     case 'pc':
-      return <Tip title="PC Terminal" body="The Pokédex, with every line's Bond and Ribbons." />;
+      return <Tip title="PC Terminal" body="The Pokédex, with every line's Bond and Ribbons, and the Hall of Fame." />;
     case 'guide':
       return <Tip title="Item Guide" body="Every relic, item, held item, Evolution Item and TM in the game: what it does, what it costs and where it turns up — and what you have yet to open." />;
     case 'run':
       return <Tip title="New run" body="Through the door to the Elite Four: choose a starter, a Starting Relic and the run's options, and set out." />;
     case 'aide':
-      return <Tip title="Professor Oak's aide" meta={extra?.parcels ? [`${extra.parcels} parcel${extra.parcels === 1 ? '' : 's'} waiting`] : undefined} body="Oak's Parcels — new relics, items, TMs and Mysteries for the world, one of three each — and the Trainer Journal, your deeds and their prizes." />;
+      return <Tip title={JOURNEY_TEXT.aide} meta={extra?.parcels ? [`${extra.parcels} parcel${extra.parcels === 1 ? '' : 's'} waiting`] : undefined} body="Oak's Parcels — new relics, items, TMs and Mysteries for the world, one of three each — and the Trainer Journal, your deeds and their prizes." />;
     case 'kit':
       return <Tip title="Trainer Kit" meta={[`${extra?.slots ?? 0} slot${extra?.slots === 1 ? '' : 's'}`]} body="Pack the perks you own before a run. Each changes what the run starts with, never how hard it hits." />;
-    case 'case':
-      return <Tip title="Badge Case" meta={[`${extra?.badges ?? 0} / 12`]} body="Every Badge you have ever won. A Leader's first Badge brings their TM into the world." />;
-    case 'hall':
-      return <Tip title="Hall of Fame" meta={[`${extra?.wins ?? 0} won`]} body="Every run that beat the Champion: the team, the relics and the League Ladder rung." />;
   }
+}
+
+/** §8.4.6 — somebody standing in the lobby: a Leader you have beaten, a Partner line. */
+export function lobbyPersonTip(name: string, what: string): ReactNode {
+  return <Tip title={name} body={what} />;
 }
 
 /** §8.4 — the lobby's doormat. */

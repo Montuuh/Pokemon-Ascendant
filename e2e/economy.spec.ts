@@ -401,13 +401,13 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await expect(page.getByTestId('difficulty-baseline')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.getByTestId('difficulty-xp')).toHaveCount(0);
 
-    // §8.8.2 — on a fresh account every row is below its Trainer Level: named, locked, and saying which level — on the
-    // shelf, closed until the player asks (B27).
+    // §8.8.2, §8.8.5 — on a fresh account every row waits on its League Ladder rung: named, locked, and saying which —
+    // on the shelf, closed until the player asks (B27).
     await page.getByTestId('difficulty-shelf-toggle').click();
-    await expect(page.getByTestId('difficulty-lock-iron-will')).toContainText('Lv 3');
+    await expect(page.getByTestId('difficulty-lock-iron-will')).toContainText('rung 1');
 
-    // Six levels in, the first four rows are open.
-    await page.evaluate(() => window.__ascendant!.meta.xp(9_000));
+    // Five rungs won, the first five rows are free for a custom run.
+    await page.evaluate(() => window.__ascendant!.meta.patch((d) => { d.stats.wins = 5; d.ladder = 5; }));
     await page.goto('/?screen=starter');
     await page.waitForFunction(() => !!window.__ascendant);
     await page.getByTestId('difficulty-iron-will').click();
@@ -417,15 +417,15 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await page.getByTestId('difficulty-lean-pack').click();
     await expect(page.getByTestId('difficulty-xp')).toContainText('×1.30');
 
-    // Tight Schedule is live since the League is (§2.1.6): open at Level 4.
+    // Tight Schedule is live since the League is (§2.1.6): free once rung 3 is won.
     await expect(page.getByTestId('difficulty-tight-schedule')).toBeEnabled();
     await expect(page.getByTestId('difficulty-tight-schedule')).toContainText('League');
-    // Greater Threats is live since the Regions have stat tiers (§2.2.1) — locked by level, not by version.
+    // Greater Threats is live since the Regions have stat tiers (§2.2.1) — locked by its rung, not by version.
     await page.getByTestId('difficulty-shelf-toggle').click();
-    await expect(page.getByTestId('difficulty-lock-greater-threats')).toContainText('Lv 10');
-    // And a row above your level is locked by level, not by version: it is a row of the shelf, not a card to press.
+    await expect(page.getByTestId('difficulty-lock-greater-threats')).toContainText('rung 9');
+    // And a row above your rung is locked by the Ladder, not by version: it is a row of the shelf, not a card to press.
     await expect(page.getByTestId('difficulty-faint-echo')).toHaveAttribute('data-locked', 'true');
-    await expect(page.getByTestId('difficulty-lock-faint-echo')).toContainText('Lv 9');
+    await expect(page.getByTestId('difficulty-lock-faint-echo')).toContainText('rung 8');
     await page.screenshot({ path: 'playtest/new-run-difficulty.png' });
   });
 
@@ -442,7 +442,7 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     // The baseline is the one card, and it is the picked one; no locked row is on the screen.
     await expect(page.getByTestId('difficulty-baseline')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('[data-locked]')).toHaveCount(0);
-    await expect(page.getByTestId('difficulty-shelf-toggle')).toContainText('Next at Trainer Lv 3');
+    await expect(page.getByTestId('difficulty-shelf-toggle')).toContainText('Next on League Ladder rung 1');
     await expect(page.getByTestId('difficulty-shelf-toggle')).toHaveAttribute('aria-expanded', 'false');
     // Little to read: a heading, two lines, the baseline and the shelf's one line (it was ~1200 characters).
     expect((await step.innerText()).length).toBeLessThan(300);
@@ -467,11 +467,11 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
     await toggle.focus();
     await page.keyboard.press('Enter');
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    // Every locked row is on the shelf and says its level; the effect is its tooltip.
+    // Every locked row is on the shelf and says its rung; the effect is its tooltip.
     await expect(page.locator('[data-locked]')).toHaveCount(10);
     await page.getByTestId('difficulty-iron-will').focus();
     await expect(page.getByTestId('tooltip')).toContainText('+20 % Max HP');
-    await expect(page.getByTestId('tooltip')).toContainText('Trainer Lv 3');
+    await expect(page.getByTestId('tooltip')).toContainText('League Ladder rung 1');
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('tooltip')).toHaveCount(0);
     // Space closes it again.
@@ -483,10 +483,11 @@ test.describe('The pre-run stepper — §8.8, §8.6.3', () => {
   test('an experienced account compares and picks open modifiers, and the baseline card puts it back', async ({ page }) => {
     await page.goto('/?screen=starter&seed=7');
     await page.waitForFunction(() => !!window.__ascendant);
-    await page.evaluate(() => window.__ascendant!.meta.xp(200_000));
+    await page.evaluate(() => window.__ascendant!.meta.patch((d) => { d.stats.wins = 10; d.ladder = 10; }));
     await page.goto('/?screen=starter&seed=7');
     await page.waitForFunction(() => !!window.__ascendant);
-    // Everything is open: ten cards beside the baseline, and no shelf.
+    // The Ladder is climbed: ten cards beside the baseline, no shelf, and no rung left to attempt.
+    await expect(page.getByTestId('difficulty-ladder')).toHaveCount(0);
     await expect(page.getByTestId('difficulty-shelf')).toHaveCount(0);
     await expect(page.getByTestId('difficulty-masters-challenge')).toBeEnabled();
     await page.getByTestId('difficulty-greater-threats').click();

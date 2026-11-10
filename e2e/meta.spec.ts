@@ -341,8 +341,13 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('kit-slot-3')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('kit-perk-moms-allowance')).toHaveAttribute('data-state', 'ready');
     await page.getByTestId('kit-perk-moms-allowance').click();
-    await expect(page.getByTestId('kit-perk-moms-allowance')).toHaveAttribute('data-state', 'packed');
+    // A packed perk is in its slot and nowhere else; the slot is the button that takes it out again.
+    await expect(page.getByTestId('kit-slot-1')).toHaveAttribute('data-state', 'packed');
     await expect(page.getByTestId('kit-slot-1')).toContainText("Mom's Allowance");
+    await expect(page.getByTestId('kit-perk-moms-allowance')).toHaveCount(0);
+    await page.getByTestId('kit-unpack-moms-allowance').click();
+    await expect(page.getByTestId('kit-slot-1')).toHaveAttribute('data-state', 'empty');
+    await page.getByTestId('kit-perk-moms-allowance').click();
     await expect(page.getByTestId('kit-perk-exp-share')).toHaveAttribute('data-state', 'missing');
     await page.screenshot({ path: 'playtest/hub-kit.png' });
 
@@ -373,10 +378,13 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('parcel-notice')).toContainText('joins the world');
     await expect(page.getByTestId('vault-count')).toContainText('1 / 55');
     expect(await page.evaluate(() => window.__ascendant!.meta.account().unlocks)).toEqual([taken]);
-    // The second parcel is a new offer, without the card just taken.
+    // The card just taken has the screen until the player asks for the next parcel: a new offer, without it.
+    await expect(page.getByTestId('parcel-offer')).toHaveCount(0);
+    await page.getByTestId('btn-next-parcel').click();
     await expect(page.getByTestId('parcel-offer')).toHaveAttribute('data-waiting', '1');
     await expect(page.getByTestId(`parcel-card-${taken}`)).toHaveCount(0);
     await cards.first().click();
+    await expect(page.getByTestId('btn-next-parcel')).toHaveCount(0);
     await expect(page.getByTestId('parcel-empty')).toBeVisible();
     // §8.6.2 — and the run's pool grew by exactly those two: what is still locked never turns up.
     const locked = await page.evaluate(() => {
@@ -410,15 +418,18 @@ test.describe('The Field Report — §8.3.6', () => {
     for (const id of ['tally', 'research', 'rank', 'bond', 'earned', 'next']) await expect(page.getByTestId(`report-${id}`)).toBeVisible();
     await expect(page.getByTestId('report-tally')).toContainText('Fights won');
     await expect(page.getByTestId('report-tally')).toContainText('Distance covered');
-    // §8.3.4 — 540 ₽ is five Tokens, said beside the run's own.
-    await expect(page.getByTestId('summary-money')).toContainText('540');
-    await expect(page.getByTestId('report-tokens')).toContainText('5 from ₽');
+    // §8.3.4 — the Tokens are one figure, and its bubble is the sum: 540 ₽ is five of them.
+    await page.getByTestId('report-tokens').hover();
+    await expect(page.getByTestId('tooltip')).toContainText('5 from the 540 ₽');
+    await page.mouse.move(0, 0);
     // §8.3.3 — the run crossed Rookie, and the panel says who that brings.
     await expect(page.getByTestId('report-rank-up')).toContainText('Rookie');
-    await expect(page.getByTestId('report-earned')).toContainText("Professor Oak's aide");
-    // §8.14 — the Leader's first Badge is on the wall and their TM is in the world.
-    await expect(page.getByTestId('report-earned')).toContainText('Cascade Badge');
-    await expect(page.getByTestId('report-earned')).toContainText('Surf');
+    await expect(page.getByTestId('report-prize-rank2')).toHaveAttribute('aria-label', /Professor Oak's aide/);
+    // §8.14 — the Leader's first Badge is on the wall and their TM is in the world: a tile each, named.
+    await expect(page.getByTestId('report-prize-badgecascade-badge')).toHaveAttribute('aria-label', /Cascade Badge/);
+    await expect(page.locator('[data-testid^="report-prize-open"][aria-label*="Surf"]')).toHaveCount(1);
+    // Nothing on the report scrolls: every panel ends inside the screen.
+    expect(await report.evaluate((el) => [...el.querySelectorAll('[data-testid^="report-"]')].every((p) => p.getBoundingClientRect().bottom <= window.innerHeight && p.scrollHeight <= p.clientHeight + 1))).toBe(true);
     // §6.8 — Squirtle's row: the Bond it earned and the rank it crossed.
     await expect(page.getByTestId('report-bond-squirtle')).toHaveAttribute('data-crossed', 'true');
     // §8.7.2 — what to chase next: three entries.
@@ -440,6 +451,45 @@ test.describe('The Field Report — §8.3.6', () => {
   });
 });
 
+test.describe('The Field Report in motion — §8.3.6', () => {
+  test('Skip lands every panel at once, and leaves when there is nothing left to skip', async ({ page }) => {
+    await menu(page);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.evaluate(() => {
+      const A = window.__ascendant!;
+      A.run.new('squirtle', 7);
+      A.run.patch((d) => {
+        d.box.forEach((m) => { m.hp = 0; });
+        d.phase = 'ended';
+        d.outcome = 'defeat';
+      });
+      A.goTo('defeat');
+    });
+    const report = page.getByTestId('field-report');
+    await expect(report).toHaveAttribute('data-fast', 'false');
+    await page.getByTestId('btn-report-skip').click();
+    await expect(report).toHaveAttribute('data-fast', 'true');
+    await expect(page.getByTestId('btn-report-skip')).toHaveCount(0);
+    for (const id of ['tally', 'research', 'rank', 'bond', 'earned', 'next']) await expect(page.getByTestId(`report-${id}`)).toBeVisible();
+  });
+});
+
+test.describe('The League Ladder — §8.8.5', () => {
+  test('the first Champion opens rung one: a card of its own, picked whole, its stack in the bubble', async ({ page }) => {
+    await menu(page);
+    await page.goto('/?screen=starter');
+    await expect(page.getByTestId('step-difficulty')).toBeVisible();
+    await expect(page.getByTestId('difficulty-ladder')).toHaveCount(0);
+    await page.evaluate(() => window.__ascendant!.meta.patch((d) => { d.stats.wins = 1; }));
+    const card = page.getByTestId('difficulty-ladder');
+    await expect(card).toHaveAttribute('data-rung', '1');
+    await card.hover();
+    await expect(page.getByTestId('tooltip')).toContainText('Win it to open the next rung');
+    await card.click();
+    await expect(card).toHaveAttribute('aria-pressed', 'true');
+  });
+});
+
 test.describe('The lobby — §8.4', () => {
   test('a door opens its kiosk with the keyboard, Escape closes it, and focus comes back to the door', async ({ page }) => {
     await menu(page);
@@ -452,6 +502,18 @@ test.describe('The lobby — §8.4', () => {
     await expect(page.getByTestId('hub-lobby')).toBeVisible();
     await expect(page.getByTestId('kiosk-card')).toBeFocused();
     await page.screenshot({ path: 'playtest/hub-lobby-focus.png' });
+  });
+});
+
+test.describe('The lobby fills — §8.4.6', () => {
+  test('a Leader you have beaten stands in the room, and says which Badge it was', async ({ page }) => {
+    await menu(page);
+    await page.evaluate(() => window.__ascendant!.meta.patch((d) => { d.badges = ['cascade-badge']; }));
+    await page.goto('/?screen=hub');
+    const misty = page.getByTestId('hub-lobby').getByRole('img', { name: 'Leader Misty' });
+    await expect(misty).toBeVisible();
+    await misty.hover();
+    await expect(page.getByTestId('tooltip')).toContainText('Cascade Badge');
   });
 });
 

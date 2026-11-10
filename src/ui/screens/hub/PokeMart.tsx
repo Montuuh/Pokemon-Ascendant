@@ -1,17 +1,18 @@
 import { useState, type ReactNode } from 'react';
-import { IconAward, IconBackpack, IconBook2, IconBox, IconCheck, IconCoin, IconDiamond, IconEye, IconFirstAidKit, IconLock, IconMountain, IconPokeball, IconRocket, IconShare, IconShoppingCart, IconSquareRounded, IconUsers, IconAdjustments } from '@tabler/icons-react';
+import { IconAward, IconBackpack, IconBox, IconCheck, IconLock, IconShoppingCart, IconSquareRounded, IconUsers } from '@tabler/icons-react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import {
   HUB_UPGRADE_LABEL, SHELF_ORDER, SHELVES, UNMET_NAME, bondRank, speciesMet, cosmeticById, isKitPerk, levelFor, rankRow, martOwned, martPending, martPrice, martShelf, shelfItems, shelfOpen, xpForLevel,
-  type AccountState, type HubUpgrade, type MartError, type MartItem, type ShelfId, BOND_TIER } from '@/sim';
+  type AccountState, type MartError, type MartItem, type ShelfId, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { trainerSprite } from '@/ui/art';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
 import { cosmeticTip, hubUpgradeTip, starterTip, martShelvesTip } from '@/ui/tips';
 import { FRAME_CLASS } from './frames';
 import { TokenIcon } from './TokenIcon';
+import { UPGRADE_ICON } from './upgradeIcons';
 import styles from './Hub.module.css';
 
 // §8.3.4 / §8.4.1 — the Poké Mart: four shelves, one currency, one button per thing. The Trainer Rank opens a
@@ -24,22 +25,6 @@ const SHELF_ICON: Record<ShelfId, ReactNode> = {
   starters: <IconUsers size={18} />,
   hub: <IconBox size={18} />,
   kit: <IconBackpack size={18} />,
-};
-
-const HUB_ICON: Record<HubUpgrade, ReactNode> = {
-  'starting-relic-plus-one': <IconDiamond size={26} />,
-  'expanded-box': <IconBox size={26} />,
-  'pokedex-insight': <IconEye size={26} />,
-  'trauma-salve-cache': <IconFirstAidKit size={26} />,
-  'apex-reveal': <IconMountain size={26} />,
-  'modifier-slot-plus-one': <IconAdjustments size={26} />,
-  'twin-run': <IconUsers size={26} />,
-  'moms-allowance': <IconCoin size={26} />,
-  'first-aid-pouch': <IconFirstAidKit size={26} />,
-  'tm-case': <IconBook2 size={26} />,
-  'ball-case': <IconPokeball size={26} />,
-  'exp-share': <IconShare size={26} />,
-  'head-start': <IconRocket size={26} />,
 };
 
 /** §8.5.2 — the design slot of each meta-starter, in the player's words. */
@@ -219,7 +204,7 @@ function MartCard({ item, account, open, onBuy, onWear }: {
       const row = HUB_UPGRADE_LABEL[item.id];
       name = row.name;
       desc = row.effect;
-      face = HUB_ICON[item.id];
+      face = UPGRADE_ICON[item.id](26);
       tipNode = hubUpgradeTip(row.name, row.effect, price, shelfLevel, owned, row.pending, isKitPerk(item.id));
       break;
     }

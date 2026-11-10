@@ -1,6 +1,6 @@
 import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type MouseEvent, type ReactNode, type Ref } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { useTip } from '@/ui/tooltip';
+import { Tipped, useTip } from '@/ui/tooltip';
 import styles from './PixelRoom.module.css';
 
 // A room as FireRed / LeafGreen drew it: the real map at a whole-pixel scale, the people the map has no room for
@@ -42,6 +42,9 @@ export interface RoomSprite {
   at: Box;
   /** Decorative effects may start their beat once their pixels have arrived. */
   onLoad?: () => void;
+  /** Somebody with a name: the bubble on hover and focus, and the name a screen reader says. A sprite without one is scenery. */
+  tip?: ReactNode;
+  label?: string;
 }
 
 /** The way out: a doormat, the stairs down. It lights like a spot, never gold: it is never chosen. */
@@ -124,7 +127,7 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
     <section ref={box} className={styles.room} aria-label={label} data-testid={testId} data-scale={scale}>
       <div className={`${styles.floor} ${frame === 'silhouette' ? styles.silhouette : ''}`} style={{ width: w * scale + FRAME * 2, height: h * scale + FRAME * 2 }}>
         <img className={styles.art} src={art} alt="" draggable={false} />
-        {sprites.map((s, i) => (
+        {sprites.map((s, i) => !s.tip && (
           <img key={i} className={styles.sprite} style={place(s.at)} src={s.src} alt="" draggable={false} onLoad={s.onLoad} />
         ))}
 
@@ -169,6 +172,12 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
           )),
         )}
         {exit && <ExitSpot<Id> exit={exit} style={place(exit.box)} onHover={setHovered} onFocus={setFocused} />}
+        {/* The people with names come after the doors, so Tab reaches the doors first. */}
+        {sprites.map((s, i) => s.tip && (
+          <Tipped key={i} tip={s.tip} className={styles.person} style={place(s.at)} role="img" aria-label={s.label}>
+            <img className={styles.personArt} src={s.src} alt="" draggable={false} onLoad={s.onLoad} />
+          </Tipped>
+        ))}
       </div>
     </section>
   );

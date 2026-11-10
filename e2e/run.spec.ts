@@ -355,8 +355,8 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
   // never zero after a run that cleared a node. A run lost on the very first node has cleared none, and owes nothing.
   await expect(page.getByTestId('field-report')).toBeVisible();
   const cleared = await page.evaluate(() => window.__ascendant?.run.state()?.stats.nodesCleared ?? 0);
-  const xpLine = await page.getByTestId('summary-xp').textContent();
-  if (cleared > 0) expect(Number(xpLine?.replace(/[^0-9]/g, ''))).toBeGreaterThan(0);
+  const xp = Number(await page.getByTestId('summary-xp').getAttribute('data-xp'));
+  if (cleared > 0) expect(xp).toBeGreaterThan(0);
   await defeat.getByTestId('btn-end-continue').click();
   await expect(page.getByTestId('main-menu')).toBeVisible();
   await expect(page.getByTestId('btn-continue-run')).toHaveCount(0);

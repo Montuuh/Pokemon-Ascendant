@@ -9,7 +9,8 @@ import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { compactIconOf, hubArt, mapPerson, martArt } from '@/ui/art';
 import { PixelRoom } from '@/ui/components/PixelRoom';
 import { Tipped } from '@/ui/tooltip';
-import { hubExitTip, hubSpotTip, tokenTip } from '@/ui/tips';
+import { hubExitTip, hubSpotTip, lobbyPersonTip, tokenTip } from '@/ui/tips';
+import { JOURNEY_TEXT } from '@/ui/strings';
 import { LevelRing } from './hub/LevelRing';
 import { TrainerCard } from './hub/TrainerCard';
 import { PcTerminal } from './hub/PcTerminal';
@@ -27,7 +28,7 @@ import styles from './HubScreen.module.css';
 // "Lobby" closes it. The rank dial and the Token count sit in the header above both, because they are the two
 // numbers the whole room is about.
 //
-// §8.4.6 — the lobby fills (v0.9.110). A door is in the room only once the rank has brought whoever keeps it —
+// §8.4.6 — the lobby fills. A door is in the room only once the rank has brought whoever keeps it —
 // Professor Oak's aide at Rookie, the Mart clerk at Trainer, the Kit table at Challenger — every Leader beaten comes
 // to stand in it (§8.14), and a Partner line walks it (§6.8.2). The first day's lobby is the nurse, the PC and the door.
 
@@ -64,11 +65,12 @@ export function HubScreen() {
     return () => window.removeEventListener('keydown', onKey);
   }, [kiosk]);
   const p = levelProgress(account.xp);
+  const content = getContent();
   // §8.4.6 — who is in the room: the doors the rank has opened, the Leaders beaten, the Partner lines.
   const spots = SPOT_ORDER.filter((id) => p.level >= (SPOT_RANK[id] ?? 1));
   const leaders = account.badges.flatMap((badge) => ALL_GYMS.filter((g) => g.badgeId === badge).slice(0, 1)).slice(0, LEADER_SPOTS.length);
   const partners = Object.entries(account.bond)
-    .filter(([line, pts]) => bondRank(pts) >= BOND_TIER.partner && getContent().hasSpecies(line))
+    .filter(([line, pts]) => bondRank(pts) >= BOND_TIER.partner && content.hasSpecies(line))
     .sort((a, b) => b[1] - a[1])
     .slice(0, PARTNER_SPOTS.length);
   const leave = () => {
@@ -133,8 +135,8 @@ export function HubScreen() {
             ...(spots.includes('mart') ? [{ src: martArt('clerk'), at: LOBBY_PEOPLE.clerk }] : []),
             { src: hubArt('nurse'), at: LOBBY_PEOPLE.nurse },
             ...(spots.includes('aide') ? [{ src: mapPerson('scientist'), at: LOBBY_PEOPLE.aide }] : []),
-            ...leaders.map((g, i) => ({ src: mapPerson(g.sprite), at: LEADER_SPOTS[i]! })),
-            ...partners.map(([line], i) => ({ src: compactIconOf(line), at: PARTNER_SPOTS[i]! })),
+            ...leaders.map((g, i) => ({ src: mapPerson(g.sprite), at: LEADER_SPOTS[i]!, label: g.name, tip: lobbyPersonTip(g.name, JOURNEY_TEXT.lobby.leader(content.badge(g.badgeId).name)) })),
+            ...partners.map(([line], i) => ({ src: compactIconOf(line), at: PARTNER_SPOTS[i]!, label: content.species(line).name, tip: lobbyPersonTip(content.species(line).name, JOURNEY_TEXT.lobby.partner) })),
             { src: hubArt('player'), at: LOBBY_PEOPLE.player },
           ]}
           spots={spots.map((id) => ({

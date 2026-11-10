@@ -5,7 +5,7 @@ import type { Box } from '@/ui/components/PixelRoom';
 // the map's own pixels, and where the people the map has no room for stand. The art carries two transparent columns
 // on its left, where the Archives' map is cut, so the Mart counter's outline is drawn whole.
 //
-// §8.4.6 — the lobby fills (v0.9.110): a door is there only once the rank has brought whoever keeps it, a Leader you
+// §8.4.6 — the lobby fills: a door is there only once the rank has brought whoever keeps it, a Leader you
 // have beaten comes to stand in the room, and a Partner line walks it. The room is the account's progress, drawn.
 
 export type HubSpot = 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aide' | 'kit';
@@ -57,5 +57,8 @@ export const LEADER_SPOTS: readonly Box[] = [
   [84, 216, 16, 32], [206, 198, 16, 32], [238, 214, 16, 32], [300, 172, 16, 32],
 ];
 
-/** §6.8.2 — where Partner lines walk: four places by the doormat, beside the player. */
-export const PARTNER_SPOTS: readonly Box[] = [[198, 236, 16, 16], [158, 236, 16, 16], [216, 222, 16, 16], [142, 224, 16, 16]];
+/**
+ * §6.8.2 — where Partner lines walk: four places round the player, on open floor — clear of the plant by the doormat
+ * and of the Leaders' places above.
+ */
+export const PARTNER_SPOTS: readonly Box[] = [[198, 236, 16, 16], [158, 236, 16, 16], [218, 238, 16, 16], [160, 216, 16, 16]];

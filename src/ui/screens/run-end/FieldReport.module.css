@@ -1,17 +1,19 @@
-/* §8.3.6 — the Field Report: six panels, all on the screen at rest; motion only decides when each one arrives. */
+/* §8.3.6 — the Field Report: six panels, all on the screen at rest and none of them scrolling; motion only decides
+   when each one arrives. A row is a picture, a name and a number; its sentence is a hover away. */
 .root {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   width: 100%;
-  height: 100%;
   min-height: 0;
+  align-self: center;
 }
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
+  min-height: 44px;
 }
 .title {
   margin: 0;
@@ -51,8 +53,6 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, max-content));
-  align-content: center;
   gap: var(--sp-3);
   min-height: 0;
 }
@@ -61,8 +61,6 @@
   align-content: start;
   gap: var(--sp-2);
   min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
   padding: var(--sp-3);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -76,10 +74,22 @@
 }
 .panelTitle {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
   font-size: var(--type-small);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-secondary);
+}
+/* The panel's own figure, on the heading's line: the run's XP, the Tokens. */
+.figure {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-h3);
+  color: var(--brand-red-deep);
+  white-space: nowrap;
 }
 .quiet {
   margin: 0;
@@ -105,10 +115,6 @@
 .tally dd {
   margin: 0;
 }
-.totalXp {
-  font-size: var(--type-h3);
-  color: var(--brand-red-deep);
-}
 
 /* A bar that fills from where the run found it. */
 .meter {
@@ -122,7 +128,7 @@
 .bar {
   position: relative;
   display: block;
-  height: 14px;
+  height: 12px;
   border-radius: var(--radius-pill);
   background: var(--surface-3);
   overflow: hidden;
@@ -141,92 +147,126 @@
   opacity: 0.85;
   transition: transform var(--motion-slow) ease-out;
 }
-.parcelLine,
-.rankUp {
+/* Research is blue wherever it is drawn: here, and at Oak's aide. */
+.bar[data-tone='research'] .barFrom,
+.bar[data-tone='research'] .barFill {
+  background: var(--brand-blue);
+}
+.callout {
   margin: 0;
   display: flex;
   align-items: center;
   gap: var(--sp-2);
   font-family: var(--font-display);
-  font-size: var(--type-body);
+  font-size: var(--type-small);
 }
 
-/* Bond, a row per line. */
+/* Bond, a row per line: its sprite, what it earned, its bar. */
 .bonds,
-.prizes,
 .goals {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
 }
 .bonds li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+/* `li.` so the ring outranks the global `[tabindex='0']` one, which is amber on cream. */
+.bonds li:focus-visible,
+.goals li:focus-visible,
+li.prize:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
 }
 .bondBody {
   display: grid;
   gap: 2px;
+  min-width: 0;
 }
 .bondHead {
   display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  min-width: 0;
+  font-size: var(--type-caption);
+  white-space: nowrap;
+}
+/* The name gives way, never the figure: a long name is cut here and whole in the bubble. */
+.bondName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bondMeter {
+  display: flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: var(--type-small);
+  min-width: 0;
+}
+.bondMeter > .bar {
+  flex: 1;
+  min-width: 0;
+}
+.bondUp {
+  padding: 0 var(--sp-2);
+  font-size: var(--type-caption);
+  white-space: nowrap;
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-family: var(--font-display);
 }
 .bondPts {
   margin-left: auto;
-}
-.bondUp,
-.bondRank {
-  font-size: var(--type-caption);
-  color: var(--ink-primary);
-}
-.bondRank {
   color: var(--ink-secondary);
 }
 
-/* What the run handed over. */
-.prizes li {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--type-small);
+/* What the run handed over: a strip of the things themselves. */
+.prizes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
 }
-.prizeIcon {
+/* Four to a row in the narrowest panel (720p), so the strip's eight are two rows at most. */
+.prize {
   display: grid;
   place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-0);
   color: var(--ink-secondary);
 }
-.tokens {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-  padding-top: var(--sp-2);
-  border-top: 2px solid var(--border-subtle);
-  font-size: var(--type-body);
+.prizeArt {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  object-position: top;
 }
-.moneyDot {
+.prizeMore {
+  font-family: var(--font-display);
   font-size: var(--type-small);
-  color: var(--ink-secondary);
+  color: var(--ink-primary);
 }
 
-/* Next time. */
+/* Next time: a name, a count and its bar. */
+.goals {
+  gap: var(--sp-2);
+}
 .goals li {
   display: grid;
   gap: 2px;
-  padding-bottom: var(--sp-2);
-  border-bottom: 2px solid var(--border-subtle);
-}
-.goals li:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
+  border-radius: var(--radius-sm);
 }
 .goalHead {
   display: flex;
@@ -234,13 +274,29 @@
   gap: var(--sp-3);
   font-size: var(--type-small);
 }
+.goalHead > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .goalCount {
   color: var(--ink-secondary);
+  white-space: nowrap;
 }
-.goalDesc,
-.goalPrize {
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
+.goalBar {
+  position: relative;
+  display: block;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.goalBar > span {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: var(--accent-action-deep);
 }
 
 /* The parcel, opened over the report. */
@@ -270,16 +326,13 @@
   box-shadow: var(--shadow-modal);
   animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
 }
+.parcelSheet:focus {
+  outline: none;
+}
 
-
-/* A narrow window stacks the report in two columns and lets it scroll as a whole. */
+/* A narrow window stacks the report in two columns. */
 @media (max-width: 1100px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: none;
-    grid-auto-rows: auto;
-  }
-  .panel {
-    overflow-y: visible;
   }
 }

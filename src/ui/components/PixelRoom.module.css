@@ -32,6 +32,11 @@
 
 /* The people the map has no room for, drawn in its pixels like the room. */
 .sprite { position: absolute; image-rendering: pixelated; user-select: none; pointer-events: none; }
+/* Somebody with a name: the same pixels, and a bubble. */
+.person { position: absolute; }
+.personArt { display: block; width: 100%; height: 100%; image-rendering: pixelated; user-select: none; }
+/* `span.` so the ring outranks the global `[tabindex='0']` one: amber disappears on the lobby's floor. */
+span.person:focus-visible { outline: 3px solid var(--ink-primary); outline-offset: 2px; box-shadow: 0 0 0 5px var(--surface-1); }
 
 /* The shelves' shapes: every piece of a lit shelf, outlined as one in the map's own pixels (two rings, one and two
    map pixels wide), so the ring shows on the blue tiles, the orange floor and the walls alike. */

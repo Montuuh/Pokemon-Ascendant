@@ -4,7 +4,7 @@ import { entryRunSeed, useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, HUB_UPGRADE_LABEL, LADDER, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, kitSlots, ladderModifiers, nextGoals, nextRung, runPerksFor, inPool, isOfferable, modifierSlots, type HubUpgrade, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicFits, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
+import { BOND_RANK_NAME, HUB_UPGRADE_LABEL, LADDER, LADDER_TOP, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, kitSlots, ladderModifiers, nextGoals, nextRung, runPerksFor, inPool, isOfferable, modifierSlots, type HubUpgrade, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicFits, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { moveArt, spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
@@ -14,7 +14,7 @@ import { ItemCard } from '@/ui/components/ItemCard';
 import { DifficultyShelf } from './DifficultyShelf';
 import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { bondStatusTip, clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
+import { bondStatusTip, clearPartnerTip, ladderTip, moveDefTip, preflightGoalsTip, preflightKitTip, twinRunTip } from '@/ui/tips';
 import { describeMoveDef } from '@/ui/moveText';
 import { DIFFICULTY_TEXT, JOURNEY_TEXT, STAT_LONG, STARTER_TEXT } from '@/ui/strings';
 import { EvolveMethodLabel } from '@/ui/components/EvolveMethodLabel';
@@ -215,16 +215,16 @@ export function StarterSelect() {
         <h1 className={`${styles.title} display`}>New run</h1>
         {/* §8.4.5, §8.7.2 — what the account sends with the run: the Kit that is packed, and the deeds being chased. */}
         {(kitSlots(account) > 0 || pinned.length > 0) && (
-          <p className={styles.preflight} data-testid="run-preflight">
+          <p className={styles.preflight}>
             {kitSlots(account) > 0 && (
-              <span data-testid="run-kit">
-                <b>{JOURNEY_TEXT.packed}</b> {packed.length ? packed.map((p) => HUB_UPGRADE_LABEL[p].name).join(' · ') : JOURNEY_TEXT.noKit}
-              </span>
+              <Tipped as="span" tip={preflightKitTip(packed.map((k) => HUB_UPGRADE_LABEL[k]))} tabIndex={0} data-testid="run-kit">
+                <b>{JOURNEY_TEXT.preflight.kit}</b> {packed.length ? packed.map((k) => HUB_UPGRADE_LABEL[k].name).join(' · ') : JOURNEY_TEXT.preflight.noKit}
+              </Tipped>
             )}
             {pinned.length > 0 && (
-              <span data-testid="run-goals">
-                <b>{JOURNEY_TEXT.goals}</b> {pinned.map((g) => g.name).join(' · ')}
-              </span>
+              <Tipped as="span" tip={preflightGoalsTip(pinned)} tabIndex={0}>
+                <b>{JOURNEY_TEXT.preflight.goals}</b> {pinned.map((g) => g.name).join(' · ')}
+              </Tipped>
             )}
           </p>
         )}
@@ -266,10 +266,12 @@ export function StarterSelect() {
               <span className={`${styles.diffName} display`}>{DIFFICULTY_TEXT.baseline}</span>
               <span className={styles.diffEffect}>{DIFFICULTY_TEXT.baselineNote}</span>
             </button>
-            {/* §8.8.5 — the League Ladder's next rung: its modifiers come as a stack, fixed, and winning it opens the next. */}
+            {/* §8.8.5 — the League Ladder's next rung: a pip a modifier, the stack itself in the bubble; winning it opens the next. */}
             {rung !== null && (
-              <button
+              <Tipped
+                as="button"
                 type="button"
+                tip={ladderTip(rung, LADDER.slice(0, rung).map((m) => ({ name: m.name, effect: modifierEffect(m.id, m.effect, boxBonus) })), rung === LADDER_TOP)}
                 className={`${styles.diffCard} ${onLadder ? styles.picked : ''}`}
                 onClick={() => {
                   setOnLadder(true);
@@ -281,11 +283,10 @@ export function StarterSelect() {
               >
                 <span className={`${styles.diffName} display`}>{JOURNEY_TEXT.ladder.card(rung)}</span>
                 <span className={styles.diffXp}>×{modifierXpMultiplier(ladderModifiers(rung)).toFixed(2)} XP</span>
-                <span className={styles.diffEffect}>
-                  <b>{LADDER.slice(0, rung).map((m) => m.name).join(' · ')}</b>
+                <span className={styles.pips} role="img" aria-label={`${rung} of ${LADDER_TOP} modifiers`}>
+                  {LADDER.map((m, i) => <span key={m.id} className={styles.pip} data-on={i < rung} />)}
                 </span>
-                <span className={styles.diffEffect}>{JOURNEY_TEXT.ladder.effect(rung)}</span>
-              </button>
+              </Tipped>
             )}
             {openRows.map((d) => {
               const on = !onLadder && modifiers.includes(d.id);

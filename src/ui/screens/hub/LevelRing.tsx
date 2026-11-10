@@ -47,7 +47,8 @@ export function LevelRing({ xp, size = 96, caption = false }: Props) {
           })}
         >
           <span className={`${styles.label} ${big ? styles.labelBig : ''}`}>
-            <span className={styles.lv}>Rank</span>
+            {/* The word fits the Trainer Card's dial; the header's small ring is the number, and its bubble says what it is. */}
+            {big && <span className={styles.lv}>Rank</span>}
             <span className={`${styles.num} display tabular`} data-testid="level-ring-value">
               <NumberFlow value={p.level} animated={animate} />
             </span>

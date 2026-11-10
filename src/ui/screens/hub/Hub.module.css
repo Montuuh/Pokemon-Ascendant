@@ -19,7 +19,7 @@
 .sectionTitle {
   display: flex;
   align-items: center;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   margin: 0;
   font-size: var(--type-small);
   letter-spacing: 0.08em;
@@ -117,39 +117,6 @@
   font-size: var(--type-body);
 }
 
-.chips {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-3);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-pill);
-  background: var(--surface-1);
-  font-size: var(--type-small);
-  opacity: 0.7;
-}
-.chipOn {
-  border-color: var(--accent-positive);
-  opacity: 1;
-}
-.chipWaiting {
-  border-color: var(--accent-warning);
-  border-style: dashed;
-  opacity: 1;
-}
-.chipTick {
-  color: var(--accent-positive);
-  font-weight: 700;
-}
-
 /* ── PC Terminal ──────────────────────────────────────────────────────────────────────────────────────── */
 .pc {
   display: grid;
@@ -198,79 +165,6 @@
   font-size: var(--type-small);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-secondary);
-}
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--sp-2);
-}
-.list li {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-2) var(--sp-4);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-}
-.got {
-  border-color: var(--accent-positive);
-}
-.pendingRow .medal {
-  filter: grayscale(1);
-  opacity: 0.6;
-}
-.medal {
-  font-size: var(--type-number);
-}
-.rowBody {
-  display: grid;
-}
-.rowName {
-  font-size: var(--type-body);
-}
-.rowDesc {
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-}
-.state {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-}
-.stateGot {
-  color: var(--ink-primary);
-}
-.bar {
-  position: relative;
-  width: 110px;
-  height: 20px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-3);
-  overflow: hidden;
-}
-.fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--accent-action);
-}
-.barText {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 100%;
-  font-size: var(--type-small);
-}
-.note {
-  margin: 0;
-  max-width: 70ch;
-  font-size: var(--type-small);
   color: var(--ink-secondary);
 }
 
@@ -363,8 +257,8 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  align-items: stretch;
   gap: var(--sp-2);
 }
 .shelfCard {
@@ -384,9 +278,6 @@
 }
 .shelfInert {
   opacity: 0.7;
-}
-.shelfIcon {
-  image-rendering: pixelated;
 }
 .shelfBody {
   display: grid;
@@ -481,15 +372,6 @@
   width: auto;
   image-rendering: pixelated;
 }
-.shelfProgress {
-  display: inline-block;
-  margin-left: var(--sp-1);
-  padding: 0 var(--sp-2);
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
-}
 .shelfWorn {
   border-color: var(--accent-action);
 }
@@ -542,80 +424,6 @@
   width: auto;
   image-rendering: pixelated;
   align-self: end;
-}
-/* The Tier-2 board, on the PC Terminal. */
-.discoveries {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--sp-2);
-}
-.discovery {
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-  opacity: 0.9;
-}
-.discoveryOn {
-  border-color: var(--accent-positive);
-  opacity: 1;
-}
-.discoveryInner {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  font-size: var(--type-small);
-}
-.discoveryIcon {
-  image-rendering: pixelated;
-}
-.discoveryBody {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-.discoveryName {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-display);
-}
-.discoveryTick {
-  display: inline-grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent-positive);
-  color: var(--ink-primary);
-}
-.discoveryHow {
-  color: var(--ink-secondary);
-}
-.discoveryBar {
-  position: relative;
-  height: 14px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
-  overflow: hidden;
-  transform: translateZ(0);
-}
-.discoveryFill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  border-radius: var(--radius-pill);
-  background: var(--brand-blue);
-}
-.discoveryBarText {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 100%;
-  font-size: var(--type-caption);
 }
 
 /* ── Poké Mart: a starter on its shelf ─────────────────────────────────────────────────────────────── */

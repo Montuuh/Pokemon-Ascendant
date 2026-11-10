@@ -11,9 +11,8 @@ import { trackRewardLabel } from './trackText';
 import styles from './RewardTrack.module.css';
 
 // §8.3.5 — the rank road: eight stops on a line, each drawn as what it brings — the aide, the clerk, a Kit slot,
-// a fuller parcel, a purse — the next one lit and named. Until v0.9.110 it was twenty-nine stops that nearly all
-// paid the same three Tokens; a rank is worth walking toward because every one has a face. Horizontal so the
-// *order* is the reading.
+// a fuller parcel, a purse — the next one lit and named. A rank is worth walking toward because every one has a face.
+// Horizontal so the *order* is the reading.
 
 /** What the stop shows inside its circle: who or what the rank brings. */
 function StopFace({ rank, size }: { rank: number; size: number }) {
@@ -54,7 +53,7 @@ export function RewardTrack({ account }: { account: AccountState }) {
                 <motion.li
                   key={lv}
                   ref={state === 'next' ? nextRef : undefined}
-                  className={`${styles.stop} ${styles[`stop_${state}`]} ${selected === lv ? styles.stopSelected : ''} ${styles.stopShelf}`}
+                  className={`${styles.stop} ${styles[`stop_${state}`]} ${selected === lv ? styles.stopSelected : ''}`}
                   data-testid={`track-${lv}`}
                   data-state={state}
                   data-opens={reward.opens}

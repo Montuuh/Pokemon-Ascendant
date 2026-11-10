@@ -67,6 +67,7 @@
 .member {
   display: grid;
   justify-items: center;
+  min-width: 0;
   gap: var(--sp-1);
   border-radius: var(--radius-md);
 }
@@ -79,8 +80,11 @@
   display: grid;
   justify-items: center;
   gap: var(--sp-1);
-  min-width: 100%;
-  padding: var(--sp-1) var(--sp-2);
+  /* The plate is its column's width, never its name's: six in half a screen stand side by side, and a long name
+     is cut here and whole in the bubble. */
+  width: 100%;
+  min-width: 0;
+  padding: var(--sp-1);
   border: 2px solid var(--border-strong);
   border-radius: var(--radius-md);
   background: var(--surface-1);
@@ -88,9 +92,10 @@
   font-size: var(--type-caption);
 }
 .nameplate > span:first-child {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 700;
   font-size: var(--type-small);
 }

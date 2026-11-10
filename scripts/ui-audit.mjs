@@ -56,6 +56,23 @@ const SCREENS = {
       clicks: ['btn-enter-node'], match: [/sim\/run\/victoryRoad/],
     },
   ])),
+  'victory-full': {
+    url: '/?screen=menu',
+    setup: [
+      ...endingSetup('victory').slice(0, -2),
+      'meta.patch((a) => { a.bond = { squirtle: 55, charmander: 115, bulbasaur: 10, pikachu: 195, lapras: 290 }; })',
+      'meta.record([' + [
+        ...Array.from({ length: 12 }, () => '{ t: "combat-end", outcome: "victory", kind: "trainer", damageTaken: 0, manualSwaps: 0, faints: 0, defeated: ["pidgey"], enemies: ["pidgey"], activeSpecies: ["squirtle", "charmander", "bulbasaur"], leadTurns: { squirtle: 3 } }'),
+        '{ t: "recruit", speciesId: "pikachu", boxFull: false, firstThisRun: true }', '{ t: "recruit", speciesId: "lapras", boxFull: false, firstThisRun: true }', '{ t: "evolution", uid: "u1", fromSpeciesId: "squirtle", toSpeciesId: "wartortle" }',
+        '{ t: "badge-awarded", badgeId: "boulder-badge", activeSpecies: ["squirtle", "charmander", "bulbasaur"] }',
+        '{ t: "badge-awarded", badgeId: "cascade-badge", activeSpecies: ["squirtle", "pikachu", "lapras"] }',
+        '{ t: "badge-awarded", badgeId: "thunder-badge", activeSpecies: ["squirtle", "pikachu", "lapras"] }',
+        '{ t: "run-end", won: true, catches: 8, badges: 3, layersCleared: 41, moneyLeft: 940, activeSpecies: ["squirtle", "pikachu", "lapras"] }',
+      ].join(', ') + '])',
+      'goTo("victory")',
+    ],
+    match: [/screens\/run-end\/FieldReport/],
+  },
   ...Object.fromEntries(['victory', 'defeat'].flatMap((outcome) => [
     [outcome, { url: '/?screen=menu', setup: endingSetup(outcome), match: [/screens\/RunEndScreen/, /screens\/run-end\//] }],
     [`${outcome}-record`, { url: '/?screen=menu', setup: endingSetup(outcome), clicks: ['btn-run-record'], match: [/screens\/RunEndScreen/, /screens\/run-end\//] }],
@@ -248,7 +265,7 @@ const SCREENS = {
 // A missing declaration is a configuration failure, never permission to photograph an arbitrary landing page.
 const EXPECTED_ROOT = {
   'victory-road-wild': 'combat-screen', 'victory-road-gauntlet': 'combat-screen',
-  victory: 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
+  victory: 'victory-screen', 'victory-full': 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
   menu: 'main-menu', about: 'about-screen', changelog: 'changelog-screen', settings: 'settings-screen',
   hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card', 'hub-full': 'hub-screen', 'hub-aide': 'oak-aide', 'hub-journal': 'oak-aide', 'hub-kit': 'trainer-kit', 'hub-hall': 'pc-terminal',
   starter: 'starter-select', 'starter-shelf': 'starter-select', 'starter-veteran': 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-keywords': 'combat-screen', 'combat-combo': 'combat-screen', 'combat-perish': 'combat-screen', 'combat-hazards': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',

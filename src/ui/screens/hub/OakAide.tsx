@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { IconCheck, IconHelpHexagon, IconNotebook, IconPackage, IconPin, IconPinFilled } from '@tabler/icons-react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import {
-  JOURNAL_SHELVES, PARCEL, PIN_LIMIT, VAULT, cosmeticById, journalEntries, levelFor, parcelChoicesFor, parcelCost, parcelOffer, parcelPool, vaultCard,
+  JOURNAL_SHELVES, PIN_LIMIT, VAULT, cosmeticById, journalEntries, levelFor, parcelChoicesFor, parcelCost, parcelOffer, parcelPool, vaultCard,
   type JournalEntry, type VaultEntry,
 } from '@/sim';
 import { ItemCard, type ItemKind } from '@/ui/components/ItemCard';
 import { MedalIcon } from '@/ui/components/MedalIcon';
+import { itemIcon } from '@/ui/art';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
+import { journalEntryTip, journalShelfTip, journalTip, pinTip, researchTip } from '@/ui/tips';
 import { JOURNEY_TEXT } from '@/ui/strings';
 import hub from './Hub.module.css';
 import styles from './Journey.module.css';
@@ -17,8 +19,9 @@ import styles from './Journey.module.css';
 // §8.6.2, §8.7 — Professor Oak's aide: the parcels that open the vault, and the Trainer Journal.
 //
 // Two tabs because they are two questions: "what did the last run bring me?" (a parcel — three cards, take one)
-// and "what am I chasing?" (the Journal — deeds, their prizes, and the three you have pinned). The parcel is the
-// one place the account's progress is a choice with a face, so its cards are the same cards a run draws.
+// and "what am I chasing?" (the Journal — a tile per deed, the three you have pinned on top). The parcel is the
+// one place the account's progress is a choice with a face, so its cards are the same cards a run draws. A Journal
+// tile is an icon, a name and a bar; the deed and its prize are its bubble.
 
 const CARD_KIND: Record<VaultEntry['kind'], ItemKind | null> = { relic: 'relic', consumable: 'consumable', held: 'held-item', tm: 'tm', event: null };
 
@@ -45,35 +48,52 @@ function ParcelCard({ entry, onTake }: { entry: VaultEntry; onTake: () => void }
   );
 }
 
-/** §8.6.2 — the parcel on the table: its cards, one to take. The aide's tab and the Field Report both show this. */
-export function ParcelOffer() {
+/**
+ * §8.6.2 — the parcel on the table: its cards, one to take. The aide's tab and the Field Report both show this.
+ *
+ * Taking a card puts the next parcel behind a button rather than under the cursor: three new cards appearing where
+ * the old ones were would let a double click spend a second parcel unread. In a sheet (`inSheet`) the cards hold
+ * one row, and an empty table says nothing — the sheet's own button closes it.
+ */
+export function ParcelOffer({ inSheet = false }: { inSheet?: boolean }) {
   const account = useAccountStore((s) => s.account);
   const openParcel = useAccountStore((s) => s.openParcel);
   const content = getContent();
   const [taken, setTaken] = useState<string | null>(null);
-  const offer = account.parcels > 0 ? parcelOffer(account, parcelChoicesFor(levelFor(account.xp))) : [];
+  const offer = account.parcels > 0 && !taken ? parcelOffer(account, parcelChoicesFor(levelFor(account.xp))) : [];
   const take = (entry: VaultEntry) => {
     openParcel(entry.id);
     setTaken(vaultCard(entry, content).name);
   };
   return (
     <>
-      {taken && <p className={styles.notice} role="status" data-testid="parcel-notice">{JOURNEY_TEXT.parcel.added(taken)}</p>}
+      {taken && (
+        <div className={styles.notice} role="status" data-testid="parcel-notice">
+          <span>{JOURNEY_TEXT.parcel.added(taken)}</span>
+          {account.parcels > 0 && (
+            <button type="button" className={styles.next} onClick={() => setTaken(null)} data-testid="btn-next-parcel">
+              {JOURNEY_TEXT.parcel.next(account.parcels)}
+            </button>
+          )}
+        </div>
+      )}
       {offer.length > 0 ? (
         <section className={styles.offer} data-testid="parcel-offer" data-waiting={account.parcels}>
           <h2 className={`${styles.offerTitle} display`}>
             <IconPackage size={22} aria-hidden="true" /> {JOURNEY_TEXT.parcel.title}
             {account.parcels > 1 && <span className={`${styles.waiting} tabular`}>{JOURNEY_TEXT.parcel.more(account.parcels - 1)}</span>}
           </h2>
-          <div className={styles.cards}>
+          <div className={styles.cards} data-row={inSheet} style={{ '--cards': offer.length } as CSSProperties}>
             {offer.map((entry) => <ParcelCard key={entry.id} entry={entry} onTake={() => take(entry)} />)}
           </div>
         </section>
       ) : (
-        <p className={styles.empty} data-testid="parcel-empty">
-          <IconPackage size={28} stroke={1.5} aria-hidden="true" />
-          {parcelPool(account).length === 0 ? JOURNEY_TEXT.parcel.vaultEmpty : JOURNEY_TEXT.parcel.none}
-        </p>
+        !inSheet && account.parcels === 0 && (
+          <p className={styles.empty} data-testid="parcel-empty">
+            <IconPackage size={28} stroke={1.5} aria-hidden="true" />
+            {parcelPool(account).length === 0 ? JOURNEY_TEXT.parcel.vaultEmpty : JOURNEY_TEXT.parcel.none}
+          </p>
+        )
       )}
     </>
   );
@@ -83,20 +103,19 @@ function Parcels() {
   const account = useAccountStore((s) => s.account);
   const cost = parcelCost(account.parcelsEarned);
   const pct = Math.min(100, Math.round((account.research / cost) * 100));
-  const opened = account.unlocks.length;
 
   return (
-    <div className={styles.parcels} data-testid="aide-parcels">
-      <div className={styles.research} data-testid="research-bar" data-research={account.research} data-cost={cost}>
+    <div className={styles.parcels}>
+      <div className={styles.research}>
         <span className={`${styles.researchLabel} display`}>
           {JOURNEY_TEXT.research}
-          <InfoDot tip={<Tip title={JOURNEY_TEXT.research} body={JOURNEY_TEXT.researchTip(PARCEL.earlyCost, PARCEL.earlyCount, PARCEL.cost)} />} />
+          <InfoDot tip={researchTip()} />
         </span>
         <Progress.Root className={styles.researchBar} value={pct} aria-label={`${account.research} of ${cost} Research`}>
           <Progress.Indicator className={styles.researchFill} style={{ width: `${pct}%` }} />
         </Progress.Root>
         <span className={`${styles.researchText} tabular`}>{account.research} / {cost}</span>
-        <span className={`${styles.vaultCount} tabular`} data-testid="vault-count">{JOURNEY_TEXT.vault(opened, VAULT.length)}</span>
+        <span className={`${styles.vaultCount} tabular`} data-testid="vault-count">{JOURNEY_TEXT.vault(account.unlocks.length, VAULT.length)}</span>
       </div>
 
       <ParcelOffer />
@@ -104,42 +123,44 @@ function Parcels() {
   );
 }
 
-function EntryRow({ entry, canPin, onPin }: { entry: JournalEntry; canPin: boolean; onPin: (on: boolean) => void }) {
+function EntryTile({ entry, canPin, onPin }: { entry: JournalEntry; canPin: boolean; onPin: (on: boolean) => void }) {
   const pct = Math.round((entry.have / entry.goal) * 100);
   const testId = entry.id.startsWith('note:') ? `note-${entry.id.slice(5)}` : `achievement-${entry.id}`;
   return (
-    <li className={entry.done ? hub.got : hub.pendingRow} data-testid={testId} data-done={entry.done} data-pinned={entry.pinned}>
-      <span className={hub.medal} aria-hidden="true">{entry.tier ? <MedalIcon tier={entry.tier} size={28} /> : <IconNotebook size={26} stroke={1.6} />}</span>
-      <span className={hub.rowBody}>
-        <span className={`${hub.rowName} display`}>{entry.hidden && !entry.done ? `${entry.name} (hidden)` : entry.name}</span>
-        <span className={hub.rowDesc}>{entry.description}</span>
-        <span className={styles.prize}>{entry.prize}</span>
-      </span>
-      <span className={styles.entryEnd}>
-      {entry.done ? (
-        <span className={`${hub.state} ${hub.stateGot}`}><IconCheck size={14} /> {JOURNEY_TEXT.journal.done}</span>
-      ) : entry.goal > 1 ? (
-        <Progress.Root className={`${hub.bar} tabular`} value={pct} aria-label={`${entry.have} of ${entry.goal}`}>
-          <Progress.Indicator className={hub.fill} style={{ width: `${pct}%` }} />
-          <span className={hub.barText}>{entry.have} / {entry.goal}</span>
-        </Progress.Root>
-      ) : (
-        <span className={hub.state}>{JOURNEY_TEXT.journal.open}</span>
-      )}
+    <li className={styles.entry} data-testid={testId} data-done={entry.done} data-pinned={entry.pinned}>
+      <Tipped tip={journalEntryTip(entry)} className={styles.entryFace} tabIndex={0}>
+        {/* A deed's medal in its tier's colour; a Field Note is the relic that carries it, a silhouette until written. */}
+        <span className={styles.entryIcon} aria-hidden="true">
+          {entry.tier ? <MedalIcon tier={entry.tier} size={28} /> : entry.id.startsWith('note:') ? <img src={itemIcon(entry.id.slice(5))} alt="" width={28} height={28} className={`pixel ${styles.noteArt}`} /> : <IconNotebook size={26} stroke={1.6} />}
+        </span>
+        <span className={styles.entryBody}>
+          <span className={`${styles.entryName} display`}>{entry.name}</span>
+          {entry.done ? (
+            <span className={styles.entryDone}><IconCheck size={14} stroke={3} aria-hidden="true" /> {JOURNEY_TEXT.journal.done}</span>
+          ) : (
+            <Progress.Root className={styles.entryBar} value={pct} aria-label={`${entry.have} of ${entry.goal}`}>
+              <Progress.Indicator className={styles.entryFill} style={{ width: `${pct}%` }} />
+            </Progress.Root>
+          )}
+        </span>
+        {!entry.done && entry.goal > 1 && <span className={`${styles.entryCount} tabular`}>{entry.have} / {entry.goal}</span>}
+      </Tipped>
       {!entry.done && (
-        <button
+        <Tipped
+          as="button"
           type="button"
+          tip={pinTip(entry.pinned, canPin)}
           className={`${styles.pin} ${entry.pinned ? styles.pinOn : ''}`}
           onClick={() => onPin(!entry.pinned)}
           aria-pressed={entry.pinned}
           aria-disabled={!entry.pinned && !canPin}
           aria-label={entry.pinned ? JOURNEY_TEXT.journal.unpin(entry.name) : JOURNEY_TEXT.journal.pin(entry.name)}
           data-testid={`pin-${entry.id}`}
+          data-pin={entry.id}
         >
           {entry.pinned ? <IconPinFilled size={18} aria-hidden="true" /> : <IconPin size={18} aria-hidden="true" />}
-        </button>
+        </Tipped>
       )}
-      </span>
     </li>
   );
 }
@@ -149,21 +170,47 @@ function Journal() {
   const pin = useAccountStore((s) => s.pin);
   const entries = journalEntries(account, getContent(), (id) => cosmeticById(id)?.name ?? id);
   const canPin = account.pins.length < PIN_LIMIT;
+  const pinned = entries.filter((e) => e.pinned && !e.done);
+  // A pin moves its tile to another list, which unmounts the button under the keyboard: the focus follows the tile.
+  const box = useRef<HTMLDivElement>(null);
+  const moved = useRef<string | null>(null);
+  useEffect(() => {
+    if (!moved.current) return;
+    box.current?.querySelector<HTMLElement>(`[data-pin="${moved.current}"]`)?.focus();
+    moved.current = null;
+  }, [account.pins]);
+  const tile = (e: JournalEntry) => (
+    <EntryTile
+      key={e.id}
+      entry={e}
+      canPin={canPin}
+      onPin={(on) => {
+        if (on && !canPin) return;
+        moved.current = e.id;
+        pin(e.id, on);
+      }}
+    />
+  );
   return (
-    <div className={hub.medals} data-testid="aide-journal">
-      <p className={hub.lede}>
-        {JOURNEY_TEXT.journal.lede(account.pins.length, PIN_LIMIT)}
-        <InfoDot tip={<Tip title={JOURNEY_TEXT.journal.title} body={JOURNEY_TEXT.journal.tip} />} />
-      </p>
+    <div className={hub.medals} ref={box}>
+      {/* §8.7.2 — what you are chasing sits on top: the three pins. */}
+      <div className={hub.group}>
+        <h2 className={hub.groupTitle}>
+          {JOURNEY_TEXT.journal.pinned} <span className={`${hub.muted} tabular`}>{pinned.length} / {PIN_LIMIT}</span>
+          <InfoDot tip={journalTip()} />
+        </h2>
+        {pinned.length > 0 ? <ul className={styles.entries}>{pinned.map(tile)}</ul> : <p className={styles.none}>{JOURNEY_TEXT.journal.noPins}</p>}
+      </div>
       {JOURNAL_SHELVES.map((shelf) => {
         const rows = entries.filter((e) => e.shelf === shelf.id);
-        const done = rows.filter((e) => e.done).length;
+        const open = rows.filter((e) => !(e.pinned && !e.done));
         return (
-          <div key={shelf.id} className={hub.group} data-testid={`journal-${shelf.id}`}>
-            <h2 className={hub.groupTitle}>{shelf.name} <span className={`${hub.muted} tabular`}>{done} / {rows.length}</span> <span className={styles.shelfAbout}>{shelf.about}</span></h2>
-            <ul className={hub.list}>
-              {rows.map((e) => <EntryRow key={e.id} entry={e} canPin={canPin} onPin={(on) => pin(e.id, on)} />)}
-            </ul>
+          <div key={shelf.id} className={hub.group}>
+            <h2 className={hub.groupTitle}>
+              {shelf.name} <span className={`${hub.muted} tabular`}>{rows.filter((e) => e.done).length} / {rows.length}</span>
+              <InfoDot tip={journalShelfTip(shelf.name, shelf.about)} />
+            </h2>
+            <ul className={styles.entries}>{open.map(tile)}</ul>
           </div>
         );
       })}
@@ -172,14 +219,13 @@ function Journal() {
 }
 
 export function OakAide() {
-  const parcels = useAccountStore((s) => s.account.parcels);
   const account = useAccountStore((s) => s.account);
   const entries = journalEntries(account, getContent());
   return (
-    <Tabs.Root className={hub.pc} defaultValue={parcels > 0 ? 'parcels' : 'journal'} data-testid="oak-aide">
-      <Tabs.List className={hub.tabs} aria-label="Professor Oak's aide">
+    <Tabs.Root className={hub.pc} defaultValue={account.parcels > 0 ? 'parcels' : 'journal'} data-testid="oak-aide">
+      <Tabs.List className={hub.tabs} aria-label={JOURNEY_TEXT.aide}>
         <Tabs.Trigger className={hub.tab} value="parcels" data-testid="aide-tab-parcels">
-          {JOURNEY_TEXT.parcel.tab} <span className={`${hub.muted} tabular`}>{parcels}</span>
+          {JOURNEY_TEXT.parcel.tab} <span className={`${hub.muted} tabular`}>{account.parcels}</span>
         </Tabs.Trigger>
         <Tabs.Trigger className={hub.tab} value="journal" data-testid="aide-tab-journal">
           {JOURNEY_TEXT.journal.title} <span className={`${hub.muted} tabular`}>{entries.filter((e) => e.done).length} / {entries.length}</span>

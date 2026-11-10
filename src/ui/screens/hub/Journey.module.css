@@ -43,12 +43,31 @@
   border-left: 2px solid var(--border-subtle);
 }
 .notice {
-  margin: 0;
-  padding: var(--sp-2) var(--sp-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
   border: 2px solid var(--accent-positive);
   border-radius: var(--radius-md);
   background: var(--surface-1);
   font-size: var(--type-small);
+}
+.next {
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--accent-action-deep);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.next:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
 }
 .offer {
   display: grid;
@@ -72,6 +91,10 @@
   grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
   justify-content: center;
   gap: var(--sp-4);
+}
+/* In a sheet the cards hold one row, however many the rank shows. */
+.cards[data-row='true'] {
+  grid-template-columns: repeat(var(--cards, 3), minmax(0, 1fr));
 }
 .take {
   display: inline-block;
@@ -120,21 +143,98 @@
   font-size: var(--type-small);
 }
 
-/* ── The Journal ───────────────────────────────────────────────────────────────────────────────────────── */
-.shelfAbout {
-  margin-left: var(--sp-2);
-  letter-spacing: 0;
-  text-transform: none;
-  font-size: var(--type-caption);
+/* ── The Journal: a tile per deed — icon, name, bar — and its sentence in the bubble ───────────────────── */
+.entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--sp-2);
 }
-.prize {
-  font-size: var(--type-caption);
-  color: var(--ink-secondary);
+.entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
 }
-.entryEnd {
-  display: inline-flex;
+.entry[data-done='true'] {
+  border-color: var(--accent-positive);
+}
+.entry[data-pinned='true'] {
+  border-color: var(--accent-action-deep);
+  background: var(--surface-glow);
+}
+.entryFace {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--sp-3);
+  min-width: 0;
+  border-radius: var(--radius-sm);
+}
+/* `span.` (and `li.`, below) so these rings outrank the global `[tabindex='0']` one, which is amber on cream. */
+span.entryFace:focus-visible,
+span.slot:focus-visible,
+span.perk:focus-visible,
+span.star:focus-visible,
+span.badgeSlot:focus-visible,
+li.hallRow:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.entryIcon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  color: var(--ink-secondary);
+}
+/* A Field Note not written yet is its relic's silhouette, as the Pokédex draws a species not met. */
+.entry[data-done='false'] .noteArt {
+  filter: brightness(0);
+  opacity: 0.28;
+}
+.noteArt {
+  object-fit: contain;
+}
+.entryBody {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.entryName {
+  font-size: var(--type-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.entryBar {
+  position: relative;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.entryFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent-action-deep);
+}
+.entryDone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--type-caption);
+  color: var(--ink-primary);
+}
+.entryCount {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+  white-space: nowrap;
 }
 .pin {
   display: grid;
@@ -148,7 +248,7 @@
   cursor: pointer;
 }
 .pin[aria-disabled='true'] {
-  opacity: 0.45;
+  border-style: dashed;
   cursor: default;
 }
 .pinOn {
@@ -164,14 +264,24 @@
 /* ── The Trainer Kit ───────────────────────────────────────────────────────────────────────────────────── */
 .kit {
   display: grid;
-  gap: var(--sp-4);
+  gap: var(--sp-5);
 }
-.kitTitle {
-  margin: 0;
+.kitGroup {
+  margin: 0 0 var(--sp-2);
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: var(--type-h2);
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+/* An empty list's one line: nothing pinned, no perks yet. */
+.none {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
 }
 .slots {
   list-style: none;
@@ -183,23 +293,40 @@
 }
 .slot {
   display: grid;
+  justify-items: center;
   align-content: center;
-  justify-items: start;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   min-height: 96px;
-  padding: var(--sp-3) var(--sp-4);
+  padding: var(--sp-3);
   border: 2px dashed var(--border-strong);
   border-radius: var(--radius-md);
   background: var(--surface-1);
+  color: var(--ink-primary);
+  font: inherit;
+  text-align: center;
+  width: 100%;
 }
-.slot[data-state='packed'] {
+/* A packed slot is the button that unpacks it. */
+button.slot {
+  cursor: pointer;
+}
+button.slot:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.slots li[data-state='packed'] .slot {
   border-style: solid;
   border-color: var(--accent-action-deep);
   background: var(--surface-glow);
 }
-.slot[data-state='locked'] {
+.slots li[data-state='locked'] .slot {
   background: var(--surface-2);
   color: var(--ink-secondary);
+}
+.slotIcon {
+  display: grid;
+  place-items: center;
+  min-height: 26px;
 }
 .slotName {
   font-size: var(--type-body);
@@ -208,32 +335,22 @@
   font-size: var(--type-small);
   color: var(--ink-secondary);
 }
-.kitGroup {
-  margin: 0 0 var(--sp-2);
-  font-size: var(--type-small);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-secondary);
-}
-.kitNone {
-  margin: 0;
-  font-size: var(--type-small);
-  color: var(--ink-secondary);
-}
 .perks {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-2);
 }
 .perk {
   display: grid;
-  gap: var(--sp-1);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
   width: 100%;
-  height: 100%;
-  padding: var(--sp-3) var(--sp-4);
+  min-height: 48px;
+  padding: var(--sp-2) var(--sp-3);
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--surface-1);
@@ -247,7 +364,7 @@ button.perk {
 button.perk[aria-disabled='true'] {
   cursor: default;
 }
-button.perk:focus-visible {
+.perk:focus-visible {
   outline: 3px solid var(--brand-blue);
   outline-offset: 2px;
 }
@@ -256,26 +373,26 @@ button.perk:focus-visible {
   background: var(--surface-glow);
 }
 .perkMissing {
-  background: var(--surface-2);
+  border-style: dashed;
+}
+.perkIcon {
+  display: grid;
+  place-items: center;
+  color: var(--ink-secondary);
 }
 .perkName {
-  font-size: var(--type-body);
-}
-.perkEffect {
   font-size: var(--type-small);
-  color: var(--ink-secondary);
 }
 .perkAction {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  justify-self: start;
-  margin-top: var(--sp-1);
   padding: 2px var(--sp-3);
   border-radius: var(--radius-pill);
   background: var(--surface-3);
   font-family: var(--font-display);
   font-size: var(--type-caption);
+  white-space: nowrap;
 }
 .perkOn .perkAction {
   background: var(--accent-action);
@@ -291,29 +408,36 @@ button.perk:focus-visible {
 .star {
   display: grid;
   place-items: center;
-  color: var(--surface-sunken);
+  border-radius: var(--radius-sm);
+  color: var(--ink-secondary);
+}
+/* §8.4.3 — the road ahead and the Badge Case, side by side while there is room. */
+.cardLower {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--sp-5);
 }
 .starOn {
   color: var(--accent-action-deep);
 }
+/* Three Regions of four: a row a Region. */
 .badgeCase {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  grid-template-columns: repeat(4, 64px);
   gap: var(--sp-2);
 }
 .badgeSlot {
   display: grid;
-  justify-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-2);
+  place-items: center;
+  width: 64px;
+  height: 64px;
   border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--surface-1);
-  font-size: var(--type-caption);
-  text-align: center;
 }
 .badgeSlot[data-won='false'] img {
   filter: brightness(0);
@@ -365,6 +489,11 @@ button.perk:focus-visible {
   color: var(--ink-secondary);
 }
 
+@media (max-width: 1000px) {
+  .cardLower {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 @media (max-width: 900px) {
   .research {
     grid-template-columns: auto 1fr;

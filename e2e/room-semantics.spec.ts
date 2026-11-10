@@ -11,7 +11,11 @@ async function enter(page: Page, destination: 'hub' | 'center' | 'dojo' | 'shop'
   await page.evaluate(({ destination, text }) => {
     document.documentElement.style.setProperty('--text-scale', String(text / 100));
     const a = window.__ascendant!;
-    if (destination === 'hub') return a.goTo('hub');
+    // §8.4.6 — the lobby fills with the rank: at Challenger every door is in the room.
+    if (destination === 'hub') {
+      a.meta.rank(4);
+      return a.goTo('hub');
+    }
     a.run.new('squirtle', 7);
     a.run.fill(5);
     a.run.city(destination === 'market' ? 1 : 0);
@@ -81,7 +85,7 @@ for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 72
         await page.getByTestId('kiosk-pc').focus();
         await expect(room.locator('[data-shape="pc"]')).toHaveAttribute('data-state', 'near');
         await capture(page, `hub-focus-${suffix}`);
-        for (const id of ['pc', 'card', 'mart', 'guide']) {
+        for (const id of ['pc', 'card', 'mart', 'guide', 'aide', 'kit']) {
           const door = page.getByTestId(`kiosk-${id}`);
           await door.focus();
           await door.press(id === 'pc' ? 'Enter' : 'Space');

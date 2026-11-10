@@ -672,3 +672,24 @@
   font-family: var(--font-display);
   font-weight: 700;
 }
+
+/* §8.8.5 — the Ladder card: a pip a rung, the ones this run carries filled. */
+.pips {
+  display: flex;
+  gap: var(--sp-1);
+}
+.pip {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-0);
+}
+.pip[data-on='true'] {
+  border-color: var(--accent-action-deep);
+  background: var(--accent-action);
+}
+.preflight span:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}

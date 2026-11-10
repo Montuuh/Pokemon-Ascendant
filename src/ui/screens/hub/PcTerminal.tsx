@@ -9,7 +9,7 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { bondRulesText, dexCardTip } from '@/ui/tips';
+import { bondRulesText, dexCardTip, hallRunTip } from '@/ui/tips';
 import { JOURNEY_TEXT } from '@/ui/strings';
 import journey from './Journey.module.css';
 import { ShinyMark } from '@/ui/components/ShinyMark';
@@ -125,9 +125,9 @@ export function PcTerminal() {
         {account.hall.length === 0 ? (
           <p className={journey.empty} data-testid="hall-empty">{JOURNEY_TEXT.hall.empty}</p>
         ) : (
-          <ol className={journey.hall} data-testid="hall-of-fame">
+          <ol className={journey.hall}>
             {[...account.hall].reverse().map((h) => (
-              <li key={h.run} className={journey.hallRow} data-testid={`hall-${h.run}`}>
+              <Tipped as="li" key={h.run} tip={hallRunTip(h.run, h.seed)} className={journey.hallRow} tabIndex={0} data-testid={`hall-${h.run}`}>
                 <span className={`${journey.hallRun} display tabular`}>{JOURNEY_TEXT.hall.run(h.run)}</span>
                 <span className={journey.hallTeam}>
                   {h.team.map((m, i) => (
@@ -141,7 +141,7 @@ export function PcTerminal() {
                   <span>{JOURNEY_TEXT.hall.rung(h.rung)}</span>
                   <span>{JOURNEY_TEXT.hall.badges(h.badges.length)} · {JOURNEY_TEXT.hall.relics(h.relics.length)}</span>
                 </span>
-              </li>
+              </Tipped>
             ))}
           </ol>
         )}

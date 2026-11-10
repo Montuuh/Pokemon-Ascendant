@@ -162,8 +162,9 @@ for (const viewport of [
         await expect(page.locator('[data-testid^="run-end-badge-"]')).toHaveCount(3);
         // §8.3.6 — what the run earned is on the screen, beside the team: the ₽ it ended with, as Tokens.
         await expect(page.getByTestId('field-report')).toBeVisible();
-        await expect(page.getByTestId('summary-money')).toContainText('540');
-        await expect(page.getByTestId('report-tokens')).toContainText('5 from ₽');
+        await page.getByTestId('report-tokens').hover();
+        await expect(page.getByTestId('tooltip')).toContainText('5 from the 540 ₽');
+        await page.mouse.move(0, 0);
         const shiny = page.locator('[data-testid^="run-end-mon-"][data-shiny="true"]');
         await expect(shiny.locator('img').first()).toHaveAttribute('src', /charizard-shiny\.png/);
         await noOverflow(page);
