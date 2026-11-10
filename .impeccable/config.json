@@ -20,6 +20,15 @@
         ],
         "createdAt": "2026-11-07T03:55:00.695Z",
         "reason": "Claude: the report page is single-dark (body #17131c, panels #221c29/#2c2434); the detector measured the muted text against an assumed #ffffff. Real contrast ≥ 7.8:1."
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/reviews/2026-11-10-meta-progression-rework.html"
+        ],
+        "createdAt": "2026-11-10T09:49:37.885Z",
+        "reason": "agent triage: .scroll wraps tables whose cells carry 8x10px padding; the detector does not see cell padding"
       }
     ]
   }
