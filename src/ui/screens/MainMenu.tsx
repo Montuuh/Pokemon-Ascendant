@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { changelogUnread } from '@/app/changelogSeen';
+import { APP_STAGE } from '@/content/roadmap';
 import { TitleBattle } from '@/ui/title/TitleBattle';
 import { TitleMark } from '@/ui/title/TitleMark';
 import styles from './MainMenu.module.css';
@@ -65,7 +66,7 @@ export function MainMenu() {
         </nav>
         {/* Read from package.json at build time, so it cannot go stale the way "First Route v0.2" did. */}
         <button type="button" className={styles.whatsNew} onClick={() => goTo('changelog')} data-testid="btn-changelog" data-unread={unread}>
-          <span className="tabular">v{__APP_VERSION__}</span> · What's new
+          <span className="tabular">v{__APP_VERSION__}</span>{APP_STAGE ? ` · ${APP_STAGE}` : ''} · What's new
           {unread && (
             <>
               <span className={styles.newDot} aria-hidden="true" />

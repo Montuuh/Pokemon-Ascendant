@@ -71,6 +71,15 @@ One line of lede.
 - **Headline.** A few technical words: what changed.
 ```
 
+- **One entry per theme, not per patch** (the user's call, 2026-11-10: "hay demasiadas cosas"). v0.9 had grown to
+  109 point entries and read as a commit log. Related point versions are gathered under **one themed entry that
+  carries the last version of its group** and that version's date. A release that continues the newest entry's
+  theme is **folded into it** — the heading takes the new number and date, the bullets are rewritten to stay within
+  four — and only a release that opens a new theme gets a new entry. The roadmap keeps every point version; the
+  changelog keeps what the game gained.
+- **Beta until v1.0** (the same call). The changelog's title, the What's new screen, the menu's and About's version
+  pills and the browser tab say "Beta" while the major is 0 (`APP_STAGE` in `src/content/roadmap.ts`, derived from
+  the number). v0.9 stays the working minor until the backend work that precedes v1.0 is done.
 - **Brief** (the user's call, 2026-09-29): the most important things only, no explanation and no lore. **2–4
   bullets** for a patch, **4–6** for a minor. The headline is a noun phrase; the sentence after it is a few words,
   **under ~60 characters**. The lede is one short line. How and why a thing works belongs in the game's own

@@ -22,21 +22,22 @@ test.describe("What's new — the release doctrine", () => {
     await expect(page.getByTestId('changelog-v0.1')).toBeVisible();
     await expect(page.getByTestId('changelog-v0.7')).toHaveAttribute('data-level', 'minor');
     // v0.7 is an older minor now, so it starts closed: open it to read its patches.
-    if ((await page.getByTestId('changelog-v0.7.3').count()) === 0) await page.getByTestId('changelog-v0.7').getByRole('button').first().click();
-    await expect(page.getByTestId('changelog-v0.7.3')).toHaveAttribute('data-level', 'patch');
-    await expect(page.getByTestId('changelog-v0.7.3')).toContainText('Region 2');
+    if ((await page.getByTestId('changelog-v0.7.5').count()) === 0) await page.getByTestId('changelog-v0.7').getByRole('button').first().click();
+    await expect(page.getByTestId('changelog-v0.7.5')).toHaveAttribute('data-level', 'patch');
+    await expect(page.getByTestId('changelog-stage')).toHaveText('Beta');
+    await expect(page.getByTestId('changelog-v0.7.5')).toContainText('Region 2');
     // D10 — dates in the game's language whatever the browser's.
-    await expect(page.getByTestId('changelog-v0.7.3')).toContainText('23 Sep 2026');
+    await expect(page.getByTestId('changelog-v0.7.5')).toContainText('24 Sep 2026');
     // The outline follows the sizes: a minor is a heading one level above its patches.
     await expect(page.getByTestId('changelog-v0.7').locator('h2')).toHaveCount(1);
-    await expect(page.getByTestId('changelog-v0.7.3').locator('h3')).toHaveCount(1);
+    await expect(page.getByTestId('changelog-v0.7.5').locator('h3')).toHaveCount(1);
     await expect(page.getByTestId('changelog-v0.1')).not.toContainText('Shared hand');
 
     // R1 — size by level: the minor's number is bigger than its patch's.
     const size = (id: string, sel: string) =>
       page.getByTestId(id).locator(sel).first().evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
     const minor = await size('changelog-v0.7', 'span.display.tabular');
-    const patch = await size('changelog-v0.7.3', 'span.display.tabular');
+    const patch = await size('changelog-v0.7.5', 'span.display.tabular');
     expect(minor).toBeGreaterThan(patch * 2);
 
     // A closed version opens on a click and says what it added.

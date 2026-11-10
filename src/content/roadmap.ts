@@ -68,3 +68,9 @@ export const ROADMAP: readonly RoadmapVersion[] = parseRoadmap();
 
 /** The version the build says it is, for the pill beside the title. Injected by Vite from package.json. */
 export const APP_VERSION: string = __APP_VERSION__;
+
+/**
+ * docs/release-doctrine.md — every build before v1.0 is a Beta, and every surface that shows the version says so.
+ * Derived from the number, like the version itself, so it cannot be left behind when v1.0 ships.
+ */
+export const APP_STAGE: 'Beta' | null = Number(APP_VERSION.split('.')[0]) < 1 ? 'Beta' : null;

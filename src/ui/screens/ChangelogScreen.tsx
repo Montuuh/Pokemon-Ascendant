@@ -4,7 +4,7 @@ import { IconArrowLeft, IconChevronDown, IconCircleCheck, IconCrown, IconPokebal
 import { useAppStore } from '@/app/store';
 import { markChangelogRead } from '@/app/changelogSeen';
 import { CHANGELOG, sameVersion, type ChangeItem, type Release } from '@/content/changelog';
-import { APP_VERSION } from '@/content/roadmap';
+import { APP_STAGE, APP_VERSION } from '@/content/roadmap';
 import { MAJOR_RELEASE_LABEL, niceDate } from '@/ui/strings';
 import styles from './ChangelogScreen.module.css';
 
@@ -106,7 +106,10 @@ export function ChangelogScreen() {
         <button type="button" className={styles.back} onClick={() => goTo(back)} data-testid="btn-changelog-back">
           <IconArrowLeft size={18} /> {back === 'about' ? 'About' : 'Menu'}
         </button>
-        <h1 className={`${styles.title} display`}>What's new</h1>
+        <h1 className={`${styles.title} display`}>
+          What's new
+          {APP_STAGE && <span className={styles.stage} data-testid="changelog-stage">{APP_STAGE}</span>}
+        </h1>
         <span className={`${styles.versionPill} tabular`} data-testid="changelog-version">v{APP_VERSION}</span>
       </header>
 

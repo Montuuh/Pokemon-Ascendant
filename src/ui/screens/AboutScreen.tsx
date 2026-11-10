@@ -1,6 +1,6 @@
 import { IconArrowLeft, IconBrandGithub, IconCircleCheck, IconCircleDashed, IconProgress } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
-import { APP_VERSION, ROADMAP, type RoadmapVersion } from '@/content/roadmap';
+import { APP_STAGE, APP_VERSION, ROADMAP, type RoadmapVersion } from '@/content/roadmap';
 import { niceDate } from '@/ui/strings';
 import { Tip, Tipped } from '@/ui/tooltip';
 import styles from './AboutScreen.module.css';
@@ -50,7 +50,7 @@ export function AboutScreen() {
         <h1 className={`${styles.title} display`}>About</h1>
         {/* docs/release-doctrine.md — the version is a door to what it added. */}
         <button type="button" className={`${styles.versionPill} tabular`} onClick={() => goTo('changelog')} data-testid="about-version">
-          v{APP_VERSION} · What's new
+          v{APP_VERSION}{APP_STAGE ? ` · ${APP_STAGE}` : ''} · What's new
         </button>
       </header>
 

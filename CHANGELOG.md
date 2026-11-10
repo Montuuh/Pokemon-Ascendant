@@ -1,908 +1,174 @@
-# Changelog
+# Changelog — Beta
 
-> What each version of Pokémon Ascendant added, newest first, as short technical notes. **The game reads this
-> file**: the *What's new* screen (the version pill on the main menu) is built from it, so an entry here is an
-> entry in the game. Versions, where else they are stamped, and how to write an entry:
-> [`docs/release-doctrine.md`](docs/release-doctrine.md). `npm run check:version` proves they all agree.
+> **Pokémon Ascendant is in Beta until v1.0.** Every v0.x build is a Beta build: systems still change between
+> versions and a save may be reset when one does.
+>
+> What each version added, newest first, as short technical notes. **The game reads this file**: the *What's new*
+> screen (the version pill on the main menu) is built from it, so an entry here is an entry in the game. Versions,
+> where else they are stamped, and how to write an entry: [`docs/release-doctrine.md`](docs/release-doctrine.md).
+> `npm run check:version` proves they all agree.
+>
+> **One entry per theme, not per patch** (the user's call, 2026-11-10): related point versions are gathered under
+> the last version of their group, so the list reads as what the game gained rather than as a commit log.
 >
 > Shape the parser reads: `## vX.Y — Name · YYYY-MM-DD` (or `· in progress`) for a version on the roadmap,
-> `### vX.Y.Z — Name · YYYY-MM-DD` for a point version under it, one short line of lede, then 2–4
-> `- **Headline.** A few words.` bullets. Every change ships as a version; there is no unreleased block.
+> `### vX.Y.Z — Name · YYYY-MM-DD` for a themed entry under it, one short line of lede, then 2–4
+> `- **Headline.** A few words.` bullets. There is no unreleased block.
 
 ## v0.9 — The long game · in progress
 
-The account's systems revisited, and the road to the Champion.
+The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
-### v0.9.109 — Faces on the road · 2026-11-10
+### v0.9.109 — The route, drawn as FireRed · 2026-11-10
 
-The route's people face you and stand larger; the only building is the Gym.
+The route map is a FireRed route, with more on it than nodes.
 
-- **Facing you.** Every trainer on the route faces the screen.
-- **Bigger people.** They stand a third larger than the tiles.
-- **Fewer buildings.** No houses; the nurse and merchant stand on the road.
+- **FireRed routes.** One pixel size, biome chapters, people facing you.
+- **Field moves.** Trees, rocks and water close shortcuts until cleared.
+- **Ledges and places.** One-way ledges; Mysteries show their place.
+- **Gym ground.** A Gym's field covers its whole biome.
 
-### v0.9.108 — Straight roads · 2026-11-10
+### v0.9.106 — Move animations from the GBA · 2026-11-07
 
-The route map is flatter and straighter, and a Gym's ground carries its field.
+Every move plays FireRed's own battle animation.
 
-- **Straighter routes.** Seven rows instead of eleven; tracks run level.
-- **Whole buildings.** The Gym, Center and Mart stand roof and all.
-- **Gym ground.** Its weather covers its whole biome; leaning fights too.
-- **Cleaner map.** Cleared obstacles vanish; Mysteries are "?" again.
+- **FRLG sprites.** Each move replays its animation, sprite by sprite.
+- **On the Pokémon.** Sway, shine and afterimages move its sprite.
+- **Bigger effects.** Move sprites drawn at twice the Pokémon's pixel.
 
-### v0.9.107 — Routes you walk · 2026-11-09
+### v0.9.101 — Rooms from FRLG tiles · 2026-11-05
 
-The route map is drawn as a FireRed route, and the route holds more than nodes.
+Every interior rebuilt from the games' tiles.
 
-- **A real route.** One pixel size, biome chapters, buildings, houses and ponds.
-- **No river.** The step into a lane wears its Gym's colour; a ridge parts the lanes.
-- **Field moves.** Trees, rocks and water close shortcuts until your Box can clear them.
-- **Ledges and places.** A one-way ledge skips a fight; Mysteries show their place.
+- **Rooms.** Shops, Centers, Dojos and the Hub rebuilt from FRLG tiles.
+- **Rocket offices.** The Black Market is Team Rocket's offices.
 
-### v0.9.106 — Moves on the Pokémon · 2026-11-07
+### v0.9.99 — The series' numbers · 2026-11-04
 
-Moves the GBA plays on the Pokémon itself now move its sprite.
+Stats, damage and relics rebalanced on the games' formulas.
 
-- **Self moves.** Agility rushes, Harden shines, Growth swells, Splash hops.
-- **No rings.** Raises show the Pokémon's own beat, not generic rings.
-- **Faithful pixels.** It swells or shrinks by half steps, never squashed.
+- **Gen III formulas.** Stats and damage follow the games.
+- **Honest enemies.** Enemies hit as their species and level say.
+- **Softer start.** A third starter move and a sure first catch.
+- **Relic rarity.** Rarity matches power; Commons drop most often.
 
-### v0.9.105 — Moves you can see · 2026-11-07
+### v0.9.92 — Moves, evolution and enemies, reworked · 2026-11-03
 
-A move's sprites are drawn bigger, at twice the Pokémon's pixel.
+Deeper moves, real evolution methods and smarter enemies.
 
-- **Bigger effects.** Embers, stars and orbs read across the stage.
-- **Fit the card.** Jaws and barriers close within their target's card.
-- **Clearer numbers.** A thicker outline keeps them readable over a hit.
+- **Move keywords.** Guard, heal, weather and delayed hits; AP cap 3.
+- **Real evolution.** Series levels, stones, Friendship and trades.
+- **Growing learnsets.** Every stage learns its own moves.
+- **Enemy intent.** Larger kits, disruption and combos.
 
-### v0.9.104 — Moves that move like the GBA · 2026-11-07
+### v0.9.88 — Readable bosses, clearer choices · 2026-11-02
 
-Each FireRed move replays its own battle animation, sprite by sprite.
+Gym teams authored, boss phases explained, more choices in town.
 
-- **Their own paths.** Flamethrower waves, Fire Spin circles, rocks fall.
-- **Gen IV too.** Fire Fang bites like Bite; Night Slash slashes like Slash.
-- **Lands with its blow.** The number waits for the hit's own splat.
-- **Quicker turns.** Routine cards stay short; the hand returns at the hit.
-
-### v0.9.103 — The move, not the template · 2026-11-07
-
-Each move's sprites are its whole picture: the shared drawn layer is gone.
-
-- **No template on top.** No charge glow, aura rings or type tint over sprites.
-- **Stays put.** Bite, Cut and Slash land from afar; only lunges dash.
-- **Fixed.** Protect, Amnesia, Sunny Day, Rock Tomb and 10 more drawn right.
-- **From the first frame.** No empty charge before a move's sprites.
-
-### v0.9.102 — Moves in their own sprites · 2026-11-06
-
-Every move animated with FireRed / LeafGreen's own battle-animation sprites.
-
-- **Every move its own.** Flamethrower pours embers, Bite closes its jaws.
-- **Big moves, big stage.** Psychic and Thunder wash it in the GBA's backgrounds.
-- **Gen IV moves too.** The Fangs, Shadow Claw, Air Slash: the same sprites.
-- Agility, Harden and other sprite-less moves keep their drawn effects.
-
-### v0.9.101 — Rooms with life · 2026-11-05
-
-Every FRLG room redrawn from the games' tiles and furnished for its job.
-
-- **Pokémon Center.** Therapy beds with Chansey at work, the grooming table, visitors.
-- **Shops.** Customers in every aisle; fossils and gems on relic glass.
-- **Dojo and Game Corner.** Machop and Machoke sparring; regulars and prizes.
-- **Trainer Hub.** The League lobby's trainers, the Item Guide open on its table.
-
-### v0.9.100 — Rocket offices · 2026-11-05
-
-The Black Market is Team Rocket's offices, and the Executive has his own.
-
-- **Rocket offices.** Desks, servers, crates and Rocket banners, in FireRed's own tiles.
-- **The Executive's office.** His own, behind a wall: Legendaries on show, an R rug.
-- **Moves explained.** TMs explain their move; locked and new moves show tooltips.
-
-### v0.9.99 — Commons first · 2026-11-04
-
-Commons turn up often, Uncommons less, Rares rarely; every relic is open.
-
-- **Commons everywhere.** Route trainers drop one again; the Starting Relic is a Common.
-- **Uncommon picks.** The Elite, the first Gym and the Elite Wild give Uncommons, not Rares.
-- **Rares are prizes.** The Ring, the top floor, late finds; drops weigh 70 / 25 / 5.
-- **Every relic open.** No unlocks for now: all 65 relics can turn up from your first run.
-
-### v0.9.98 — Rarity by power · 2026-11-04
-
-A relic's rarity now matches how strong it is.
-
-- **Down a rarity.** 6 Uncommons to Common, 5 Rares to Uncommon, 4 Legendaries to Rare.
-- **Wide Lens up.** The strongest Common is an Uncommon now.
-- **Six Legendaries.** A Gym's pick is now only the strongest relics in the game.
-- **Prices follow.** Shops and the Black Market price each relic by its new rarity.
-
-### v0.9.97 — Relics rebalanced · 2026-11-04
-
-Every relic works as written, and its rarity says how strong it is.
-
-- **Relics fixed.** Steady Aim, Recycle Tag, Cycle Cell and Tempo now work as written.
-- **Toned down.** Choice items cost 1 less, not 0; Sage's Tome draws one card fewer.
-- **Stronger Legendaries.** Most hit harder; Clear Mind sees a turn ahead; weak relics reworked.
-- **Fairer offers.** Gems only for your team's types; Phoenix Feather once per Region.
-
-### v0.9.96 — The series' formulas · 2026-11-04
-
-Stats and damage follow the games' formulas; the start gets more cards.
-
-- **Series stats.** Frail and sturdy Pokémon stand closer; a level counts.
-- **Series damage.** Every hit does something; fights last as long.
-- **Three cards.** Starters begin with a third move; early walls learn hits.
-- **Sure first catch.** While your starter is alone, every ball holds.
-
-### v0.9.95 — Enemies at full strength · 2026-11-04
-
-Every enemy hits as its species and level say; levels and XP come down to match.
-
-- **No hidden multipliers.** Enemies, Gyms, Elites and the League all hit at ×1.
-- **Series-like levels.** Route trainers stand at your level; Gym aces two over.
-- **Less XP.** Trainers pay about what a wild Pokémon does, per Pokémon.
-- **A fair start.** A lone starter meets no wild Pokémon strong against its type.
-
-### v0.9.94 — No early walls · 2026-11-04
-
-Region 1's grass holds back the walls until your team has an own-type hit.
-
-- **No early walls.** No wild Rock, Steel or Ghost until your team knows a STAB attack.
-- **Honest cards.** A Wild card shows the pool as it stands now.
-
-### v0.9.93 — The series' scale · 2026-11-04
-
-Stats read like the games': about half of what they were.
-
-- **Half-scale stats.** A Lv 50 Pokémon has ~90 HP and ~96 Attack, close to the series.
-- **Same fights.** Damage scales with them: a hit takes the same share of a health bar.
-- **Flat heals halved.** Potions 10 / 30 / 60 HP; small heals halved too.
-- **Saves kept.** A run in progress carries on at the new scale.
-
-### v0.9.92 — Enemies with intent · 2026-11-03
-
-Enemies carry more moves, play tricks, act twice more often and run combos.
-
-- **Kits by role.** Trainers carry five moves, Gyms and the League six.
-- **Disruption.** Taunt, Disable, Roar, Mean Look, Yawn, Perish Song, Spikes.
-- **More double actions.** Every trainer's ace from Region 2; Gyms from 1.
-- **Combos.** Each Gym and League ace shows its finisher as next turn's Combo.
-
-### v0.9.91 — Moves that grow · 2026-11-03
-
-Each stage learns its own moves, and a move grows like the Pokémon.
-
-- **Richer learnsets.** Every stage learns by level, from the series' Gen IV lists.
-- **Tracks.** A new move takes an old one's slot: Scratch → Fire Fang.
-- **No filler at the end.** No final form keeps Tackle, Scratch or Growl.
-- **Move Reminder.** Free in the Move Manager; 76 new Gen II–IV moves.
-
-### v0.9.90 — Real evolution levels · 2026-11-03
-
-Pokémon evolve at the series' levels and by the series' methods.
-
-- **Series levels.** Starters at 16, Dragonite at 55; every level stretched ×1.4.
-- **Stones and trades.** Stones only; Kadabra and co. level up holding their item.
-- **Friendship.** Five hearts per Pokémon: Umbreon, Return, the Center's grooming.
-- **Always in stock.** Shops carry the stone or item an evolution waits on.
-
-### v0.9.89 — Move keywords · 2026-11-03
-
-Moves that guard, heal, set the weather or pay later; no card above 3 AP.
-
-- **Guard and heal.** Protect, Endure, Guard, Substitute, screens; heals have PP.
-- **Weather moves.** Rain Dance, Sunny Day, Sandstorm, Hail; Thunder cheaper in rain.
-- **Ultimates.** 3 AP with Recharge, Fatigue or a stat drop; Fly lands next turn.
-- **38 new moves.** From Gen II–IV, with 13 TMs; an enemy's Protect is up at once.
-
-### v0.9.88 — Authored Gym teams · 2026-11-02
-
-Every Gym Leader fields five distinct, authored Pokémon.
-
-- **Five of their own.** No repeats or filler; each has four moves.
-- **Guests.** Brock, Aster and Lorelei name one off-type guest.
-- **Lorelei.** Lapras is her ace, Ice Beam its signature.
-- **Saves.** A map from before keeps the Gym it promised.
-
-### v0.9.87 — Readable boss phases · 2026-11-02
-
-Boss phases are announced, kept and explained; aces declare a signature.
-
-- **Phases.** A crossed notch starts next turn; healing never undoes it.
-- **Signature.** Each ace declares one authored move, always visible.
-- **Rhythm.** Your ring fills when the card's move lands.
-
-### v0.9.86 — AP, evolution and Center choices · 2026-10-30
-
-See where AP comes from, postpone evolution and choose when to heal.
-
-- **Combat.** Tome works from turn one; AP changes and the cap of 6 are logged.
-- **Evolution.** Postpone and resume from the sheet; stones spend on confirmation.
-- **Center.** Manual nurse healing, Therapy beds and whole-Box HP/Trauma.
-- **Daycare.** Removed. Old saves keep levels and release resting Pokémon.
-
-### v0.9.85 — Equipment and bounded control · 2026-10-30
-
-More useful equipment and status control with reliable limits.
-
-- **Safari.** The first catch earns equipment, even when the recruit is declined.
-- **Equipment.** More trainer drops, guaranteed Elite items and useful shop stock.
-- **Control.** Sleep/Freeze cannot chain through a cure or replacement.
-- **Statuses.** Owner-only Confusion, enemy expiry and correct Paralysis AP.
+- **Gym teams.** Every Leader fields five authored Pokémon.
+- **Boss phases.** Announced, kept on screen and explained.
+- **Choices.** Postpone an evolution; choose when the Center heals.
+- **Equipment.** More useful held items; status control with limits.
 
 ### v0.9.84 — Dark and Steel · 2026-10-29
 
-Two new types, four new evolutions, and the moves and items that carry them.
+Two new types and the evolutions, moves and items that carry them.
 
-- **Types.** Dark and Steel join the chart; Bite is Dark now.
-- **Evolutions.** Umbreon, Scizor, Steelix, Magnezone; Magnemite is Steel.
-- **Moves.** Fourteen new Dark and Steel moves, from Crunch to Iron Tail.
-- **Items.** Dark and Steel Gems, Black Glasses, two Plates, a Metal Coat.
+- **17 types.** Dark and Steel join the Gen II chart.
+- **Four evolutions.** Umbreon, Scizor, Steelix and Magnezone.
+- **Moves and items.** 14 moves, six TMs, Gems and Plates.
 
-### v0.9.83 — See the ring · 2026-10-29
+### v0.9.83 — Critical rhythm · 2026-10-29
 
-The critical rhythm tells you what a card will do before you play it.
+Speed sets how often a Pokémon crits, and the card says so.
 
-- **Card hover.** Says how much of the ring the card fills.
-- **Ghost arc.** A held or hovered card previews the ring on its dial.
-- **Pace mark.** ▲ or ▼ when a Speed stage or Paralysis changes the fill.
-- **Cue.** A short rising sound when one of your rings fills.
+- **Speed matters.** Speed sets the crit rhythm and prices the swap.
+- **By AP.** Your rhythm fills by the AP your cards cost.
+- **Readable.** A dial, and one ✦ on every card that will crit.
+- **Apex Reveal.** Region 3 names Victory Road's Legendary.
 
-### v0.9.82 — Worth its AP · 2026-10-29
+### v0.9.79 — The pixel-art pass · 2026-10-28
 
-Your critical rhythm now fills by the AP your cards cost.
+Rooms, scenes, arenas and type redrawn in classic pixel art.
 
-- **By AP.** A 2-AP card fills twice a 1-AP card; a free card fills nothing.
-- **Swaps.** The AP of a swap fills no ring.
-- **Big cards.** One that overshoots keeps the extra, never two crits.
-- **Hover.** Says how many AP a full ring takes.
+- **Interiors.** Dojo, Center, Summit and League as pixel rooms.
+- **Event scenes.** Mystery Events illustrated; items in native pixels.
+- **Arenas.** Distinct battle backdrops and Victory Road caves.
+- **Clarity.** Pixel typography, readable labels, 720p layouts.
 
-### v0.9.81 — Pace · 2026-10-29
+### v0.9.68 — Motion and feedback · 2026-10-27
 
-The critical rhythm now follows Speed stages and Paralysis, as it happens.
+Combat feedback weighed by the event; results on one screen.
 
-- **Continuous rhythm.** The dial fills smoothly; speed changes move it at once.
-- **Paralysis.** Halves the rhythm's pace too: a foe's crit comes later.
-- **Speed moves.** Agility +2; String Shot, Constrict and Bubble Beam slow.
-- **Hover.** Shows the Speed it reads, the card's own, and the curve.
+- **Hits with weight.** Hit-stop, draining HP bars, contact frames.
+- **Fight results.** A fight ends on its own stage, in one click.
+- **Motion setting.** Reduced or full, whatever the device says.
 
-### v0.9.80 — Every level counts · 2026-10-29
+### v0.9.31 — Wild Areas and the Team screen · 2026-10-22
 
-Fewer reds, a real Flow State, the Apex Reveal, and a result screen that waits.
+Habitats on the route, one Team screen, and the Gen II chart.
 
-- **Relics.** Gym 1 offers one Rare, not three; Flow State frees a swap each turn.
-- **Apex Reveal.** On sale at the Mart; Region 3 names Victory Road's Legendary.
-- **One panel per level.** A new move holds the screen until you click.
-- **Enemy rhythm.** The fastest enemies crit every 2nd action, the slowest every 5th.
+- **Wild Areas.** Habitats that show where they are and who lives there.
+- **Team screen.** One screen on the route and in the towns.
+- **Seen, not told.** The Center heals ball by ball; finds on a reel.
+- **Type chart.** Rebalanced with Generation II effectiveness.
 
-### v0.9.79 — At a glance · 2026-10-28
+### v0.9.24 — Sound and move animations · 2026-10-18
 
-More Mystery Event scenes name themselves before you read the title.
+The game has sound, and every move is animated.
 
-- **The shrine.** A stone statue on old paving, glinting; no relic shown.
-- **The pen.** A Pikachu rests inside it, the couple at the fence.
-- **The spring.** A bather in the pool, without the Centre beside it.
-- **Lone props.** Glints on the stone and ball; a "?" over the pack.
+- **Sound.** Every effect and song synthesised as it plays.
+- **Move animations.** Every move animated from user to target.
 
-### v0.9.78 — Told by the picture · 2026-10-28
+### v0.9.22 — Victory Road and the League · 2026-10-16
 
-Event scenes lead with the one thing that makes them that event.
+The end of the run: one last climb, then the Champion.
 
-- **The coin.** The carny's coin is full size; it was a dot on the counter.
-- **The kit.** The Ranger lays out what she hands over.
-- **The cache.** Eevee's three stones are full size.
-- **The stone.** A lone mossy rock on the sand, nothing else to mistake it for.
+- **Victory Road.** Gauntlet, Apex Pokémon, Training Grounds, Summit.
+- **Legendaries.** Articuno, Zapdos, Moltres, Mewtwo and Mew.
+- **The League.** The Elite Four, then the Champion.
 
-### v0.9.77 — One visit · 2026-10-28
+### v0.9.19 — New screens, new fights · 2026-10-15
 
-Training and the field nurse are one scene each, choice beside place.
+The map, combat and title redrawn; fights with other goals.
 
-- **Trainee on the mat.** Your pick steps onto the coach's mat; Train sits under it.
-- **Told on the spot.** Train hops, then says what it did, before the road.
-- **Nurse's total.** Her heal total sits under her scene, bars beside it.
-- **Steady layout.** Nothing moves as you choose; the longest choice fits.
+- **Gym rules.** Every Leader fights under a rule of its own.
+- **Map and combat.** Straight routes; cards played onto targets.
+- **Objectives.** Fights won by something other than knockouts.
+- **Trader.** Swap a Pokémon for a face-down offer.
 
-### v0.9.76 — Plates on the rim · 2026-10-27
+### v0.9.12 — Combat, stats and moves, revisited · 2026-10-09
 
-The Ring's rungs are small plates, so the arena is the picture.
+Whole Pokémon, series proportions and many more moves.
 
-- **Rung plates.** Number and prize on one line, on the platform's rim.
-- **Never cut off.** Every plate fits at 720p with 150 % text.
+- **Whole enemies.** Enemies fight on their whole HP.
+- **Double intent.** Some enemies act twice; you can break it.
+- **Learnsets.** Evolved Pokémon learn their line's moves by level.
 
-### v0.9.75 — A real crowd · 2026-10-27
+### v0.9.9 — Wild Areas and the Hub's books · 2026-10-09
 
-The Coliseum's stands are seated with a mix of spectators, not a tiled strip.
+Every Pokémon lives on a route, and the Hub explains the game.
 
-- **Crowd.** Six kinds of spectator, some in profile, uneven seats.
-- **Clear stage.** Nobody sits behind a court, so each rival stands out.
+- **Wild Areas.** Every species has a route; areas roll who waits.
+- **Scaling Regions.** Each Region grows with the player.
+- **Hub books.** Every evolution path in the Pokédex; an Item Guide.
+- **Master Ball.** The Master Ball Charm becomes a ball.
 
-### v0.9.74 — The instructions too · 2026-10-27
+### v0.9.6 — The arena, animated · 2026-10-08
 
-The project's Claude Code instructions now travel with the code.
+The catch, the faint and the evolution played as the series does.
 
-- **Versioned.** `CLAUDE.md` joins `.claude/` in the repository.
+- **Arena beats.** Catch, send-out, recall and faint, animated.
+- **Gen I kits.** Every move is Gen I; evolution rewrites the kit.
+- **Evolution.** The evolution animated; clearer rewards.
 
-### v0.9.73 — The workshop in the repo · 2026-10-27
+### v0.9.2 — Bond, Shiny and the Hub · 2026-10-07
 
-The project's Claude Code setup now travels with the code.
+The account's systems revisited.
 
-- **Versioned.** Skills, agents, rules, hooks and settings in `.claude/`.
-- **Local only.** Review queues, stamps and handoff patches stay out.
-
-### v0.9.72 — Room to point · 2026-10-27
-
-Lane tags find a free spot, and the UI review sees clicks and motion.
-
-- **Lane tags.** Labels that take no click; the lane's nodes name the weather.
-- **Pointer check.** The UI audit flags controls something else covers.
-- **Motion film.** A beat recorded in real time as one contact sheet.
-- **Our server.** Tests and audits refuse a dev server that is not this game.
-
-### v0.9.71 — Settled pictures · 2026-10-27
-
-The Summit layout check waits for its pictures before counting them.
-
-- **Summit check.** Art still loading is no longer counted as broken.
-
-### v0.9.70 — Same map every run · 2026-10-27
-
-The end-to-end suite walks the same maps and runs at a pace it can hold.
-
-- **Pinned seeds.** A run started from the menu takes the link's seed.
-- **Four workers.** The suite no longer starves its dev server.
-
-### v0.9.69 — Heads and captions · 2026-10-27
-
-The route shows its top and bottom rows whole at 720p.
-
-- **Top row.** A map with nodes in its first row gets room for their heads.
-- **Fits its height.** The board scales to its box; nothing is cut below.
-- **Lane tags.** The lower lane's weather tag moves clear of the captions.
-
-### v0.9.68 — The blow, then the faint · 2026-10-27
-
-The combat log tells a knockout in the order it happened.
-
-- **Log order.** "Took 14." now comes before "fainted!", for both sides.
-
-### v0.9.67 — The contact frame · 2026-10-27
-
-The motion sweep's five opportunities, built.
-
-- **HP drain.** Bars empty at a constant rate; a faint waits for it.
-- **Hit-stop.** A weighty hit holds the contact frame 60–100 ms.
-- **Played card.** It leaves toward its target instead of vanishing.
-- **Press and panels.** Buttons give under a press; sheets grow in.
-
-### v0.9.66 — Hits with weight · 2026-10-27
-
-The motion sweep: combat feedback weighed by the event, chrome made quick.
-
-- **Hit weight.** Routine hits recoil; super, crit and KO blows shake.
-- **Reduced motion.** Numbers, banners, faints and flights hold still.
-- **Quicker hand.** Hover settles faster; tooltips open at once in a sweep.
-- **One loop rate.** Pulses and breaths share two tokens; soft glows go flat.
-
-### v0.9.65 — Four stale checks · 2026-10-26
-
-The last stale end-to-end checks pass again.
-
-- **Dojo.** Reduced motion expects no practice effect at all.
-- **Potion.** A refused Pokémon is found by its aria-disabled row.
-- **Route.** The caption check measures each image once.
-
-### v0.9.64 — Five cards again · 2026-10-26
-
-Two stale end-to-end checks pass again.
-
-- **Hand count.** The crit badge no longer counts as a sixth card.
-- **Run record.** The victory check reads Regions behind its door.
-
-### v0.9.63 — Reduced motion, both ways · 2026-10-26
-
-The motion setting now wins over the device in both directions.
-
-- **Reduce motion.** Stops transitions, pulses and breathing, as the device setting does.
-- **Full motion.** Shakes, lunges and loops return even if the device asks for less.
-- **Guarded.** A check fails the build if a style obeys only one of the two.
-
-### v0.9.62 — Motion review · 2026-10-26
-
-Animations now pass the same review as every screen.
-
-- **Chrome motion.** Menus and panels held to quick, responsive easing.
-- **Game feel.** Combat beats judged by the weight of each event.
-- **Motion checks.** The UI audit flags animation that reduced motion would miss.
-
-### v0.9.61 — One crit mark · 2026-10-26
-
-Every card that will crit wears the same ✦.
-
-- **Crit badge.** ✦ on AlwaysCrit and full-rhythm cards.
-- **Rhythm edge.** A gold edge marks the rhythm's crit.
-
-### v0.9.60 — The rhythm dial · 2026-10-26
-
-The critical rhythm, readable at a glance.
-
-- **Rhythm dial.** A ring on each card's outer edge.
-- **Crit in hand.** Cards about to crit wear ✦ CRIT.
-
-### v0.9.59 — Critical rhythm · 2026-10-26
-
-Speed sets how often every Pokémon crits.
-
-- **Critical rhythm.** Next hit crits after 3–6 acts, by Speed.
-- **Enemy crits.** Declared as CRIT on the intent.
-- **Quick swap.** 1 AP off every swap when faster.
-
-### v0.9.58 — Speed matters · 2026-10-26
-
-Speed now prices the swap.
-
-- **Quick swap.** First swap free when faster than the enemy Lead.
-- **Paralysis.** Also halves Speed.
-- **Speed shown.** Portraits, enemy cards and Speed stage chips.
-### v0.9.57 — Clear trade comparison · 2026-10-26
-
-Compare the Pokémon you give and receive before confirming.
-
-- **Trade preview.** Identity, level and condition grouped together.
-- **Confirmation.** A clear action after choosing both Pokémon.
-- **Reduced motion.** Trader offers use still sprites when enabled.
-
-### v0.9.56 — Victory Road scenery · 2026-10-26
-
-Dedicated cave backdrops and broader visual checks.
-
-- **Victory Road.** Wild fights and Gauntlets use their own scenery.
-- **Visual checks.** Result screens and card overflow join the audit.
-- **Documentation.** Whitney's name matches the Gym roster.
-
-### v0.9.55 — Room for every reward · 2026-10-26
-
-Clear Gym rewards and accurate run records.
-
-- **Badge space.** Level-up panels leave the prize fully visible.
-- **Large text.** Stat windows wrap within their own space.
-- **Run records.** All cleared regions count after post-region defeats.
-
-### v0.9.54 — The field after · 2026-10-26
-
-A fight ends on its own stage: one screen, one click.
-
-- **Results.** Your team where it stood, who you beat, spoils in the tray.
-- **Like the series.** HP and XP bars fill with sound; level-ups show their stats.
-- **Badges and picks.** The Badge in its case; relic picks on the same stage.
-- **Surprises.** Evolutions are not announced. Running shows its toll.
-
-### v0.9.53 — Basement service bays · 2026-10-25
-
-Clearer service areas in the hidden market room.
-
-- **Floor palette.** Quiet slate aisles frame warm service bays.
-- **Native stock.** Original FRLG ball stands identify the trading counter.
-
-### v0.9.52 — Summit decisions at large text · 2026-10-25
-
-The Summit keeps its relic decision visible at large text sizes.
-
-- **Relic offers.** Wider cards keep both gate choices visible at 150% text.
-- **League preview.** The five silhouettes sit beneath the arrival scene.
-
-### v0.9.51 — Compact Center reception · 2026-10-25
-
-Healthy visits give the Center room the full scene.
-
-- **Reception.** One compact status replaces the empty report column.
-- **Healing report.** Persistent, scrollable feedback with readable large text.
-
-### v0.9.50 — Daycare decisions · 2026-10-25
-
-Daycare offers show the next fight's absence before purchase.
-
-- **Resting cost.** Point or focus an offer to see its absence beside the price.
-- **Blocked offers.** Timing and price remain readable with the reason.
-
-### v0.9.49 — Dojo action hierarchy · 2026-10-25
-
-The selected move and its purchase lead the Dojo shelf.
-
-- **Selected offer.** One highlighted Learn action; Deck stays secondary.
-- **Large text.** Selecting a move reveals its price and purchase.
-
-### v0.9.48 — Clear Dojo move art · 2026-10-25
-
-Dojo move illustrations keep their pale details visible.
-
-- **Move windows.** A quiet plum ground separates pale effects.
-- **Native artwork.** Complete illustrations retain their pixel scale.
-
-### v0.9.47 — Dojo exit · 2026-10-25
-
-The Dojo's exit mat returns to town.
-
-- **Physical exit.** The mat supports pointer, keyboard and tooltip.
-- **Focus return.** Leaving resumes at the town's Dojo door.
-
-### v0.9.46 — Clear room actions · 2026-10-25
-
-Room controls announce the action and its meaningful state.
-
-- **Room doors.** Navigation and service dialogs use distinct semantics.
-- **Selections.** Shelves and Dojo choices retain their selected state.
-
-### v0.9.45 — Native item pixels · 2026-10-24
-
-Item cards and their tooltips preserve the original pixel grid.
-
-- **Crisp icons.** Items fit their frames at whole or half-step scales.
-- **Same cards.** Shop, Summit and bag actions keep their existing targets.
-
-### v0.9.44 — Shiny in every summary · 2026-10-24
-
-Owned Pokémon keep their shiny identity in compact views.
-
-- **Shiny summaries.** Authentic palettes and sparkles follow your Pokémon.
-- **Owned selections.** Team, Dojo, bag and service lists retain their identity.
-
-### v0.9.43 — A still final team · 2026-10-24
-
-Final teams follow the chosen motion preference.
-
-- **Reduced motion.** Victory and defeat keep every normal and shiny Pokémon still.
-- **Live settings.** System and in-game motion changes apply without reopening the screen.
-
-### v0.9.42 — Where the run ended · 2026-10-24
-
-Ending labels identify the zone and the fight reached.
-
-- **Location.** Region columns and League opponents are named.
-- **Reached marker.** Defeat keeps the attempted fight's location.
-
-### v0.9.41 — Readable patch labels · 2026-10-24
-
-Higher contrast for version labels in What's new.
-
-- **Patch labels.** Dark ink meets normal-text contrast.
-- **Pixel numerals.** Regular Tiny5 is preserved at every text size.
-
-### v0.9.40 — Places worth reading · 2026-10-23
-
-Responsive route markers, useful hover cards and a final team portrait.
-
-- **Routes.** Larger markers, clear labels and richer place previews.
-- **Endings.** Final teams and earned Badges lead victory and defeat.
-- **Art records.** Provenance clarified; screen audits check their targets.
-
-### v0.9.39 — Grounded places · 2026-10-23
-
-Complete move illustrations and more coherent overworld places.
-
-- **Move cards.** Full illustrations fit at their native double scale.
-- **Routes.** Overworld trainers share clearer ground anchors.
-- **Interiors.** Four physical counters furnish a hidden market.
-
-### v0.9.38 — Move clarity · 2026-10-23
-
-Clearer move illustrations with genuinely limited pixel-art palettes.
-
-- **Silhouettes.** Twelve move effects gain stronger, distinct shapes.
-- **Palettes.** All 161 illustrations use at most 20 opaque colours.
-- **Export.** Palette checks preserve transparent edges and the native pixel grid.
-
-### v0.9.37 — Arenas and route stops · 2026-10-23
-
-Distinct arenas and grounded route services in classic pixel art.
-
-- **Arenas.** Separate Ring and Coliseum scenery with a visible ladder route.
-- **Route stops.** Merchant, nurse and training scenes use authentic tiles and props.
-- **Controls.** Rival previews and service choices remain beside the scenery.
-
-### v0.9.36 — Pages build fix · 2026-10-23
-
-Fix the clean build used to publish GitHub Pages.
-
-- **Build.** Stage validation reads the configuration included in the release.
-- **Verification.** Release checks run against a clean copy of the published files.
-
-### v0.9.35 — Indigo Ascent · 2026-10-23
-
-The Summit and League become a connected classic pixel-art destination.
-
-- **Summit.** Indigo Plateau arrival beside the final Legendary relic choice.
-- **League.** Five physical doors, clear progress and a distinct Champion entrance.
-- **Navigation.** Keyboard previews and team management remain available between fights.
-
-### v0.9.34 — Illustrated encounters · 2026-10-23
-
-Mystery Events gain classic pixel scenes and illustrated item choices.
-
-- **Scenes.** Fifteen event illustrations, including Eevee's evolution stones.
-- **Choices.** Guaranteed items appear beside their exact effects and prices.
-- **Clarity.** Event scenes and choices fit at 720p and 1080p.
-
-### v0.9.33 — Service rooms · 2026-10-23
-
-The Dojo and Pokémon Center become classic pixel-art interiors.
-
-- **Dojo.** Authentic FRLG room and illustrated move offers.
-- **Pokémon Center.** In-room healing machine and service counters.
-- **Navigation.** Keyboard access and nested dialog focus repaired.
-
-### v0.9.32 — Pixel clarity · 2026-10-23
-
-Classic typography, crisp Pokémon icons and unified battle scenery.
-
-- **Typography.** Pixel headings and clearer combat numbers.
-- **Pokémon icons.** Proportional sprites and crisp type labels.
-- **Battle scenery.** 45 indexed PNGs on a consistent pixel grid.
-
-### v0.9.31 — Arena fit · 2026-10-22
-
-Combat formations fit the available arena at both desktop sizes.
-
-- **Arena fit.** All units and intents remain visible at 720p.
-- **Trainer sprites.** Preserve proportions and whole-pixel scaling.
-
-### v0.9.30 — Gen II type chart · 2026-10-21
-
-The 15-type chart rebalanced with Generation II effectiveness.
-
-- **Ghost vs Psychic.** Ghost deals ×2 to Psychic, resolving the Gen I 0× bug.
-- **Fire vs Ice.** Fire resists Ice (Ice attacks deal ×0.5).
-- **Bug and Poison.** Bug deals ×0.5 to Poison; Poison deals ×1 (neutral) to Bug.
-
-### v0.9.29 — Who lives there · 2026-10-20
-
-A Wild Area's pool goes round at the sides of its habitat.
-
-- **Residents.** Two of the pool's Pokémon at half size beside the landmark.
-- **Rotation.** Each goes round the whole pool, out of step; still with motion off.
-
-### v0.9.28 — The map, at a glance · 2026-10-20
-
-Wild Areas as their habitats, button chips, and two Team fixes.
-
-- **Habitats.** A Wild Area node is its landmark in the grass, no Pokémon.
-- **Chips.** Rounded, with an icon; a node you can reach is a gold button.
-- **Team.** The Move Manager closes alone; the route's panel only shows.
-
-### v0.9.27 — Landmarks · 2026-10-20
-
-Every Wild Area shows where it is; the labels say what each node is.
-
-- **Landmarks.** 15 habitats cut from FireRed: Pokémon Tower, Power Plant, Tanoby…
-- **One grass.** Every Wild Area's Pokémon stands in the same tufts.
-- **Labels.** Generic: Wild, Trainer, Elite Trainer, Nurse — Brock's Gym.
-
-### v0.9.26 — The team, managed · 2026-10-20
-
-One Team screen on the route and in the towns.
-
-- **Team screen.** Formation and Box; drag, or place buttons (T).
-- **The sheet.** Stats, ability, held item, cards, evolution.
-- **Matchups.** Each Pokémon against the route's two Gyms.
-
-### v0.9.25 — The route, reworked · 2026-10-20
-
-Wild Areas as habitats, the item ball's reel, the heal seen, honest levels.
-
-- **Habitats.** 25 Wild Area pools, each of one family, new backdrops.
-- **Item ball.** A 7-prize reel: supplies, ₽, TMs, stones, items, relics.
-- **The heal.** The Center's machine and jingle; +HP on every bar.
-- **Levels.** Elite and Gym stand over the team; map labels (L).
-
-### v0.9.24 — Move animations · 2026-10-18
-
-Every move is animated from its user to its target.
-
-- **Melee.** The Pokémon dashes across the field, strikes, returns.
-- **Ranged.** Charged and thrown: fireballs, bubbles, leaves, beams, bolts.
-- **Full screen.** Surf's wave, Earthquake's shake, Blizzard, Thunder.
-- **On impact.** The number, the HP and the log land when the move does.
-
-### v0.9.23 — Sound · 2026-10-16
-
-The game has sound: every effect and song synthesised as it plays.
-
-- **Effects.** Each card type, hits, statuses, the ball, level-ups.
-- **Music.** Per Region, City, Victory Road, League, boss and Champion.
-- **Tension.** Below 30 % team HP the fight's music presses on.
-- **Settings.** Music and Effects volumes, four steps each.
-
-### v0.9.22 — The League · 2026-10-16
-
-Through the Summit's gate: the Elite Four, then the Champion.
-
-- **Five doors.** Bruno, Agatha, Will, Lance, then Champion Blue.
-- **Micro-rest.** Win a door: 30 % HP back to everyone standing.
-- **The Champion.** Your counter-pick ace; fallen allies make the rest hit harder.
-- **Medals.** Champion and Underdog.
-
-### v0.9.21 — The Legendaries · 2026-10-16
-
-Articuno, Zapdos, Moltres, Mewtwo and Mew join the run.
-
-- **Two places, one body.** A Legendary fills two team places.
-- **The Apex.** One waits on Victory Road: catch it or beat it.
-- **Arenas.** Each fights under its own field and rule.
-- **The Executive.** Sells a Legendary Pokémon for three of yours.
-
-### v0.9.20 — Victory Road · 2026-10-16
-
-After the third Gym, one last climb before the League.
-
-- **The road.** Four columns, three tracks, the Summit at the end.
-- **Gauntlets.** Ace Trainers, no healing, a Rare relic pick.
-- **Training Grounds.** One Pokémon, one of five upgrades.
-- **The Summit.** Healed in full, a Legendary relic; the run is won.
-
-### v0.9.19 — The route Trader · 2026-10-15
-
-A roadside trader swaps one of your Pokémon for a face-down offer.
-
-- **Trade.** Give one of your Box; pick one of three face-down offers.
-- **Face down.** Each shows a type and its level: two above the one you gave.
-- **On the map.** About half the routes, from the crossroads on.
-
-### v0.9.18 — Fights with another objective · 2026-10-15
-
-Some fights are won by something other than knocking everything out.
-
-- **Flee race.** A runner leaves after its last turn; beat it first.
-- **Hold-out.** Outlast a guard that hits harder every turn.
-- **On the map.** Both named on the node and counted down in the fight.
-
-### v0.9.17 — The title screen, a battle · 2026-10-15
-
-A Pokémon battle plays behind the title and the new-run steps.
-
-- **Title battle.** Famous matchups trade moves; one faints, the next comes in.
-- **Title mark.** The name as a logo, with a ball whose top is a peak.
-- **New run.** The battle carries on behind the steps; starters as battle sprites.
-
-### v0.9.16 — The arena, one formation · 2026-10-15
-
-Every Pokémon on the field is a card, and every card is played onto its target.
-
-- **Formation.** All three as cards, one size; enemy tagged the same.
-- **Intents.** Arrows in the intent's colour; HP about to go striped.
-- **Cards.** Dragged whole, played only onto an enemy or an ally.
-- **AP capsule.** Centred; shows what the card under the pointer costs.
-
-### v0.9.15 — The combat screen and its cards · 2026-10-15
-
-Every move card shows its move, and the combat screen is tidier.
-
-- **Move art.** A pixel illustration for every move, landing on hits.
-- **Cards.** Clearer cost, power and locks; item cards to match.
-- **Tray.** One row: the AP orb, the hand, End Turn.
-- **Top bar.** One fight chip; the battle log as a ticker.
-
-### v0.9.14 — The map, redrawn · 2026-10-14
-
-Routes drawn as straight lines, and every node as what it is.
-
-- **Lines.** Straight, diagonal routes; the next step gold, closed routes faded.
-- **Nodes.** Trainers, Leaders, Pokémon in the grass, items, nurse, merchant.
-- **Preview.** The map stays visible behind a node's card.
-- **Strip.** The minimap shows every route and node.
-
-### v0.9.13 — The Gym Leaders, on stage and by their own rule · 2026-10-14
-
-Every Gym Leader fights under a rule of its own, and stands behind its team.
-
-- **Leader rules.** Twelve, one per Leader, on the map and the top bar.
-- **On stage.** The Leader or the Elite stands behind their Pokémon, and walks in.
-- **Fixes.** Damage numbers, banners and the arena's idle sway animate again.
-
-### v0.9.12 — Whole enemies, and the double intent · 2026-10-09
-
-Enemies fight on their whole HP; some act twice, and you can break it.
-
-- **Whole HP.** No enemy's HP is scaled; every hit lands harder.
-- **Acts twice.** Two intents on one budget: Ace Trainers, Rares, Gym aces.
-- **Break it.** A quarter of its HP in your turn, or a super-effective hit.
-
-### v0.9.11 — Moves for every path, and the faint that fades · 2026-10-09
-
-Every evolved Pokémon learns its line's best moves as it levels.
-
-- **Moves.** 93 species learn signature moves by level: no weak paths.
-- **Faint.** A fallen foe fades out where it stood; the others hold their places.
-- **Art.** A Light Ball icon, and a TM disc for every type.
-
-### v0.9.10 — Combat, stats and moves, revisited · 2026-10-09
-
-Whole Pokémon in groups, stats in the series' proportions, many more moves.
-
-- **Groups.** Behind the Lead, whole Pokémon: no role, full HP.
-- **Stats.** Each grows with its base: Gyarados big, Magikarp not.
-- **Moves.** 46 TMs, a Dojo that remembers, Porygon fixed.
-- **Fixes.** Swaps, the catch, the faint, Shell Armor; fewer relics.
-
-### v0.9.9 — The Hub's books, and the Master Ball · 2026-10-09
-
-A Pokédex with every evolution path, an Item Guide, and leaner run options.
-
-- **Pokédex.** Each path's stats, moves learned and forgotten.
-- **Item Guide.** Every relic and item, on the lobby's table.
-- **Master Ball.** An item now, never sold; the charm is gone.
-- **Run start.** Region Modifiers off; two starters, two places.
-
-### v0.9.8 — Regions that scale, rarity announced · 2026-10-08
-
-Each Region grows with the player; a wild fight says how rare it is.
-
-- **Route 1, first forms.** No last evolution in its grass.
-- **Evolved by level.** Every trainer and Gym, Region 1's too.
-- **Rarity banner.** Common, Uncommon or Rare! as the fight opens.
-- **Re-tuned.** Gyms' Attack eased for their evolved teams.
-
-### v0.9.7 — Wild Areas, the whole Pokédex · 2026-10-08
-
-Every Pokémon lives on a route; a Wild Area rolls who waits.
-
-- **The whole Pokédex.** 146 species placed, by Region strength.
-- **Rarity rows.** Common 60 %, Uncommon 30 %, Rare 10 %.
-- **Rolled on entry.** The Lens and the Lure move the shown odds.
-- **Re-tuned.** Enemy Attack per Region, for stronger recruits.
-
-### v0.9.6 — Evolution, rewards and types, polished · 2026-10-08
-
-The evolution animated, clearer rewards, and type charts at a glance.
-
-- **Evolution.** The series' animation; each path leans the stats.
-- **Rewards.** Stat gains, new moves and Bond unlocks, as chips.
-- **Progress.** Medals and discoveries listed, and a panel for the rest.
-- **Type charts.** Attacking and defending apart, ×4 down to ×0.
-
-### v0.9.5 — Moves and kits, revamped · 2026-10-08
-
-Every move is a Gen I move, and an evolution rewrites the kit, not grows it.
-
-- **Gen I moves.** Real names and types; power and cost re-cut.
-- **Leaner kits.** Four moves by level, five after evolving.
-- **Branches swap.** A final evolution trades cards for its signature.
-- **Mastery.** A Gen I move, then its + and its ++.
-
-### v0.9.4 — The catch, faithful · 2026-10-08
-
-The catch and the faint, played the way the series plays them.
-
-- **Shake checks.** Four checks: three wobbles, then the click.
-- **Slower catch.** Each check lights up; a break can come at any wobble.
-- **The faint.** The fallen sink from view and never blink back.
-- **Trainer's balls.** Back to the trainer's hand, and thrown from it.
-
-### v0.9.3 — The arena, animated · 2026-10-07
-
-The catch, the send-out, the recall and the faint, played out in the arena.
-
-- **The catch.** Throw, wobbles by the odds, then the click or the burst.
-- **Send-out.** Pokémon come out of their ball; wild ones step in.
-- **Faint and recall.** The fallen drop; a trainer's go back to the ball.
-- **Waits for it.** The outcome, hand and log wait for the beat to end.
-
-### v0.9.2 — The Hub and the Poké Mart, revamped · 2026-10-07
-
-The Hub is a place, leftover ₽ becomes Tokens, and every shelf opens early.
-
-- **The Hub.** The Indigo Plateau lobby: Mart, nurse, PC and the League door.
-- **₽ to Tokens.** A run's leftover ₽ becomes Tokens: 200 ₽ each, up to 5.
-- **Shelves.** All open by about the tenth run; the whole shop in about sixty.
-- **Discovered, not sold.** Tier-2 relics are only found by playing.
-
-### v0.9.1 — Bond and Shiny, revamped · 2026-10-06
-
-Shinies found in the wild; Bond in four equal ranks; every Mastery whole.
-
-- **Shiny.** Any wild Pokémon may be shiny, by surprise; catch it to keep it.
-- **Bond.** Four ranks of 100: Charm, hidden ability, Mastery, start a run.
-- **Starters.** A starter line's top rank makes its starter always shiny.
-- **Mastery.** 45 new Lv2 and Lv3 cards: every recruitable line complete.
+- **Shinies.** Found in the wild and kept through the run.
+- **Bond.** Four equal ranks; the whole Mastery Move at once.
+- **The Hub.** A room, not a menu; leftover ₽ becomes Tokens.
 
 ## v0.8 — Multi-enemy & the route · 2026-10-05
 
@@ -915,94 +181,28 @@ Group fights, field effects, a reworked route and a balanced run.
 - **Supplies.** Consumables are spent; relics are rarer.
 - **Balance.** Harder hits, Gyms at five, tuned over 720 runs.
 
-### v0.8.10 — Growth curves · 2026-10-05
+### v0.8.10 — The balance pass · 2026-10-05
 
-The balance report measures relics and XP; the level bands fixed to match.
+The run tuned with a harness that plays like a player.
 
-- **Relics.** ~2.5 a Region, ~11 at a won run's end; by source and rarity.
-- **Levels.** What each fight pays, and the team's level gap column by column.
-- **Bands.** Regions 2 and 3 two levels up; the team stays one or two over.
-- **Curve.** Enemy HP pays for it: 60 / 58 / 48 %, run 17 %.
+- **Balance.** Enemies hit harder and fall faster, over 720 runs.
+- **Harness.** The auto-player plays like a player; Region 1 retuned.
+- **Growth.** Level bands fixed; relics and XP measured.
 
-### v0.8.9 — The harness, honest · 2026-10-05
+### v0.8.7 — Routes and supplies · 2026-10-04
 
-The balance harness plays like a player; the curve re-read, Region 1 retuned.
+A wider route and an economy with real scarcity.
 
-- **Reads the intents.** Swaps in whoever takes half of a big telegraphed hit.
-- **Control and raises.** Sleeps or paralyses the foe that will last; raises in long fights.
-- **Reads the cards.** Takes the strongest Reflection, not the first.
-- **Curve.** The old harness read 4 points low; now 60 / 60 / 50 %, run 18 %.
+- **Routes.** 20 columns walked left to right, on FireRed tiles.
+- **Supplies.** Consumables are used up; relics are rarer.
 
-### v0.8.8 — The balance pass · 2026-10-05
+### v0.8.5 — Group fights and fields · 2026-09-30
 
-Enemies hit harder and fall faster; the run tuned over 720 runs.
+Fights against several enemies, under weather and terrain.
 
-- **Harder hits.** Enemies deal ~1/6 of Max HP a hit; fights last 4–5 turns.
-- **Gyms at five.** Five Pokémon, two at a time, hitting harder than their Region.
-- **The Ring.** Rivals hit harder; the first rung is won about half the time.
-- **Curve.** Region 2 ~56 %, Region 3 ~53 %, the whole run ~17 %.
-
-### v0.8.7 — Routes, revamped · 2026-10-04
-
-A wider route, walked left to right, painted from FireRed tiles.
-
-- **Horizontal map.** 20 columns that scroll; a strip shows the whole route.
-- **Tracks and a Y.** Paths cross, split and merge; a river is the point of no return.
-- **Gym grounds.** Each lane wears its Gym's terrain and its own field.
-- **Six new fields.** Hail, Grassy, Psychic, Misty, Toxic Spikes, Sticky Web.
-
-### v0.8.6 — Consumables that are spent, scarcer relics · 2026-09-30
-
-Consumables used up, rarer relics, group roles, hidden rosters, less XP.
-
-- **Consumables are spent.** A Bag, 2 a turn; heals and cures usable between fights.
-- **Catching.** Great and Ultra Balls, higher odds, a ball picker on the catch %.
-- **Scarcer relics.** Trainers 15 % Common; Elite pick of 3; each relic bought costs +25 %.
-- **Groups.** Cover; hidden rosters; "As Lead" damage; far less XP; type tips fixed.
-
-### v0.8.5 — More group fights, one combat grammar · 2026-09-30
-
-Many more group fights, and one combat view for one enemy or three.
-
-- **Bigger teams.** Trainers carry 3 Pokémon; Elites and Gyms 4, two at a time.
-- **More groups.** Packs up to 50 % of wild nodes; trainers two or three at once.
-- **Social species.** Rattata, Zubat, Nidoran and others always call for help.
-- **One combat view.** A single enemy shows like a group; numbers on the panels.
-
-### v0.8.4 — Field effects · 2026-09-30
-
-Sun, Rain, Electric Terrain, Sandstorm and Home Fields.
-
-- **Battlefields.** Lane biomes set Sun, Rain, Electric Terrain or Sandstorm.
-- **Home Fields.** Gym Leaders and Elites boost their own type ×1.2.
-- **Field abilities.** Swift Swim, Chlorophyll and Cloud Nine work.
-- **Defog.** New consumable that clears every field.
-
-### v0.8.3 — Groups across the run · 2026-09-29
-
-Group fights placed on every route, more in later Regions.
-
-- **Wild packs and callers.** Wild nodes can be packs or Pokémon that call for help.
-- **Trainer pairs.** Trainers with two or more Pokémon can send two at once.
-- **Elite support.** From Region 2 the Elite Trainer fights with a support.
-- **Preview.** A node's preview card names its fight's shape.
-
-### v0.8.2 — Acting twice and calling for help · 2026-09-29
-
-Enemies with two actions a turn, and enemies that call companions.
-
-- **Two actions.** Some Pokémon declare two intents a turn; both are shown.
-- **Call for Help.** A telegraphed intent names the companion who joins as a support.
-- **Called companions.** They telegraph before acting and count for XP.
-
-### v0.8.1 — Multi-enemy fights · 2026-09-29
-
-Fights against two or three enemies at once.
-
-- **Enemy groups.** A Lead and 1–2 supports: Healer, Buffer, Debuffer, Attacker.
-- **Targeting.** Drag a card onto an enemy; Melee reaches only the enemy Lead.
-- **Per-target damage.** Every enemy shows the card's own number; area moves hit all.
-- **Exact intents.** Intent damage is the real hit; incoming hits shown on each portrait.
+- **Groups.** Two or three enemies at once, on every route.
+- **Enemy turns.** Two actions a turn; calling companions.
+- **Fields.** Sun, Rain, Electric Terrain, Sandstorm, Home Fields.
 
 ## v0.7 — Cities & Regions 2–3 · 2026-09-28
 
@@ -1014,104 +214,36 @@ Regions 2–3 and a City between each Region.
 - **Game Corner.** Roulette and slots with printed odds.
 - **Full Gen I roster.** All 151 species implemented.
 
-### v0.7.12 — Nurse back button and technical changelog · 2026-09-29
+### v0.7.12 — City services · 2026-09-29
 
-Field nurse back button.
+Shops on original maps and the last City services.
 
-- **Field nurse.** Leaves by the corner back button.
+- **Shops.** Poké Mart and Department Store on FRLG maps.
+- **Daycare and PC Box.** Egg moves and Box management.
+- **Navigation.** One back button for every building.
 
-### v0.7.11 — Shop clerks and back buttons · 2026-09-29
+### v0.7.8 — Safari, Ring and Game Corner · 2026-09-28
 
-Shop clerk panel and one back button for every building.
+Three places to gamble a run on.
 
-- **Shop clerk.** Buy/Sell panel with all stock of the shop or floor.
-- **Shelf highlight.** Multi-piece shelves outlined as one shape.
-- **Back button.** One corner arrow in every building's header.
-- **Room exits.** Shop and Game Corner floor exits lead to town.
+- **Safari Zone.** A catching minigame in both Cities.
+- **Ring and Coliseum.** Ring buildings and a hidden area.
+- **Game Corner.** Roulette and slots reworked.
 
-### v0.7.10 — Poké Mart and Department Store rooms · 2026-09-28
+### v0.7.5 — Regions 2 and 3 · 2026-09-24
 
-Shops rebuilt on original FRLG maps.
+Two more Regions and the systems they needed.
 
-- **Original art imported.** FRLG Poké Mart and Celadon Store maps.
-- **Shelf categories.** Medicine, TMs, relics, held items, stones.
-- **Department Store.** One room per floor, 1F–5F.
+- **Region 2.** Coastal biomes, wild tables, trainers and Gyms.
+- **Region 3.** Volcanic biomes, wild tables, trainers and Gyms.
+- **Pending systems.** Evolution Items, Light Ball, Stone Cache.
 
-### v0.7.9 — Daycare, PC Box and egg moves · 2026-09-28
+### v0.7.2 — Multi-Region runs · 2026-09-23
 
-Last in-development City services implemented.
+Runs continue past the first Gym, through a City.
 
-- **Daycare.** +1 level for 200 ₽; the Pokémon skips the next fight.
-- **PC Box.** Team, Lead and moves editable in the Center.
-- **Egg moves.** New Dojo counter: up to 3 per line, 250 ₽.
-
-### v0.7.8 — Game Corner machines · 2026-09-28
-
-Roulette rules and slot animation reworked.
-
-- **Roulette.** European wheel: red/black ×2, green ×36.
-- **Slots.** Animated reels that stop left to right.
-- **Ring.** Full heal on exit; how-to-play guide added.
-
-### v0.7.7 — Ring, Coliseum and Team Rocket · 2026-09-25
-
-Ring buildings and a hidden area.
-
-- **Ring and Coliseum.** Standalone buildings; ladder shown before the fee.
-- **Leave confirmation.** Ring, Safari and Black Market ask first.
-- **Safari art.** FRLG tiles and new bait and rock sprites.
-- **Team Rocket.** A hidden area in Celadon.
-
-### v0.7.6 — Safari Zone · 2026-09-24
-
-New catching minigame in both Cities.
-
-- **Safari Zone.** Stealth catching with Safari Balls and a turn clock.
-- **Exclusive species.** Pokémon not found on any route.
-- **Tutorial.** Six-page guide on the first visit.
-
-### v0.7.5 — Pending systems and balance fixes · 2026-09-24
-
-Systems left pending by Regions 2–3, and two fixes.
-
-- **Evolution stones.** Five stones for early evolution.
-- **Fixes.** Sleep can't be reapplied; drain heals 50 % of damage.
-- **Trainer's Instinct.** Shows enemy intents one turn ahead.
-- **Mastery moves.** Added for every recruitable line.
-
-### v0.7.4 — Region 3 · 2026-09-23
-
-Region 3 content.
-
-- **Region 3.** Volcanic Highlands biomes, wild tables and trainers.
-- **Gyms.** Sabrina, Giovanni, Kiyo and Lorelei.
-- **Species data.** All 151 Gen I species implemented.
-- **What's new screen.** In-game changelog viewer.
-
-### v0.7.3 — Region 2 · 2026-09-23
-
-Region 2 content.
-
-- **Region 2.** Coastal Cliffs biomes, wild tables and trainers.
-- **New species.** 26 lines added with evolutions.
-- **Gyms.** Blaine, Erika, Surge and Koga.
-- **Pikachu.** New starter in the Hub Poké Mart.
-
-### v0.7.2 — Celadon City · 2026-09-23
-
-Second City.
-
-- **Celadon City.** Second City, after Region 2.
-- **Department Store.** Five floors; re-roll per floor.
-- **Game Corner.** Roulette and slots with printed odds.
-
-### v0.7.1 — Multi-Region runs · 2026-09-22
-
-Runs continue past the first Gym.
-
-- **Three Regions.** A run ends at the third Gym.
-- **Pallet Town.** City between Regions 1 and 2.
-- **Status persistence.** Statuses carry between fights.
+- **Three Regions.** A run crosses three Regions.
+- **Cities.** Pallet Town and Celadon City between Regions.
 
 ## v0.6 — Meta · 2026-09-21
 
@@ -1123,41 +255,21 @@ Account progression between runs.
 - **Starters.** Eevee, Magikarp and Twin Run.
 - **Achievements.** 24 medals with unlock conditions.
 
-### v0.6.5 — Pokédex merge · 2026-09-22
+### v0.6.5 — The PC Terminal · 2026-09-22
 
-Companions folded into the Pokédex.
+The Pokédex and the PC Terminal redesigned.
 
-- **Pokédex.** Companions merged into species sheets.
-- **Sort by Bond.** Lines sortable by Bond rank.
+- **PC Terminal.** Pokédex and medals as grids of cards.
+- **One book.** Companions folded into the Pokédex.
 
-### v0.6.4 — PC Terminal · 2026-09-22
+### v0.6.3 — Hub, Mart and Bond · 2026-09-21
 
-PC Terminal redesign.
+The Hub redesigned, a Token shop and line progression.
 
-- **PC Terminal.** Card grid with detail sheets.
-- **Species records.** Per-species battle stats.
-
-### v0.6.3 — Hub Poké Mart · 2026-09-21
-
-Account shop and Token rewards.
-
-- **Token rewards.** Every level; new shelves at 3, 5, 8 and 10.
-- **Hub Poké Mart.** Cosmetics, starters and Trainer Hub upgrades.
-
-### v0.6.2 — Bond, catching and running · 2026-09-21
-
-Line progression and two combat options.
-
-- **Bond.** Per-line ranks with unlocks.
-- **Catch roll.** Chance shown before the throw.
-- **Run away.** Paid escape; not allowed in Gyms.
-
-### v0.6.1 — Trainer Hub redesign · 2026-09-21
-
-Trainer Hub layout.
-
-- **Level dial.** Account level shown as a ring.
-- **Reward track.** All level rewards on one track.
+- **Trainer Hub.** A level dial and a road of rewards.
+- **Poké Mart.** The account shop, paid in Tokens.
+- **Bond.** A line improves by being played.
+- **Catch and run.** Two new combat options.
 
 ## v0.5 — Region 1 complete · 2026-09-20
 

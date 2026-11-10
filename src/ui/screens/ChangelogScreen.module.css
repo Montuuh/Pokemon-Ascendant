@@ -22,6 +22,16 @@
   font-size: var(--type-h1);
   color: var(--brand-red);
 }
+/* Every build before v1.0 says it is a Beta, beside the page's name. */
+.stage {
+  margin-left: var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+  font-size: var(--type-body);
+  vertical-align: middle;
+}
 .back {
   display: inline-flex;
   align-items: center;
