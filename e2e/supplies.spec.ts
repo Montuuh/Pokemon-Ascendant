@@ -138,6 +138,8 @@ test.describe('Supplies and scarce relics — v0.8.6', () => {
       dev.run.patch((d) => {
         d.consumables.push('great-ball', 'ultra-ball');
       });
+      // A team of one is offered a sure first catch — "SURE", not a chance — so the three balls are compared with three out.
+      dev.run.dispatch({ type: 'set-active', uids: dev.run.state()!.box.slice(0, 3).map((m) => m.uid) });
       dev.run.jump('wild');
       dev.goTo('map');
     });

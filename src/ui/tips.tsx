@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { DEFAULT_PROGRESSION, controlRecoveryThrough, battlefields, fieldsFor, groupPlanFor, ppLeft, wildChancesFor, wildFor, type DifficultyModifier, type PartyMon, type RunState, type SideCondition } from '@/sim';
 import { GATE_TEXT, MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIELD_IN, FIELD_TIMER_TEXT, KEYWORD_RULE, SIDE_CHIP_TEXT, SIDE_NAME, STANCE_FOOTER, STANCE_LABEL } from '@/ui/strings';
 import { NodeHover } from '@/ui/components/NodeHover';
+import { PixelSprite } from '@/ui/components/PixelSprite';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
 import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, PARCEL, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
@@ -253,7 +254,7 @@ export function tmTip(tmId: string, footer?: string): ReactNode {
   const { meta, lines } = moveDefParts(move);
   return (
     <Tip
-      icon={<img src={tmIcon(tmId)} alt="" width={22} height={22} style={{ imageRendering: 'pixelated' }} />}
+      icon={<PixelSprite src={tmIcon(tmId)} alt="" width={30} height={30} />}
       title={tm.name}
       meta={['TM · teaches a move', ...meta]}
       body={lines.map((l, i) => <div key={i}>{l}</div>)}

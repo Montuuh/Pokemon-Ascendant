@@ -105,9 +105,10 @@ for (const [size, textScale] of [[{ width: 1280, height: 720 }, 1.5], [{ width: 
         return { plates, share: plates.reduce((s, p) => s + p.area, 0) / (scene.width * scene.height) };
       });
       expect(m.plates.filter((p) => !p.inside).map((p) => p.id), `city ${city}: plates cut off by the arena's edge`).toEqual([]);
-      expect(m.share, `city ${city}: plates cover too much of the arena`).toBeLessThan(0.08);
+      // 9 %: the top rung's plate reads "Rare relic" since the Ring pays Rare (§2.9.4.1), and at 150 % text five plates measure 8.8 %.
+      expect(m.share, `city ${city}: plates cover too much of the arena`).toBeLessThan(0.09);
       expect(m.plates.filter((p) => !p.numberInChip).map((p) => p.id), `city ${city}: a rung number spills out of its chip`).toEqual([]);
-      for (const p of m.plates) expect(p.prize, `${p.id} shows what it pays`).toMatch(/\d|Relic/);
+      for (const p of m.plates) expect(p.prize, `${p.id} shows what it pays`).toMatch(/\d|relic/i);
     }
   });
 }

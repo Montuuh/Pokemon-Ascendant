@@ -134,8 +134,8 @@ test('every catalogue bag icon and tooltip fits its native grid, including TMs a
       const tip = page.getByRole('tooltip');
       await expect(tip).toBeVisible();
       const src = await card.locator('img').getAttribute('src');
-      await expect(tip.locator('img')).toHaveAttribute('src', src!);
-      await pixelFit(tip.locator('img'));
+      await expect(tip.locator('img').first()).toHaveAttribute('src', src!);
+      await pixelFit(tip.locator('img').first());
       sources.add(src!);
     }
   }
