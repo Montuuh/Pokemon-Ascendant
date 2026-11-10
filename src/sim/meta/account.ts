@@ -223,7 +223,7 @@ export interface HubUpgradeRow {
 }
 
 /** §8.4.5 — the numbers a Kit perk hands a run. A tuning pass edits this table and nothing else. */
-export const KIT = { allowance: 150, potions: 2, balls: 3, headStartLevels: 2, benchXpShare: 1 } as const;
+export const KIT = { allowance: 150, potions: 2, balls: 3, headStartLevels: 1, benchXpShare: 1 } as const;
 
 export const HUB_UPGRADE_LABEL: Record<HubUpgrade, HubUpgradeRow> = {
   'expanded-box': { kind: 'service', from: 'mart', name: 'Expanded Box', effect: 'Box capacity 6 → 8 for every future run.' },
@@ -238,7 +238,7 @@ export const HUB_UPGRADE_LABEL: Record<HubUpgrade, HubUpgradeRow> = {
   'tm-case': { kind: 'perk', from: 'mart', name: 'TM Case', effect: 'Start the run with one TM your starter can learn.' },
   'ball-case': { kind: 'perk', from: 'aide', name: 'Ball Case', effect: `Start the run with ${KIT.balls} more Poké Balls.` },
   'exp-share': { kind: 'perk', from: 'aide', name: 'Exp. Share', effect: 'The Box earns the whole of a fight\'s XP instead of three quarters.' },
-  'head-start': { kind: 'perk', from: 'aide', name: 'Head Start', effect: `Your starter begins ${KIT.headStartLevels} levels higher.` },
+  'head-start': { kind: 'perk', from: 'aide', name: 'Head Start', effect: `Your starter begins ${KIT.headStartLevels} level${KIT.headStartLevels === 1 ? '' : 's'} higher.` },
 };
 
 export const isKitPerk = (u: HubUpgrade): boolean => HUB_UPGRADE_LABEL[u].kind === 'perk';

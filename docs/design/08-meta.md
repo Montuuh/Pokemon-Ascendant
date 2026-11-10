@@ -343,13 +343,29 @@ Expert.
 | Apex Pokémon Reveal | Mart · 🎟 15 | Leaving the City into Region 3 fixes and names the Legendary Victory Road's Apex will be |
 | Ball Case | Oak's aide · 25 species | 3 more Poké Balls |
 | Exp. Share | Oak's aide · 50 species | The Box earns the whole of a fight's XP instead of three quarters (§6.2.1) |
-| Head Start | Oak's aide · 110 species | The starter begins 2 levels higher |
+| Head Start | Oak's aide · 110 species | The starter begins 1 level higher |
 
 **Three rules keep it honest.** (1) *Slots, not stacks*: owning all ten perks is still three in force, so the Kit
 is a decision made before every run — Pillar 3's sculpting, moved to the lobby. (2) *Never the fight's maths*: no
 perk touches damage, HP, AP, the draw or a formula; each changes supplies, knowledge, or where a level or a TM
-starts. (3) *A measured ceiling*: no single perk may lift the harness's run win rate by more than 3 points, and a
-full Kit by no more than 8; a perk that does is retuned, not excused. *(Numbers in `KIT`, `meta/account.ts`.)*
+starts. (3) *A measured ceiling*: no single perk may lift the harness's **first-Gym clear rate** by more than 3 points,
+and a full Kit by no more than 8; a perk that does is retuned, not excused. The first Gym is the yardstick because
+everything the Kit gives is spent at the start of a run, and because the auto-player wins a whole run about one time
+in a thousand — a rate no perk can be seen to move. *(Numbers in `KIT`, `meta/account.ts`; the instrument is
+`balance/kitCeiling.test.ts`.)*
+
+**Measured 2026-11-10** — 900 runs an arm on the same seeds, a second 900 for the arms near the line; the baseline
+clears the first Gym 23–26 % of the time, and one arm's noise is about ±1.5 points:
+
+| Arm | First-Gym clear rate, against nothing packed |
+|---|---|
+| Mom's Allowance | +1.0 |
+| First-Aid Pouch | +3.0 (+2.2 · +3.8) — on the line, left as it is |
+| Ball Case | +1.0 |
+| Exp. Share | +0.5 |
+| Head Start | **+1.2** (+0.5 · +1.8) at one level. At two it was +4.2 (+2.9 · +5.6), over the ceiling: retuned |
+| Head Start + First-Aid Pouch + Mom's Allowance (the strongest three) | **+2.8** (+1.1 · +4.4); +5.9 before the retune |
+| TM Case · Trauma Salve Cache · Curated Starting Relic · Pokédex Insight · Apex Reveal | not measured: the auto-player does not teach the Case's TM, rarely reaches City 1, takes no Starting Relic and reads no intent |
 
 Pokédex Insight is a *peek*, not progress: a Familiar species already shows every intent (§5.13.1), so the perk
 covers the species you have not learned yet, once per run each, first meeting only.
