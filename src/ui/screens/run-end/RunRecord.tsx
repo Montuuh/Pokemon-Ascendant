@@ -4,11 +4,10 @@ import { getContent } from '@/content/registry';
 import { completedRegions, maxHpOf, REGION_COUNT, type RunState } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { RUN_END_TEXT } from '@/ui/strings';
-import { AccountSummary } from '../hub/AccountSummary';
 import { runEndLocation } from './runEndLocation';
 import styles from './RunRecord.module.css';
 
-/** §8.3 / §9.12.3 — the existing account ledger and full run record, behind the final team's door. */
+/** §9.12.3 — the run's own numbers and its whole Box, behind the final team's door. What it earned is the Field Report's. */
 export function RunRecord({ run, won }: { run: RunState; won: boolean }) {
   const content = getContent();
   const metrics = [
@@ -42,7 +41,6 @@ export function RunRecord({ run, won }: { run: RunState; won: boolean }) {
           </Dialog.Close>
         </header>
         <div className={styles.body}>
-          <AccountSummary />
           <dl className={styles.metrics}>
             {metrics.map((metric) => (
               <div key={metric.label}>

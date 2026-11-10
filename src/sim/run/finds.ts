@@ -105,9 +105,10 @@ function draw<T>(rng: GameRng, from: readonly T[], n: number): T[] {
 }
 
 /** A kind named for the reel: a TM or a stone drawn from the content; everything else as it is. */
-function name(rng: GameRng, kind: PrizeKind, content: ContentRegistry): FindPrize {
+function name(rng: GameRng, kind: PrizeKind, content: ContentRegistry, lockedTms: readonly string[] = []): FindPrize {
   if (kind.kind === 'any-tm') {
-    const tms = content.allTms();
+    // §8.6.2 — a reel never promises a TM the account has not opened.
+    const tms = lockedTms.length ? content.allTms().filter((t) => !lockedTms.includes(t.id)) : content.allTms();
     return { kind: 'tm', id: tms[rng.range(0, tms.length)]!.id };
   }
   if (kind.kind === 'any-stone') {
@@ -121,23 +122,23 @@ function name(rng: GameRng, kind: PrizeKind, content: ContentRegistry): FindPriz
  * §2.9.5 — a reel for one find: rolled with the map, on a stream of its own (a hash of the map's cursor and the node), so
  * no other node moves and a reload shows the same reel. Commons first, then Uncommons, then Rares — one of them a relic.
  */
-export function buildReel(rng: GameRng, regionIndex: number, content: ContentRegistry): FindTile[] {
+export function buildReel(rng: GameRng, regionIndex: number, content: ContentRegistry, lockedTms: readonly string[] = []): FindTile[] {
   const table = tableFor(regionIndex);
   const relic: FindPrize = { kind: 'relic', rarity: table.relics[rng.range(0, table.relics.length)]! };
   const rows: Record<WildTier, FindPrize[]> = {
-    common: draw(rng, table.common, REEL_SHAPE.common).map((k) => name(rng, k, content)),
-    uncommon: draw(rng, table.uncommon, REEL_SHAPE.uncommon).map((k) => name(rng, k, content)),
-    rare: [relic, ...draw(rng, table.rare, REEL_SHAPE.rare - 1).map((k) => name(rng, k, content))],
+    common: draw(rng, table.common, REEL_SHAPE.common).map((k) => name(rng, k, content, lockedTms)),
+    uncommon: draw(rng, table.uncommon, REEL_SHAPE.uncommon).map((k) => name(rng, k, content, lockedTms)),
+    rare: [relic, ...draw(rng, table.rare, REEL_SHAPE.rare - 1).map((k) => name(rng, k, content, lockedTms))],
   };
   return WILD_TIERS.flatMap((tier) => rows[tier].map((prize) => ({ tier, prize })));
 }
 
 /** §2.9.5 — give every plain find on the map its reel (a guarded find keeps its own prize, §5.6.5). */
-export function placeReels(map: Pick<RegionMap, 'nodes'>, mapCursor: number, regionIndex: number, content: ContentRegistry): void {
+export function placeReels(map: Pick<RegionMap, 'nodes'>, mapCursor: number, regionIndex: number, content: ContentRegistry, lockedTms: readonly string[] = []): void {
   for (const node of Object.values(map.nodes)) {
     if (node.kind !== 'cache' || node.preview.objective) continue;
     const rng = new GameRng(fmix32((mapCursor ^ fnv1a(`ReelRNG:${node.id}`)) >>> 0) || 1);
-    node.preview.reel = buildReel(rng, regionIndex, content);
+    node.preview.reel = buildReel(rng, regionIndex, content, lockedTms);
   }
 }
 

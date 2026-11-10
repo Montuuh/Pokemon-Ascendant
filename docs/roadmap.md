@@ -1540,6 +1540,27 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.110 — The trainer's journey  ✅ 2026-11-10
+
+**Shipped.** The user (2026-11-10): "noto que un jugador no progresa mucho cuando termina una partida, y es lo que
+debería sentir" — then, on the proposal (`docs/reviews/2026-11-10-meta-progression-rework.html`): blank slate, canon
+may break, re-lock a wide part of the content, all four fantasies lead; D1 a Kit by slots, D2 every species open, D3
+one wallet, D4 one Ladder for the account, D5 "yo haría reset", D6 every phase now. The whole of Topic 8 but Trauma
+is rewritten, and §6.8.
+(1) **The Field Report** (§8.3.6): the run's end pays on screen — the tally by line, Research and the parcel opened
+there, the Rank, Bond per line, everything earned by name, what to chase next. (2) **The vault and Oak's Parcels**
+(§8.6): 55 entries held back (20 relics with every rarity more than half open, the Plates and five held items, 14
+TMs, three Mysteries, 12 Leaders' TMs); a full Research bar is a parcel, three cards, keep one. (3) **The Trainer
+Journal** (§8.7): achievements and discovery criteria as one book, every entry with a named prize, three pins.
+(4) **Bond in six ranks** (§6.8) at 20 · 60 · 120 · 200 · 300 · 420 with the Box sharing half, and four Ribbons a
+line. (5) **Nine Trainer Ranks** (§8.3.3) for thirty levels, and **a lobby that fills** (§8.4.6): Oak's aide, the
+clerk, the Kit table, beaten Leaders, Partner lines; the **Badge Case** (§8.14). (6) **The Trainer Kit** (§8.4.5):
+ten perks, three slots, never the fight's maths; **the League Ladder** (§8.8.5) and the **Hall of Fame** and four
+stars (§8.15); **Oak's aide** pays the Pokédex (§8.9.3). Account v4 is a reset. Measured as a career of 30 runs × 3:
+591 XP a run, 1.2 parcels a run, ranks 2–8 after runs 1 · 2 · 3 · 6 · 10 · 16 · 25. **Not built from the proposal:**
+the Leaders' three-step challenges and lobby decorations; the Kit's ceiling is a rule, not yet measured perk by perk.
+**Also:** the changelog regrouped by theme (109 point entries of v0.9 into 17) and "Beta" beside every version.
+
 ### v0.9.109 — Faces on the road  ✅ 2026-11-10
 
 **Shipped.** The user's three notes on v0.9.108 (2026-11-10): "no me gusta que haya edificios sueltos" — no house or
@@ -2097,7 +2118,7 @@ idea without a version goes to the backlog below; a playtest finding goes into t
 |---|---|---|
 | ~~**Motion opportunities**~~ built in v0.9.67. From the sweep of 2026-10-27, each through motion-review.md's gate: the HP bar drains at the series' constant rate (big hits weigh more); a hit-stop at medium and heavy impacts (60 / 100 ms); a press state on the main buttons; the played card leaving toward its target (§9.9); modals and sheets that fade and grow in | ui-reviewer, 2026-10-27 | the next v0.9 patches, or v1.1's VFX pass |
 | ~~**A Legendary Pokémon takes two team slots.**~~ Designed 2026-10-16 — the user's call: two places, one body (§2.3). Built with the Legendaries. | user, 2026-09-28 | v0.9.21 |
-| **Meta-progression rework — relic unlocks** | user, 2026-11-04 | Relic unlocks are off since v0.9.99 (`RELIC_UNLOCKS_ON`, §8.6): every relic is open from run 1, no Mastery lane, no discoveries tab. The rework decides what an account earns instead — tiers back, a different unlock, or none — with the discovery counters still folding so no history is lost. **Proposal written 2026-11-10** (`docs/reviews/2026-11-10-meta-progression-rework.html`): a blank-slate rework — the Field Report at run end, a re-locked pool paid out in Oak's Parcels, a Trainer Journal, Bond in six ranks with Ribbons, Trainer Rank, a lobby that fills with a Badge Case, a slot-limited Trainer Kit, the League Ladder — in four phases; waiting on the user's decisions D1–D6 before canon changes |
+| ~~**Meta-progression rework — relic unlocks**~~ built in v0.9.110 (§8). Left for later: the Leaders' three-step challenges, lobby decorations, a reroll perk (Running Shoes), the Kit's ceiling measured perk by perk | user, 2026-11-04 | v0.9.110 |
 | **A Steel Gym** (or a Dark/Steel Elite) — a 13th Badge, a lane with its own terrain and rule, a team of Magneton, Scizor, Steelix and Magnezone. Dark has only Umbreon, so it cannot carry a team. Left out of v0.9.84 on purpose; the user chose to keep it so | user, 2026-10-29 | a Region-pool design pass, after v1.0 |
 
 **Multiplayer** — everything that needs **player accounts and a server**. None of it is in v1.0, which is

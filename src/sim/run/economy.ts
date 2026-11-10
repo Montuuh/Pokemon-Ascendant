@@ -3,6 +3,7 @@ import type { GameRng } from '../rng/gameRng';
 import type { PartyMon, RunState, ShopSlot, ShopStock, StoreFloor } from './types';
 import { priceFor } from './regionModifiers';
 import { stoneUse, stonesForBox } from './xp';
+import { lockedIds, unlockedOnly } from './locks';
 
 // §2.14 / docs/design/catalogs/economy.md — money, prices, drops and shop stock. Every number here names the
 // catalogue row it comes from, because this is the file a balance pass edits.
@@ -188,7 +189,14 @@ export function rollHeldItem(rng: GameRng, content: ContentRegistry, owned: read
 }
 
 /** Everything the run is carrying, equipped or not — the duplicate guard for item drops. */
-export const ownedItems = (run: RunState): string[] => [...run.bag, ...run.box.map((m) => m.heldItem).filter((x): x is string => !!x)];
+/**
+ * The Held Items a run may not be offered: the ones it already holds, and — §8.6.2 — the ones its account has not
+ * opened. Every held-item pool takes this list as what to leave out.
+ */
+export const ownedItems = (run: RunState): string[] => [...run.bag, ...run.box.map((m) => m.heldItem).filter((x): x is string => !!x), ...lockedIds(run.perks, 'held')];
+
+/** §8.6.2 — the TMs this run may draw: the catalogue without what its account has not opened. */
+export const tmsFor = (run: Pick<RunState, 'perks'>, content: ContentRegistry) => unlockedOnly(run, 'tm', content.allTms());
 
 /** §7.3 — the run's relic multipliers, read by the run layer rather than the combat sim. */
 export function relicMultiplier(run: RunState, content: ContentRegistry, hook: 'xp-multiplier' | 'money-multiplier'): number {
@@ -202,7 +210,8 @@ export function relicMultiplier(run: RunState, content: ContentRegistry, hook: '
 
 /** §7.3.3 Exp Share — the benched Box share, 0.75 by default. */
 export function benchXpShare(run: RunState, content: ContentRegistry, base: number): number {
-  let share = base;
+  // §8.4.5 — the Kit's Exp. Share raises the floor the relic then builds on.
+  let share = Math.max(base, run.perks?.kit?.benchXpShare ?? 0);
   for (const id of run.relics) {
     const r = content.relic(id);
     if (r.hook === 'bench-xp-share' && typeof r.params?.share === 'number') share = Math.max(share, r.params.share);
@@ -263,7 +272,7 @@ function teamEvolution(rng: GameRng, content: ContentRegistry, run: RunState, sh
 
 /** A Held Item or a TM, whichever the team can actually use — a TM nobody can learn is a decoration. */
 function teamSpecial(rng: GameRng, content: ContentRegistry, run: RunState, kind: 'tm' | 'held-item' | 'either'): ShopSlot | null {
-  const usableTms = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
+  const usableTms = tmsFor(run, content).filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
   const itemId = rollHeldItem(rng, content, ownedItems(run), run.box);
   const wantTm = kind === 'tm' || (kind === 'either' && usableTms.length > 0 && (rng.range01() < 0.5 || !itemId));
   if (wantTm && usableTms.length) {
@@ -320,7 +329,7 @@ function storeFloor(rng: GameRng, content: ContentRegistry, run: RunState, floor
     case 'consumables':
       return [potionBundle(content), ...consumable(1, 2), ...consumable(2, 2), ...consumable(3, 1), ...cityBalls()];
     case 'tms': {
-      const usable = content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
+      const usable = tmsFor(run, content).filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move)));
       return drawDistinct(rng, usable, 4).map((tm) => ({ kind: 'tm', id: tm.id, price: PRICES.tm, sold: false }));
     }
     case 'held-items': {
@@ -356,7 +365,7 @@ export function floorRestockable(run: RunState, floor: StoreFloor, content: Cont
   };
   const candidates: Record<StoreFloor, () => string[]> = {
     consumables: () => consumables(1, 2, 3),
-    tms: () => content.allTms().filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move))).map((tm) => tm.id),
+    tms: () => tmsFor(run, content).filter((tm) => run.box.some((m) => tm.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(tm.move))).map((tm) => tm.id),
     'held-items': () => {
       const owned = ownedItems(run);
       return heldPool(content, owned, run.box).map((i) => i.id);

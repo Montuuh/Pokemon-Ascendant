@@ -4,7 +4,7 @@ import { entryRunSeed, useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { BOND_RANK_NAME, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, runPerksFor, inPool, isOfferable, levelFor, modifierSlots, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicFits, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
+import { BOND_RANK_NAME, HUB_UPGRADE_LABEL, LADDER, MODIFIERS, POKEMON_TYPES, RUN_START, activeMoves, bondRank, kitSlots, ladderModifiers, nextGoals, nextRung, runPerksFor, inPool, isOfferable, modifierSlots, type HubUpgrade, modifierUnlocked, modifierXpMultiplier, relicPoolFor, regionModifierOffer, startingRelicFits, startingRelicOffers, twinRun, typeMultiplier, unlockedStarters, type AccountState, type PokemonType } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { moveArt, spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
@@ -16,7 +16,7 @@ import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import { bondStatusTip, clearPartnerTip, moveDefTip, twinRunTip } from '@/ui/tips';
 import { describeMoveDef } from '@/ui/moveText';
-import { DIFFICULTY_TEXT, STAT_LONG, STARTER_TEXT } from '@/ui/strings';
+import { DIFFICULTY_TEXT, JOURNEY_TEXT, STAT_LONG, STARTER_TEXT } from '@/ui/strings';
 import { EvolveMethodLabel } from '@/ui/components/EvolveMethodLabel';
 import styles from './StarterSelect.module.css';
 
@@ -27,8 +27,9 @@ import styles from './StarterSelect.module.css';
 // Region and no Cities, so it is offered here instead — which is where §3.3's own stepper always had it.
 // The rule it has to keep is the one in §2.11.3.2: one at a time, and it expires with its Region.
 //
-// §8.8.2 gives one modifier slot by default and two with the Level-13 Hub upgrade; each modifier opens at a
-// Trainer Level. §8.6.3 offers three Starting Relics, four with the Level-3 upgrade, from the account's pool.
+// §8.8.2 gives one modifier slot by default and two with the Modifier Slot service; a modifier is free for a custom
+// run once its League Ladder rung is won, and the next rung is a card of its own (§8.8.5). §8.6.3 offers three
+// Starting Relics, four with the Curated Starting Relic perk packed, from what the account has opened.
 // §8.4.2 Twin Run adds a second starter. All of it is read off the account here and frozen into the run.
 
 type Step = 0 | 1 | 2 | 3;
@@ -106,7 +107,12 @@ export function StarterSelect() {
   // §8.4.2 — which of the two places a click on a tile fills: the Lead first, then the partner (v0.9.9).
   const [slot, setSlot] = useState<'lead' | 'partner'>('lead');
   const MODIFIER_SLOTS = modifierSlots(account);
-  const trainerLevel = levelFor(account.xp);
+  // §8.8.5 — the League Ladder's next rung, once the Champion has fallen; a rung's stack is picked whole.
+  const rung = nextRung(account);
+  const [onLadder, setOnLadder] = useState(false);
+  // §8.4.5, §8.7.2 — what the account sends with the run.
+  const packed = account.kit.slice(0, kitSlots(account)) as HubUpgrade[];
+  const pinned = nextGoals(account, getContent()).filter((g) => g.pinned);
   // The seed is drawn once, when the screen opens, so the relic offer does not reshuffle under the cursor; a deep link
   // may name it (entryRunSeed), so a test walks the same map every time.
   const [seed] = useState(() => entryRunSeed() ?? Math.floor(Math.random() * 2 ** 31));
@@ -182,17 +188,18 @@ export function StarterSelect() {
   }
 
   function toggleModifier(id: string) {
-    setModifiers((on) => {
-      if (on.includes(id)) return on.filter((m) => m !== id);
-      // §8.8.2 — one slot. Picking a second replaces the first rather than refusing the click: the player
-      // said what they wanted, and a button that does nothing when pressed is a worse answer than a swap.
-      return [...on, id].slice(-MODIFIER_SLOTS);
-    });
+    // §8.8.5 — a custom pick leaves the Ladder: the rung's stack is the rung's, not a start to edit.
+    const from = onLadder ? [] : modifiers;
+    setOnLadder(false);
+    if (from.includes(id)) return setModifiers(from.filter((m) => m !== id));
+    // §8.8.2 — one slot. Picking a second replaces the first rather than refusing the click: the player
+    // said what they wanted, and a button that does nothing when pressed is a worse answer than a swap.
+    setModifiers([...from, id].slice(-MODIFIER_SLOTS));
   }
 
   const xpBonus = modifierXpMultiplier(modifiers);
   // §8.8.2 — the rows this account can take (a pending row is never one), and the rest, in the order they open.
-  const byLevel = [...MODIFIERS].sort((a, b) => a.unlockLevel - b.unlockLevel);
+  const byLevel = [...MODIFIERS].sort((a, b) => a.rung - b.rung);
   const openRows = byLevel.filter((d) => d.available && modifierUnlocked(account, d));
   const lockedRows = byLevel.filter((d) => !(d.available && modifierUnlocked(account, d)));
   // §8.8 — the Box the account has bought (an Expanded Box, a Twin Run's partner): what Box Squeeze takes two from.
@@ -206,6 +213,21 @@ export function StarterSelect() {
       <div className={styles.veil} aria-hidden="true" />
       <header className={styles.chrome}>
         <h1 className={`${styles.title} display`}>New run</h1>
+        {/* §8.4.5, §8.7.2 — what the account sends with the run: the Kit that is packed, and the deeds being chased. */}
+        {(kitSlots(account) > 0 || pinned.length > 0) && (
+          <p className={styles.preflight} data-testid="run-preflight">
+            {kitSlots(account) > 0 && (
+              <span data-testid="run-kit">
+                <b>{JOURNEY_TEXT.packed}</b> {packed.length ? packed.map((p) => HUB_UPGRADE_LABEL[p].name).join(' · ') : JOURNEY_TEXT.noKit}
+              </span>
+            )}
+            {pinned.length > 0 && (
+              <span data-testid="run-goals">
+                <b>{JOURNEY_TEXT.goals}</b> {pinned.map((g) => g.name).join(' · ')}
+              </span>
+            )}
+          </p>
+        )}
         <ol className={styles.dots} aria-label={`Step ${step + 1} of ${STEPS.length}`}>
           {STEPS.map((label, i) => (
             <li key={label} className={i === step ? styles.dotOn : styles.dot}>
@@ -220,9 +242,9 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               Make it harder, if you want to
-              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={`Each opens at a Trainer Level; you are ${trainerLevel}.`} />} />
+              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={rung === null && account.ladder === 0 ? JOURNEY_TEXT.ladder.locked : 'A modifier is free for a custom run once its League Ladder rung is won.'} />} />
             </h2>
-            {openRows.length > 0 && (
+            {(openRows.length > 0 || rung !== null) && (
               <p className={styles.xpTally} data-testid="difficulty-xp">
                 Trainer XP this run: <b className="tabular">×{xpBonus.toFixed(2)}</b>
               </p>
@@ -234,15 +256,39 @@ export function StarterSelect() {
             <button
               type="button"
               className={`${styles.diffCard} ${modifiers.length === 0 ? styles.picked : ''}`}
-              onClick={() => setModifiers([])}
+              onClick={() => {
+                setOnLadder(false);
+                setModifiers([]);
+              }}
               aria-pressed={modifiers.length === 0}
               data-testid="difficulty-baseline"
             >
               <span className={`${styles.diffName} display`}>{DIFFICULTY_TEXT.baseline}</span>
               <span className={styles.diffEffect}>{DIFFICULTY_TEXT.baselineNote}</span>
             </button>
+            {/* §8.8.5 — the League Ladder's next rung: its modifiers come as a stack, fixed, and winning it opens the next. */}
+            {rung !== null && (
+              <button
+                type="button"
+                className={`${styles.diffCard} ${onLadder ? styles.picked : ''}`}
+                onClick={() => {
+                  setOnLadder(true);
+                  setModifiers(ladderModifiers(rung));
+                }}
+                aria-pressed={onLadder}
+                data-testid="difficulty-ladder"
+                data-rung={rung}
+              >
+                <span className={`${styles.diffName} display`}>{JOURNEY_TEXT.ladder.card(rung)}</span>
+                <span className={styles.diffXp}>×{modifierXpMultiplier(ladderModifiers(rung)).toFixed(2)} XP</span>
+                <span className={styles.diffEffect}>
+                  <b>{LADDER.slice(0, rung).map((m) => m.name).join(' · ')}</b>
+                </span>
+                <span className={styles.diffEffect}>{JOURNEY_TEXT.ladder.effect(rung)}</span>
+              </button>
+            )}
             {openRows.map((d) => {
-              const on = modifiers.includes(d.id);
+              const on = !onLadder && modifiers.includes(d.id);
               return (
                 <button
                   key={d.id}

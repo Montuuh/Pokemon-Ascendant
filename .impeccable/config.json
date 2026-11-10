@@ -29,6 +29,15 @@
         ],
         "createdAt": "2026-11-10T09:49:37.885Z",
         "reason": "agent triage: .scroll wraps tables whose cells carry 8x10px padding; the detector does not see cell padding"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "docs/reviews/2026-11-10-meta-progression-rework.html"
+        ],
+        "createdAt": "2026-11-10T11:29:02.384Z",
+        "reason": "agent triage: the detector pairs the dark-theme token values with a white page the document never has; light and dark tokens are each set against their own background"
       }
     ]
   }

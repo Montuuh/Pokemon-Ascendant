@@ -1,22 +1,30 @@
 import type { ContentRegistry } from '../content/defs';
-import { ACHIEVEMENTS, achievementById, applyMetaEvent, emptyProgress, MEDAL_XP, type AchievementDef, type AchievementProgress, type MetaEvent } from './achievements';
+import { ACHIEVEMENTS, applyMetaEvent, emptyProgress, MEDAL_XP, type AchievementDef, type AchievementProgress, type HallTeamMember, type MetaEvent } from './achievements';
 import { dexTierFor, DEX_TIER_XP, emptyDexEntry, type DexEntry, type DexTier, isMet } from './pokedex';
-import { BOND, bondRank } from './bond';
-import { TITLE_ID_BY_NAME, type CosmeticKind } from './cosmetics';
+import { BOND, bondRank, type RibbonId } from './bond';
+import { cosmeticById, type CosmeticKind } from './cosmetics';
+import { MAX_RANK, rankFor, rankProgress, rankRow, xpForRank, kitSlotsFor } from './rank';
+import { PARCEL, parcelCost, parcelPool, vaultEntry, vaultEntryFor, VAULT } from './vault';
+import { journalReward, type JournalReward } from './journal';
+import { LADDER_PRIZE, LADDER_TOP } from './ladder';
 
-// §8.3–§8.6, §8.9, §8.10 — the account: everything that outlives a run.
+// §8.3–§8.10, §8.14, §8.15 — the account: everything that outlives a run.
 //
-// Trainer XP, the level it drives, the Tokens that every level and the hard achievements pay, which starters,
-// relics, Hub conveniences and cosmetics have been bought at the Poké Mart, the Pokédex, the Bond, the medals,
-// and the lifetime numbers on the Trainer Card. §8.10 says it is one save; this is that save's shape.
+// Trainer XP and the Rank it drives, the Research that fills Oak's Parcels, the Tokens the Mart takes, what the
+// vault has opened, the Kit, the Pokédex, the Bond and its Ribbons, the Journal, the Badge Case, the League Ladder
+// and the Hall of Fame. §8.10 says it is one save; this is that save's shape.
 //
 // The same discipline as the run: a pure state and a pure fold over events. `RunState` is diffed into
 // `MetaEvent`s by the run layer (see achievements.ts — nothing account-side ever lives inside a save that has
 // to replay identically), and `applyAccountEvent` folds each one in. The app layer persists the result. The
-// spending side — the shelves, the prices, `buy` — is mart.ts.
+// spending side — the shelves, the prices, `buy` — is mart.ts; opening a parcel is `takeParcel`, below.
 
-/** 2 since 2026-09-21: the track pays Tokens at every level and the Mart sells what it used to grant (`upgradeAccount`). */
-export const ACCOUNT_VERSION = 3;
+/**
+ * 4 since v0.9.110, the meta-progression rework: **an older account is reset** (the user's call, 2026-11-10 — "yo
+ * haría reset"). The game is a Beta, the vault changes what a first run holds, and a save that kept everything open
+ * would never see the new road.
+ */
+export const ACCOUNT_VERSION = 4;
 
 export interface LifetimeStats {
   runs: number;
@@ -32,219 +40,357 @@ export interface LifetimeStats {
   hardestWin: number;
 }
 
+/** §8.15 — one won run, as the Hall of Fame keeps it. */
+export interface HallEntry {
+  /** The account's run count when it was won: the Hall's date, since the sim reads no clock. */
+  run: number;
+  seed: number;
+  starter: string;
+  team: HallTeamMember[];
+  badges: string[];
+  relics: string[];
+  /** §8.8.5 — the League Ladder rung it was won on; 0 for a baseline or custom run. */
+  rung: number;
+}
+
 export interface AccountState {
   version: number;
-  /** §8.3.1 — lifetime Trainer XP. Never spent. */
+  /** §8.3.1 — lifetime Trainer XP. Never spent; it drives the Rank. */
   xp: number;
+  /** §8.3.4 — the XP the run in progress has earned, which its end turns into Tokens. Reset by `run-end`. */
+  runXp: number;
+  /** §8.6.2 — Research toward the next Oak's Parcel. Every XP is also a point of Research. */
+  research: number;
+  /** §8.6.2 — parcels earned and not yet opened. */
+  parcels: number;
+  parcelsEarned: number;
+  parcelsOpened: number;
+  /** §8.6.2 — what makes this account's parcels its own. Set once, by the app, when the account is made. */
+  salt: number;
+  /** §8.6.1 — the vault entries this account has opened (`meta/vault.ts` ids). */
+  unlocks: string[];
   /** §8.3.4 — unspent Trainer Tokens. */
   tokens: number;
   /** Lifetime Tokens earned, so the card can say so even after they are spent. */
   tokensEarned: number;
-  /** §8.3.5 — reward-track levels whose Tokens have been paid. The fold is idempotent through this. */
+  /** §8.3.5 — ranks whose purse has been paid. The fold is idempotent through this. */
   claimedLevels: number[];
   /** §8.5.2 — meta-starters bought at the Mart, by species id. The three defaults are never listed. */
   starters: string[];
-  /** §8.6.1 — Tier-2 relics discovered or bought, and Tier-3 relics bought. Tier 1 is always in the pool and never listed. */
-  relics: string[];
-  /**
-   * §8.8 — difficulty modifiers opened by something other than Trainer Level. Nothing writes here since the
-   * track stopped handing modifiers out (2026-09-21, §8.3.5); kept so a future unlock has a home and old
-   * saves keep their shape.
-   */
-  modifiers: string[];
-  /** §8.4.2 — Hub upgrades bought at the Mart (or granted by the v0.6.0 track, which counts the same). */
+  /** §8.4.2, §8.4.5 — services and Kit perks the account owns, bought at the Mart or handed over by Oak's aide. */
   hub: string[];
-  /** §8.4.4 — cosmetics bought at the Trainer's Corner, by id. */
+  /** §8.4.5 — the perks packed for the next run, at most as many as the rank has slots. */
+  kit: string[];
+  /** §8.4.4 — cosmetics owned, by id. */
   cosmetics: string[];
   /** §8.4.4 — the one cosmetic of each kind the card wears. Buying one wears it; the Corner can swap. */
   wearing: Partial<Record<CosmeticKind, string>>;
   /** §5.13 / §8.9 — the Pokédex, per species. */
   dex: Record<string, DexEntry>;
-  /** §6.8 — Bond points per *line* (keyed by base species). `bondRank` turns them into ranks 0–5. */
+  /** §6.8 — Bond points per *line* (keyed by base species). `bondRank` turns them into ranks 0–6. */
   bond: Record<string, number>;
+  /** §6.8.5 — the Ribbons each line wears. */
+  ribbons: Record<string, RibbonId[]>;
+  /** §8.14 — the Badge Case: every Badge ever won, in the order it was first won. */
+  badges: string[];
+  /** §8.8.5 — the highest League Ladder rung won. */
+  ladder: number;
+  /** §8.15 — the Hall of Fame, newest last. */
+  hall: HallEntry[];
   achievements: AchievementProgress;
+  /** §8.7.1 — Field Notes completed, by the relic that carries the deed. */
+  notes: string[];
+  /** §8.7.2 — up to three Journal entries the player is chasing. */
+  pins: string[];
+  /** §8.9.3 — the Pokédex milestones Oak's aide has paid, by their species count. */
+  aides: number[];
   stats: LifetimeStats;
-  /**
-   * Running tallies that unlock things: Tier-2 discovery criteria and Mastery Lv2 achievements (§6.8.2).
-   * Keyed by the criterion id. Kept flat rather than typed per criterion so adding one is a data row.
-   */
+  /** Running tallies the Field Notes read (§8.7.1). Keyed by the criterion id, flat so adding one is a data row. */
   counters: Record<string, number>;
 }
 
-export const emptyAccount = (): AccountState => ({
+export const emptyAccount = (salt = 1): AccountState => ({
   version: ACCOUNT_VERSION,
   xp: 0,
+  runXp: 0,
+  research: 0,
+  parcels: 0,
+  parcelsEarned: 0,
+  parcelsOpened: 0,
+  salt,
+  unlocks: [],
   tokens: 0,
   tokensEarned: 0,
   claimedLevels: [],
   starters: [],
-  relics: [],
-  modifiers: [],
   hub: [],
+  kit: [],
   cosmetics: [],
   wearing: {},
   dex: {},
   bond: {},
+  ribbons: {},
+  badges: [],
+  ladder: 0,
+  hall: [],
   achievements: emptyProgress(),
+  notes: [],
+  pins: [],
+  aides: [],
   stats: { runs: 0, wins: 0, losses: 0, combatsWon: 0, recruits: 0, evolutions: 0, catches: 0, leadTurns: {}, hardestWin: 0 },
   counters: {},
 });
 
-// ── The level curve (§8.3.3) ─────────────────────────────────────────────────────────────────────────────
+// ── The Rank (§8.3.3) — the names the screens grew up with ───────────────────────────────────────────────
 
-/**
- * Cumulative XP to *reach* level N: floor(330 × N^1.6). Level 1 is the floor and costs nothing. v0.9.2 lowered the
- * constant from 500: a run pays ~350–800 XP, and at 500 the last shelf opened after ~37 runs (§8.3.3).
- */
-export const LEVEL_CURVE = { scale: 330, power: 1.6 } as const;
-export const xpForLevel = (n: number): number => (n <= 1 ? 0 : Math.floor(LEVEL_CURVE.scale * Math.pow(n, LEVEL_CURVE.power)));
+/** The Trainer Rank an XP total has reached (`meta/rank.ts`). Kept under its old name: every screen asks it. */
+export const levelFor = rankFor;
+export const levelProgress = rankProgress;
+export const xpForLevel = xpForRank;
+export const MAX_LEVEL = MAX_RANK;
 
-export const MAX_LEVEL = 30;
+// ── The shelves and the rank road (§8.3.5, §8.4.1) ───────────────────────────────────────────────────────
 
-/** The level a lifetime XP total has reached, 1–30. */
-export function levelFor(xp: number): number {
-  let level = 1;
-  while (level < MAX_LEVEL && xp >= xpForLevel(level + 1)) level++;
-  return level;
-}
+/** §8.4.1 — the Poké Mart's four shelves. The clerk arrives at Trainer (rank 3); the Kit shelf opens with the first slot. */
+export type ShelfId = 'corner' | 'starters' | 'hub' | 'kit';
 
-/** Progress inside the current level, for the bar: 0–1. At the cap, 1. */
-export function levelProgress(xp: number): { level: number; into: number; span: number; fraction: number } {
-  const level = levelFor(xp);
-  if (level >= MAX_LEVEL) return { level, into: 0, span: 0, fraction: 1 };
-  const floor = xpForLevel(level);
-  const span = xpForLevel(level + 1) - floor;
-  const into = xp - floor;
-  return { level, into, span, fraction: span > 0 ? into / span : 1 };
-}
+export const SHELF_ORDER: readonly ShelfId[] = ['starters', 'hub', 'kit', 'corner'];
 
-// ── The shelves and the reward track (§8.3.5, §8.4.1) ───────────────────────────────────────────────────
-
-/**
- * §8.4.1 — the Poké Mart's four shelves. Trainer Level opens them; Tokens buy from them. v0.9.2 closed the
- * Discoveries shelf: a Tier-2 relic is discovered by doing its thing, never bought (§8.6.1).
- */
-export type ShelfId = 'corner' | 'starters' | 'hub' | 'mastery';
-
-/**
- * Per §8.6.1 — relic unlocks are off (the user's call, 2026-11-04, v0.9.99): every relic is in every run's pool from run
- * one, the Mastery lane is not on the Mart, and no relic is discovered. The discovery counters still fold, so the
- * meta-progression rework (roadmap backlog) can turn this back on — or replace it — with every account's history intact.
- * *Why:* after the v0.9.98 re-tier a fresh account held 3 of the 18 Uncommons, so rarity could not mean what it says.
- */
-export const RELIC_UNLOCKS_ON = false;
-
-export const SHELF_ORDER: readonly ShelfId[] = RELIC_UNLOCKS_ON ? ['corner', 'starters', 'hub', 'mastery'] : ['corner', 'starters', 'hub'];
-
-/**
- * §8.3.5 — what each shelf sells and the level that opens it. The Corner is the floor: open from Level 1. v0.9.2:
- * 1 / 2 / 4 / 6, so every shelf is open by about the tenth run (it was 1 / 3 / 5 / 10 — the thirty-seventh).
- */
+/** §8.4.1 — what each shelf sells and the rank that opens it. */
 export const SHELVES: Record<ShelfId, { name: string; level: number; sells: string }> = {
-  corner: { name: "Trainer's Corner", level: 1, sells: 'Titles, avatars and frames for the card, and a fourth Starting Relic offer.' },
-  starters: { name: 'Starters', level: 2, sells: 'Three more Pokémon to start a run with — each one a secret until you meet it.' },
-  hub: { name: 'Hub upgrades', level: 4, sells: 'A bigger Box, a second modifier slot, a second starter. Never power.' },
-  mastery: { name: 'Mastery lane', level: 6, sells: 'The Tier-3 relics: they change how a run works, not how hard it hits.' },
+  starters: { name: 'Starters', level: 3, sells: 'Three more Pokémon to start a run with — each one a secret until you meet it.' },
+  hub: { name: 'Services', level: 3, sells: 'A bigger Box, a second modifier slot, a second starter. Yours for every run, no slot needed.' },
+  kit: { name: 'Trainer Kit', level: 4, sells: 'Perks you pack before a run: one slot at Challenger, two at Ace, three at Expert.' },
+  corner: { name: "Trainer's Corner", level: 3, sells: 'Titles, avatars and frames for the card.' },
 };
 
-/** §8.3.5 — what a level pays. Every level pays; the milestones pay more and are where a shelf tends to open. */
+/** §8.3.5 — what a rank pays and opens. */
 export interface TrackReward {
   tokens: number;
-  /** The shelf this level opens at the Poké Mart, when it opens one. */
+  /** The shelf this rank opens at the Poké Mart, when it opens one. */
   opens?: ShelfId;
+  /** What the rank brings to the lobby, in the player's words. */
+  arrives: string;
+  why: string;
 }
 
-export const TRACK_TOKENS = {
-  /** Every level from 2 to 30 that is not a milestone. */
-  level: 3,
-  /** Every fifth level. */
-  milestone: { 5: 6, 10: 6, 15: 10, 20: 10, 25: 12, 30: 12 } as Record<number, number>,
-} as const;
-
-/** §8.4.2 — the seven Hub upgrades. Each is quality-of-life or option-expanding, never power. */
-export type HubUpgrade =
-  | 'starting-relic-plus-one'
-  | 'expanded-box'
-  | 'pokedex-insight'
-  | 'trauma-salve-cache'
-  | 'apex-reveal'
-  | 'modifier-slot-plus-one'
-  | 'twin-run';
-
-export const HUB_UPGRADE_LABEL: Record<HubUpgrade, { name: string; effect: string; pending?: string }> = {
-  'starting-relic-plus-one': { name: 'Curated Starting Relic +1', effect: 'A run start offers four Starting Relics instead of three.' },
-  'expanded-box': { name: 'Expanded Box', effect: 'Box capacity 6 → 8 for every future run.' },
-  'pokedex-insight': { name: 'Pokédex Insight', effect: 'The first fight against a species at Familiar tier reveals one intent free.' },
-  'trauma-salve-cache': { name: 'Trauma Salve Cache', effect: 'The first City shop always stocks a Trauma Salve.' },
-  'apex-reveal': { name: 'Apex Pokémon Reveal', effect: 'The Legendary waiting on Victory Road is named on entering Region 3.' },
-  'modifier-slot-plus-one': { name: 'Difficulty Modifier Slot +1', effect: 'Stack two difficulty modifiers per run instead of one.' },
-  'twin-run': { name: 'Second Starter Slot (Twin Run)', effect: 'Choose two starters; the Box starts one larger.' },
-};
-
-/**
- * §8.3.5 — the whole track, one row per level. Level 1 is the floor and grants nothing; every level after pays
- * Tokens, and the four that open a shelf say so. 92 Tokens in all by Level 30.
- *
- * Derived rather than written out: the track *is* "two a level, more at the milestones, a shelf at 3/5/8/10",
- * and a table of twenty-nine rows would only be that sentence with room for a typo.
- */
+/** §8.3.5 — the rank road, one row per rank from 2 to 9. Derived from the rank table: it *is* that table, as rewards. */
 export const REWARD_TRACK: Record<number, TrackReward> = Object.fromEntries(
-  Array.from({ length: 29 }, (_, i) => i + 2).map((level) => {
-    const opens = SHELF_ORDER.find((s) => SHELVES[s].level === level);
-    const reward: TrackReward = { tokens: TRACK_TOKENS.milestone[level] ?? TRACK_TOKENS.level, ...(opens ? { opens } : {}) };
-    return [level, reward];
+  Array.from({ length: MAX_RANK - 1 }, (_, i) => i + 2).map((rank) => {
+    const row = rankRow(rank);
+    const opens = rank === 3 ? ('starters' as const) : rank === 4 ? ('kit' as const) : undefined;
+    return [rank, { tokens: row.tokens, arrives: row.arrives, why: row.why, ...(opens ? { opens } : {}) }];
   }),
 );
 
-/** §8.3.5 — the Tokens the track pays from the level after `from` up to and including `to`. */
+/** §8.3.5 — the Tokens the road pays from the rank after `from` up to and including `to`. */
 export const trackTokensBetween = (from: number, to: number): number => {
   let sum = 0;
   for (let l = from + 1; l <= to; l++) sum += REWARD_TRACK[l]?.tokens ?? 0;
   return sum;
 };
 
-// ── XP sources (§8.3.2) ──────────────────────────────────────────────────────────────────────────────────
+// ── Services and the Trainer Kit (§8.4.2, §8.4.5) ────────────────────────────────────────────────────────
 
 /**
- * §8.3.4 — the ₽ a run ends with becomes Tokens (v0.9.2, the user's call): one Token for every `per` ₽ left, won run
- * or lost, at most `cap` a run. The rate is poor on purpose — ₽ spent in the run is worth more than ₽ carried out —
- * and the cap stops a run from being played for the bank.
+ * Everything the account can own that changes a run: three **services**, in force for every run once bought, and
+ * ten **Kit perks**, in force only while packed in one of the rank's slots. The four oldest perks were Hub upgrades
+ * until v0.9.110; the union kept its name because a save holds these ids.
  */
-export const MONEY_TO_TOKENS = { per: 200, cap: 5 } as const;
+export type HubUpgrade =
+  | 'expanded-box'
+  | 'modifier-slot-plus-one'
+  | 'twin-run'
+  | 'starting-relic-plus-one'
+  | 'pokedex-insight'
+  | 'trauma-salve-cache'
+  | 'apex-reveal'
+  | 'moms-allowance'
+  | 'first-aid-pouch'
+  | 'tm-case'
+  | 'ball-case'
+  | 'exp-share'
+  | 'head-start';
 
-/** §8.3.4 — the Tokens a run's leftover ₽ is worth. */
-export const tokensForMoney = (money: number): number => Math.min(MONEY_TO_TOKENS.cap, Math.floor(Math.max(0, money) / MONEY_TO_TOKENS.per));
+export interface HubUpgradeRow {
+  name: string;
+  effect: string;
+  /** A service is always on; a perk needs a Kit slot. */
+  kind: 'service' | 'perk';
+  /** Sold at the Mart, or handed over by Oak's aide at a Pokédex milestone (§8.9.3). */
+  from: 'mart' | 'aide';
+  pending?: string;
+}
+
+/** §8.4.5 — the numbers a Kit perk hands a run. A tuning pass edits this table and nothing else. */
+export const KIT = { allowance: 150, potions: 2, balls: 3, headStartLevels: 2, benchXpShare: 1 } as const;
+
+export const HUB_UPGRADE_LABEL: Record<HubUpgrade, HubUpgradeRow> = {
+  'expanded-box': { kind: 'service', from: 'mart', name: 'Expanded Box', effect: 'Box capacity 6 → 8 for every future run.' },
+  'modifier-slot-plus-one': { kind: 'service', from: 'mart', name: 'Difficulty Modifier Slot +1', effect: 'Stack two difficulty modifiers on a custom run instead of one.' },
+  'twin-run': { kind: 'service', from: 'mart', name: 'Second Starter Slot (Twin Run)', effect: 'Choose two starters; the Box starts one larger.' },
+  'starting-relic-plus-one': { kind: 'perk', from: 'mart', name: 'Curated Starting Relic', effect: 'A run start offers four Starting Relics instead of three.' },
+  'pokedex-insight': { kind: 'perk', from: 'mart', name: 'Pokédex Insight', effect: 'The first fight against a species you do not know yet reveals one intent free.' },
+  'trauma-salve-cache': { kind: 'perk', from: 'mart', name: 'Trauma Salve Cache', effect: 'The first City shop always stocks a Trauma Salve.' },
+  'apex-reveal': { kind: 'perk', from: 'mart', name: 'Apex Pokémon Reveal', effect: 'The Legendary waiting on Victory Road is named on entering Region 3.' },
+  'moms-allowance': { kind: 'perk', from: 'mart', name: "Mom's Allowance", effect: `Start the run with ${KIT.allowance} ₽ more.` },
+  'first-aid-pouch': { kind: 'perk', from: 'mart', name: 'First-Aid Pouch', effect: `Start the run with ${KIT.potions} more Potions.` },
+  'tm-case': { kind: 'perk', from: 'mart', name: 'TM Case', effect: 'Start the run with one TM your starter can learn.' },
+  'ball-case': { kind: 'perk', from: 'aide', name: 'Ball Case', effect: `Start the run with ${KIT.balls} more Poké Balls.` },
+  'exp-share': { kind: 'perk', from: 'aide', name: 'Exp. Share', effect: 'The Box earns the whole of a fight\'s XP instead of three quarters.' },
+  'head-start': { kind: 'perk', from: 'aide', name: 'Head Start', effect: `Your starter begins ${KIT.headStartLevels} levels higher.` },
+};
+
+export const isKitPerk = (u: HubUpgrade): boolean => HUB_UPGRADE_LABEL[u].kind === 'perk';
+
+/** §8.4.5 — how many perks this account may pack. */
+export const kitSlots = (state: AccountState): number => kitSlotsFor(rankFor(state.xp));
+
+/**
+ * Is this upgrade in force? A service once owned; a perk only while it is packed — and only in a slot the rank
+ * really has, so a Kit saved at a higher rank cannot outgrow the account that loads it.
+ */
+export const hasHubUpgrade = (state: AccountState, upgrade: HubUpgrade): boolean => {
+  const row = HUB_UPGRADE_LABEL[upgrade];
+  if (!state.hub.includes(upgrade) || row.pending) return false;
+  return row.kind === 'service' || state.kit.slice(0, kitSlots(state)).includes(upgrade);
+};
+
+/** §8.4.5 — pack or unpack a perk. Pure; an unowned perk, a service or a full Kit leaves the account as it was. */
+export function packKit(state: AccountState, perk: HubUpgrade, on: boolean): AccountState {
+  if (!state.hub.includes(perk) || !isKitPerk(perk)) return state;
+  const has = state.kit.includes(perk);
+  if (on === has) return state;
+  if (on && state.kit.length >= kitSlots(state)) return state;
+  const next = structuredClone(state);
+  next.kit = on ? [...next.kit, perk] : next.kit.filter((p) => p !== perk);
+  return next;
+}
+
+// ── XP and Token sources (§8.3.2, §8.3.4) ────────────────────────────────────────────────────────────────
+
+/** §8.3.6 — the Field Report's lines: where a run's XP came from. */
+export type ReportLine = 'fights' | 'recruits' | 'evolutions' | 'badges' | 'discoveries' | 'pokedex' | 'journal' | 'distance';
+export const REPORT_LINES: readonly ReportLine[] = ['fights', 'recruits', 'evolutions', 'badges', 'discoveries', 'pokedex', 'journal', 'distance'];
 
 export const XP = {
   combat: 5,
   recruit: 10,
   evolution: 15,
   gym: 50,
+  /** §8.14 — the first time a Leader is beaten, on top of `gym`. */
+  firstBadge: 100,
+  /** §8.3.2 — a species the account had never met takes the field. */
+  newSpecies: 5,
+  /** §8.7.1 — a Field Note completed. */
+  fieldNote: 25,
   failedRunPerLayer: 50,
   failedRunCap: 400,
 } as const;
 
+/**
+ * §8.3.4 — where Tokens come from. A run's end pays one for every `perRunXp` XP the run earned, and one for every
+ * `moneyPer` ₽ it ended with, at most `moneyCap`. Until v0.9.110 the income was ~2.3 a run against prices of 2–8;
+ * it is ~20 in the first ten runs and ~14 after against prices of 6–70, so every run buys something small or moves
+ * something big (`balance/accountCareer.test.ts`: at one Token for 50 XP the whole shop was paid off by run 21).
+ */
+export const TOKENS = { perRunXp: 80, moneyPer: 100, moneyCap: 10 } as const;
+
+/** §8.3.4 — the Tokens a run's leftover ₽ is worth. */
+export const tokensForMoney = (money: number): number => Math.min(TOKENS.moneyCap, Math.floor(Math.max(0, money) / TOKENS.moneyPer));
+
+/** §8.9.3 — Oak's aide: what the Pokédex pays as it fills, by species owned. */
+export interface AideRow {
+  owned: number;
+  parcels?: number;
+  perk?: HubUpgrade;
+  tokens?: number;
+}
+export const AIDES: readonly AideRow[] = [
+  { owned: 10, parcels: 1 },
+  { owned: 25, perk: 'ball-case' },
+  { owned: 50, perk: 'exp-share' },
+  { owned: 80, parcels: 2 },
+  { owned: 110, perk: 'head-start' },
+  { owned: 150, tokens: 50 },
+];
+
+/** §8.9.3 — species the account has owned: recruited, caught, or fought with (an evolved form counts once it fights). */
+export const speciesOwned = (state: AccountState): number =>
+  Object.values(state.dex).filter((e) => e.recruits > 0 || e.caught > 0 || e.winsWith > 0 || e.runsFinishedWith > 0).length;
+
 // ── The fold ─────────────────────────────────────────────────────────────────────────────────────────────
 
-/** What one event did to the account, for the run-end summary and the toasts. */
+/** What one event did to the account, for the Field Report and the toasts. */
 export interface AccountDelta {
   xp: number;
+  /** §8.3.6 — the same XP, by the Field Report's lines. */
+  xpBy: Partial<Record<ReportLine, number>>;
   tokens: number;
+  /** §8.3.4 — the Tokens the run's own XP became, at its end. */
+  reportTokens: number;
   levelsGained: number[];
   rewards: { level: number; reward: TrackReward }[];
   unlockedAchievements: AchievementDef[];
+  /** §8.7 — what each completed Journal entry paid. */
+  journalRewards: { id: string; reward: JournalReward }[];
   dexPromotions: { speciesId: string; tier: DexTier }[];
   /** §6.8.1 — Bond points earned per line by this event. */
   bondGains: { line: string; points: number }[];
   /** §6.8.2 — ranks crossed by this event, in order. */
   bondRankUps: { line: string; rank: number }[];
-  /** §8.6.1 — Tier-2 relics discovered by a criterion. */
-  discoveredRelics: string[];
+  /** §6.8.5 — Ribbons first pinned by this event. */
+  ribbons: { line: string; ribbon: RibbonId }[];
+  /** §8.6.2 — Oak's Parcels earned. */
+  parcels: number;
+  /** §8.6.1 — vault entries opened outright: a Field Note's relic, a Leader's TM. */
+  opened: string[];
+  /** §8.7.1 — Field Notes completed, by relic id. */
+  notes: string[];
+  /** §8.14 — Badges won for the first time. */
+  newBadges: string[];
+  /** §8.9.3 — Pokédex milestones the aide paid. */
+  aides: AideRow[];
+  /** §8.8.5 — a League Ladder rung won for the first time. */
+  ladderRung: number | null;
+  /** §8.15 — the run went into the Hall of Fame. */
+  hall: boolean;
   /** §8.3.4 — the run's leftover ₽ and the Tokens it became, at the run's end. */
   moneyTokens: { money: number; tokens: number }[];
 }
 
-export const emptyDelta = (): AccountDelta => ({ xp: 0, tokens: 0, levelsGained: [], rewards: [], unlockedAchievements: [], dexPromotions: [], bondGains: [], bondRankUps: [], discoveredRelics: [], moneyTokens: [] });
+export const emptyDelta = (): AccountDelta => ({
+  xp: 0, xpBy: {}, tokens: 0, reportTokens: 0, levelsGained: [], rewards: [], unlockedAchievements: [], journalRewards: [], dexPromotions: [],
+  bondGains: [], bondRankUps: [], ribbons: [], parcels: 0, opened: [], notes: [], newBadges: [], aides: [], ladderRung: null, hall: false, moneyTokens: [],
+});
+
+/** Add one delta into another: the app's ledger and `applyAccountEvents` both sum a run's events this way. */
+export function mergeDelta(into: AccountDelta, d: AccountDelta): AccountDelta {
+  const xpBy = { ...into.xpBy };
+  for (const [line, n] of Object.entries(d.xpBy) as [ReportLine, number][]) xpBy[line] = (xpBy[line] ?? 0) + n;
+  return {
+    xp: into.xp + d.xp,
+    xpBy,
+    tokens: into.tokens + d.tokens,
+    reportTokens: into.reportTokens + d.reportTokens,
+    levelsGained: [...into.levelsGained, ...d.levelsGained],
+    rewards: [...into.rewards, ...d.rewards],
+    unlockedAchievements: [...into.unlockedAchievements, ...d.unlockedAchievements],
+    journalRewards: [...into.journalRewards, ...d.journalRewards],
+    dexPromotions: [...into.dexPromotions, ...d.dexPromotions],
+    bondGains: [...into.bondGains, ...d.bondGains],
+    bondRankUps: [...into.bondRankUps, ...d.bondRankUps],
+    ribbons: [...into.ribbons, ...d.ribbons],
+    parcels: into.parcels + d.parcels,
+    opened: [...into.opened, ...d.opened],
+    notes: [...into.notes, ...d.notes],
+    newBadges: [...into.newBadges, ...d.newBadges],
+    aides: [...into.aides, ...d.aides],
+    ladderRung: d.ladderRung ?? into.ladderRung,
+    hall: into.hall || d.hall,
+    moneyTokens: [...into.moneyTokens, ...d.moneyTokens],
+  };
+}
 
 export interface AccountContext {
   content: ContentRegistry;
@@ -252,33 +398,59 @@ export interface AccountContext {
   xpMultiplier: number;
 }
 
-function bump(delta: AccountDelta, next: AccountState, xp: number, ctx: AccountContext): void {
-  const earned = Math.round(xp * ctx.xpMultiplier);
-  next.xp += earned;
-  delta.xp += earned;
+function pay(next: AccountState, delta: AccountDelta, tokens: number): void {
+  if (tokens <= 0) return;
+  next.tokens += tokens;
+  next.tokensEarned += tokens;
+  delta.tokens += tokens;
 }
 
-/** Pay one track level. Idempotent through `claimedLevels`, which the caller checks first. */
+/** §8.6.2 — hand over parcels; one earned with nothing left in the vault to hold is paid in Tokens instead. */
+function grantParcels(next: AccountState, delta: AccountDelta, n: number): void {
+  for (let i = 0; i < n; i++) {
+    if (parcelPool(next).length - next.parcels > 0) {
+      next.parcels += 1;
+      delta.parcels += 1;
+    } else pay(next, delta, PARCEL.overflowTokens);
+  }
+}
+
+/** XP, and with it Research: every point counts toward the Rank, the run's Tokens and the next parcel. */
+function bump(delta: AccountDelta, next: AccountState, xp: number, ctx: AccountContext, line: ReportLine): void {
+  const earned = Math.round(xp * ctx.xpMultiplier);
+  if (earned <= 0) return;
+  next.xp += earned;
+  next.runXp += earned;
+  next.research += earned;
+  delta.xp += earned;
+  delta.xpBy[line] = (delta.xpBy[line] ?? 0) + earned;
+  // §8.6.2 — a full Research bar is a parcel; what is left over carries.
+  while (next.research >= parcelCost(next.parcelsEarned)) {
+    next.research -= parcelCost(next.parcelsEarned);
+    next.parcelsEarned += 1;
+    grantParcels(next, delta, 1);
+  }
+}
+
+/** Pay one rank's purse. Idempotent through `claimedLevels`, which the caller checks first. */
 function grant(next: AccountState, level: number, delta: AccountDelta): void {
   const reward = REWARD_TRACK[level];
   if (!reward) return;
-  next.tokens += reward.tokens;
-  next.tokensEarned += reward.tokens;
-  delta.tokens += reward.tokens;
+  pay(next, delta, reward.tokens);
   next.claimedLevels.push(level);
   delta.rewards.push({ level, reward });
 }
 
 /**
- * After XP moved: claim every level at or below the current one that has not been claimed.
+ * After XP moved: claim every rank at or below the current one that has not been claimed.
  *
- * Every level, not just the ones crossed by this event: it makes the fold self-healing. An account that
- * somehow sits at level 9 with level 4 unclaimed — a track row added in a later version, a save from before
- * the track existed — collects it on the next XP rather than never. `claimedLevels` keeps it idempotent.
+ * Every rank, not just the ones crossed by this event: it makes the fold self-healing. An account that somehow
+ * sits at rank 5 with rank 3 unclaimed collects it on the next XP rather than never. `claimedLevels` keeps it
+ * idempotent.
  */
 function settleLevels(next: AccountState, before: number, delta: AccountDelta): void {
-  const now = levelFor(next.xp);
-  const crossedFrom = levelFor(before);
+  const now = rankFor(next.xp);
+  const crossedFrom = rankFor(before);
   for (let l = 2; l <= now; l++) {
     if (next.claimedLevels.includes(l)) continue;
     if (l > crossedFrom) delta.levelsGained.push(l);
@@ -297,33 +469,43 @@ function promote(next: AccountState, speciesId: string, ctx: AccountContext, del
   const tier = dexTierFor(entry.defeats, rarity);
   if (entry.tier < tier) {
     entry.tier = tier;
-    const xpBefore = next.xp;
-    bump(delta, next, DEX_TIER_XP[entry.tier], ctx);
+    bump(delta, next, DEX_TIER_XP[entry.tier], ctx, 'pokedex');
     delta.dexPromotions.push({ speciesId, tier: entry.tier });
     // §8.7 Acquaintance counts species reaching Familiar; the promotion is an event of its own.
     foldMedals(next, { t: 'dex-tier-up', speciesId, tier: 1 }, ctx, delta);
-    settleLevels(next, xpBefore, delta);
   }
-  // §8.6.1 Battle Tracker's discovery counts species at Familiar.
+  // §8.7.1 Battle Tracker's Field Note counts species at Familiar.
   next.counters['familiar-species'] = Object.values(next.dex).filter((e) => e.tier >= 1).length;
 }
 
-// ── Tier-2 discovery (§8.6.1) ────────────────────────────────────────────────────────────────────────────
+// ── Field Notes (§8.7.1) ─────────────────────────────────────────────────────────────────────────────────
 
-/** Move a discovery counter. `atLeast` sets a floor instead of adding: for the "in one run / fight" criteria. */
+/** Move a Field Note counter. `atLeast` sets a floor instead of adding: for the "in one run / fight" criteria. */
 function count(next: AccountState, counter: string, by = 1, atLeast = false): void {
   next.counters[counter] = atLeast ? Math.max(next.counters[counter] ?? 0, by) : (next.counters[counter] ?? 0) + by;
 }
 
-/** §8.6.1 — every Tier-2 row whose criterion is now met joins the pool, once. */
-function discover(next: AccountState, ctx: AccountContext, delta: AccountDelta): void {
-  if (!RELIC_UNLOCKS_ON) return;
+/** §8.6.1 — open a vault entry outright. Idempotent. */
+function open(next: AccountState, delta: AccountDelta, entryId: string): void {
+  if (next.unlocks.includes(entryId) || !vaultEntry(entryId)) return;
+  next.unlocks.push(entryId);
+  delta.opened.push(entryId);
+}
+
+/**
+ * §8.7.1 — every Field Note whose deed is now done is written up, once: its relic leaves the vault if it was in
+ * it, and a note on a relic that was never locked pays a parcel instead, so no note pays only a number.
+ */
+function writeNotes(next: AccountState, ctx: AccountContext, delta: AccountDelta): void {
   for (const r of ctx.content.allRelics()) {
-    if (!r.discovery || next.relics.includes(r.id)) continue;
-    if ((next.counters[r.discovery.counter] ?? 0) >= r.discovery.goal) {
-      next.relics.push(r.id);
-      delta.discoveredRelics.push(r.id);
-    }
+    if (!r.discovery || next.notes.includes(r.id)) continue;
+    if ((next.counters[r.discovery.counter] ?? 0) < r.discovery.goal) continue;
+    next.notes.push(r.id);
+    delta.notes.push(r.id);
+    const entry = vaultEntryFor('relic', r.id);
+    if (entry && !next.unlocks.includes(entry.id)) open(next, delta, entry.id);
+    else grantParcels(next, delta, 1);
+    bump(delta, next, XP.fieldNote, ctx, 'journal');
   }
 }
 
@@ -333,7 +515,7 @@ const monoType = (species: readonly string[], content: ContentRegistry): boolean
 
 /**
  * §6.8.1 — Bond points for a line, and the rank-ups they cross. Crossing a rank raises `bond-rank-up` for the
- * medals (§8.7) and settles nothing else: Bond is not Trainer XP, it opens things on the line only.
+ * Journal (§8.7) and settles nothing else: Bond is not Trainer XP, it opens things on the line only.
  */
 function bond(next: AccountState, speciesId: string, points: number, ctx: AccountContext, delta: AccountDelta): void {
   if (points <= 0) return;
@@ -348,44 +530,92 @@ function bond(next: AccountState, speciesId: string, points: number, ctx: Accoun
   }
 }
 
+/** §6.8.1 — a line waiting in the Box earns half of a Gym's and a run's end's Bond, once per line. */
+function benchBond(next: AccountState, box: readonly string[] | undefined, active: readonly string[] | undefined, worth: number, ctx: AccountContext, delta: AccountDelta): void {
+  const share = Math.floor(worth * BOND.benchShare);
+  const activeLines = new Set((active ?? []).map((sid) => lineOf(sid, ctx.content)));
+  const seen = new Set<string>();
+  for (const sid of box ?? []) {
+    const line = lineOf(sid, ctx.content);
+    if (activeLines.has(line) || seen.has(line)) continue;
+    seen.add(line);
+    bond(next, sid, share, ctx, delta);
+  }
+}
+
+/** §6.8.5 — pin a Ribbon on every line in the team, once each. */
+function pinRibbon(next: AccountState, species: readonly string[] | undefined, ribbon: RibbonId, ctx: AccountContext, delta: AccountDelta): void {
+  for (const sid of species ?? []) {
+    const line = lineOf(sid, ctx.content);
+    const worn = (next.ribbons[line] ??= []);
+    if (worn.includes(ribbon)) continue;
+    worn.push(ribbon);
+    delta.ribbons.push({ line, ribbon });
+  }
+}
+
 /** The base species of a line — Bond is tracked per line, whatever stage the Pokémon is at. */
 export const lineOf = (speciesId: string, content: ContentRegistry): string => content.lineBase(speciesId);
 
-/**
- * Fold one event into the account. Pure; returns the new state and what changed.
- *
- * XP arrives with the run's difficulty multiplier already in `ctx`, so a Hard run's Gym is worth more here
- * without the event knowing it (§8.8.3). Levels are settled after every XP change, so a single fight that
- * crosses two levels grants both rewards in order.
- */
-/** §8.7 — score an event against the medal case and pay what completes: XP by tier, Tokens for Gold and Platinum (§8.7.0). */
+/** §8.7 — hand over what a completed Journal entry pays: Tokens by medal, and its named prize. */
+function payJournal(next: AccountState, delta: AccountDelta, id: string, reward: JournalReward): void {
+  pay(next, delta, reward.tokens);
+  if (reward.parcels) grantParcels(next, delta, reward.parcels);
+  if (reward.cosmetic && !next.cosmetics.includes(reward.cosmetic)) {
+    next.cosmetics.push(reward.cosmetic);
+    // A trophy is worn the moment it is won, if the card wears nothing of its kind yet.
+    const kind = cosmeticById(reward.cosmetic)?.kind;
+    if (kind && !next.wearing[kind]) next.wearing[kind] = reward.cosmetic;
+  }
+  delta.journalRewards.push({ id, reward });
+}
+
+/** §8.7 — score an event against the Journal and pay what completes: XP and Tokens by medal, and the entry's prize. */
 function foldMedals(next: AccountState, e: MetaEvent, ctx: AccountContext, delta: AccountDelta): void {
   const ach = applyMetaEvent(next.achievements, e);
   next.achievements = ach.progress;
   for (const a of ach.unlocked) {
-    bump(delta, next, MEDAL_XP[a.tier], ctx);
-    const tokens = a.tier === 'gold' ? 2 : a.tier === 'platinum' ? 5 : 0;
-    if (tokens) {
-      next.tokens += tokens;
-      next.tokensEarned += tokens;
-      delta.tokens += tokens;
-    }
+    bump(delta, next, MEDAL_XP[a.tier], ctx, 'journal');
+    payJournal(next, delta, a.id, journalReward(a));
   }
   delta.unlockedAchievements.push(...ach.unlocked);
 }
 
+/** §8.9.3 — Oak's aide pays every Pokédex milestone the account has reached and not been paid for. */
+function settleAides(next: AccountState, delta: AccountDelta): void {
+  const owned = speciesOwned(next);
+  for (const row of AIDES) {
+    if (owned < row.owned || next.aides.includes(row.owned)) continue;
+    next.aides.push(row.owned);
+    if (row.parcels) grantParcels(next, delta, row.parcels);
+    if (row.perk && !next.hub.includes(row.perk)) next.hub.push(row.perk);
+    if (row.tokens) pay(next, delta, row.tokens);
+    delta.aides.push(row);
+  }
+}
+
+/**
+ * Fold one event into the account. Pure; returns the new state and what changed.
+ *
+ * XP arrives with the run's difficulty multiplier already in `ctx`, so a Ladder run's Gym is worth more here
+ * without the event knowing it (§8.8.3). Ranks are settled after every XP change, so a single fight that crosses
+ * two ranks pays both purses in order.
+ */
 export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: AccountContext): { state: AccountState; delta: AccountDelta } {
   const next: AccountState = structuredClone(state);
   const delta = emptyDelta();
   const xpBefore = next.xp;
 
-  // Medals first: their XP is part of the same event.
+  // The Journal first: its XP is part of the same event.
   foldMedals(next, e, ctx, delta);
 
   switch (e.t) {
     case 'combat-end': {
+      // §8.3.2 — a species never met before is a discovery, whoever won. Measured before the record below moves.
+      const fresh = (e.enemies ?? []).filter((sid) => !isMet(next.dex[sid], next.stats.leadTurns[sid])).length;
+      if (fresh > 0) bump(delta, next, fresh * XP.newSpecies, ctx, 'discoveries');
       if (e.outcome === 'victory' || e.outcome === 'caught') {
-        bump(delta, next, XP.combat, ctx);
+        bump(delta, next, XP.combat, ctx, 'fights');
         next.stats.combatsWon += 1;
         if (e.outcome === 'caught') next.stats.catches += 1;
         // §6.8.1 — a won trainer, Elite or Gym fight is Bond for every line in the Active Team, one more for the one
@@ -396,6 +626,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
           dexEntry(next, sid).winsWith += 1;
           if (worth > 0) bond(next, sid, worth + (sid === lead ? BOND.lead : 0), ctx, delta);
         }
+        if (e.kind === 'boss') benchBond(next, e.boxSpecies, e.activeSpecies, BOND.gym, ctx, delta);
       }
       // §5.13.1 — kill credit for every species defeated, whoever landed the blow. Catching is not a kill.
       for (const sid of e.defeated ?? []) {
@@ -411,7 +642,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       for (const [sid, n] of Object.entries(e.tally?.damageBy ?? {})) dexEntry(next, sid).damageDealt += n;
       for (const [sid, turns] of Object.entries(e.leadTurns ?? {})) next.stats.leadTurns[sid] = (next.stats.leadTurns[sid] ?? 0) + turns;
 
-      // §8.6.1 — the discovery criteria a fight can satisfy (catalogs/relics.md §5).
+      // §8.7.1 — the Field Notes a fight can move (catalogs/relics.md §5).
       const t = e.tally;
       const won = e.outcome === 'victory' || e.outcome === 'caught';
       const active = e.activeSpecies ?? [];
@@ -439,7 +670,7 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
     }
     case 'recruit': {
       next.stats.recruits += 1;
-      if (e.firstThisRun) bump(delta, next, XP.recruit, ctx);
+      if (e.firstThisRun) bump(delta, next, XP.recruit, ctx, 'recruits');
       const entry = dexEntry(next, e.speciesId);
       entry.recruited = true;
       entry.recruits += 1;
@@ -449,19 +680,28 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
         entry.shinyCaught += 1;
         bond(next, e.speciesId, BOND.shiny, ctx, delta);
       }
-      // §8.6.1 Lure Module — three in one Region. Region 1 is the run until v0.7, so "this run" is the measure.
+      // §8.7.1 Lure Module — three in one Region. Region 1 is the run until v0.7, so "this run" is the measure.
       if ((e.recruitsThisRun ?? 0) >= 3) count(next, 'region-recruits-three', 1, true);
       break;
     }
     case 'evolution':
       next.stats.evolutions += 1;
-      bump(delta, next, XP.evolution, ctx);
+      bump(delta, next, XP.evolution, ctx, 'evolutions');
       // §6.8.1 — an evolution is the biggest single Bond step: it is the line changing in your hands.
       bond(next, e.toSpeciesId, BOND.evolution, ctx, delta);
       if (e.fromSpeciesId) dexEntry(next, e.fromSpeciesId).evolutions += 1;
       break;
     case 'badge-awarded':
-      bump(delta, next, XP.gym, ctx);
+      bump(delta, next, XP.gym, ctx, 'badges');
+      // §6.8.5 — a Gym won is a Ribbon for every line that stood in it.
+      pinRibbon(next, e.activeSpecies, 'gym', ctx, delta);
+      // §8.14 — the Badge Case: the first time a Leader falls, the Badge goes on the wall and their TM into the world.
+      if (!next.badges.includes(e.badgeId)) {
+        next.badges.push(e.badgeId);
+        delta.newBadges.push(e.badgeId);
+        bump(delta, next, XP.firstBadge, ctx, 'badges');
+        for (const entry of VAULT) if (typeof entry.source === 'object' && entry.source.badge === e.badgeId) open(next, delta, entry.id);
+      }
       break;
     case 'relic-acquired':
     case 'dex-tier-up':
@@ -469,129 +709,116 @@ export function applyAccountEvent(state: AccountState, e: MetaEvent, ctx: Accoun
       break;
     case 'run-end': {
       next.stats.runs += 1;
+      const rung = e.ladderRung ?? 0;
+      if (e.reachedLeague) pinRibbon(next, e.activeSpecies, 'league', ctx, delta);
       if (e.won) {
         next.stats.wins += 1;
         next.stats.hardestWin = Math.max(next.stats.hardestWin, e.modifierCount ?? 0);
-        // §8.6.1 Soothe Bell — a won run that never took the Salve.
+        // §8.7.1 Soothe Bell — a won run that never took the Salve.
         if (!e.usedSalve) count(next, 'runs-won-no-salve');
+        pinRibbon(next, e.activeSpecies, 'champion', ctx, delta);
+        // §8.8.5 — a Ladder run won: a Ribbon, and the next rung if this was the highest yet.
+        if (rung > 0) pinRibbon(next, e.activeSpecies, 'ladder', ctx, delta);
+        if (rung === next.ladder + 1 && rung <= LADDER_TOP) {
+          next.ladder = rung;
+          delta.ladderRung = rung;
+          pay(next, delta, LADDER_PRIZE.tokens);
+          grantParcels(next, delta, LADDER_PRIZE.parcels);
+        }
+        // §8.15 — the Hall of Fame keeps the team that did it.
+        if (e.hall) {
+          next.hall.push({ run: next.stats.runs, rung, ...e.hall });
+          if (next.hall.length > HALL_SIZE) next.hall.shift();
+          delta.hall = true;
+        }
       } else {
         next.stats.losses += 1;
-        // §8.6.1 Phoenix Feather — a run lost to a wipe in Region 3, reachable since Region 3 is its own Region.
+        // §8.7.1 Phoenix Feather — a run lost to a wipe in Region 3, reachable since Region 3 is its own Region.
         if ((e.regionIndex ?? 0) >= 2) count(next, 'region-three-wipes');
         // §8.3.2 — a failed run still pays: floor(layers × 50), capped. Failure is fuel, made legible.
-        bump(delta, next, Math.min(XP.failedRunCap, (e.layersCleared ?? 0) * XP.failedRunPerLayer), ctx);
+        bump(delta, next, Math.min(XP.failedRunCap, (e.layersCleared ?? 0) * XP.failedRunPerLayer), ctx, 'distance');
       }
-      // §8.3.4 — the ₽ left becomes Tokens, a few at most.
-      if (e.moneyLeft !== undefined) {
-        const t = tokensForMoney(e.moneyLeft);
-        if (t > 0) {
-          next.tokens += t;
-          next.tokensEarned += t;
-          delta.tokens += t;
-        }
-        delta.moneyTokens.push({ money: e.moneyLeft, tokens: t });
-      }
-      // §6.8.1 — finishing a run with a line in the Active Team, and more for winning it.
+      // §6.8.1 — finishing a run with a line in the Active Team, and more for winning it; half for the Box.
+      const worth = e.won ? BOND.runWon : BOND.runFinished;
       for (const sid of e.activeSpecies ?? []) {
         dexEntry(next, sid).runsFinishedWith += 1;
-        bond(next, sid, e.won ? BOND.runWon : BOND.runFinished, ctx, delta);
+        bond(next, sid, worth, ctx, delta);
       }
+      benchBond(next, e.boxSpecies, e.activeSpecies, worth, ctx, delta);
       break;
     }
   }
 
-  discover(next, ctx, delta);
+  writeNotes(next, ctx, delta);
+  settleAides(next, delta);
+
+  if (e.t === 'run-end') {
+    // §8.3.4 — the run's own XP becomes Tokens, and so does the ₽ it ended with. Last, so the run's last XP counts.
+    const report = Math.floor(next.runXp / TOKENS.perRunXp);
+    pay(next, delta, report);
+    delta.reportTokens += report;
+    next.runXp = 0;
+    if (e.moneyLeft !== undefined) {
+      const t = tokensForMoney(e.moneyLeft);
+      pay(next, delta, t);
+      delta.moneyTokens.push({ money: e.moneyLeft, tokens: t });
+    }
+  }
+
   settleLevels(next, xpBefore, delta);
   return { state: next, delta };
 }
 
-/**
- * The account of a player who earned medals before there was an account (v0.5's `achievements` save).
- *
- * Every medal already held pays what it would have paid — XP by tier, Tokens for Gold and Platinum — and the
- * levels that XP reaches are settled, so a returning player opens v0.6 at the level their play deserved rather
- * than at 1 with a full medal case. Pure, and idempotent in the sense that matters: it is run once, on the
- * one save that predates the account.
- */
-export function accountFromProgress(progress: AchievementProgress, ctx: AccountContext): AccountState {
-  const next = emptyAccount();
-  next.achievements = structuredClone(progress);
-  const delta = emptyDelta();
-  for (const id of progress.unlocked) {
-    const a = achievementById(id);
-    if (!a) continue;
-    bump(delta, next, MEDAL_XP[a.tier], ctx);
-    const tokens = a.tier === 'gold' ? 2 : a.tier === 'platinum' ? 5 : 0;
-    next.tokens += tokens;
-    next.tokensEarned += tokens;
-  }
-  settleLevels(next, 0, delta);
-  return next;
-}
+/** §8.15 — how many won runs the Hall keeps. */
+export const HALL_SIZE = 50;
 
 export function applyAccountEvents(state: AccountState, events: readonly MetaEvent[], ctx: AccountContext): { state: AccountState; delta: AccountDelta } {
   let cur = state;
-  const total = emptyDelta();
+  let total = emptyDelta();
   for (const e of events) {
     const step = applyAccountEvent(cur, e, ctx);
     cur = step.state;
-    total.xp += step.delta.xp;
-    total.tokens += step.delta.tokens;
-    total.levelsGained.push(...step.delta.levelsGained);
-    total.rewards.push(...step.delta.rewards);
-    total.unlockedAchievements.push(...step.delta.unlockedAchievements);
-    total.dexPromotions.push(...step.delta.dexPromotions);
-    total.bondGains.push(...step.delta.bondGains);
-    total.bondRankUps.push(...step.delta.bondRankUps);
-    total.discoveredRelics.push(...step.delta.discoveredRelics);
-    total.moneyTokens.push(...step.delta.moneyTokens);
+    total = mergeDelta(total, step.delta);
   }
   return { state: cur, delta: total };
 }
 
-// ── Older saves (§8.10) ──────────────────────────────────────────────────────────────────────────────────
+// ── Oak's Parcels (§8.6.2) ───────────────────────────────────────────────────────────────────────────────
 
-/** The v1 fields a v2 account no longer has. */
-export interface LegacyAccountFields {
-  /** v0.6.0–v0.6.2 — cosmetic titles the track granted, stored by name. */
-  titles?: string[];
+/** Open one parcel by taking a card from its offer. Pure: the new account, or the old one if that cannot happen. */
+export function takeParcel(state: AccountState, entryId: string): AccountState {
+  const entry = vaultEntry(entryId);
+  if (state.parcels <= 0 || !entry || entry.source !== 'parcel' || state.unlocks.includes(entryId)) return state;
+  const next = structuredClone(state);
+  next.parcels -= 1;
+  next.parcelsOpened += 1;
+  next.unlocks.push(entryId);
+  return next;
 }
+
+/** §8.7.2 — pin or unpin a Journal entry: three at most, and never a finished one. */
+export const PIN_LIMIT = 3;
+export function pinEntry(state: AccountState, id: string, on: boolean): AccountState {
+  const has = state.pins.includes(id);
+  if (on === has || (on && state.pins.length >= PIN_LIMIT)) return state;
+  const next = structuredClone(state);
+  next.pins = on ? [...next.pins, id] : next.pins.filter((p) => p !== id);
+  return next;
+}
+
+// ── Older saves (§8.10) ──────────────────────────────────────────────────────────────────────────────────
 
 /**
  * Bring a save from an earlier account version up to this one. Pure; the app layer calls it on load.
  *
- * v1 → v2 (2026-09-21): the track paid Tokens only at the milestones and granted everything else outright.
- * Now every level pays and the Mart sells. What was granted stays granted — a Pikachu at Level 4 is not taken
- * back — and every claimed level that used to pay nothing pays its two Tokens now, so a returning player
- * opens the shop with the wallet the new track would have given them. Titles held by name become the
- * cosmetic ids the Corner sells, and the first one is worn, as the card used to do.
+ * v4 (v0.9.110) is a reset: an account from before the rework starts again, with a salt of its own.
  */
-export function upgradeAccount(state: AccountState & LegacyAccountFields): AccountState {
-  if (state.version >= ACCOUNT_VERSION) return state;
-  const next: AccountState & LegacyAccountFields = structuredClone(state);
-  if (next.version < 2) {
-    const backPay = next.claimedLevels.filter((l) => TRACK_TOKENS.milestone[l] === undefined).length * TRACK_TOKENS.level;
-    next.tokens += backPay;
-    next.tokensEarned += backPay;
-    next.cosmetics = [...(next.cosmetics ?? [])];
-    next.wearing = { ...(next.wearing ?? {}) };
-    for (const name of next.titles ?? []) {
-      const id = TITLE_ID_BY_NAME[name];
-      if (id && !next.cosmetics.includes(id)) next.cosmetics.push(id);
-      if (id && !next.wearing.title) next.wearing.title = id;
-    }
-    delete next.titles;
-  }
-  // v3 (v0.9.9) — the Master Ball Charm is no longer a relic: an account that had opened it holds it no more.
-  if (next.version < 3) next.relics = next.relics.filter((r) => r !== 'master-ball-charm');
-  next.version = ACCOUNT_VERSION;
-  return next;
+export function upgradeAccount(state: Partial<AccountState> & { version?: number }, salt = 1): AccountState {
+  if ((state.version ?? 0) < ACCOUNT_VERSION) return emptyAccount(salt);
+  return state as AccountState;
 }
 
-/** Which Hub upgrades are in force. A pending one is granted but does nothing until its system exists. */
-export const hasHubUpgrade = (state: AccountState, upgrade: HubUpgrade): boolean => state.hub.includes(upgrade) && !HUB_UPGRADE_LABEL[upgrade].pending;
-
-/** The number of achievements complete, for the card. */
+/** The number of Journal medals complete, for the card. */
 export const medalCount = (state: AccountState): { done: number; total: number } => ({ done: state.achievements.unlocked.length, total: ACHIEVEMENTS.length });
 
 /**
@@ -601,3 +828,23 @@ export const medalCount = (state: AccountState): { done: number; total: number }
  */
 export const speciesMet = (account: AccountState, id: string): boolean =>
   isMet(account.dex[id], account.stats.leadTurns[id]) || account.starters.includes(id);
+
+// ── The Trainer Card's stars (§8.15) ─────────────────────────────────────────────────────────────────────
+
+export type StarId = 'champion' | 'badges' | 'pokedex' | 'ladder';
+export const STARS: readonly { id: StarId; name: string; earned: string }[] = [
+  { id: 'champion', name: 'Champion', earned: 'Beat the Champion' },
+  { id: 'badges', name: 'Badge Case', earned: 'Win every Badge' },
+  { id: 'pokedex', name: 'Pokédex', earned: 'Meet every species' },
+  { id: 'ladder', name: 'League Ladder', earned: 'Win the top rung' },
+];
+
+/** §8.15 — the stars the card wears. Derived from the account, never stored: a star cannot disagree with its feat. */
+export function starsOf(state: AccountState, content: ContentRegistry): StarId[] {
+  const out: StarId[] = [];
+  if (state.stats.wins > 0) out.push('champion');
+  if (content.allBadges().every((b) => state.badges.includes(b.id))) out.push('badges');
+  if (content.allSpecies().every((s) => speciesMet(state, s.id))) out.push('pokedex');
+  if (state.ladder >= LADDER_TOP) out.push('ladder');
+  return out;
+}

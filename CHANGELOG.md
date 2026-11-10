@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.110 — The trainer's journey · 2026-11-10
+
+The account rebuilt, and reset: every run now ends with something new.
+
+- **Field Report.** A run's end pays out on screen: XP, parcels, Bond, goals.
+- **Oak's Parcels.** Some relics, items and TMs start locked; runs open them.
+- **A lobby that fills.** Nine ranks, a Badge Case, Bond in six ranks.
+- **Kit and Ladder.** Perks packed before a run; ten rungs after a win.
+
 ### v0.9.109 — The route, drawn as FireRed · 2026-11-10
 
 The route map is a FireRed route, with more on it than nodes.

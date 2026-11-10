@@ -3,14 +3,14 @@ import { IconLock, IconPackage, IconSearch } from '@tabler/icons-react';
 import { Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { MART_PRICE, PRICES, RELIC_UNLOCKS_ON, discoveryProgress, itemSources, listPrice, relicUnlocked, type ItemSources, type PokemonType, type PricedKind } from '@/sim';
+import { PRICES, isVaulted, itemSources, listPrice, vaultEntryFor, type AccountState, type ItemSources, type LockKind, type PokemonType, type PricedKind } from '@/sim';
 import { itemIcon, tmIcon } from '@/ui/art';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { MoveChip } from '@/ui/components/MoveChip';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { RarityGem, type GemRarity } from '@/ui/components/RarityGem';
 import { GUIDE_TEXT, RARITY_LABEL } from '@/ui/strings';
-import { guidePriceTip, relicTierNoteTip } from '@/ui/tips';
+import { guidePriceTip } from '@/ui/tips';
 import { Tipped } from '@/ui/tooltip';
 import styles from './ItemGuide.module.css';
 
@@ -19,7 +19,19 @@ import styles from './ItemGuide.module.css';
 // grouped by rarity or tier and framed in the rarity's colour, and the whole of the picked item in a panel that stays
 // beside them: what it does, how rare, what it costs, where it turns up, and for a
 // relic, where your account stands with it. Facts come from the content and the sim (`listPrice`, `itemSources`,
-// `discoveryProgress`). The search runs across every kind, and each tab counts its matches.
+// the vault, §8.6). The search runs across every kind, and each tab counts its matches.
+
+/** §8.6.1 — the vault's name for a Guide tab: the kinds an account can still have locked. */
+const lockKindOf = (kind: string): LockKind | null => (kind === 'relic' ? 'relic' : kind === 'held-item' ? 'held' : kind === 'tm' ? 'tm' : null);
+
+/** §8.6.1 — one line on where the account stands with an item. */
+function vaultLine(account: AccountState, kind: LockKind, id: string): string {
+  if (!isVaulted(account, kind, id)) return GUIDE_TEXT.inPool;
+  const entry = vaultEntryFor(kind, id)!;
+  if (typeof entry.source === 'object') return GUIDE_TEXT.byBadge(getContent().badge(entry.source.badge).name);
+  const note = kind === 'relic' ? getContent().relic(id).discovery : undefined;
+  return note ? GUIDE_TEXT.byNote(note.text, Math.min(note.goal, account.counters[note.counter] ?? 0), note.goal) : GUIDE_TEXT.byParcel;
+}
 
 interface Row {
   id: string;
@@ -105,7 +117,7 @@ export function ItemGuide() {
                       </h3>
                       <ul className={styles.tiles}>
                         {rows.map((r) => {
-                          const locked = k === 'relic' && !relicUnlocked(account, getContent().relic(r.id));
+                          const locked = !!lockKindOf(k) && isVaulted(account, lockKindOf(k)!, r.id);
                           return (
                             <li key={r.id}>
                               <button type="button" className={`${styles.tile} ${current?.id === r.id ? styles.tileOn : ''} ${locked ? styles.tileLocked : ''}`} data-rarity={r.rarity} aria-pressed={current?.id === r.id} onClick={() => setPicked(r.id)} data-testid={`guide-item-${r.id}`}>
@@ -152,11 +164,8 @@ function Detail({ kind, id, icon }: { kind: PricedKind; id: string; icon: string
     name = r.name;
     body = r.description;
     pending = r.pending;
-    // §8.6.1 — the tier chip only means something while relic unlocks are on (off since v0.9.99).
-    meta.push(RARITY_LABEL[r.rarity], ...(RELIC_UNLOCKS_ON ? [<Tipped key="tier" as="span" tip={relicTierNoteTip(r.tier ?? 1)} className={styles.metaTip}>{GUIDE_TEXT.relicTier(r.tier ?? 1)}</Tipped>] : []));
+    meta.push(RARITY_LABEL[r.rarity]);
     facts.push([GUIDE_TEXT.categories, r.categories.map(cap).join(' · ')]);
-    const prog = discoveryProgress(account, r);
-    facts.push([GUIDE_TEXT.yours, relicUnlocked(account, r) ? GUIDE_TEXT.inPool : r.tier === 3 ? GUIDE_TEXT.mastery(MART_PRICE.mastery) : prog ? GUIDE_TEXT.discover(prog.text, prog.have, prog.goal) : GUIDE_TEXT.locked]);
   } else if (kind === 'consumable') {
     const c = content.consumable(id);
     name = c.name;
@@ -189,6 +198,9 @@ function Detail({ kind, id, icon }: { kind: PricedKind; id: string; icon: string
       </span>,
     ]);
   }
+  // §8.6.1 — where the account stands with it: open, or still in the vault and how it comes out.
+  const lockKind = lockKindOf(kind);
+  if (lockKind) facts.push([GUIDE_TEXT.yours, vaultLine(account, lockKind, id)]);
   facts.push([
     GUIDE_TEXT.price,
     price === null ? GUIDE_TEXT.notSold : <Tipped key="p" as="span" tip={guidePriceTip(kind === 'relic')} className={styles.metaTip}>{GUIDE_TEXT.prices(price, Math.round(price * PRICES.cityMarkup))}</Tipped>,

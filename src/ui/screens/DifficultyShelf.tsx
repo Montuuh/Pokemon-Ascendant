@@ -7,7 +7,7 @@ import { lockedModifierTip } from '@/ui/tips';
 import { DIFFICULTY_TEXT } from '@/ui/strings';
 import styles from './DifficultyShelf.module.css';
 
-// Per §8.8.2 — a modifier below the account's Trainer Level is shown, named and locked, not hidden: one closed line, and
+// Per §8.8.2 — a modifier whose League Ladder rung is not won yet is shown, named and locked, not hidden: one closed line, and
 // each row's effect and premium are its tooltip (D4: a fact behind a door, the goal still a hover away).
 
 interface Props {
@@ -20,8 +20,8 @@ interface Props {
 export function DifficultyShelf({ locked, effectOf }: Props) {
   const content = useRef<HTMLDivElement>(null);
   if (!locked.length) return null;
-  // The first level that opens something: the goal a new player is walking toward.
-  const next = locked.filter((m) => m.available).reduce<number | null>((lv, m) => (lv === null || m.unlockLevel < lv ? m.unlockLevel : lv), null);
+  // The first rung that opens something: the goal the player is climbing toward.
+  const next = locked.filter((m) => m.available).reduce<number | null>((lv, m) => (lv === null || m.rung < lv ? m.rung : lv), null);
   // Opening it scrolls the rows into view: a closed line at the foot of a scrolling step would otherwise open below the fold.
   return (
     <Collapsible.Root className={styles.shelf} data-testid="difficulty-shelf" onOpenChange={(open) => open && requestAnimationFrame(() => content.current?.scrollIntoView({ block: 'nearest' }))}>

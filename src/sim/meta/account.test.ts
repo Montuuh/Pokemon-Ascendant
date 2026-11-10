@@ -1,353 +1,522 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { ACCOUNT_VERSION, accountFromProgress, applyAccountEvent, applyAccountEvents, emptyAccount, LEVEL_CURVE, levelFor, levelProgress, MONEY_TO_TOKENS, RELIC_UNLOCKS_ON, REWARD_TRACK, SHELF_ORDER, SHELVES, TRACK_TOKENS, tokensForMoney, trackTokensBetween, upgradeAccount, XP, xpForLevel, type AccountContext } from './account';
-import { dexTierFor, DEX_FAMILIAR, emptyDexEntry, normalizeDexEntry } from './pokedex';
-import { BOND, BOND_RANKS, bondRank } from './bond';
-import { accountContextFor, modifierUnlocked, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
+import {
+  ACCOUNT_VERSION, AIDES, applyAccountEvent, applyAccountEvents, emptyAccount, hasHubUpgrade, HUB_UPGRADE_LABEL, KIT, kitSlots, levelFor, levelProgress,
+  packKit, pinEntry, PIN_LIMIT, REWARD_TRACK, SHELVES, starsOf, takeParcel, TOKENS, tokensForMoney, trackTokensBetween, upgradeAccount, XP, xpForLevel,
+  type AccountContext, type AccountState, type HubUpgrade,
+} from './account';
+import { dexTierFor, DEX_FAMILIAR, emptyDexEntry } from './pokedex';
+import { BOND, BOND_RANKS, BOND_TIER, bondRank, MAX_BOND_RANK } from './bond';
+import { accountContextFor, ladderOpen, modifierUnlocked, nextRung, relicPoolFor, runPerksFor, unlockedStarters } from './unlocks';
 import { shelfOpen } from './mart';
-import { emptyProgress, MEDAL_XP, type MetaEvent } from './achievements';
-import { MODIFIERS } from '../run/modifiers';
+import { ACHIEVEMENTS, MEDAL_XP, type MetaEvent } from './achievements';
+import { COSMETICS } from './cosmetics';
+import { journalReward, MEDAL_TOKENS, nextGoals, noteId } from './journal';
+import { ladderModifiers, ladderRungOf, LADDER, LADDER_PRIZE, LADDER_TOP } from './ladder';
+import { kitSlotsFor, MAX_RANK, parcelChoicesFor, RANKS, rankFor } from './rank';
+import { LEADER_TM, PARCEL, parcelCost, parcelOffer, parcelPool, VAULT, vaultEntryFor } from './vault';
+import { lockKey } from '../run/locks';
+import { createRun, defaultRunCtx } from '../run/run';
+import { offerPool, ownedItems, tmsFor } from '../run/economy';
+import { RUN_START } from '../run/region';
+import { MYSTERY_EVENTS } from '../run/events';
 
-// §8.3–§8.6 — the account fold. Every number here is the canon's; the tests pin the shape, not the tuning.
+// §8.3–§8.10, §8.14, §8.15 — the account fold. Every number here is the canon's; the tests pin the shape, not the tuning.
 
 const content = buildRegistry();
 const ctx: AccountContext = accountContextFor(content);
-/** An account that has already earned the one-shot medals a first fight would trip, so XP reads clean. */
-const seasoned = () => {
+/** An account that has already earned the one-shot medals and notes a first fight would trip, so XP reads clean. */
+const seasoned = (): AccountState => {
   const a = emptyAccount();
-  a.achievements.unlocked.push('first-blood', 'gotcha', 'growing-up', 'badge-collector', 'untouchable', 'swap-maestro', 'flawless-gym');
+  a.achievements.unlocked.push('first-blood', 'gotcha', 'growing-up', 'badge-collector', 'untouchable', 'swap-maestro', 'flawless-gym', 'champion', 'underdog', 'pacifists-path', 'minimalist');
+  a.notes.push(...content.allRelics().filter((r) => r.discovery).map((r) => r.id));
   return a;
 };
-const emptyTally = () => ({ crits: 0, reshuffles: 0, statusesApplied: [] as string[], statusesTaken: 0, statusesCured: 0, riderFizzles: 0, maxApMove: 0, peakHandAtTurnEnd: 0, catchFails: 0, koBy: {}, faintsOf: {}, damageBy: {} });
 const win = (over: Partial<Extract<MetaEvent, { t: 'combat-end' }>> = {}): MetaEvent => ({ t: 'combat-end', outcome: 'victory', kind: 'wild', damageTaken: 5, manualSwaps: 0, faints: 0, defeated: [], activeSpecies: [], ...over });
+const runEnd = (over: Partial<Extract<MetaEvent, { t: 'run-end' }>> = {}): MetaEvent => ({ t: 'run-end', won: false, catches: 1, badges: 0, layersCleared: 0, ...over });
+const fold = (a: AccountState, ...events: MetaEvent[]) => applyAccountEvents(a, events, ctx);
 
-describe('The level curve — §8.3.3', () => {
-  it('FollowsTheFormula_AndTheCanonTable', () => {
-    const curve = (n: number) => Math.floor(LEVEL_CURVE.scale * Math.pow(n, LEVEL_CURVE.power));
-    for (const n of [2, 5, 6, 10, 30]) expect(xpForLevel(n)).toBe(curve(n));
-    // §8.3.3's table (v0.9.2).
-    expect(xpForLevel(2)).toBe(1_000);
-    expect(xpForLevel(6)).toBe(5_801);
+describe('The Trainer Rank — §8.3.3', () => {
+  it('RankFor_FollowsTheTable_NineRanks', () => {
+    expect(MAX_RANK).toBe(9);
     expect(levelFor(0)).toBe(1);
-    expect(levelFor(xpForLevel(2) - 1)).toBe(1);
-    expect(levelFor(xpForLevel(2))).toBe(2);
-    expect(levelFor(10 ** 9)).toBe(30);
+    for (const row of RANKS.slice(1)) {
+      expect(rankFor(row.xp - 1)).toBe(row.rank - 1);
+      expect(rankFor(row.xp)).toBe(row.rank);
+    }
+    expect(levelFor(10 ** 9)).toBe(MAX_RANK);
+    // The first four ranks sit inside the first handful of runs (~550 XP a run).
+    expect(xpForLevel(2)).toBeLessThanOrEqual(350);
+    expect(xpForLevel(4)).toBeLessThanOrEqual(2_500);
   });
 
-  it('ProgressIsAFractionOfTheCurrentLevel', () => {
-    const xp = xpForLevel(2) + 300;
-    const p = levelProgress(xp);
+  it('RankProgress_IsAFractionOfTheCurrentRank', () => {
+    const p = levelProgress(xpForLevel(2) + 100);
     expect(p.level).toBe(2);
-    expect(p.into).toBe(300);
-    expect(p.fraction).toBeCloseTo(300 / (xpForLevel(3) - xpForLevel(2)));
+    expect(p.into).toBe(100);
+    expect(p.span).toBe(xpForLevel(3) - xpForLevel(2));
     expect(levelProgress(10 ** 9).fraction).toBe(1);
   });
-});
 
-describe('XP sources — §8.3.2', () => {
-  it('AWonFightPaysFive_ALostOneNothing', () => {
-    expect(applyAccountEvent(seasoned(), win(), ctx).delta.xp).toBe(XP.combat);
-    expect(applyAccountEvent(seasoned(), win({ outcome: 'defeat' }), ctx).delta.xp).toBe(0);
-  });
-
-  it('OnlyTheFirstRecruitOfASpeciesPays', () => {
-    expect(applyAccountEvent(seasoned(), { t: 'recruit', speciesId: 'pidgey', boxFull: false, firstThisRun: true }, ctx).delta.xp).toBe(XP.recruit);
-    expect(applyAccountEvent(seasoned(), { t: 'recruit', speciesId: 'pidgey', boxFull: false, firstThisRun: false }, ctx).delta.xp).toBe(0);
-  });
-
-  it('AFailedRunPaysByLayer_Capped', () => {
-    const lost = (layers: number) => applyAccountEvent(seasoned(), { t: 'run-end', won: false, catches: 0, badges: 0, layersCleared: layers }, ctx).delta.xp;
-    expect(lost(3)).toBe(150);
-    expect(lost(12)).toBe(XP.failedRunCap);
-    // A won run's XP came from its fights, Badge and Legendary along the way; the end itself pays nothing extra — only the
-    // medals it completes (§8.7: a won run is a Champion beaten, v0.9.22).
-    const won = applyAccountEvent(seasoned(), { t: 'run-end', won: true, catches: 1, badges: 1, layersCleared: 12 }, ctx).delta;
-    expect(won.unlockedAchievements.map((a) => a.id)).toContain('champion');
-    expect(won.xp).toBe(won.unlockedAchievements.reduce((n, a) => n + MEDAL_XP[a.tier], 0));
-  });
-
-  it('TheDifficultyMultiplierScalesEveryXp_§8.8.3', () => {
-    const hard = { ...ctx, xpMultiplier: 1.5 };
-    expect(applyAccountEvent(seasoned(), win(), hard).delta.xp).toBe(Math.round(XP.combat * 1.5));
-    expect(applyAccountEvent(seasoned(), { t: 'badge-awarded', badgeId: 'boulder-badge' }, hard).delta.xp).toBe(75);
-  });
-
-  it('AnAchievementPaysItsMedalXp_AndGoldPaysTokens_§8.7.0', () => {
-    // Untouchable is Silver: XP, no tokens. Flawless Gym is Gold: XP and 2 Tokens.
-    const silver = applyAccountEvent(emptyAccount(), win({ damageTaken: 0 }), ctx);
-    expect(silver.delta.unlockedAchievements.map((a) => a.id)).toContain('untouchable');
-    expect(silver.delta.tokens).toBe(0);
-    const gold = applyAccountEvent(emptyAccount(), win({ kind: 'boss', faints: 0 }), ctx);
-    expect(gold.delta.unlockedAchievements.map((a) => a.id)).toContain('flawless-gym');
-    expect(gold.delta.tokens).toBe(2);
-    expect(gold.state.tokens).toBe(2);
+  it('EveryRankPaysItsPurse_Once_AndThreeOpenAKitSlot', () => {
+    const a = seasoned();
+    a.xp = xpForLevel(4) - 1;
+    const { state, delta } = fold(a, win());
+    expect(delta.levelsGained).toEqual([4]);
+    // Self-healing: ranks 2 and 3 were never claimed and are paid with it.
+    expect(state.claimedLevels).toEqual([2, 3, 4]);
+    expect(delta.rewards.reduce((n, r) => n + r.reward.tokens, 0)).toBe(trackTokensBetween(1, 4));
+    const again = fold(state, win());
+    expect(again.delta.rewards).toEqual([]);
+    expect([1, 3, 4, 5, 6, 7, 9].map(kitSlotsFor)).toEqual([0, 0, 1, 2, 2, 3, 3]);
+    expect(parcelChoicesFor(5)).toBe(3);
+    expect(parcelChoicesFor(6)).toBe(4);
+    for (let r = 2; r <= MAX_RANK; r++) expect(REWARD_TRACK[r]!.arrives.length).toBeGreaterThan(3);
   });
 });
 
-describe('The reward track — §8.3.5', () => {
-  it('EveryLevelPaysTokens_MilestonesPayMore', () => {
-    expect(REWARD_TRACK[3]).toEqual({ tokens: TRACK_TOKENS.level });
-    expect(REWARD_TRACK[5]!.tokens).toBe(TRACK_TOKENS.milestone[5]);
-    expect(REWARD_TRACK[30]!.tokens).toBe(TRACK_TOKENS.milestone[30]);
-    expect(REWARD_TRACK[1]).toBeUndefined();
-    expect(Object.keys(REWARD_TRACK)).toHaveLength(29);
-    // 23 ordinary levels and six milestones.
-    const milestones = Object.values(TRACK_TOKENS.milestone).reduce((a, b) => a + b, 0);
-    expect(trackTokensBetween(1, 30)).toBe(23 * TRACK_TOKENS.level + milestones);
-    // The stops that open a shelf sit where the shelves say they do, in shelf order (v0.9.2: 2 / 4 / 6).
-    expect(Object.entries(REWARD_TRACK).filter(([, r]) => r.opens).map(([l, r]) => [Number(l), r.opens])).toEqual(SHELF_ORDER.filter((s) => SHELVES[s].level > 1).map((s) => [SHELVES[s].level, s]));
-    expect(SHELVES.corner.level).toBe(1);
+describe('Trainer XP and the Field Report — §8.3.2, §8.3.6', () => {
+  it('AFightWon_PaysFiveXp_OnTheFightsLine', () => {
+    const { delta } = fold(seasoned(), win());
+    expect(delta.xp).toBe(XP.combat);
+    expect(delta.xpBy).toEqual({ fights: XP.combat });
   });
 
-  it('TheRunsLeftoverMoney_BecomesTokens_AtAPoorRate_Capped_§8.3.4', () => {
-    expect(tokensForMoney(MONEY_TO_TOKENS.per - 1)).toBe(0);
-    expect(tokensForMoney(MONEY_TO_TOKENS.per * 2 + 10)).toBe(2);
-    expect(tokensForMoney(10 ** 6)).toBe(MONEY_TO_TOKENS.cap);
-    const end = (money: number, won = false) => applyAccountEvent(seasoned(), { t: 'run-end', won, catches: 0, badges: 0, layersCleared: 2, moneyLeft: money }, ctx);
-    const lost = end(MONEY_TO_TOKENS.per * 3);
-    expect(lost.delta.moneyTokens).toEqual([{ money: MONEY_TO_TOKENS.per * 3, tokens: 3 }]);
-    expect(lost.state.tokens).toBe(3);
-    expect(lost.state.tokensEarned).toBe(3);
-    // Won or lost alike; nothing for an empty wallet.
-    expect(end(MONEY_TO_TOKENS.per, true).delta.moneyTokens).toEqual([{ money: MONEY_TO_TOKENS.per, tokens: 1 }]);
-    expect(end(0).delta.moneyTokens).toEqual([{ money: 0, tokens: 0 }]);
+  it('TheRunsMultiplier_RidesOnEveryXp', () => {
+    const { delta } = applyAccountEvents(seasoned(), [win()], accountContextFor(content, 1.5));
+    expect(delta.xp).toBe(Math.round(XP.combat * 1.5));
   });
 
-  it('CrossingALevel_PaysItsTokens_Once', () => {
-    // 1 515 XP is level 2 (it was the threshold before v0.9.2), and level 2 pays its Tokens. Starting from a seasoned account so no medal XP muddies it.
-    const events: MetaEvent[] = Array.from({ length: 303 }, () => win());
-    const { state, delta } = applyAccountEvents(seasoned(), events, ctx);
-    expect(levelFor(state.xp)).toBe(2);
-    expect(delta.levelsGained).toEqual([2]);
-    expect(delta.rewards).toEqual([{ level: 2, reward: REWARD_TRACK[2] }]);
-    expect(delta.tokens).toBe(REWARD_TRACK[2]!.tokens);
-    expect(state.tokens).toBe(REWARD_TRACK[2]!.tokens);
-    // Three hundred clean wins also *discover* two relics on the way (§8.6.1: a no-faint win, fifty wins) — while
-    // relic unlocks are on; off (v0.9.99), every relic is open and nothing is discovered.
-    expect(delta.discoveredRelics).toEqual(RELIC_UNLOCKS_ON ? ['barrier-charm', 'lucky-egg-token'] : []);
-    // Folding more XP inside the same level pays nothing again.
-    const again = applyAccountEvent(state, win(), ctx);
-    expect(again.delta.rewards).toHaveLength(0);
-    expect(again.state.claimedLevels).toEqual([2]);
+  it('ASpeciesNeverMet_IsADiscovery_Once', () => {
+    const a = seasoned();
+    const first = fold(a, win({ enemies: ['pidgey', 'rattata'] }));
+    expect(first.delta.xpBy.discoveries).toBe(2 * XP.newSpecies);
+    const second = fold(first.state, win({ enemies: ['pidgey'] }));
+    expect(second.delta.xpBy.discoveries).toBeUndefined();
   });
 
-  it('AMedalCaseFromBeforeTheAccount_OpensAtTheLevelItEarned', () => {
-    // v0.5 kept only achievements. Two Gold and a Bronze are 2 × 200 + 50 = 450 XP and 4 Tokens; not level 2 yet.
-    const progress = { ...emptyProgress(), unlocked: ['first-blood', 'flawless-gym', 'badge-collector'] };
-    const account = accountFromProgress(progress, ctx);
-    expect(account.achievements.unlocked).toEqual(progress.unlocked);
-    expect(account.xp).toBeGreaterThan(0);
-    expect(account.tokens).toBe(account.tokensEarned);
-    expect(levelFor(account.xp)).toBe(account.claimedLevels.length + 1);
+  it('AFailedRun_PaysForTheDistance_Capped', () => {
+    expect(fold(seasoned(), runEnd({ layersCleared: 3 })).delta.xpBy.distance).toBe(3 * XP.failedRunPerLayer);
+    expect(fold(seasoned(), runEnd({ layersCleared: 40 })).delta.xpBy.distance).toBe(XP.failedRunCap);
+    expect(fold(seasoned(), runEnd({ won: true, layersCleared: 40 })).delta.xpBy.distance).toBeUndefined();
   });
 
-  it('OneFightThatCrossesTwoLevels_PaysBothInOrder', () => {
-    // Sit just under level 2, then take a big hit of XP.
-    let state = seasoned();
-    state = { ...state, xp: xpForLevel(2) - 1 };
-    const big = { ...ctx, xpMultiplier: Math.ceil((xpForLevel(3) - xpForLevel(2) + 1) / XP.combat) };
-    const { state: after, delta } = applyAccountEvent(state, win(), big);
-    expect(levelFor(after.xp)).toBe(3);
-    expect(delta.levelsGained).toEqual([2, 3]);
-    expect(delta.rewards.map((r) => r.level)).toEqual([2, 3]);
-    expect(after.tokens).toBe(REWARD_TRACK[2]!.tokens + REWARD_TRACK[3]!.tokens);
-    // Level 2 opened the Starters shelf; nothing was handed out — the shelf sells.
-    expect(shelfOpen(after, 'starters')).toBe(true);
-    expect(after.starters).toEqual([]);
-  });
-
-  it('UnclaimedLevelsBelowTheCurrentOne_AreBackFilled', () => {
-    const state = { ...seasoned(), xp: xpForLevel(12) - 1 };
-    // The levels below were never claimed on this account, so crossing 12 back-fills 2..12: nine ordinary
-    // levels and the milestones at 5 and 10. That is the right behaviour for an account created before the track
-    // existed, and the same code path an ordinary level-up takes.
-    const { state: after } = applyAccountEvent(state, win(), ctx);
-    expect(levelFor(after.xp)).toBe(12);
-    expect(after.tokens).toBe(trackTokensBetween(1, 12));
-    expect(after.claimedLevels).toHaveLength(11);
-    expect(after.hub).toEqual([]);
-  });
-
-  it('AVersionOneSave_IsBackPaidTheTokensItsLevelsNowPay_AndKeepsWhatItWasGranted', () => {
-    // A v0.6.2 account at Level 9: the old track paid 5 Tokens (Level 5) and granted Pikachu, Eevee and three
-    // Hub upgrades. It keeps all of that and is paid what an ordinary level pays now for the seven that paid nothing.
-    const old = {
-      ...emptyAccount(), version: 1, xp: xpForLevel(9), tokens: 5, tokensEarned: 5, claimedLevels: [2, 3, 4, 5, 6, 7, 8, 9],
-      starters: ['pikachu', 'eevee'], hub: ['starting-relic-plus-one', 'expanded-box', 'pokedex-insight'], titles: ['Ace Trainer'],
-    };
-    const now = upgradeAccount(old);
-    expect(now.version).toBe(ACCOUNT_VERSION);
-    expect(now.tokens).toBe(5 + 7 * TRACK_TOKENS.level);
-    expect(now.tokensEarned).toBe(5 + 7 * TRACK_TOKENS.level);
-    expect(now.starters).toEqual(['pikachu', 'eevee']);
-    expect(now.hub).toHaveLength(3);
-    expect(now.cosmetics).toEqual(['title-ace-trainer']);
-    expect(now.wearing).toEqual({ title: 'title-ace-trainer' });
-    expect('titles' in now).toBe(false);
-    // Already current: untouched.
-    expect(upgradeAccount(now)).toBe(now);
+  it('TheRunsEnd_TurnsItsXpAndItsMoneyIntoTokens_AndStartsANewCount', () => {
+    const a = seasoned();
+    a.runXp = 5 * TOKENS.perRunXp + 10;
+    const { state, delta } = fold(a, runEnd({ layersCleared: 2, moneyLeft: 3 * TOKENS.moneyPer + 50 }));
+    // The distance XP is the run's too: it is counted before the Tokens are.
+    expect(delta.reportTokens).toBe(Math.floor((5 * TOKENS.perRunXp + 10 + 2 * XP.failedRunPerLayer) / TOKENS.perRunXp));
+    expect(delta.moneyTokens).toEqual([{ money: 350, tokens: 3 }]);
+    expect(state.runXp).toBe(0);
+    expect(tokensForMoney(10_000)).toBe(TOKENS.moneyCap);
+    expect(tokensForMoney(-5)).toBe(0);
   });
 });
 
-describe('The Pokédex — §5.13', () => {
-  it('FamiliarScalesWithRarity_AndIsTheOnlyTier', () => {
-    expect(dexTierFor(10, 'common')).toBe(1);
-    expect(dexTierFor(9, 'common')).toBe(0);
-    expect(dexTierFor(2, 'rare')).toBe(1);
-    expect(dexTierFor(50, 'common')).toBe(1);
-    expect(DEX_FAMILIAR.uncommon).toBe(5);
+describe("Research and Oak's Parcels — §8.6.2", () => {
+  it('EveryXpIsResearch_AndAFullBarIsAParcel_WithTheRestCarried', () => {
+    const a = seasoned();
+    a.research = PARCEL.earlyCost - 2;
+    const { state, delta } = fold(a, win());
+    expect(delta.parcels).toBe(1);
+    expect(state.parcels).toBe(1);
+    expect(state.parcelsEarned).toBe(1);
+    expect(state.research).toBe(XP.combat - 2);
   });
 
-  it('KillsPromote_AndAPromotionPaysOnce_§8.3.2', () => {
-    // Pidgey is common: ten defeats reach Familiar, worth 25 XP on top of the fights' own.
-    const events: MetaEvent[] = Array.from({ length: 10 }, () => win({ defeated: ['pidgey'] }));
-    const { state, delta } = applyAccountEvents(seasoned(), events, ctx);
-    expect(state.dex.pidgey?.defeats).toBe(10);
-    expect(state.dex.pidgey?.tier).toBe(1);
-    expect(delta.dexPromotions).toEqual([{ speciesId: 'pidgey', tier: 1 }]);
-    expect(delta.xp).toBe(10 * XP.combat + 25);
+  it('TheFirstTenAreCheaper', () => {
+    expect(parcelCost(0)).toBe(PARCEL.earlyCost);
+    expect(parcelCost(PARCEL.earlyCount - 1)).toBe(PARCEL.earlyCost);
+    expect(parcelCost(PARCEL.earlyCount)).toBe(PARCEL.cost);
+    expect(PARCEL.cost).toBeGreaterThan(PARCEL.earlyCost);
   });
 
-  it('TheRecord_CountsMetCaughtKnockoutsFaintsDamageAndEvolutions_§8.9', () => {
-    // A fight against a Pidgey and a Rattata: Charmander landed two knock-outs for 40 damage, Pidgey (yours)
-    // fainted once; the Rattata went into the ball.
-    const fight = win({
-      outcome: 'caught', defeated: ['pidgey'], enemies: ['pidgey', 'rattata'], caughtSpecies: 'rattata', activeSpecies: ['charmander', 'pidgey'],
-      tally: { ...emptyTally(), koBy: { charmander: 2 }, faintsOf: { pidgey: 1 }, damageBy: { charmander: 40, pidgey: 3 } },
-    });
-    const events: MetaEvent[] = [fight, { t: 'recruit', speciesId: 'rattata', boxFull: false, firstThisRun: true }, { t: 'evolution', uid: 'u', fromSpeciesId: 'charmander', toSpeciesId: 'charmeleon' }];
-    const { state } = applyAccountEvents(seasoned(), events, ctx);
-    expect(state.dex.pidgey).toMatchObject({ encounters: 1, defeats: 1, faints: 1, damageDealt: 3, winsWith: 1 });
-    expect(state.dex.rattata).toMatchObject({ encounters: 1, caught: 1, recruits: 1, recruited: true, defeats: 0 });
-    expect(state.dex.charmander).toMatchObject({ knockouts: 2, damageDealt: 40, evolutions: 1, winsWith: 1 });
-    expect(state.dex.charmeleon).toBeUndefined();
+  it('TakeParcel_OpensTheCard_AndTheOfferMovesOn', () => {
+    const a = emptyAccount(77);
+    a.parcels = 2;
+    const offer = parcelOffer(a, 3);
+    expect(offer).toHaveLength(3);
+    // The offer is the same every time it is looked at.
+    expect(parcelOffer(a, 3).map((e) => e.id)).toEqual(offer.map((e) => e.id));
+    const after = takeParcel(a, offer[1]!.id);
+    expect(after.unlocks).toEqual([offer[1]!.id]);
+    expect(after.parcels).toBe(1);
+    expect(after.parcelsOpened).toBe(1);
+    expect(parcelOffer(after, 3).some((e) => e.id === offer[1]!.id)).toBe(false);
+    // No parcel, an unknown card, a Badge's TM or a card already taken: nothing happens.
+    expect(takeParcel({ ...a, parcels: 0 }, offer[0]!.id).unlocks).toEqual([]);
+    expect(takeParcel(a, 'relic:nope')).toBe(a);
+    expect(takeParcel(a, lockKey('tm', LEADER_TM['boulder-badge']!))).toBe(a);
+    expect(takeParcel(after, offer[1]!.id)).toBe(after);
   });
 
-  it('AnEntrySavedBeforeTheRecord_IsMadeWhole', () => {
-    const old = normalizeDexEntry({ defeats: 4, recruited: true, winsWith: 2, runsFinishedWith: 1, tier: 0 });
-    expect(old).toMatchObject({ defeats: 4, recruits: 1, encounters: 0, caught: 0, knockouts: 0, faints: 0, damageDealt: 0, evolutions: 0 });
-    expect(normalizeDexEntry(undefined)).toEqual(emptyDexEntry());
+  it('TwoAccounts_DrawDifferentOffers', () => {
+    const offers = [1, 2, 3, 4, 5, 6].map((salt) => parcelOffer(emptyAccount(salt), 3).map((e) => e.id).join());
+    expect(new Set(offers).size).toBeGreaterThan(1);
   });
 
-  it('CatchingIsNotAKill_§5.13.1', () => {
-    const { state } = applyAccountEvent(emptyAccount(), win({ outcome: 'caught', defeated: [] }), ctx);
-    expect(state.dex.pidgey).toBeUndefined();
-    expect(state.stats.catches).toBe(1);
+  it('AParcelEarnedWithAnEmptyVault_PaysTokensInstead', () => {
+    const a = seasoned();
+    a.unlocks = VAULT.map((e) => e.id);
+    a.research = PARCEL.earlyCost - 1;
+    const { state, delta } = fold(a, win());
+    expect(delta.parcels).toBe(0);
+    expect(state.parcels).toBe(0);
+    expect(delta.tokens).toBe(PARCEL.overflowTokens);
+    expect(parcelPool(a)).toEqual([]);
+  });
+});
+
+describe('The vault — §8.6.1', () => {
+  it('EveryRowNamesRealContent_AndNoIdIsHeldTwice', () => {
+    const seen = new Set<string>();
+    for (const e of VAULT) {
+      for (const id of e.ids) {
+        const key = lockKey(e.kind, id);
+        expect(seen.has(key), key).toBe(false);
+        seen.add(key);
+        if (e.kind === 'relic') expect(content.relic(id).id).toBe(id);
+        if (e.kind === 'held') expect(content.heldItem(id).id).toBe(id);
+        if (e.kind === 'tm') expect(content.tm(id).id).toBe(id);
+        if (e.kind === 'event') expect(MYSTERY_EVENTS.some((m) => m.id === id), id).toBe(true);
+      }
+    }
+    for (const b of content.allBadges()) expect(LEADER_TM[b.id], b.id).toBeDefined();
+    // Supplies are never locked: they are written into the route's own drop tables.
+    expect(VAULT.some((e) => e.kind === 'consumable')).toBe(false);
+    expect(VAULT.filter((e) => e.source === 'parcel')).toHaveLength(43);
+  });
+
+  it('EveryRarityKeepsMoreThanHalfOpen_AndEveryLegendary', () => {
+    // v0.9.99's lesson: a fresh account that holds 3 of 18 Uncommons makes rarity a lie.
+    const fresh = emptyAccount();
+    for (const rarity of ['common', 'uncommon', 'rare', 'legendary'] as const) {
+      const rows = content.allRelics().filter((r) => r.rarity === rarity);
+      const open = rows.filter((r) => relicPoolFor(fresh, content).includes(r.id));
+      expect(open.length / rows.length, rarity).toBeGreaterThan(rarity === 'legendary' ? 0.99 : 0.5);
+    }
+    expect(MYSTERY_EVENTS.length - VAULT.filter((e) => e.kind === 'event').length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('AFreshAccountsRun_NeverDrawsWhatIsLocked', () => {
+    const fresh = emptyAccount();
+    const run = createRun('bulbasaur', 7, defaultRunCtx(content), 0, [], undefined, undefined, runPerksFor(fresh, content));
+    const pool = offerPool(run, content);
+    for (const e of VAULT) {
+      for (const id of e.ids) {
+        if (e.kind === 'relic') expect(pool.includes(id), id).toBe(false);
+        if (e.kind === 'held') expect(ownedItems(run).includes(id), id).toBe(true);
+        if (e.kind === 'tm') expect(tmsFor(run, content).some((t) => t.id === id), id).toBe(false);
+        if (e.kind === 'event') expect(Object.values(run.map.nodes).some((n) => n.preview.event === id), id).toBe(false);
+      }
+    }
+    // An account that has opened everything plays the whole catalogue, like a fixture.
+    const all = { ...fresh, unlocks: VAULT.map((e) => e.id) };
+    expect(runPerksFor(all, content).locked).toEqual([]);
+    expect(relicPoolFor(all, content)).toHaveLength(content.allRelics().length);
+  });
+
+  it('ARunWithNoAccount_HasNothingLocked', () => {
+    const run = createRun('bulbasaur', 7, defaultRunCtx(content));
+    expect(run.perks.locked).toBeUndefined();
+    expect(tmsFor(run, content)).toHaveLength(content.allTms().length);
+  });
+});
+
+describe('The Trainer Journal — §8.7', () => {
+  it('ACompletedEntry_PaysXpTokensAndItsPrize', () => {
+    const { state, delta } = fold(emptyAccount(), win({ damageTaken: 5, faints: 1 }));
+    const blood = delta.journalRewards.find((r) => r.id === 'first-blood')!;
+    // A Bronze entry's prize is a trainer avatar, worn at once if the card has none.
+    expect(blood.reward).toEqual({ tokens: MEDAL_TOKENS.bronze, cosmetic: 'avatar-youngster' });
+    expect(delta.xpBy.journal).toBe(MEDAL_XP.bronze);
+    expect(state.tokens).toBeGreaterThanOrEqual(MEDAL_TOKENS.bronze);
+    expect(state.cosmetics).toContain('avatar-youngster');
+    expect(state.wearing.avatar).toBe('avatar-youngster');
+  });
+
+  it('NoEntryPaysOnlyANumber', () => {
+    for (const tier of ['bronze', 'silver', 'gold', 'platinum'] as const) {
+      const r = journalReward({ id: 'x', tier });
+      expect(r.tokens).toBe(MEDAL_TOKENS[tier]);
+      expect((r.parcels ?? 0) > 0 || !!r.cosmetic).toBe(true);
+    }
+    // Every entry there is, by its own row: Tokens, and a parcel or a trophy.
+    for (const a of ACHIEVEMENTS) {
+      const r = journalReward(a);
+      expect((r.parcels ?? 0) > 0 || !!r.cosmetic, a.id).toBe(true);
+      if (r.cosmetic) expect(COSMETICS.some((c) => c.id === r.cosmetic), r.cosmetic).toBe(true);
+    }
+    const scholar = journalReward({ id: 'pokedex-apprentice', tier: 'silver' });
+    expect(scholar.cosmetic).toBe('title-pokedex-scholar');
+  });
+
+  it('AFieldNote_OpensItsRelic_OrPaysAParcelWhenTheRelicWasNeverLocked', () => {
+    const locked = content.allRelics().find((r) => r.discovery && vaultEntryFor('relic', r.id))!;
+    const open = content.allRelics().find((r) => r.discovery && !vaultEntryFor('relic', r.id))!;
+    const a = seasoned();
+    a.notes = a.notes.filter((id) => id !== locked.id && id !== open.id);
+    a.counters[locked.discovery!.counter] = locked.discovery!.goal;
+    a.counters[open.discovery!.counter] = open.discovery!.goal;
+    const { state, delta } = fold(a, { t: 'relic-acquired', relicId: 'coin-pouch', heldCount: 1 });
+    expect(delta.notes.sort()).toEqual([locked.id, open.id].sort());
+    expect(state.unlocks).toContain(lockKey('relic', locked.id));
+    expect(delta.opened).toEqual([lockKey('relic', locked.id)]);
+    expect(delta.parcels).toBe(1);
+    expect(delta.xpBy.journal).toBe(2 * XP.fieldNote);
+    // Written once.
+    expect(fold(state, { t: 'relic-acquired', relicId: 'coin-pouch', heldCount: 1 }).delta.notes).toEqual([]);
+  });
+
+  it('Pins_ThreeAtMost_AndNextGoalsLeadsWithThem', () => {
+    let a = emptyAccount();
+    for (const id of ['champion', 'monotype-master', 'minimalist', 'win-streak']) a = pinEntry(a, id, true);
+    expect(a.pins).toHaveLength(PIN_LIMIT);
+    expect(a.pins).not.toContain('win-streak');
+    expect(nextGoals(a, content).map((g) => g.id)).toEqual(['champion', 'monotype-master', 'minimalist']);
+    a = pinEntry(a, 'champion', false);
+    expect(a.pins).toEqual(['monotype-master', 'minimalist']);
+    // Unpinned, the closest open entries fill in; a hidden one is never suggested, a finished one never shown.
+    const fresh = emptyAccount();
+    fresh.counters['combats-won'] = 49;
+    const goals = nextGoals(fresh, content);
+    expect(goals).toHaveLength(3);
+    expect(goals[0]!.id).toBe(noteId('lucky-egg-token'));
+    expect(goals.every((g) => !g.done && !g.hidden)).toBe(true);
   });
 });
 
 describe('Bond — §6.8', () => {
-  it('PlayingWithALine_EarnsBond_AndTheLeadEarnsOneMore', () => {
-    // A won trainer fight with Charmander leading and Pidgey on the bench: 2 for the line that led, 1 for the other.
-    const { state, delta } = applyAccountEvent(seasoned(), win({ kind: 'trainer', activeSpecies: ['charmander', 'pidgey'], leadTurns: { charmander: 4, pidgey: 1 } }), ctx);
+  it('SixRanks_AtTheCanonThresholds', () => {
+    expect(BOND_RANKS).toEqual([20, 60, 120, 200, 300, 420]);
+    expect(MAX_BOND_RANK).toBe(6);
+    expect(bondRank(19)).toBe(0);
+    expect(bondRank(20)).toBe(BOND_TIER.acquainted);
+    expect(bondRank(419)).toBe(BOND_TIER.soulbound);
+    expect(bondRank(420)).toBe(BOND_TIER.partner);
+  });
+
+  it('ATrainerWin_IsBondForTheTeam_AndOneMoreForTheLead_AWildOneIsNot', () => {
+    const { state } = fold(seasoned(), win({ kind: 'trainer', activeSpecies: ['charmander', 'pidgey'], leadTurns: { charmander: 3, pidgey: 1 } }));
     expect(state.bond.charmander).toBe(BOND.win + BOND.lead);
     expect(state.bond.pidgey).toBe(BOND.win);
-    expect(delta.bondGains).toEqual([{ line: 'charmander', points: 2 }, { line: 'pidgey', points: 1 }]);
+    expect(fold(seasoned(), win({ kind: 'wild', activeSpecies: ['charmander'] })).state.bond.charmander).toBeUndefined();
   });
 
-  it('EvolutionRecruitAndTheRunsEnd_AllFeedTheLine_PerLine', () => {
-    // It is tracked per *line*: a Charmeleon's evolution and a Charizard's run count for Charmander.
-    const events: MetaEvent[] = [
-      { t: 'recruit', speciesId: 'charmander', boxFull: false, firstThisRun: true },
-      { t: 'evolution', uid: 'u', toSpeciesId: 'charmeleon' },
-      { t: 'run-end', won: true, catches: 0, badges: 1, layersCleared: 12, activeSpecies: ['charizard'] },
-    ];
-    const { state } = applyAccountEvents(seasoned(), events, ctx);
-    expect(state.bond.charmander).toBe(BOND.recruit + BOND.evolution + BOND.runWon);
-    expect(state.bond.charmeleon).toBeUndefined();
+  it('TheBox_SharesHalfOfAGymAndOfTheRunsEnd', () => {
+    const gym = fold(seasoned(), win({ kind: 'boss', activeSpecies: ['charmander'], boxSpecies: ['pidgey', 'pidgeotto', 'charmeleon'] }));
+    expect(gym.state.bond.charmander).toBe(BOND.gym);
+    // One share per line, and none for a line that is also in the Active Team.
+    expect(gym.state.bond.pidgey).toBe(Math.floor(BOND.gym * BOND.benchShare));
+    const end = fold(seasoned(), runEnd({ activeSpecies: ['charmander'], boxSpecies: ['rattata'] }));
+    expect(end.state.bond.charmander).toBe(BOND.runFinished);
+    expect(end.state.bond.rattata).toBe(Math.floor(BOND.runFinished * BOND.benchShare));
   });
 
-  it('CrossingARank_IsReportedOnce_AndPaysTheMedal', () => {
-    // Clean trainer wins leading, two points each, until the first rank: reported once.
-    const n = BOND_RANKS[0] / (BOND.win + BOND.lead);
-    const wins: MetaEvent[] = Array.from({ length: n }, () => win({ kind: 'trainer', activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 } }));
-    const { state, delta } = applyAccountEvents(seasoned(), wins, ctx);
-    expect(state.bond.squirtle).toBe(BOND_RANKS[0]);
-    expect(bondRank(state.bond.squirtle!)).toBe(1);
-    expect(delta.bondRankUps).toEqual([{ line: 'squirtle', rank: 1 }]);
-    // A big single step crosses the next rank.
-    const from = BOND_RANKS[2] - 1;
-    const big = applyAccountEvent({ ...seasoned(), bond: { squirtle: from } }, { t: 'run-end', won: true, catches: 0, badges: 1, activeSpecies: ['squirtle'] }, ctx);
-    expect(big.delta.bondRankUps).toEqual([{ line: 'squirtle', rank: 3 }]);
-    expect(big.state.bond.squirtle).toBe(from + BOND.runWon);
+  it('Acquainted_MakesTheLineFamiliar_AndPartnerStartsALevelHigher', () => {
+    const a = emptyAccount();
+    a.bond.charmander = BOND_RANKS[BOND_TIER.acquainted - 1]!;
+    const perks = runPerksFor(a, content);
+    expect(perks.familiar).toEqual(expect.arrayContaining(['charmander', 'charmeleon', 'charizard']));
+    expect(runPerksFor(emptyAccount(), content).familiar).toEqual([]);
+    a.bond.charmander = BOND_RANKS[BOND_TIER.partner - 1]!;
+    const run = createRun('charmander', 7, defaultRunCtx(content), 0, [], undefined, undefined, runPerksFor(a, content));
+    expect(run.box[0]!.level).toBe(RUN_START.starterLevel + 1);
+    expect(unlockedStarters(a, content)).toContain('charmander');
   });
 
-  it('AWildWin_PaysNoBond_AGymWinPaysTheRegion_§6.8.1', () => {
-    // v0.9.1 — the fights that mean something: a wild one pays nothing, a Gym is a Region cleared together.
-    const wild = applyAccountEvent(seasoned(), win({ kind: 'wild', activeSpecies: ['squirtle'], leadTurns: { squirtle: 3 } }), ctx);
-    expect(wild.state.bond.squirtle ?? 0).toBe(0);
-    const gym = applyAccountEvent(seasoned(), win({ kind: 'boss', activeSpecies: ['squirtle', 'pidgey'], leadTurns: { squirtle: 3 } }), ctx);
-    expect(gym.state.bond.squirtle).toBe(BOND.gym + BOND.lead);
-    expect(gym.state.bond.pidgey).toBe(BOND.gym);
-  });
-
-  it('AShinyRecruit_FeedsTheLine_TheCollection_AndTheMedal_§5.14', () => {
-    const { state, delta } = applyAccountEvent(seasoned(), { t: 'recruit', speciesId: 'pidgey', boxFull: false, firstThisRun: true, shiny: true }, ctx);
-    expect(state.bond.pidgey).toBe(BOND.recruit + BOND.shiny);
-    expect(state.dex.pidgey!.shinyCaught).toBe(1);
-    expect(delta.unlockedAchievements.map((a) => a.id)).toContain('shiny-hunter');
-    // Met, not caught: the record notes it; the line earns nothing for a shiny that got away.
-    const seen = applyAccountEvent(seasoned(), win({ kind: 'wild', enemies: ['rattata'], shinies: ['rattata'] }), ctx);
-    expect(seen.state.dex.rattata!.shinySeen).toBe(1);
-    expect(seen.state.bond.rattata ?? 0).toBe(0);
+  it('Ribbons_ArePinnedOnce_ByTheGymTheLeagueTheChampionAndTheLadder', () => {
+    let a = seasoned();
+    const gym = fold(a, { t: 'badge-awarded', badgeId: 'boulder-badge', activeSpecies: ['charmeleon', 'pidgey'] });
+    expect(gym.delta.ribbons).toEqual([{ line: 'charmander', ribbon: 'gym' }, { line: 'pidgey', ribbon: 'gym' }]);
+    a = gym.state;
+    expect(fold(a, { t: 'badge-awarded', badgeId: 'cascade-badge', activeSpecies: ['charmeleon'] }).delta.ribbons).toEqual([]);
+    const lost = fold(a, runEnd({ reachedLeague: true, activeSpecies: ['charizard'] }));
+    expect(lost.state.ribbons.charmander).toEqual(['gym', 'league']);
+    const won = fold(a, runEnd({ won: true, reachedLeague: true, ladderRung: 1, activeSpecies: ['charizard'] }));
+    expect(won.state.ribbons.charmander).toEqual(['gym', 'league', 'champion', 'ladder']);
   });
 });
 
-describe('Tier-2 discovery and the run pool — §8.6.1, §8.6.2', () => {
-  it.skipIf(RELIC_UNLOCKS_ON)('WhileUnlocksAreOff_EveryRelicIsInTheFreshPool_AndACounterStillFolds_v0999', () => {
-    expect(relicPoolFor(emptyAccount(), content)).toHaveLength(content.allRelics().length);
-    const crit = (n: number) => win({ tally: { ...emptyTally(), crits: n } });
-    const { state, delta } = applyAccountEvents(seasoned(), [crit(6), crit(4)], ctx);
-    expect(state.counters.crits).toBe(10);
-    expect(delta.discoveredRelics).toEqual([]);
-    expect(SHELF_ORDER).not.toContain('mastery');
+describe('The Badge Case — §8.14', () => {
+  it('ALeadersFirstBadge_GoesOnTheWall_PaysXp_AndOpensTheirTm', () => {
+    const { state, delta } = fold(seasoned(), { t: 'badge-awarded', badgeId: 'boulder-badge' });
+    expect(state.badges).toEqual(['boulder-badge']);
+    expect(delta.newBadges).toEqual(['boulder-badge']);
+    expect(delta.xpBy.badges).toBe(XP.gym + XP.firstBadge);
+    expect(delta.opened).toEqual([lockKey('tm', LEADER_TM['boulder-badge']!)]);
+    const again = fold(state, { t: 'badge-awarded', badgeId: 'boulder-badge' });
+    expect(again.delta.newBadges).toEqual([]);
+    expect(again.delta.xpBy.badges).toBe(XP.gym);
+    expect(again.state.badges).toEqual(['boulder-badge']);
+  });
+});
+
+describe('The League Ladder — §8.8.5', () => {
+  it('TheLadder_IsTheModifiersInRungOrder', () => {
+    expect(LADDER_TOP).toBe(10);
+    expect(LADDER.map((m) => m.rung)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(ladderRungOf([])).toBe(0);
+    expect(ladderRungOf(ladderModifiers(3))).toBe(3);
+    expect(ladderRungOf([...ladderModifiers(3)].reverse())).toBe(3);
+    // A custom pick is not a rung.
+    expect(ladderRungOf([LADDER[4]!.id])).toBe(0);
   });
 
-  it.skipIf(!RELIC_UNLOCKS_ON)('ACriterionMet_OpensItsRelic_Once', () => {
-    // Ten crits across three fights: Steady Aim. A fourth fight with more crits does not discover it twice.
-    const crit = (n: number) => win({ tally: { ...emptyTally(), crits: n } });
-    const { state, delta } = applyAccountEvents(seasoned(), [crit(4), crit(4), crit(2)], ctx);
-    expect(state.counters.crits).toBe(10);
-    expect(delta.discoveredRelics).toContain('steady-aim');
-    const again = applyAccountEvent(state, crit(3), ctx);
-    expect(again.delta.discoveredRelics).not.toContain('steady-aim');
-    expect(again.state.relics.filter((id) => id === 'steady-aim')).toHaveLength(1);
+  it('OpensWithTheFirstChampion_AndARungWonOpensTheNextAndItsModifier', () => {
+    let a = seasoned();
+    expect(ladderOpen(a)).toBe(false);
+    expect(nextRung(a)).toBeNull();
+    expect(modifierUnlocked(a, LADDER[0]!)).toBe(false);
+    a = fold(a, runEnd({ won: true })).state;
+    expect(nextRung(a)).toBe(1);
+    const won = fold(a, runEnd({ won: true, ladderRung: 1, modifierCount: 1 }));
+    expect(won.delta.ladderRung).toBe(1);
+    expect(won.state.ladder).toBe(1);
+    expect(won.delta.tokens).toBeGreaterThanOrEqual(LADDER_PRIZE.tokens);
+    // The rung's parcel, beside whatever the Journal paid for a second win in a row.
+    expect(won.delta.parcels).toBeGreaterThanOrEqual(LADDER_PRIZE.parcels);
+    expect(modifierUnlocked(won.state, LADDER[0]!)).toBe(true);
+    expect(modifierUnlocked(won.state, LADDER[1]!)).toBe(false);
+    // The same rung again, a lost rung, or a rung skipped ahead moves nothing.
+    expect(fold(won.state, runEnd({ won: true, ladderRung: 1 })).state.ladder).toBe(1);
+    expect(fold(won.state, runEnd({ won: false, ladderRung: 2 })).state.ladder).toBe(1);
+    expect(fold(won.state, runEnd({ won: true, ladderRung: 3 })).state.ladder).toBe(1);
+  });
+});
+
+describe('The Hall of Fame and the stars — §8.15', () => {
+  it('AWonRun_IsKept_WithItsTeamAndItsRung', () => {
+    const hall = { seed: 9, starter: 'squirtle', team: [{ speciesId: 'blastoise', level: 52, shiny: true }], badges: ['boulder-badge'], relics: ['coin-pouch'] };
+    const { state, delta } = fold(seasoned(), runEnd({ won: true, hall, ladderRung: 0 }));
+    expect(delta.hall).toBe(true);
+    expect(state.hall).toEqual([{ run: 1, rung: 0, ...hall }]);
+    expect(fold(seasoned(), runEnd({ won: false })).state.hall).toEqual([]);
   });
 
-  it.skipIf(!RELIC_UNLOCKS_ON)('TheRunPool_IsTierOnePlusWhatIsOpen_AndLegendariesAlways', () => {
-    const fresh = relicPoolFor(emptyAccount(), content);
-    expect(fresh).not.toContain('steady-aim');
-    expect(fresh).not.toContain('sages-tome');
-    expect(fresh).toContain('coin-pouch');
-    expect(fresh).toContain('clear-mind');
-    const opened = relicPoolFor({ ...emptyAccount(), relics: ['steady-aim', 'sages-tome'] }, content);
-    expect(opened).toEqual(expect.arrayContaining(['steady-aim', 'sages-tome']));
-    expect(opened).toHaveLength(fresh.length + 2);
+  it('Stars_AreDerivedFromTheFeats', () => {
+    const a = seasoned();
+    expect(starsOf(a, content)).toEqual([]);
+    a.stats.wins = 1;
+    a.badges = content.allBadges().map((b) => b.id);
+    a.ladder = LADDER_TOP;
+    for (const s of content.allSpecies()) a.dex[s.id] = { ...emptyDexEntry(), encounters: 1 };
+    expect(starsOf(a, content)).toEqual(['champion', 'badges', 'pokedex', 'ladder']);
+  });
+});
+
+describe("Oak's aide — §8.9.3", () => {
+  it('PaysEachPokedexMilestone_Once', () => {
+    const a = seasoned();
+    const species = content.allSpecies().slice(0, AIDES[1]!.owned);
+    for (const s of species) a.dex[s.id] = { ...emptyDexEntry(), recruits: 1 };
+    const { state, delta } = fold(a, win());
+    expect(delta.aides.map((r) => r.owned)).toEqual([AIDES[0]!.owned, AIDES[1]!.owned]);
+    expect(state.hub).toContain(AIDES[1]!.perk);
+    expect(delta.parcels).toBe(AIDES[0]!.parcels);
+    expect(fold(state, win()).delta.aides).toEqual([]);
+  });
+});
+
+describe('The Trainer Kit — §8.4.5', () => {
+  const owning = (...perks: HubUpgrade[]) => {
+    const a = emptyAccount();
+    a.hub.push(...perks);
+    return a;
+  };
+
+  it('AService_IsAlwaysOn_APerk_OnlyWhilePacked', () => {
+    const a = owning('expanded-box', 'moms-allowance');
+    expect(hasHubUpgrade(a, 'expanded-box')).toBe(true);
+    expect(hasHubUpgrade(a, 'moms-allowance')).toBe(false);
+    // No slot before Challenger: packing is refused.
+    expect(kitSlots(a)).toBe(0);
+    expect(packKit(a, 'moms-allowance', true)).toBe(a);
+    a.xp = xpForLevel(4);
+    const packed = packKit(a, 'moms-allowance', true);
+    expect(packed.kit).toEqual(['moms-allowance']);
+    expect(hasHubUpgrade(packed, 'moms-allowance')).toBe(true);
+    expect(packKit(packed, 'moms-allowance', false).kit).toEqual([]);
+    // A service is not packed, and a perk you do not own is not either.
+    expect(packKit(a, 'expanded-box', true)).toBe(a);
+    expect(packKit(a, 'head-start', true)).toBe(a);
   });
 
-  it('RunPerks_AreTheAccountsWidenings_AndNothingElse', () => {
-    // Squirtle at tier 3: its whole Mastery. Rattata at tier 2: the hidden ability, no Mastery yet. Pidgey short of tier 1.
-    const a = { ...emptyAccount(), hub: ['expanded-box', 'pokedex-insight'], bond: { squirtle: BOND_RANKS[2], rattata: BOND_RANKS[1], pidgey: BOND_RANKS[0] - 1 }, dex: { pidgey: { ...emptyDexEntry(), defeats: 10, tier: 1 as const } } };
-    const perks = runPerksFor(a, content);
-    expect(perks.boxBonus).toBe(2);
-    expect(perks.insight).toBe(true);
-    expect(perks.familiar).toEqual(['pidgey']);
-    expect(perks.mastery).toEqual({ squirtle: 3 });
-    expect(perks.bond).toEqual({ squirtle: 3, rattata: 2 });
-    expect(runPerksFor(a, content, true).boxBonus).toBe(3);
+  it('TheKit_HoldsOnlyAsManyAsTheRankHasSlots', () => {
+    let a = owning('moms-allowance', 'first-aid-pouch', 'tm-case');
+    a.xp = xpForLevel(5);
+    for (const p of ['moms-allowance', 'first-aid-pouch', 'tm-case'] as const) a = packKit(a, p, true);
+    expect(a.kit).toEqual(['moms-allowance', 'first-aid-pouch']);
+    // A Kit saved at a higher rank does not outgrow the account that loads it.
+    const demoted = { ...a, xp: xpForLevel(4) };
+    expect(hasHubUpgrade(demoted, 'moms-allowance')).toBe(true);
+    expect(hasHubUpgrade(demoted, 'first-aid-pouch')).toBe(false);
   });
 
-  it('ASoulboundLine_CanStartARun_§6.8.2', () => {
-    const a = { ...emptyAccount(), bond: { geodude: BOND_RANKS[3], pidgey: BOND_RANKS[3] - 1 } };
-    const starters = unlockedStarters(a, content);
-    expect(starters).toContain('geodude');
-    expect(starters).not.toContain('pidgey');
+  it('ThePackedKit_ChangesWhatTheRunStartsWith_AndNothingElse', () => {
+    let a = owning('moms-allowance', 'first-aid-pouch', 'ball-case', 'head-start', 'exp-share', 'tm-case');
+    a.xp = xpForLevel(7);
+    const base = createRun('bulbasaur', 7, defaultRunCtx(content));
+    for (const p of ['moms-allowance', 'first-aid-pouch', 'head-start'] as const) a = packKit(a, p, true);
+    const run = createRun('bulbasaur', 7, defaultRunCtx(content), 0, [], undefined, undefined, runPerksFor(a, content));
+    expect(run.money).toBe(base.money + KIT.allowance);
+    expect(run.consumables.filter((c) => c === 'potion')).toHaveLength(base.consumables.filter((c) => c === 'potion').length + KIT.potions);
+    expect(run.box[0]!.level).toBe(RUN_START.starterLevel + KIT.headStartLevels);
+    expect(run.tms).toEqual([]);
+    let b = owning('ball-case', 'exp-share', 'tm-case');
+    b.xp = xpForLevel(7);
+    for (const p of ['ball-case', 'exp-share', 'tm-case'] as const) b = packKit(b, p, true);
+    const other = createRun('bulbasaur', 7, defaultRunCtx(content), 0, [], undefined, undefined, runPerksFor(b, content));
+    expect(other.consumables.filter((c) => c === 'poke-ball')).toHaveLength(RUN_START.balls + KIT.balls);
+    expect(other.perks.kit?.benchXpShare).toBe(KIT.benchXpShare);
+    expect(other.tms).toHaveLength(1);
+    expect(content.tm(other.tms[0]!).compatibleSpecies).toContain('bulbasaur');
+    // The TM Case never hands over a TM the account has not opened.
+    expect(tmsFor(other, content).some((t) => t.id === other.tms[0])).toBe(true);
+    expect(other.money).toBe(base.money);
   });
 
-  it('ModifiersOpenByLevel_OrByTheTrack_§8.8.2', () => {
-    const ironWill = MODIFIERS.find((m) => m.id === 'iron-will')!;
-    expect(modifierUnlocked(emptyAccount(), ironWill)).toBe(false);
-    expect(modifierUnlocked({ ...emptyAccount(), xp: xpForLevel(3) }, ironWill)).toBe(true);
-    expect(modifierUnlocked({ ...emptyAccount(), modifiers: ['iron-will'] }, ironWill)).toBe(true);
+  it('EveryPerkAndServiceSaysWhatItIs', () => {
+    for (const row of Object.values(HUB_UPGRADE_LABEL)) {
+      expect(row.name.length).toBeGreaterThan(3);
+      expect(row.effect.length).toBeGreaterThan(10);
+    }
+    expect(SHELVES.kit.level).toBe(4);
+    expect(shelfOpen(emptyAccount(), 'starters')).toBe(false);
+  });
+});
+
+describe('The Pokédex — §5.13', () => {
+  it('Familiar_ByKnockOuts_PaysItsXpOnce', () => {
+    expect(dexTierFor(DEX_FAMILIAR.common - 1, 'common')).toBe(0);
+    expect(dexTierFor(DEX_FAMILIAR.common, 'common')).toBe(1);
+    const a = seasoned();
+    a.dex.pidgey = { ...emptyDexEntry(), defeats: DEX_FAMILIAR[content.species('pidgey').rarity] - 1, encounters: 3 };
+    a.achievements.unlocked.push('acquaintance');
+    const { state, delta } = fold(a, win({ defeated: ['pidgey'], enemies: ['pidgey'] }));
+    expect(state.dex.pidgey!.tier).toBe(1);
+    expect(delta.dexPromotions).toEqual([{ speciesId: 'pidgey', tier: 1 }]);
+    expect(delta.xpBy.pokedex).toBeGreaterThan(0);
+    expect(fold(state, win({ defeated: ['pidgey'], enemies: ['pidgey'] })).delta.dexPromotions).toEqual([]);
+  });
+});
+
+describe('Older saves — §8.10', () => {
+  it('AnAccountFromBeforeTheRework_IsReset_WithASaltOfItsOwn', () => {
+    const old = { version: 3, xp: 12_000, tokens: 40, hub: ['twin-run'] } as never;
+    const fresh = upgradeAccount(old, 4242);
+    expect(fresh).toEqual(emptyAccount(4242));
+    expect(fresh.version).toBe(ACCOUNT_VERSION);
+    const current = emptyAccount(5);
+    current.xp = 900;
+    expect(upgradeAccount(current)).toBe(current);
+  });
+
+  it('applyAccountEvent_IsPure', () => {
+    const a = seasoned();
+    const snapshot = structuredClone(a);
+    applyAccountEvent(a, win({ kind: 'trainer', activeSpecies: ['charmander'] }), ctx);
+    expect(a).toEqual(snapshot);
   });
 });

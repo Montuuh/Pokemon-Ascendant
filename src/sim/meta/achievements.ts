@@ -1,5 +1,7 @@
 import type { ContentRegistry } from '../content/defs';
-import { MAX_BOND_RANK } from './bond';
+import { BOND_TIER } from './bond';
+import { LEAGUE } from '../run/league';
+import { ladderRungOf } from './ladder';
 import type { CombatOutcomeReport, RunState, CombatTally } from '../run/types';
 import { boxCapacity } from '../run/run';
 
@@ -14,6 +16,8 @@ import { boxCapacity } from '../run/run';
 // **The sim stays pure.** Nothing here reads or writes storage and nothing subscribes to anything: the run
 // layer produces *events*, this file folds them into progress, and the app layer persists the result. That
 // is what makes a ten-run streak testable in a millisecond instead of ten runs.
+//
+// **Every entry hands something over** (v0.9.110): Tokens by its medal and a named prize — `journal.ts`.
 //
 // **The catalogue is fifty and v0.5 ships ten.** The other forty need Trainer XP, Tokens, the Pokédex tiers,
 // Mastery moves or Regions 2 and 3. They arrive with those systems rather than shipping as rows that can
@@ -45,16 +49,25 @@ export type MetaEvent =
       caughtSpecies?: string;
       /** §5.14 — enemy species that took the field shiny. */
       shinies?: string[];
+      /** §6.8.1 — the species waiting in the Box, which share a Gym's Bond. */
+      boxSpecies?: string[];
     }
   | { t: 'recruit'; speciesId: string; boxFull: boolean; /** §5.14 — the recruit is a shiny. */ shiny?: boolean; /** §8.3.2 — the first of this species this run. */ firstThisRun?: boolean; /** §8.6.1 Lure Module — recruits so far this Region. */ recruitsThisRun?: number }
   | { t: 'evolution'; uid: string; /** §8.9 — the species it evolved from, for that species' record. */ fromSpeciesId?: string; toSpeciesId: string }
-  | { t: 'badge-awarded'; badgeId: string }
+  | { t: 'badge-awarded'; badgeId: string; /** §6.8.5 — the Active Team that won it, for the Gym Ribbon. */ activeSpecies?: string[] }
   | { t: 'relic-acquired'; relicId: string; heldCount: number }
-  | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number; /** §8.6.1 Phoenix Feather — the Region the run ended in (0-based). */ regionIndex?: number; /** §8.3.4 — the ₽ the run ended with, which becomes Tokens. */ moneyLeft?: number; /** §8.7 Underdog — no Pokémon in the Active Team at its final form. */ noneFullyEvolved?: boolean }
+  | { t: 'run-end'; won: boolean; catches: number; badges: number; /** §8.3.2 — for the failed-run formula. */ layersCleared?: number; activeSpecies?: string[]; modifierCount?: number; /** §8.6.1 Soothe Bell — a Trauma Salve was taken this run. */ usedSalve?: boolean; /** §8.7 Monotype Master — the Active Team shared one first type. */ monoType?: boolean; /** §8.7 Minimalist — relics held at the end. */ relicCount?: number; /** §8.6.1 Phoenix Feather — the Region the run ended in (0-based). */ regionIndex?: number; /** §8.3.4 — the ₽ the run ended with, which becomes Tokens. */ moneyLeft?: number; /** §8.7 Underdog — no Pokémon in the Active Team at its final form. */ noneFullyEvolved?: boolean; /** §6.8.1 — the species waiting in the Box. */ boxSpecies?: string[]; /** §6.8.5 — the run reached the League. */ reachedLeague?: boolean; /** §8.8.5 — the League Ladder rung the run was played on; 0 off the ladder. */ ladderRung?: number; /** §8.15 — a won run's record for the Hall of Fame. */ hall?: { seed: number; starter: string; team: HallTeamMember[]; badges: string[]; relics: string[] } }
   /** §5.13.1 — a species reached Familiar. Raised by the account fold, never by the run diff. */
   | { t: 'dex-tier-up'; speciesId: string; tier: 1 }
   /** §6.8.2 — a line crossed a Bond rank. Raised by the account fold. */
   | { t: 'bond-rank-up'; line: string; rank: number };
+
+/** §8.15 — one Pokémon of a Hall of Fame team. */
+export interface HallTeamMember {
+  speciesId: string;
+  level: number;
+  shiny?: boolean;
+}
 
 export interface AchievementDef {
   id: string;
@@ -86,7 +99,7 @@ export interface AchievementProgress {
 export const emptyProgress = (): AchievementProgress => ({ counts: {}, species: [], winStreak: 0, unlocked: [] });
 
 /** §8.7.0 — the reward band. Tokens and Trainer XP are v0.6; the tier is what the medal shows today. */
-export const MEDAL_XP: Record<MedalTier, number> = { bronze: 75, silver: 200, gold: 325, platinum: 450 };
+export const MEDAL_XP: Record<MedalTier, number> = { bronze: 25, silver: 50, gold: 100, platinum: 200 };
 
 /**
  * §8.7.1.1 — the rows whose trigger exists: ten in v0.5, fourteen more with v0.6's account (the Pokédex
@@ -148,22 +161,22 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     count: (e) => (e.t === 'dex-tier-up' && e.tier === 1 ? 1 : 0),
   },
   {
-    // #19 — Bond rank 3 (Veteran) with ten lines.
+    // #19 — Deep Bond (the Mastery Move) with ten lines.
     id: 'veteran-trainer', category: 'mastery', name: 'Veteran Trainer', tier: 'silver', goal: 10,
-    description: 'Reach Veteran Bond with ten lines.',
-    count: (e) => (e.t === 'bond-rank-up' && e.rank === 3 ? 1 : 0),
+    description: 'Reach Deep Bond with ten lines.',
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === BOND_TIER.mastery ? 1 : 0),
   },
   {
-    // #20 — Bond rank 5 with one line.
+    // #20 — Soulbound with one line.
     id: 'specialist', category: 'mastery', name: 'Specialist', tier: 'gold', goal: 1,
     description: 'Reach Soulbound with one line.',
-    count: (e) => (e.t === 'bond-rank-up' && e.rank === MAX_BOND_RANK ? 1 : 0),
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === BOND_TIER.soulbound ? 1 : 0),
   },
   {
-    // #21 — Bond rank 5 with ten lines.
+    // #21 — Soulbound with ten lines.
     id: 'living-pokedex', category: 'mastery', name: 'Living Pokédex', tier: 'platinum', goal: 10,
     description: 'Reach Soulbound with ten lines.',
-    count: (e) => (e.t === 'bond-rank-up' && e.rank === MAX_BOND_RANK ? 1 : 0),
+    count: (e) => (e.t === 'bond-rank-up' && e.rank === BOND_TIER.soulbound ? 1 : 0),
   },
   {
     // #22 — a shiny joins the Box (§5.14). Hidden: a find, not a goal printed on the wall.
@@ -320,6 +333,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
   if (report) {
     const faints = report.team.filter((t) => t.fainted).length;
     const activeSpecies = before.activeUids.map((uid) => before.box.find((m) => m.uid === uid)?.speciesId).filter((s): s is string => !!s);
+    const boxSpecies = before.box.filter((m) => !before.activeUids.includes(m.uid)).map((m) => m.speciesId);
     events.push({
       t: 'combat-end',
       outcome: report.outcome,
@@ -336,6 +350,7 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
       enemies: report.enemies ?? [],
       ...(report.caught ? { caughtSpecies: report.caught.speciesId } : {}),
       ...(report.shinies?.length ? { shinies: report.shinies } : {}),
+      boxSpecies,
     });
   }
 
@@ -356,7 +371,8 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
     if (was && was.speciesId !== mon.speciesId) events.push({ t: 'evolution', uid: mon.uid, fromSpeciesId: was.speciesId, toSpeciesId: mon.speciesId });
   }
 
-  for (const id of after.badges) if (!before.badges.includes(id)) events.push({ t: 'badge-awarded', badgeId: id });
+  const teamOf = (run: RunState) => run.activeUids.map((uid) => run.box.find((m) => m.uid === uid)?.speciesId).filter((s): s is string => !!s);
+  for (const id of after.badges) if (!before.badges.includes(id)) events.push({ t: 'badge-awarded', badgeId: id, activeSpecies: teamOf(after) });
 
   for (const id of after.relics) {
     if (!before.relics.includes(id)) events.push({ t: 'relic-acquired', relicId: id, heldCount: after.relics.length });
@@ -378,6 +394,20 @@ export function metaEventsFor(before: RunState, after: RunState, content: Conten
       regionIndex: after.regionIndex,
       moneyLeft: after.money,
       noneFullyEvolved: activeSpecies.length > 0 && activeSpecies.every((id) => content.species(id).evolvesTo.length > 0),
+      boxSpecies: after.box.filter((m) => !after.activeUids.includes(m.uid)).map((m) => m.speciesId),
+      reachedLeague: after.regionIndex >= LEAGUE.regionIndex,
+      ladderRung: ladderRungOf(after.modifiers),
+      ...(after.outcome === 'victory'
+        ? {
+            hall: {
+              seed: after.seed,
+              starter: after.starter,
+              team: after.activeUids.map((uid) => after.box.find((m) => m.uid === uid)).filter((m): m is NonNullable<typeof m> => !!m).map((m) => ({ speciesId: m.speciesId, level: m.level, ...(m.shiny ? { shiny: true } : {}) })),
+              badges: [...after.badges],
+              relics: [...after.relics],
+            },
+          }
+        : {}),
     });
   }
 

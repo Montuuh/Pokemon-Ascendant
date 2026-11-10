@@ -11,6 +11,7 @@
 ---
 
 > **Rewards/status digest refreshed 2026-10-30:** Safari first-catch equipment gift, useful equipment access and bounded control (§2.11.6, §7.4.1, §4.2).
+> **Meta digest rewritten 2026-11-10:** the meta-progression rework (§8, §6.8) in v0.9.110 — the Field Report, the Rank, the vault and Oak's Parcels, the Journal, the lobby that fills, the Badge Case, the Trainer Kit, the League Ladder.
 > **Relic digest refreshed 2026-11-04:** the relic balance pass — power bands, Gem curation, five relics that never fired (§7.3, §8.6.3) in v0.9.97; rarity re-tiered by power in v0.9.98.
 > **Combat digest refreshed 2026-11-03:** the move keywords and the 3-AP ceiling (§3.11, §4.3.15, §5.2.1) in v0.9.89.
 > **Enemy/Gym digest refreshed 2026-11-02:** irreversible phases and declared ace signatures (§5.8.3,
@@ -348,13 +349,14 @@ R3 Psychic/Ground/Fighting/Ice. **12 Badges, 3 per run, max 4.**
 **Pokédex** — cross-run knowledge about the species you fight. **Familiar** (10/5/2 knock-outs by rarity)
 reveals Unknown intents from turn one, and is the only tier. Catching awards no kill credit.
 
-**Bond** (§6.8, 2026-09-21, re-paced v0.9.1) — per *line*, filled by playing it: +1 per won trainer or Elite
+**Bond** (§6.8, 2026-09-21, six ranks since v0.9.110) — per *line*, filled by playing it: +1 per won trainer or Elite
 fight in the Active Team (+1 leading), +4 a Gym, nothing for a wild fight, +5 per evolution, +2 a first recruit,
-+10 a shiny recruit, +8 finishing a run, +15 winning one. **Four ranks, linear, 100 each (v0.9.1)** — about 5 / 11 / 16 / 21
-runs for a line played every run: **Companion** the Shiny Charm (every new copy may be shiny, ×3 in the wild) ·
-**Trusted** the hidden ability (the line's third authored one, greyed at the Dojo until then) · **Deep Bond** the whole
-Mastery Move at once (the fifth card at every stage) · **Soulbound** the line may start a run (a line that already
-could — a default or Mart starter — has its starter always shiny instead).
++10 a shiny recruit, +8 finishing a run, +15 winning one; **the Box shares half** of a Gym's and a run's end's.
+**Six ranks at 20 · 60 · 120 · 200 · 300 · 420** — about 1 / 3 / 6 / 10 / 15 / 21 runs for a line played every run:
+**Acquainted** you know it (its species count as Familiar) · **Companion** the Shiny Charm (×3 in the wild) ·
+**Trusted** the hidden ability · **Deep Bond** the whole Mastery Move at once · **Soulbound** the line may start a run
+(a starter line starts shiny instead) · **Partner** it walks the lobby and starts a run one level higher.
+**Ribbons** (§6.8.5), four a line, pinned once: Gym · League · Champion · Ladder.
 
 **Shiny** (§5.14, v0.9.1) — found, not earned: every wild Pokémon rolls 1 in 40, unannounced until the fight's
 entrance; the Bond's Shiny Charm raises it. A caught shiny keeps its palette all run, pays its line +10 Bond and fills
@@ -428,7 +430,10 @@ tutor lists, no offer cap. The run's main money sink and its sculpting stop. Cen
 
 ## 8. Meta progression *(Topic 8)*
 
-**Failure is fuel · unlocks expand options, never power · Trauma is the in-run consequence.**
+**No run ends empty.** Every run, a Region 1 wipe included, hands over at least one thing with a name. Three clocks
+(this run · 3–5 runs · 20+) · progress has a face · the player chooses what to chase · **the fight is the same for
+everyone**, and the account changes only what a run *starts with*, through the Trainer Kit's slots · a defeat is
+paid in the same coin as a win · Trauma is the in-run consequence.
 
 **Trauma** — +1 stack per faint, per instance, run-scoped, carried through evolution, 0 on every recruit.
 Two-zone curve: **−5 %/stack for 1–5, −10 % for 6–10, floor −75 %**. Every heal *and* every DoT uses the
@@ -436,31 +441,48 @@ resulting **Effective Max HP** — a full heal restores your current ceiling, ne
 the Trauma Salve relic (all), Therapy at `100×(1+stacks)` ₽ (one), or the Daycare event (all). Sturdy and Last
 Stand prevent the faint, so they prevent the stack.
 
-**Two currencies.** **Trainer XP** is earned every run and never spent; it drives **Trainer Level**
-(`floor(330 × N^1.6)`, v0.9.2), which advances a **reward track** that **pays Tokens at every level** (3; 6/6/10/10/12/12
-at the milestones; 125 by Level 30) and **opens the Poké Mart's shelves** at 2/4/6 — every shelf inside the first ten
-runs. **Trainer Tokens** also come from Gold (+2) and Platinum (+5) achievements and from **the ₽ a run ends with**
-(200 ₽ a Token, at most 5 a run, v0.9.2), and buy **everything on an open shelf**. XP decides what is for sale; Tokens
-decide what you take home. The whole shop (~134) is about sixty runs of income (`balance/accountCareer.test.ts`).
+**Trainer XP** — earned every run, never spent, one number with three jobs: the **Trainer Rank**, **Research**
+toward the next Oak's Parcel, and — at the run's end — **Tokens**. Sources: fight 5 · first recruit 10 · evolution
+15 · Gym 50 (+100 the first time that Badge is ever won) · a species never met 5 · Familiar 25 · a Journal entry
+25/50/100/200 · a Field Note 25 · a lost run 50 a layer, capped 400.
+**Trainer Rank** (§8.3.3) — nine, each with a face: Rookie 300 (Oak's aide) · Trainer 1 000 (the Mart clerk) ·
+Challenger 2 200 (Kit slot 1) · Ace 3 800 (slot 2) · Veteran 6 000 (parcels show four) · Expert 9 500 (slot 3) ·
+Elite 14 500 · Master 22 000; purses 5–50 Tokens. Measured: ranks 2 · 3 · 4 · 5 · 6 · 7 · 8 after runs
+1 · 2 · 3 · 6 · 10 · 16 · 25 (`balance/accountCareer.test.ts`).
+**Tokens** — one wallet: 1 per 80 XP of the run and 1 per 100 ₽ left (max 10) at its end, rank purses, Journal
+medals 2/5/10/20, a Ladder rung 15. Spent at the Mart on the account's own things; the world's content is never sold.
+**The Field Report** (§8.3.6) — the run's end as six panels beside the last team: the tally · Research and the
+parcel (opened there) · the Rank · Bond per line · everything earned, by name · what to chase next.
 
-**Hub** — PC Terminal (Pokédex · Medals · relic discoveries; the Pokédex is the one book: cards that open a sheet with
-Record · Kit · the line's Bond, §8.9.2, and a per-species record, §8.9.1; all 155 species (the 151 of Gen I and the four Dark and Steel evolutions) are in the book, and an unmet one is a silhouette, "???" and no types until any trace of it lands on the account — 2026-09-23), Trainer Card, Poké Mart (from the
-start), and the door to the Elite Four that starts a run — all as the Indigo Plateau Pokémon Center lobby, a FRLG room
-(v0.9.2, §8.4); the Daycare Lady and the Mystery Door are gone.
-**Poké Mart shelves** — Trainer's Corner Lv 1 (titles 2, avatars 3, frames 2, Curated Starting Relic +1 3) ·
-Starters Lv 2 (Magikarp 4, Eevee 6, Pikachu 6 — sold since v0.7.3, holding a Light Ball) · Hub upgrades Lv 4 (4–8) · Mastery
-lane Lv 6 (Tier-3, 5). 7 Hub upgrades, all QoL; the Apex Reveal (4) names Victory Road's Legendary on entering Region 3.
-**Starters** — 3 default + 3 meta bought at the Mart; any Soulbound line (Bond rank 4) for free; a Soulbound starter line always starts shiny.
-**Relics** — 65 = 59 drop-pool + 6 Legendary. Meta tiers T1 20 / T2 20 event-unlocked, never sold / T3 10
-Token-bought; tier ≠ rarity. Drop weight 60/30/10.
-**Achievements** — 50, four medal tiers, ~20 % hidden, 20 grant Tokens, every one with a named trigger event.
-**Difficulty** — 10 stackable modifiers multiplying run XP; **no easier mode**; baseline is the floor. Each
-opens at a Trainer Level (§8.8.2) and only there — the track pays Tokens and opens shelves, nothing else.
+**The vault** (§8.6.1) — a new account holds back 55 entries: 20 relics (8 C / 8 U / 4 R; every rarity keeps more
+than half open), 6 held-item cards (the sixteen Plates as one), 14 TMs, 3 Mystery events — and 12 Leaders' TMs.
+Never locked: species, Legendary relics, consumables.
+**Oak's Parcels** (§8.6.2) — a full Research bar (300 for the first ten, then 450) is a parcel: three cards from
+the vault (four from Veteran), keep one. Also from Silver+ Journal entries, Ladder rungs and Oak's aide.
+**Trainer Journal** (§8.7) — one book, three shelves: Field Notes (19, the relic that carries the deed opens),
+Challenges and Milestones (50 medals in the catalogue). No entry pays only a number: Bronze an avatar, Silver and
+Gold a parcel or a trophy, Platinum two. Up to three pinned; the pinned lead the Field Report's "Next time".
 
-*(Section reflects canon as of 2026-09-21 evening: the track pays and opens, the Mart sells (§8.3.4–§8.3.5,
-§8.4.4 cosmetics); the track settles idempotently, the account is written after every fold in the browser,
-Pokédex Insight is a first-meeting peek at species not yet Familiar (§8.4.2), and Shiny is the official palette
-fetched rather than a hue-shift — §5.14.)*
+**Hub** — the Indigo Plateau lobby, a FRLG room that **fills** (§8.4.6): the nurse (Trainer Card: rank, four stars,
+rank road, Badge Case), the PC (Pokédex with Bond and Ribbons; Hall of Fame), the Item Guide (locks shown) and the
+League door from day one; Oak's aide at Rookie, the Mart at Trainer, the Trainer Kit at Challenger; every Leader
+beaten stands in the room, and Partner lines walk it.
+**Poké Mart** — Starters (Magikarp 25, Eevee 35, Pikachu 35) · Services (Expanded Box 40, Modifier Slot 50, Twin
+Run 70) · Trainer Kit (seven perks, 15–25) · Trainer's Corner (titles 6, avatars 8). About 480 Tokens.
+**Trainer Kit** (§8.4.5) — perks packed into 1–3 slots: Mom's Allowance, First-Aid Pouch, TM Case, Curated
+Starting Relic, Pokédex Insight, Salve Cache, Apex Reveal (Mart); Ball Case, Exp. Share, Head Start (Oak's aide at
+25 / 50 / 110 species owned). Slots, not stacks; never the fight's maths; a full Kit ≤ +8 points of run win rate.
+**Starters** — 3 default + 3 at the Mart; any Soulbound line (Bond rank 5) for free; a Soulbound starter line always starts shiny.
+**Badge Case** (§8.14) — twelve Leaders; a first Badge goes on the card, opens the Leader's TM, pays +100 XP and
+brings the Leader to the lobby.
+**Difficulty** — 10 modifiers multiplying run XP; **no easier mode**. **League Ladder** (§8.8.5): ten rungs opened
+by the first Champion, rung N stacks the first N modifiers; a rung won opens the next, frees its modifier for
+custom runs and pays 15 Tokens and a parcel. One ladder for the account.
+**Hall of Fame and stars** (§8.15) — every won run kept (team, relics, rung); four stars: Champion · every Badge ·
+every species met · the Ladder's top.
+
+*(Section reflects canon as of 2026-11-10, the meta-progression rework of v0.9.110: blank slate, the user's call.
+Account v4 is a reset.)*
 
 ---
 

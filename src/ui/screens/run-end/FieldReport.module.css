@@ -1,0 +1,285 @@
+/* §8.3.6 — the Field Report: six panels, all on the screen at rest; motion only decides when each one arrives. */
+.root {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--sp-3);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.title {
+  margin: 0;
+  font-size: var(--type-h2);
+}
+.skip,
+.open,
+.later {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  cursor: pointer;
+}
+.later {
+  justify-self: center;
+}
+.open {
+  justify-self: start;
+  border-color: var(--accent-action-deep);
+  background: var(--accent-action);
+  color: var(--ink-on-accent);
+}
+.skip:focus-visible,
+.open:focus-visible,
+.later:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, max-content));
+  align-content: center;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.panel {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.panelTitle {
+  margin: 0;
+  font-size: var(--type-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.quiet {
+  margin: 0;
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+/* The tally. */
+.tally {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+  font-size: var(--type-caption);
+}
+.tally div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.tally dt {
+  color: var(--ink-secondary);
+}
+.tally dd {
+  margin: 0;
+}
+.totalXp {
+  font-size: var(--type-h3);
+  color: var(--brand-red-deep);
+}
+
+/* A bar that fills from where the run found it. */
+.meter {
+  display: grid;
+  gap: var(--sp-1);
+}
+.meterText {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.bar {
+  position: relative;
+  display: block;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.barFrom,
+.barFill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+}
+.barFrom {
+  background: var(--accent-action-deep);
+}
+.barFill {
+  background: var(--accent-action);
+  opacity: 0.85;
+  transition: transform var(--motion-slow) ease-out;
+}
+.parcelLine,
+.rankUp {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--type-body);
+}
+
+/* Bond, a row per line. */
+.bonds,
+.prizes,
+.goals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.bonds li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-2);
+}
+.bondBody {
+  display: grid;
+  gap: 2px;
+}
+.bondHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+}
+.bondPts {
+  margin-left: auto;
+}
+.bondUp,
+.bondRank {
+  font-size: var(--type-caption);
+  color: var(--ink-primary);
+}
+.bondRank {
+  color: var(--ink-secondary);
+}
+
+/* What the run handed over. */
+.prizes li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--type-small);
+}
+.prizeIcon {
+  display: grid;
+  place-items: center;
+  color: var(--ink-secondary);
+}
+.tokens {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding-top: var(--sp-2);
+  border-top: 2px solid var(--border-subtle);
+  font-size: var(--type-body);
+}
+.moneyDot {
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+
+/* Next time. */
+.goals li {
+  display: grid;
+  gap: 2px;
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--border-subtle);
+}
+.goals li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.goalHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--type-small);
+}
+.goalCount {
+  color: var(--ink-secondary);
+}
+.goalDesc,
+.goalPrize {
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}
+
+/* The parcel, opened over the report. */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--scrim);
+  animation: global(scrimIn) var(--motion-fast) ease-out both;
+}
+.parcelSheet {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: calc(var(--z-modal) + 1);
+  display: grid;
+  gap: var(--sp-4);
+  width: min(1040px, calc(100vw - 2 * var(--sp-5)));
+  max-height: calc(100vh - 2 * var(--sp-5));
+  overflow-y: auto;
+  padding: var(--sp-5);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  background: var(--surface-0);
+  color: var(--ink-primary);
+  box-shadow: var(--shadow-modal);
+  animation: global(sheetIn) var(--motion-base) var(--ease-step) both;
+}
+
+
+/* A narrow window stacks the report in two columns and lets it scroll as a whole. */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+  }
+  .panel {
+    overflow-y: visible;
+  }
+}

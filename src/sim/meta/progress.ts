@@ -1,11 +1,9 @@
 import type { ContentRegistry } from '../content/defs';
 import type { AccountState } from './account';
 import { ACHIEVEMENTS, type MedalTier } from './achievements';
-import { discoverableRelics, discoveryProgress } from './unlocks';
-import { RELIC_UNLOCKS_ON } from './account';
 
-// §8.7 / §8.6.1 — what a fold of the account moved, as notes the screen can show (v0.9.6): a medal that crept
-// forward, one that completed, a Tier-2 relic's discovery counter that rose, one that was discovered. Derived by
+// §8.7 — what a fold of the account moved in the Journal, as notes the screen can show (v0.9.6): a medal that
+// crept forward, one that completed, a Field Note's counter that rose, one that was written up. Derived by
 // comparing two account states, so it can never disagree with what the account actually holds.
 
 export type ProgressNote =
@@ -23,17 +21,15 @@ export function progressNotes(before: AccountState, after: AccountState, content
     if (to <= from || (a.hidden && !done)) continue;
     notes.push({ kind: 'achievement', id: a.id, name: a.name, tier: a.tier, from, to, goal: a.goal, done });
   }
-  // §8.6.1 — no discovery notes while relic unlocks are off: there is nothing to discover.
-  for (const id of RELIC_UNLOCKS_ON ? discoverableRelics(content) : []) {
-    if (before.relics.includes(id)) continue;
-    const r = content.relic(id);
-    const was = discoveryProgress(before, r);
-    const now = discoveryProgress(after, r);
-    if (!was || !now) continue;
-    const done = after.relics.includes(id);
-    const to = done ? now.goal : now.have;
-    if (to <= was.have) continue;
-    notes.push({ kind: 'discovery', id, name: r.name, text: now.text, from: was.have, to, goal: now.goal, done });
+  // §8.7.1 — Field Notes: the deed's counter, capped at its goal.
+  for (const r of content.allRelics()) {
+    if (!r.discovery || r.pending || before.notes.includes(r.id)) continue;
+    const have = (s: AccountState) => Math.min(r.discovery!.goal, s.counters[r.discovery!.counter] ?? 0);
+    const done = after.notes.includes(r.id);
+    const from = have(before);
+    const to = done ? r.discovery.goal : have(after);
+    if (to <= from) continue;
+    notes.push({ kind: 'discovery', id: r.id, name: r.name, text: r.discovery.text, from, to, goal: r.discovery.goal, done });
   }
   return notes;
 }

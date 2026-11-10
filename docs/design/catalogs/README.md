@@ -32,7 +32,7 @@
 | `abilities.md` | 38 abilities (12 hooked in v0.1) with hook classification | §6.5, §6.6, §6.5.1 | v0.3 |
 | `mastery-moves.md` | Mastery Lv1–Lv3 per line + unlock achievements | §5.13.2, §6.8 | v0.6 |
 | `consumables.md` | 24 launch consumables + balls + Defog + Evolution Items (new class) | §7.2, §2.6.4, §6.3.2 | v0.1 (11) / v0.4 |
-| `relics.md` | 50 drop-pool + 10 Legendary, with meta tiers and Tier-2 unlock criteria | §7.3, §8.6 | v0.4 |
+| `relics.md` | The relic catalogue, with each Field Note's criterion (§5; the old meta tiers are superseded by `vault.md`) | §7.3, §8.6, §8.7.1 | v0.4 |
 | `held-items.md` | 32 held items | §7.4 | v0.4 |
 | `tms.md` | 15 TMs with compatibility lists | §7.5, §6.4.1 | v0.3 |
 | `trainers.md` | 8 archetypes × 3 regions, rosters, rewards, sprites, lines | §2.7 | v0.2 |
@@ -40,7 +40,8 @@
 | `elites.md` | Elite Trainer roster (Rival / Giovanni / Specialists) + Elite Wilds per region | §2.8 | v0.4 |
 | `mystery-events.md` | 12 canon + 10 proposed events, choices as effect data | §2.10 | v0.4 |
 | `modifiers.md` | 12 badges · 17 region modifiers · 10 difficulty modifiers, each as a hook | §5.10, §2.11.3, §8.8 | v0.4–v0.5 |
-| `achievements.md` | 50 achievements with trigger events | §8.7 | v0.5 (10) / v0.6 |
+| `achievements.md` | 50 achievements with trigger events; the prizes are in `src/sim/meta/journal.ts` | §8.7 | v0.5 (10) / v0.6 |
+| `vault.md` | 55 vault entries: what a new account has not opened, and how each opens | §8.6.1, §8.14 | v0.9.110 |
 | `biomes-regions.md` | 8 biomes, 3 regions, encounter weights, level bands, palettes | §2.6.1, §2.13 | v0.2 |
 | `field-effects.md` | 4 fields + Home Field per type | §4.3 | v0.7 |
 | `egg-moves.md` | Up to three egg moves per line, sold by the Dojo's third counter | §2.9.4.2 | v0.7.9 |

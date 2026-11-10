@@ -58,7 +58,7 @@ const SCREENS = {
   ])),
   ...Object.fromEntries(['victory', 'defeat'].flatMap((outcome) => [
     [outcome, { url: '/?screen=menu', setup: endingSetup(outcome), match: [/screens\/RunEndScreen/, /screens\/run-end\//] }],
-    [`${outcome}-record`, { url: '/?screen=menu', setup: endingSetup(outcome), clicks: ['btn-run-record'], match: [/screens\/RunEndScreen/, /screens\/run-end\//, /hub\/AccountSummary/] }],
+    [`${outcome}-record`, { url: '/?screen=menu', setup: endingSetup(outcome), clicks: ['btn-run-record'], match: [/screens\/RunEndScreen/, /screens\/run-end\//] }],
   ])),
   // A16–A18 — complete move cells, overworld node registers and every physical market counter.
   'move-art-window': { url: '/?scenario=wild-basic&seed=7', ready: 'combat-screen', setup: ['hand(["flash", "fire-blast", "skull-bash", "surf", "barrier"])'], match: [/components\/MoveCard/] },
@@ -76,8 +76,14 @@ const SCREENS = {
   // §6.3.7 (v0.9.90) — a line's methods on the Pokédex: Eevee's stones and Friendship, Kadabra's held item.
   'hub-pc-eevee-line': { url: '/?screen=hub', setup: ['meta.record([{ t: "combat-end", outcome: "victory", kind: "wild", damageTaken: 0, manualSwaps: 0, faints: 0, defeated: ["kadabra", "umbreon"], enemies: ["kadabra", "umbreon"], activeSpecies: ["eevee"], leadTurns: { eevee: 3 } }])'], clicks: ['kiosk-pc', 'dex-eevee', 'dex-sheet-tab-line'], match: [/hub\/(LineSheet)/, /components\/BranchCard/] },
   'hub-pc-kadabra-line': { url: '/?screen=hub', setup: ['meta.record([{ t: "combat-end", outcome: "victory", kind: "wild", damageTaken: 0, manualSwaps: 0, faints: 0, defeated: ["kadabra", "alakazam"], enemies: ["kadabra", "alakazam"], activeSpecies: ["abra"], leadTurns: { abra: 3 } }])'], clicks: ['kiosk-pc', 'dex-kadabra', 'dex-sheet-tab-line'], match: [/hub\/(LineSheet)/, /components\/BranchCard/] },
-  'hub-mart': { url: '/?screen=hub', setup: ['meta.tokens(9)'], clicks: ['kiosk-mart'], match: [/hub\/(PokeMart|frames)/] },
-  'hub-card': { url: '/?screen=hub', setup: ['meta.xp(3000)'], clicks: ['kiosk-card'], match: [/hub\/(TrainerCard|RewardTrack|trackText)/] },
+  'hub-mart': { url: '/?screen=hub', setup: ['meta.rank(5)', 'meta.tokens(60)'], clicks: ['kiosk-mart'], match: [/hub\/(PokeMart|frames)/] },
+  'hub-card': { url: '/?screen=hub', setup: ['meta.xp(3000)', 'meta.patch((a) => { a.badges = ["boulder-badge", "volcano-badge", "marsh-badge"]; a.stats.wins = 1; })'], clicks: ['kiosk-card'], match: [/hub\/(TrainerCard|RewardTrack|trackText|Journey\.module)/] },
+  // §8.4.6 — the lobby once it has filled: every door, four Leaders and a Partner.
+  'hub-full': { url: '/?screen=hub', setup: ['meta.rank(5)', 'meta.parcels(2)', 'meta.patch((a) => { a.badges = ["boulder-badge", "cascade-badge", "volcano-badge", "marsh-badge"]; a.bond = { charmander: 430 }; })'], match: [/screens\/HubScreen/, /hub\/lobby/] },
+  'hub-aide': { url: '/?screen=hub', setup: ['meta.rank(2)', 'meta.parcels(2)'], clicks: ['kiosk-aide'], match: [/hub\/(OakAide|Journey\.module)/] },
+  'hub-journal': { url: '/?screen=hub', setup: ['meta.rank(2)'], clicks: ['kiosk-aide', 'aide-tab-journal'], match: [/hub\/(OakAide|Journey\.module)/] },
+  'hub-kit': { url: '/?screen=hub', setup: ['meta.grantHub("moms-allowance", "exp-share")'], clicks: ['kiosk-kit'], match: [/hub\/(TrainerKit|Journey\.module)/] },
+  'hub-hall': { url: '/?screen=hub', setup: ['meta.patch((a) => { a.hall = [{ run: 12, rung: 1, seed: 7, starter: "charmander", team: [{ speciesId: "charizard", level: 52 }, { speciesId: "pidgeot", level: 50, shiny: true }, { speciesId: "gyarados", level: 49 }], badges: ["boulder-badge", "volcano-badge", "marsh-badge"], relics: ["coin-pouch", "exp-share"] }]; })'], clicks: ['kiosk-pc', 'pc-tab-hall'], match: [/hub\/(PcTerminal|Journey\.module)/] },
   'center-full-box': { url: '/?screen=menu', setup: ['run.new("squirtle", 7)', 'run.patch((d) => { d.perks.boxBonus = 3; })', 'run.grantRelic("box-expander")', 'run.fill(11)', 'run.fill(11)', 'run.city(1)', 'run.trauma(3)', 'run.patch((d) => { d.box[0].hp = 1; d.box[1].hp = 0; })'], clicks: ['door-center'], match: [/screens\/CenterScreen/] },
   'team-evolution': { url: '/?screen=menu', setup: ['run.new("eevee", 7)', 'run.levelTo(11)', 'run.grantStone("fire-stone")', 'run.city(0)', 'run.dispatch({ type: "use-stone", uid: a.run.state().box[0].uid, stoneId: "fire-stone" })', 'run.dispatch({ type: "defer-evolution", uid: a.run.state().box[0].uid })'], clicks: ['btn-team'], match: [/components\/TeamScreen/] },
   // §6.3.8–§6.3.9 (v0.9.90) — a Kadabra holding its spoon one level-up from Alakazam, a fond Eevee, the hearts.
@@ -244,7 +250,7 @@ const EXPECTED_ROOT = {
   'victory-road-wild': 'combat-screen', 'victory-road-gauntlet': 'combat-screen',
   victory: 'victory-screen', defeat: 'defeat-screen', 'victory-record': 'run-record', 'defeat-record': 'run-record',
   menu: 'main-menu', about: 'about-screen', changelog: 'changelog-screen', settings: 'settings-screen',
-  hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card',
+  hub: 'hub-screen', 'hub-pc': 'pc-terminal', 'hub-pc-sheet': 'pc-sheet', 'hub-mart': 'poke-mart', 'hub-card': 'trainer-card', 'hub-full': 'hub-screen', 'hub-aide': 'oak-aide', 'hub-journal': 'oak-aide', 'hub-kit': 'trainer-kit', 'hub-hall': 'pc-terminal',
   starter: 'starter-select', 'starter-shelf': 'starter-select', 'starter-veteran': 'starter-select', combat: 'combat-screen', 'combat-group': 'combat-screen', 'combat-field': 'combat-screen', 'combat-keywords': 'combat-screen', 'combat-combo': 'combat-screen', 'combat-perish': 'combat-screen', 'combat-hazards': 'combat-screen', 'combat-boss': 'combat-screen', 'combat-gym': 'combat-screen',
   'move-art-window': 'combat-screen', 'move-art-sound': 'combat-screen', 'move-art-impact': 'combat-screen', 'move-art-projectiles': 'combat-screen',
   map: 'map-screen', 'map-labels': 'map-screen', 'map-labels-end': 'map-screen', 'map-region-2-end': 'map-screen', 'map-region-2': 'map-screen', 'map-region-3': 'map-screen', 'map-victory-road': 'map-screen',

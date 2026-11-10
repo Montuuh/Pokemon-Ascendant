@@ -656,3 +656,19 @@
 .slotClear:focus-visible {
   color: var(--ink-primary);
 }
+
+/* §8.4.5, §8.7.2 — what the account sends with the run, one quiet line in the header. */
+.preflight {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-4);
+  font-size: var(--type-small);
+  color: var(--ink-secondary);
+}
+.preflight b {
+  margin-right: var(--sp-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+}

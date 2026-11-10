@@ -350,13 +350,13 @@ test('a full Region reaches the Gym, Pallet Town, and the road to Region 2', asy
   // A defeat is a legal run too; what must hold is that the summary is honest and the save is gone.
   await page.getByTestId('btn-run-record').click();
   await expect(page.getByTestId('run-record')).toContainText(/Nodes cleared|Depth reached/);
-  // §8.3 — and that the account was paid: a lost run pays by depth, so the XP line is never zero after a run
-  // that cleared a node. A run lost on the very first node has cleared none, and owes nothing.
-  await expect(page.getByTestId('account-summary')).toBeVisible();
+  await page.getByTestId('btn-close-run-record').click();
+  // §8.3.6 — and that the account was paid, on the screen: a lost run pays by depth, so the Field Report's XP is
+  // never zero after a run that cleared a node. A run lost on the very first node has cleared none, and owes nothing.
+  await expect(page.getByTestId('field-report')).toBeVisible();
   const cleared = await page.evaluate(() => window.__ascendant?.run.state()?.stats.nodesCleared ?? 0);
   const xpLine = await page.getByTestId('summary-xp').textContent();
   if (cleared > 0) expect(Number(xpLine?.replace(/[^0-9]/g, ''))).toBeGreaterThan(0);
-  await page.getByTestId('btn-close-run-record').click();
   await defeat.getByTestId('btn-end-continue').click();
   await expect(page.getByTestId('main-menu')).toBeVisible();
   await expect(page.getByTestId('btn-continue-run')).toHaveCount(0);

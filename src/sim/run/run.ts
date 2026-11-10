@@ -8,7 +8,7 @@ import { isImmuneToStatus } from '../combat/status';
 import { buildRingScenario, buildScenario, maxHpOf } from './encounter';
 import { generateRegion, WILD_RARE_CHANCE } from './map';
 import { ALL_GYMS, GYM, evolvedAt, gymById, regionContent, HELD_ITEM_DROP_CHANCE, RUN_START, TM_DROP_CHANCE } from './region';
-import { AID_HEAL_PCT, slotPrice, benchXpShare, floorRestockable, MONEY_REWARD, PRICES, offerPool, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
+import { AID_HEAL_PCT, slotPrice, benchXpShare, tmsFor, floorRestockable, MONEY_REWARD, PRICES, offerPool, ownedItems, relicMultiplier, rerollPrice, rollHeldItem, rollRelic, rollRelicOffer, rollShopStock, sellPrice, therapyPrice } from './economy';
 import { GROUP_BREATHER } from './groups';
 import { applyFieldItem, fieldUseRefusal } from './fieldItems';
 import { gymRelicOffer, RELIC_REWARD, rollFightSupplies, rollMixedOffer, serviceGift, drawSupplies, supplyLabel, pokeBalls } from './rewards';
@@ -27,7 +27,10 @@ import { BLACK_MARKET, candyPrice, fencePrice, rollBlackMarket, showcaseLevel, w
 import { SAFARI, canToss, endTurn, playerCanStand, rollHunt, rollSafari, step as safariStep, throwBall, throwOdds, tossBait, tossRock, walkDistance, type HuntEvent } from './safari';
 import { prizeLabel, spinReel } from './finds';
 import { applyBranch, autoPickMoves, befriend, DEFAULT_PROGRESSION, encounterXp, evolveMethod, grantXp, isEvolutionReady, learnMove, levelPush, levelXpFactor, readyBranches, stoneUse, stonesForBox, xpToNext, type ProgressionConfig } from './xp';
-import { BOND_TIER } from '../meta/bond';
+import { BOND_TIER, PARTNER_START_LEVELS } from '../meta/bond';
+import { lockedIds } from './locks';
+import { GameRng as KitRng } from '../rng/gameRng';
+import { fmix32 } from '../rng/rngStreams';
 import { copyIsShiny } from './shiny';
 import type { BlackMarketState, HealLine, LevelUp, MapNode, NodeKind, PartyMon, RingRung, RingState, RunAction, RunPerks, RunPhase, RunReduceResult, RunState, ShopSlot } from './types';
 
@@ -143,8 +146,15 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
   resetUidCounter();
   const streams = new RngStreams(seed);
   const mapRng = streams.get('MapRNG');
-  const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers, [], wildRareChance(regionModifier ?? null, ctx.content));
-  const starter = newPartyMon(starterId, RUN_START.starterLevel, ctx.content, seed, uidFor(seed, 1));
+  const map = generateRegion(mapRng, ctx.content, regionIndex, seed, modifiers, [], wildRareChance(regionModifier ?? null, ctx.content), [], perks.locked ?? []);
+  // §8.4.5 — the Trainer Kit: what the account packed changes what the run starts with, and nothing else.
+  const kit = perks.kit ?? {};
+  // §6.8.2 — a Partner line that starts the run begins a level higher.
+  const partner = (perks.bond?.[ctx.content.lineBase(starterId)] ?? 0) >= BOND_TIER.partner ? PARTNER_START_LEVELS : 0;
+  const starter = newPartyMon(starterId, RUN_START.starterLevel + (kit.starterLevels ?? 0) + partner, ctx.content, seed, uidFor(seed, 1));
+  // §8.4.5 TM Case — one TM the starter can learn, rolled on a stream of its own so a run without it is unchanged.
+  const caseTms = kit.tm ? tmsFor({ perks }, ctx.content).filter((t) => t.compatibleSpecies.includes(starterId) && !starter.pool.includes(t.move)) : [];
+  const caseTm = caseTms.length ? caseTms[new KitRng(fmix32((seed ^ fnv1a('KitTM')) >>> 0) || 1).range(0, caseTms.length)]!.id : null;
   // §5.14 / §6.8.2 — a Soulbound line starts the run shiny; under the Shiny Charm any other starter may be.
   if (copyIsShiny({ seed, perks }, starterId, 'starter', ctx.content)) starter.shiny = true;
   // §8.5.3 — the starter's flourish, if it has one (Pikachu's Light Ball).
@@ -166,11 +176,11 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     uidSeq: second ? 2 : 1,
     activeUids: second ? [starter.uid, second.uid] : [starter.uid],
     // §7.2.5 — the starting balls go in the bag with the rest of the kit (v0.8.6).
-    consumables: [...RUN_START.consumables, ...pokeBalls(RUN_START.balls)],
-    tms: [],
+    consumables: [...RUN_START.consumables, ...Array.from({ length: kit.potions ?? 0 }, () => 'potion'), ...pokeBalls(RUN_START.balls + (kit.balls ?? 0))],
+    tms: caseTm ? [caseTm] : [],
     stones: [],
     starter: starterId,
-    money: RUN_START.money,
+    money: RUN_START.money + (kit.money ?? 0),
     relics: [],
     relicsBought: 0,
     spentRelics: [],
@@ -194,7 +204,7 @@ export function createRun(starterId: string, seed: number, ctx: RunCtx, regionIn
     outcome: 'in-progress',
     cursors: { MapRNG: mapRng.cursor, EncounterRNG: streams.get('EncounterRNG').cursor, LootRNG: streams.get('LootRNG').cursor },
     stats: { nodesCleared: 0, combatsWon: 0, catches: 0, faints: 0, turnsPlayed: 0, recruits: 0, statusesTaken: 0, escapes: 0, startedAt: 0 },
-    perks: { ...perks, mastery: { ...perks.mastery }, bond: { ...(perks.bond ?? {}) }, familiar: [...perks.familiar], relicPool: perks.relicPool ? [...perks.relicPool] : null },
+    perks: { ...perks, mastery: { ...perks.mastery }, bond: { ...(perks.bond ?? {}) }, familiar: [...perks.familiar], relicPool: perks.relicPool ? [...perks.relicPool] : null, ...(perks.locked ? { locked: [...perks.locked] } : {}), ...(perks.kit ? { kit: { ...perks.kit } } : {}) },
     log: [second ? `A new run begins with ${ctx.content.species(starterId).name} and ${ctx.content.species(second.speciesId).name}.` : `A new run begins with ${ctx.content.species(starterId).name}.`],
     ...(startingRelic ? { relics: [startingRelic] } : {}),
   };
@@ -955,7 +965,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
           // §8.5.3 — an Eevee run's first Mystery node is the Stone Cache: a free stone, its choice of three.
           const cache = ctx.content.lineBase(draft.starter) === 'eevee' && !draft.seenEvents.includes(STONE_CACHE);
           // §2.10 (v0.9.107) — the place the map showed is the event it holds; a save from before rolls as it did.
-          draft.pendingEvent = cache ? STONE_CACHE : node.preview.event && !draft.seenEvents.includes(node.preview.event) ? node.preview.event : rollEvent(rng, draft.seenEvents);
+          draft.pendingEvent = cache ? STONE_CACHE : node.preview.event && !draft.seenEvents.includes(node.preview.event) ? node.preview.event : rollEvent(rng, draft.seenEvents, lockedIds(draft.perks, 'event'));
           draft.seenEvents.push(draft.pendingEvent);
           draft.cursors.EncounterRNG = rng.cursor;
           draft.phase = 'event';
@@ -1279,8 +1289,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         let tmDrop: string | null = null;
         if (node.kind === 'trainer' || node.kind === 'gym' || node.kind === 'elite') {
           const chance = node.kind === 'trainer' ? TM_DROP_CHANCE : 1;
-          const offer = ctx.content
-            .allTms()
+          const offer = tmsFor(draft, ctx.content)
             .filter((t) => draft.box.some((m) => t.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(t.move)));
           if (offer.length && lootRng.chance(chance)) {
             tmDrop = offer[Math.min(offer.length - 1, Math.floor(lootRng.range01() * offer.length))]!.id;
@@ -1358,7 +1367,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
             if (itemDrop) draft.bag.push(itemDrop);
           } else {
             const types = new Set(activeOf(draft).flatMap((m) => ctx.content.species(m.speciesId).types));
-            const offer = ctx.content.allTms().filter((t) => types.has(ctx.content.move(t.move).type) && draft.box.some((m) => t.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(t.move)));
+            const offer = tmsFor(draft, ctx.content).filter((t) => types.has(ctx.content.move(t.move).type) && draft.box.some((m) => t.compatibleSpecies.includes(m.speciesId) && !m.pool.includes(t.move)));
             if (offer.length) {
               tmDrop = offer[Math.min(offer.length - 1, Math.floor(lootRng.range01() * offer.length))]!.id;
               draft.tms.push(tmDrop);
@@ -2022,7 +2031,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         mapRng.cursor = draft.cursors.MapRNG ?? mapRng.cursor;
         // §2.1 placeholder — a Gym whose Badge you hold is not drawn again (Region 3 still draws Region 1's pool).
         const beaten = ALL_GYMS.filter((g) => draft.badges.includes(g.badgeId)).map((g) => g.id);
-        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten, wildRareChance(draft.regionModifier, ctx.content), draft.seenEvents);
+        draft.map = generateRegion(mapRng, ctx.content, draft.regionIndex, draft.seed, draft.modifiers, beaten, wildRareChance(draft.regionModifier, ctx.content), draft.seenEvents, draft.perks?.locked ?? []);
         // §2.12.6 — the Gyms this Region offers, for a Perfect Clear to pay the one passed by.
         draft.gymsOffered = [...(draft.gymsOffered ?? []), [...draft.map.gyms]];
         draft.cursors.MapRNG = mapRng.cursor;

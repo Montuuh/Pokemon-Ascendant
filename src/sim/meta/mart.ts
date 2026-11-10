@@ -1,86 +1,78 @@
-import type { ContentRegistry, RelicDef } from '../content/defs';
+import type { ContentRegistry } from '../content/defs';
 import { META_STARTERS as STARTER_SHELF } from '../run/region';
 import { HUB_UPGRADE_LABEL, SHELVES, levelFor, type AccountState, type HubUpgrade, type ShelfId } from './account';
 import { COSMETICS, COSMETIC_PRICE, cosmeticById, type CosmeticKind } from './cosmetics';
-import { masteryRelics, relicTier, unlockedStarters } from './unlocks';
+import { JOURNAL_COSMETICS } from './journal';
+import { unlockedStarters } from './unlocks';
 
-// §8.3.4, §8.4.1 — the Poké Mart: the shop of the pass.
+// §8.3.4, §8.4.1 — the Poké Mart: where Tokens go.
 //
-// Trainer Level opens shelves; Tokens buy from them. Everything the account can hold that is not earned by
-// playing — starters, Hub upgrades, cosmetics, the relics you did not discover — is on a shelf with a price,
-// and the reward track's only job is to pay Tokens and open the next shelf (§8.3.5). XP decides what is for
-// sale; Tokens decide what you take home. The fold in account.ts never sells; this file never earns.
+// The clerk arrives at Trainer (rank 3) and sells what is the account's own: starters, the three services, the Kit
+// perks, and things for the Trainer Card to wear. The *world's* content is never sold — it comes in Oak's Parcels,
+// by a Field Note or with a Badge (§8.6) — so a Token never buys a shortcut past a discovery. The fold in
+// account.ts never sells; this file never earns.
 
 export type MartItem =
   | { kind: 'cosmetic'; id: string }
   | { kind: 'hub'; id: HubUpgrade }
-  | { kind: 'starter'; id: string }
-  /** A Tier-2 row on the Discoveries shelf, or a Tier-3 (and Reactor Core) on the Mastery lane — by tier. */
-  | { kind: 'relic'; id: string };
+  | { kind: 'starter'; id: string };
 
 /** §8.5.2 — the three meta-starters; the list lives beside the default three in run/region.ts. */
 export { META_STARTERS } from '../run/region';
 
-/** §8.3.4 — the prices. The whole shop comes to ~134 Tokens, a career of about sixty runs (§8.3.4). */
+/**
+ * §8.3.4 — the prices, against an income of about fourteen Tokens a run once the first ranks' purses are spent: a
+ * perk is a run or two, a starter two or three, Twin Run five. The whole shop is a career of thirty-odd runs
+ * (`balance/accountCareer.test.ts`).
+ */
 export const MART_PRICE = {
-  starter: { magikarp: 4, eevee: 6, pikachu: 6 } as Record<string, number>,
+  starter: { magikarp: 25, eevee: 35, pikachu: 35 } as Record<string, number>,
   hub: {
-    'starting-relic-plus-one': 3,
-    'expanded-box': 5,
-    'pokedex-insight': 4,
-    'modifier-slot-plus-one': 6,
-    'twin-run': 8,
-    'trauma-salve-cache': 4,
-    'apex-reveal': 4,
-  } as Record<HubUpgrade, number>,
-  /** A Tier-3 relic (§8.6.1). */
-  mastery: 5,
+    'expanded-box': 40,
+    'modifier-slot-plus-one': 50,
+    'twin-run': 70,
+    'starting-relic-plus-one': 20,
+    'pokedex-insight': 20,
+    'trauma-salve-cache': 15,
+    'apex-reveal': 15,
+    'moms-allowance': 20,
+    'first-aid-pouch': 20,
+    'tm-case': 25,
+  } as Partial<Record<HubUpgrade, number>>,
 } as const;
 
 export type MartError = 'locked' | 'owned' | 'cannot-afford' | 'pending' | 'unknown';
 
-/** Is a shelf open to this account? Level only — Tokens never open a shelf (§8.3.5). */
+/** Is a shelf open to this account? Rank only — Tokens never open a shelf (§8.3.5). */
 export const shelfOpen = (account: AccountState, shelf: ShelfId): boolean => levelFor(account.xp) >= SHELVES[shelf].level;
 
-/** The registry throws on an unknown relic id; the shop answers 'unknown' instead. */
-const relicRow = (id: string, content: ContentRegistry): RelicDef | undefined => content.allRelics().find((r) => r.id === id);
-
 /** The shelf an item sits on, or null if the Mart does not sell it. */
-export function martShelf(item: MartItem, content: ContentRegistry): ShelfId | null {
+export function martShelf(item: MartItem, _content?: ContentRegistry): ShelfId | null {
   switch (item.kind) {
     case 'cosmetic':
-      return cosmeticById(item.id) ? 'corner' : null;
+      return cosmeticById(item.id) && !JOURNAL_COSMETICS.includes(item.id) ? 'corner' : null;
     case 'hub':
-      // §8.4.2 — the fourth Starting Relic offer is the one Hub upgrade cheap enough for the Corner.
-      return !(item.id in MART_PRICE.hub) ? null : item.id === 'starting-relic-plus-one' ? 'corner' : 'hub';
+      // §8.9.3 — a perk Oak's aide hands over has no price and no shelf.
+      return MART_PRICE.hub[item.id] === undefined ? null : HUB_UPGRADE_LABEL[item.id].kind === 'service' ? 'hub' : 'kit';
     case 'starter':
       return item.id in MART_PRICE.starter ? 'starters' : null;
-    case 'relic': {
-      const r = relicRow(item.id, content);
-      if (!r) return null;
-      // §8.6.1 — a Tier-2 relic is discovered, never bought (v0.9.2); only the Mastery lane sells relics.
-      return relicTier(r) === 3 || r.mastery === true ? 'mastery' : null;
-    }
   }
 }
 
 /** What an item costs, or null if the Mart does not sell it. */
-export function martPrice(item: MartItem, content: ContentRegistry): number | null {
+export function martPrice(item: MartItem, _content?: ContentRegistry): number | null {
+  if (martShelf(item) === null) return null;
   switch (item.kind) {
-    case 'cosmetic': {
-      const c = cosmeticById(item.id);
-      return c ? COSMETIC_PRICE[c.kind] : null;
-    }
+    case 'cosmetic':
+      return COSMETIC_PRICE[cosmeticById(item.id)!.kind];
     case 'hub':
       return MART_PRICE.hub[item.id] ?? null;
     case 'starter':
       return MART_PRICE.starter[item.id] ?? null;
-    case 'relic':
-      return martShelf(item, content) === 'mastery' ? MART_PRICE.mastery : null;
   }
 }
 
-/** Does the account already hold this? A Soulbound line counts as an owned starter (§6.8.2); a discovered relic as an owned one. */
+/** Does the account already hold this? A Soulbound line counts as an owned starter (§6.8.2). */
 export function martOwned(account: AccountState, item: MartItem, content: ContentRegistry): boolean {
   switch (item.kind) {
     case 'cosmetic':
@@ -89,38 +81,35 @@ export function martOwned(account: AccountState, item: MartItem, content: Conten
       return account.hub.includes(item.id);
     case 'starter':
       return account.starters.includes(item.id) || unlockedStarters(account, content).includes(item.id);
-    case 'relic':
-      return account.relics.includes(item.id);
   }
 }
 
 /** Why an item cannot be bought *yet*: waiting on a system that is not in the build. */
 export function martPending(item: MartItem, content: ContentRegistry): string | null {
   if (item.kind === 'hub') return HUB_UPGRADE_LABEL[item.id]?.pending ?? null;
-  if (item.kind === 'relic') return relicRow(item.id, content)?.pending ?? null;
-  // §8.5.2 — Pikachu is on the shelf before its kit ships; it is priced, and not sold, until the kit is there.
+  // §8.5.2 — a starter priced before its kit ships is on the shelf, and not sold, until the kit is there.
   if (item.kind === 'starter' && !content.hasSpecies(item.id)) return 'its move kit is not written yet';
   return null;
 }
 
 /** The items on a shelf, in the order the shelf shows them. Owned ones included — a shelf shows what it has sold. */
-export function shelfItems(shelf: ShelfId, content: ContentRegistry): MartItem[] {
+export function shelfItems(shelf: ShelfId, _content?: ContentRegistry): MartItem[] {
+  const hub = (kind: 'service' | 'perk'): MartItem[] =>
+    (Object.keys(MART_PRICE.hub) as HubUpgrade[]).filter((id) => HUB_UPGRADE_LABEL[id].kind === kind && !HUB_UPGRADE_LABEL[id].pending).map((id) => ({ kind: 'hub', id }));
   switch (shelf) {
     case 'corner':
-      return [{ kind: 'hub', id: 'starting-relic-plus-one' }, ...COSMETICS.map((c) => ({ kind: 'cosmetic', id: c.id }) as MartItem)];
+      return COSMETICS.filter((c) => !JOURNAL_COSMETICS.includes(c.id)).map((c) => ({ kind: 'cosmetic', id: c.id }));
     case 'starters':
       return STARTER_SHELF.map((id) => ({ kind: 'starter', id }));
     case 'hub':
-      // An upgrade waiting on a system the build does not have (the Apex Reveal, Victory Road) is not on the shelf
-      // at all until it can work (v0.9.2): a priced row that can never be bought is a promise, not a shelf.
-      return (Object.keys(MART_PRICE.hub) as HubUpgrade[]).filter((id) => id !== 'starting-relic-plus-one' && !HUB_UPGRADE_LABEL[id].pending).map((id) => ({ kind: 'hub', id }));
-    case 'mastery':
-      return masteryRelics(content).map((r) => ({ kind: 'relic', id: r.id }));
+      return hub('service');
+    case 'kit':
+      return hub('perk');
   }
 }
 
 /** The price of everything on every shelf: the number §8.3.4 sets the income against. */
-export const shopTotal = (content: ContentRegistry): number =>
+export const shopTotal = (content?: ContentRegistry): number =>
   (Object.keys(SHELVES) as ShelfId[]).flatMap((s) => shelfItems(s, content)).reduce((sum, item) => sum + (martPrice(item, content) ?? 0), 0);
 
 /**
@@ -149,9 +138,6 @@ export function buy(account: AccountState, item: MartItem, content: ContentRegis
       break;
     case 'starter':
       next.starters.push(item.id);
-      break;
-    case 'relic':
-      next.relics.push(item.id);
       break;
   }
   return { state: next };

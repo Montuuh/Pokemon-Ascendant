@@ -1,6 +1,6 @@
-import { IconArrowRight, IconCheck } from '@tabler/icons-react';
+import { IconArrowRight, IconCheck, IconCertificate } from '@tabler/icons-react';
 import { getContent } from '@/content/registry';
-import { branchPayload, SHINY, BOND_LADDER, isStarterLine, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
+import { branchPayload, SHINY, BOND_LADDER, RIBBONS, isStarterLine, BOND_RANK_NAME, BOND_RANKS, UNMET_NAME, bondProgress, bondRank, bondUnlocks, hiddenAbilityOf, type AccountState, speciesMet } from '@/sim';
 import { bondRulesText, evoPathsTip } from '@/ui/tips';
 import { BranchCard } from '@/ui/components/BranchCard';
 import { MonIcon } from '@/ui/components/MonIcon';
@@ -43,17 +43,21 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
   const hiddenName = hidden ? content.ability(hidden).name : `${(base.hiddenAbilityPending ?? 'Hidden ability').split(' — ')[0]} (not yet)`;
   const named = (label: string, name: string) => (lineKnown ? `${label} — ${name}` : label);
   // §6.8.2 — the ladder, with the line's hidden ability named once you have met the line. A line that is a starter
-  // already (a default one or a Poké Mart one) has nothing to gain from "can start a run": its rank 4 strikes that and
-  // promises the palette instead.
+  // already (a default one or a Poké Mart one) has nothing to gain from "can start a run": its Soulbound strikes that
+  // and promises the palette instead.
   const starterLine = isStarterLine(line);
-  const rungs: { rank: 1 | 2 | 3 | 4; on: boolean; unlock: string; struck?: string }[] = [
-    { rank: 1, on: u.shinyCharm, unlock: `Shiny Charm — its shinies turn up ${SHINY.charmMultiplier} times as often` },
-    { rank: 2, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, assignable at the Dojo` },
-    { rank: 3, on: u.mastery > 0, unlock: 'Mastery Move — a fifth card unique to the line, in every evolution' },
+  const rungs: { rank: number; on: boolean; unlock: string; struck?: string }[] = [
+    { rank: 1, on: u.acquainted, unlock: 'You know it — its hidden intents show when you face one' },
+    { rank: 2, on: u.shinyCharm, unlock: `Shiny Charm — its shinies turn up ${SHINY.charmMultiplier} times as often` },
+    { rank: 3, on: u.hiddenAbility, unlock: `${named('Hidden ability', hiddenName)}, assignable at the Dojo` },
+    { rank: 4, on: u.mastery > 0, unlock: 'Mastery Move — a fifth card unique to the line, in every evolution' },
     starterLine
-      ? { rank: 4, on: u.starter, struck: 'The line can start a run', unlock: 'Your starter will always be shiny' }
-      : { rank: 4, on: u.starter, unlock: 'The line can start a run' },
+      ? { rank: 5, on: u.starter, struck: 'The line can start a run', unlock: 'Your starter will always be shiny' }
+      : { rank: 5, on: u.starter, unlock: 'The line can start a run' },
+    { rank: 6, on: u.partner, unlock: 'It walks your lobby, and starts a run one level higher' },
   ];
+  // §6.8.5 — the Ribbons the line wears.
+  const worn = account.ribbons[line] ?? [];
 
   return (
     <div data-testid="line-sheet" data-line={line} data-rank={rank}>
@@ -126,7 +130,7 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
           <ol className={styles.ladder} data-testid="line-sheet-ladder">
             {rungs.map((r) => (
               <li key={r.rank} className={`${styles.rung} ${r.on ? styles.rungOn : ''}`} data-rank={r.rank} data-on={r.on}>
-                <span className={styles.rungIcon} aria-hidden="true">{RANK_ICON[r.rank](18)}</span>
+                <span className={styles.rungIcon} aria-hidden="true">{RANK_ICON[r.rank]?.(18)}</span>
                 <span className={styles.rungBody}>
                   <span className={styles.rungName}>{r.rank} · {BOND_LADDER[r.rank - 1]!.name}</span>
                   <span className={styles.rungUnlock}>
@@ -138,6 +142,25 @@ export function LineSheet({ line, account, current, onSpecies }: { line: string;
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Ribbons <span className="tabular">{worn.length} / {RIBBONS.length}</span></h3>
+          <ul className={styles.ladder} data-testid="line-sheet-ribbons">
+            {RIBBONS.map((r) => {
+              const on = worn.includes(r.id);
+              return (
+                <li key={r.id} className={`${styles.rung} ${on ? styles.rungOn : ''}`} data-ribbon={r.id} data-on={on}>
+                  <span className={styles.rungIcon} aria-hidden="true"><IconCertificate size={18} stroke={2.4} /></span>
+                  <span className={styles.rungBody}>
+                    <span className={styles.rungName}>{r.name}</span>
+                    <span className={styles.rungUnlock}>{r.earned}</span>
+                  </span>
+                  <span className={`${styles.rungAt} tabular`}>{on ? <IconCheck size={16} stroke={3} /> : 'Not yet'}</span>
+                </li>
+              );
+            })}
+          </ul>
         </section>
       </div>
     </div>

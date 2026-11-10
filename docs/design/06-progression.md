@@ -488,7 +488,7 @@ Ability pools never contain two entries with the same hook (no "which +15 % is b
 pool contains at least one defensive or utility option so the Dojo is a fork rather than a damage upgrade.
 
 The pool's **third** entry is the line's hidden ability: listed, greyed, and locked until the line's Bond reaches
-rank 2 (§6.8.3).
+rank 3, Trusted (§6.8.3).
 
 ## §6.5.2 Categories
 
@@ -606,8 +606,9 @@ the card that sharpens the choice: "synergy is sculpted, not drafted" expressed 
 # §6.8 Bond — a line gets better by being played
 
 Each evolution line has a **Bond**, tracked per account (§8.9), that grows with what you do *with* it and opens
-one concrete thing on the line at each of four ranks: its Shiny Charm, its hidden ability, its whole Mastery
-Move, and at the top the right to start a run. Charmander, Charmeleon and Charizard share one Bond.
+one concrete thing on the line at each of six ranks: you know it, its Shiny Charm, its hidden ability, its whole
+Mastery Move, the right to start a run, and at the top the line as your Partner. Charmander, Charmeleon and
+Charizard share one Bond. A line also wears up to four **Ribbons** (§6.8.5), for what it has won with you.
 
 Bond replaced two overlapping systems on 2026-09-21 — Pokédex tiers earned by *knocking out* the species, and
 Mastery levels earned by species-specific achievements. The first read backwards to the first player who met it
@@ -630,34 +631,44 @@ Earned by a line while it is in the **Active Team**:
 | Finished a run with it | +8 |
 | Won a run with it | +15 (replaces the +8) |
 
-**The pace — linear (v0.9.1, the user's call: "every rank costs the same").** A line in the Active Team earns about
-20 a run; every rank costs **100** (`BOND_TIER_COST`), so the ranks sit at **100 · 200 · 300 · 400** and a line
-played every run reaches them after about **5 / 11 / 16 / 21 runs** — measured as a career, one account and many
-runs in a row with the account's own perks playing into each (`balance/bondCareer.test.ts`). A line recruited
-every other run takes about twice that, and the lines that are hard to find never get there by accident: that is
-the point of the top rank. After 30 runs an account holds about two Soulbound lines. The first reward arrives after
-about five runs; until then the bar and the **+N Bond** behind every fight result's progress door (§9.4.5) carry the progress. *History:* a first cut of v0.9.1
-had five ranks at 10 · 40 · 110 · 200 · 360, quick at the bottom; before it, +1 a fight with ranks at 5 · 15 · 35 ·
-60 · 100 made every played line Trusted inside its first run. A wild fight pays nothing because it is the filler
-between the fights that mean something; the Gym pays a Region.
+**The Box shares the big moments (v0.9.110).** A line waiting in the Box earns **half** of a Gym's Bond and half of
+the run's end (`BOND.benchShare`, rounded down, once per line): rotating the team no longer costs a line its
+progress. Ordinary fights still pay only the three that fought them.
+
+**The pace — quick at the bottom, twenty runs to the top (v0.9.110).** A line in the Active Team earns about 20 a
+run; the ranks sit at **20 · 60 · 120 · 200 · 300 · 420** (`BOND_RANKS`), each step 20 more than the last, so a
+line played every run reaches them after about **1 · 3 · 6 · 10 · 15 · 21 runs** (`balance/bondCareer.test.ts`:
+one account, many runs in a row, its own perks playing into each). A line recruited every other run takes about
+twice that, and the lines that are hard to find never get to the top by accident: that is the point of it.
+*Why not the four equal ranks of v0.9.1* (100 each, the user's call then: "every rank costs the same"): the top
+kept its twenty-run pace, but the **first** reward waited five runs and was a probability — a player who rotated
+their team could play ten runs without one rank, which is the opposite of §8.1's promise. The first run with a
+line opens something now. *Earlier history:* a first cut of v0.9.1 had five ranks at 10 · 40 · 110 · 200 · 360;
+before it, +1 a fight with ranks at 5 · 15 · 35 · 60 · 100 made every played line Trusted inside its first run. A
+wild fight pays nothing because it is the filler between the fights that mean something; the Gym pays a Region.
 
 ## §6.8.2 Ranks and unlocks
 
 | Rank | Bond | Name | Opens on the line |
 |---|---|---|---|
-| 1 | 100 | Companion | **Shiny Charm** — every new copy of the line may be shiny: its wild ones ×3 as often, and its starter, Safari catch or trade at that charmed chance (§5.14) |
-| 2 | 200 | Trusted | **Hidden ability** (§6.8.3) |
-| 3 | 300 | Deep Bond | **Mastery Move** — the whole of it at once: the fifth card at every stage of the line, Lv1 on the base form to Lv3 on a three-stage final (§5.13.2) |
-| 4 | 400 | Soulbound | **The line may start a run** (§8.5.2). A line that could already — a default starter or a Poké Mart one — gets **its starter always shiny** instead |
+| 1 | 20 | Acquainted | **You know it** — every species of the line counts as Familiar when you face it: its hidden intents show from turn one (§5.13.1) |
+| 2 | 60 | Companion | **Shiny Charm** — every new copy of the line may be shiny: its wild ones ×3 as often, and its starter, Safari catch or trade at that charmed chance (§5.14) |
+| 3 | 120 | Trusted | **Hidden ability** (§6.8.3) |
+| 4 | 200 | Deep Bond | **Mastery Move** — the whole of it at once: the fifth card at every stage of the line, Lv1 on the base form to Lv3 on a three-stage final (§5.13.2) |
+| 5 | 300 | Soulbound | **The line may start a run** (§8.5.2). A line that could already — a default starter or a Poké Mart one — gets **its starter always shiny** instead |
+| 6 | 420 | Partner | **It walks your lobby** (§8.4.6), and as your starter it **begins one level higher** |
 
-**Four ranks, one thing each (v0.9.1, the user's design).** A look first, a choice at the Dojo second, the line's full
-kit third, the line as your partner last. **The Mastery is one unlock**, not three: "unlock the Pokémon's whole
+**Six ranks, one thing each.** The four in the middle are the user's design of v0.9.1, in its order: a look, a
+choice at the Dojo, the line's full kit, the line as your starter. v0.9.110 added one at each end. **Acquainted**
+is knowledge, not power — a Pokémon you have played is one you can read — and it is what a line's first run opens.
+**Partner** is the line as the face of the account; its one extra starting level is the only Bond reward that
+changes what a run starts with, and it counts against the Trainer Kit's ceiling (§8.4.5). **The Mastery is one unlock**, not three: "unlock the Pokémon's whole
 potential, in all its evolutions" — the stage decides which card the slot holds, the Bond only whether it holds one.
 That first cut handed out the first Mastery card in a line's first run and split the rest across two more ranks,
 with a "Mastery card in every opening hand" rule for two-stage lines at the top; both are gone. **A starter line's
 Soulbound is a shiny start** (the user, 2026-10-06): Bulbasaur, Charmander, Squirtle and the Mart's Magikarp, Eevee and
-Pikachu can start a run without any Bond, so their rank 4 strikes "can start a run" and makes the starter always shiny;
-every other line's rank 4 is the right to start one, and nothing more. **The Poké Mart still sells Magikarp, Eevee and
+Pikachu can start a run without any Bond, so their Soulbound strikes "can start a run" and makes the starter always shiny;
+every other line's Soulbound is the right to start one, and nothing more. **The Poké Mart still sells Magikarp, Eevee and
 Pikachu** (§8.3.4): buy the starter now, or earn it — the player's choice.
 
 Rank-ups are folded by the account the moment the event lands (§8.10), so a rank crossed mid-run applies from
@@ -666,7 +677,7 @@ the next fight. Crossing a rank pays no Trainer XP — Bond is the line's, XP is
 ## §6.8.3 Hidden abilities
 
 Every line's catalogue row authors **three** abilities (`catalogs/species-r1.md`). The **third is the hidden
-one**: it sits in the pool, the Dojo lists it greyed and named as hidden, and it opens at Bond rank 2. The first
+one**: it sits in the pool, the Dojo lists it greyed and named as hidden, and it opens at Bond rank 3 (Trusted). The first
 entry is still what the first evolution grants (§6.5.1); the second is the Dojo's choice from the start.
 
 Every line's third is authored (v0.7.5). The six that had waited were rewritten for the combat the game has,
@@ -699,6 +710,23 @@ Since v0.9.5 every tier is a Gen I move and its + and ++ (the user's call): a Ma
 great, not an invented one, and a content test keeps it out of every path the kit can take. The bands are 85–110 at
 1–2 AP for Lv2 and 110–140 at 2–3 AP for Lv3, enforced. A Super Fang tier takes 65 % and 80 % of the foe's HP instead. The full 24-line catalogue:
 [`catalogs/mastery-moves.md`](catalogs/mastery-moves.md).
+
+## §6.8.5 Ribbons
+
+A line wears up to four **Ribbons**, each pinned once, for what it has won with you while it stood in the Active
+Team. They are shown on the line's page of the Pokédex and counted on the Field Report (§8.3.6).
+
+| Ribbon | Pinned when |
+|---|---|
+| **Gym Ribbon** | A Gym is won with the line in the Active Team |
+| **League Ribbon** | The run reaches the League with it in the Active Team, won or lost |
+| **Champion Ribbon** | The run beats the Champion with it in the Active Team |
+| **Ladder Ribbon** | A League Ladder run (§8.8.5) is won with it in the Active Team |
+
+A Ribbon opens nothing: it is the line's record. It is here because the Bond's ranks are the same for every line
+and a Ribbon is not — a lost run that beat its first Gym already pins up to three, and "a Champion Ribbon on every
+line" turns each win into a different stamp and gives a reason to win with a team you have not won with. *(Added
+v0.9.110.)*
 
 ---
 

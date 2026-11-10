@@ -273,9 +273,11 @@ export const mysteryEvent = (id: string): MysteryEvent => {
  * §2.10.4 — events never repeat within a run, so the pool is drawn from without replacement, each by its weight
  * (one roll, like before).
  */
-export function rollEvent(rng: GameRng, seen: readonly string[]): string {
-  const pool = MYSTERY_EVENTS.filter((e) => !seen.includes(e.id));
-  const from = pool.length ? pool : MYSTERY_EVENTS;
+export function rollEvent(rng: GameRng, seen: readonly string[], locked: readonly string[] = []): string {
+  // §8.6.2 — an event the account has not opened is never rolled.
+  const open = locked.length ? MYSTERY_EVENTS.filter((e) => !locked.includes(e.id)) : MYSTERY_EVENTS;
+  const pool = open.filter((e) => !seen.includes(e.id));
+  const from = pool.length ? pool : open;
   const total = from.reduce((n, e) => n + (e.weight ?? 1), 0);
   let roll = rng.range01() * total;
   for (const e of from) {

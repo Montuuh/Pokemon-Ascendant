@@ -8,7 +8,7 @@ import { Tipped } from '@/ui/tooltip';
 import { trainerLevelTip } from '@/ui/tips';
 import styles from './LevelRing.module.css';
 
-// §8.3.1 — the Trainer Level as a dial: the ring is the XP inside the current level, the number is the level.
+// §8.3.3 — the Trainer Rank as a dial: the ring is the XP inside the current rank, the number is the rank.
 // One glance answers "how far am I" the way a flat bar under a caption never did. The ring fills on mount and
 // the numbers roll, unless motion is off.
 
@@ -47,7 +47,7 @@ export function LevelRing({ xp, size = 96, caption = false }: Props) {
           })}
         >
           <span className={`${styles.label} ${big ? styles.labelBig : ''}`}>
-            <span className={styles.lv}>Lv</span>
+            <span className={styles.lv}>Rank</span>
             <span className={`${styles.num} display tabular`} data-testid="level-ring-value">
               <NumberFlow value={p.level} animated={animate} />
             </span>
@@ -57,7 +57,7 @@ export function LevelRing({ xp, size = 96, caption = false }: Props) {
       {caption && (
         <span className={`${styles.caption} tabular`} data-testid="level-ring-caption" data-into={p.into} data-span={p.span}>
           {p.level >= MAX_LEVEL ? (
-            'Max level'
+            'Top rank'
           ) : (
             <>
               <NumberFlow value={p.into} animated={animate} /> / {p.span} XP

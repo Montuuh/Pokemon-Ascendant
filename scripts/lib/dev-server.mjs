@@ -16,7 +16,8 @@ export async function assertOurServer(base = devBase) {
   } catch (e) {
     throw new Error(`no dev server at ${base} (${e.message}) — start it: npm run dev (PW_PORT=<port> for another port).`);
   }
-  if (!/<title>\s*Pokémon Ascendant\s*<\/title>/.test(html)) {
+  // The tab's title carries the build's stage while the game is a Beta (docs/release-doctrine.md R2).
+  if (!/<title>\s*Pokémon Ascendant(?: \(Beta\))?\s*<\/title>/.test(html)) {
     const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.trim() ?? 'no title';
     throw new Error(`${base} serves another app ("${title}"), not Pokémon Ascendant — free the port or run with PW_PORT=<free port>.`);
   }

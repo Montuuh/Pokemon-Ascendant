@@ -1,29 +1,29 @@
 import { useState, type ReactNode } from 'react';
-import { IconAward, IconBox, IconCheck, IconDiamond, IconEye, IconFirstAidKit, IconLock, IconMountain, IconShoppingCart, IconSquareRounded, IconUsers, IconAdjustments } from '@tabler/icons-react';
+import { IconAward, IconBackpack, IconBook2, IconBox, IconCheck, IconCoin, IconDiamond, IconEye, IconFirstAidKit, IconLock, IconMountain, IconPokeball, IconRocket, IconShare, IconShoppingCart, IconSquareRounded, IconUsers, IconAdjustments } from '@tabler/icons-react';
 import { Progress, Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
 import {
-  HUB_UPGRADE_LABEL, SHELF_ORDER, SHELVES, UNMET_NAME, bondRank, speciesMet, cosmeticById, discoveryProgress, levelFor, martOwned, martPending, martPrice, martShelf, shelfItems, shelfOpen, xpForLevel,
+  HUB_UPGRADE_LABEL, SHELF_ORDER, SHELVES, UNMET_NAME, bondRank, speciesMet, cosmeticById, isKitPerk, levelFor, rankRow, martOwned, martPending, martPrice, martShelf, shelfItems, shelfOpen, xpForLevel,
   type AccountState, type HubUpgrade, type MartError, type MartItem, type ShelfId, BOND_TIER } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
-import { itemIcon, trainerSprite } from '@/ui/art';
+import { trainerSprite } from '@/ui/art';
 import { InfoDot, Tip, Tipped, useTip } from '@/ui/tooltip';
-import { cosmeticTip, hubUpgradeTip, relicTierTip, starterTip, martShelvesTip } from '@/ui/tips';
+import { cosmeticTip, hubUpgradeTip, starterTip, martShelvesTip } from '@/ui/tips';
 import { FRAME_CLASS } from './frames';
 import { TokenIcon } from './TokenIcon';
 import styles from './Hub.module.css';
 
-// §8.3.4 / §8.4.1 — the Poké Mart: four shelves, one currency, one button per thing. Trainer Level opens a
+// §8.3.4 / §8.4.1 — the Poké Mart: four shelves, one currency, one button per thing. The Trainer Rank opens a
 // shelf; Tokens buy from it. A closed shelf is still a tab you can open and read — priced, with a banner that
-// says what opens it and how far away that is — because a door you can see is a goal (§7.7). The Corner is
-// open from Level 1 so the first Tokens have somewhere to go the day they arrive.
+// says what opens it and how far away that is — because a door you can see is a goal (§7.7). Nothing here is the
+// world's content: relics, items and TMs come in Oak's Parcels (§8.6), never for Tokens.
 
 const SHELF_ICON: Record<ShelfId, ReactNode> = {
   corner: <IconAward size={18} />,
   starters: <IconUsers size={18} />,
   hub: <IconBox size={18} />,
-  mastery: <IconDiamond size={18} />,
+  kit: <IconBackpack size={18} />,
 };
 
 const HUB_ICON: Record<HubUpgrade, ReactNode> = {
@@ -34,6 +34,12 @@ const HUB_ICON: Record<HubUpgrade, ReactNode> = {
   'apex-reveal': <IconMountain size={26} />,
   'modifier-slot-plus-one': <IconAdjustments size={26} />,
   'twin-run': <IconUsers size={26} />,
+  'moms-allowance': <IconCoin size={26} />,
+  'first-aid-pouch': <IconFirstAidKit size={26} />,
+  'tm-case': <IconBook2 size={26} />,
+  'ball-case': <IconPokeball size={26} />,
+  'exp-share': <IconShare size={26} />,
+  'head-start': <IconRocket size={26} />,
 };
 
 /** §8.5.2 — the design slot of each meta-starter, in the player's words. */
@@ -43,9 +49,9 @@ const STARTER_BLURB: Record<string, string> = {
   pikachu: 'Electric. The iconic pick, ranged-leaning. Starts holding a Light Ball.',
 };
 
-/** The shelf the Mart opens on: the newest one open, so a level-up lands you in front of what it opened. */
+/** The shelf the Mart opens on: the newest one open (the highest rank's), so a new rank lands you in front of what it opened. */
 function defaultShelf(account: AccountState): ShelfId {
-  return [...SHELF_ORDER].reverse().find((s) => shelfOpen(account, s)) ?? 'corner';
+  return [...SHELF_ORDER].sort((a, b) => SHELVES[b].level - SHELVES[a].level).find((s) => shelfOpen(account, s)) ?? 'starters';
 }
 
 export function PokeMart() {
@@ -61,7 +67,6 @@ export function PokeMart() {
       case 'cosmetic': return cosmeticById(item.id)?.name ?? item.id;
       case 'hub': return HUB_UPGRADE_LABEL[item.id].name;
       case 'starter': return content.hasSpecies(item.id) ? content.species(item.id).name : item.id.charAt(0).toUpperCase() + item.id.slice(1);
-      case 'relic': return content.relic(item.id).name;
     }
   }
 
@@ -72,16 +77,15 @@ export function PokeMart() {
     const shelfDef = SHELVES[shelf];
     const bought: Record<MartItem['kind'], string> = {
       cosmetic: `${name} is yours and on your card.`,
-      hub: `${name} is yours. Every run from now on has it.`,
+      hub: item.kind === 'hub' && isKitPerk(item.id) ? `${name} is yours. Pack it at the Trainer Kit desk.` : `${name} is yours. Every run from now on has it.`,
       starter: `${name} can start your next run.`,
-      relic: `${name} is in your pool. Every run from now on can offer it.`,
     };
     setNotice(
       err === null ? { text: bought[item.kind], tone: 'ok' }
-      : err === 'locked' ? { text: `The ${shelfDef.name} shelf opens at Trainer Level ${shelfDef.level}.`, tone: 'warn' }
+      : err === 'locked' ? { text: `The ${shelfDef.name} shelf opens at ${rankRow(shelfDef.level).name} (rank ${shelfDef.level}).`, tone: 'warn' }
       : err === 'owned' ? { text: `${name} is already yours.`, tone: 'warn' }
       : err === 'pending' ? { text: `${name} is not sold yet: ${martPending(item, content)}.`, tone: 'warn' }
-      : err === 'cannot-afford' ? { text: `${name} is ${price} Tokens — you have ${account.tokens}. Every level pays some, and so does every Gold or Platinum medal.`, tone: 'warn' }
+      : err === 'cannot-afford' ? { text: `${name} is ${price} Tokens — you have ${account.tokens}. Every run's end pays some, and so do ranks and Journal entries.`, tone: 'warn' }
       : { text: `The Mart does not sell that.`, tone: 'warn' },
     );
   }
@@ -90,7 +94,7 @@ export function PokeMart() {
     <div className={styles.mart} data-testid="poke-mart">
       <div className={styles.martHead}>
         <span className={styles.lede}>
-          Trainer Level opens the shelves; Tokens buy from them.
+          Your rank opens the shelves; Tokens buy from them.
           <InfoDot tip={martShelvesTip()} />
         </span>
       </div>
@@ -105,7 +109,7 @@ export function PokeMart() {
               <Tabs.Trigger key={s} className={`${styles.tab} ${styles.shelfTab}`} value={s} data-testid={`mart-tab-${s}`} data-open={open}>
                 <span className={styles.shelfTabIcon} aria-hidden="true">{open ? SHELF_ICON[s] : <IconLock size={16} />}</span>
                 {SHELVES[s].name}
-                <span className={`${styles.muted} tabular`}>{open ? `${owned} / ${items.length}` : `Lv ${SHELVES[s].level}`}</span>
+                <span className={`${styles.muted} tabular`}>{open ? `${owned} / ${items.length}` : `Rank ${SHELVES[s].level}`}</span>
               </Tabs.Trigger>
             );
           })}
@@ -142,12 +146,12 @@ function Shelf({ id, account, notice, onBuy, onWear }: {
         <span className={styles.martBannerIcon} aria-hidden="true">{open ? <IconShoppingCart size={26} /> : <IconLock size={26} />}</span>
         <span className={styles.martBannerBody}>
           <span className={`${styles.martBannerTitle} display`}>
-            {open ? def.name : `${def.name} · opens at Trainer Level ${def.level}`}
+            {open ? def.name : `${def.name} · opens at ${rankRow(def.level).name}`}
           </span>
           <span className={styles.martBannerText}>{def.sells}</span>
           {!open && (
-            <Tipped tip={<Tip title={`Level ${def.level}`} body={`You are Level ${level}. The shelf is priced already; Tokens keep until it opens.`} footer={`${xpToOpen} XP to go.`} />} className={styles.martUnlockRow}>
-              <Progress.Root className={styles.martUnlockBar} value={pctToOpen} aria-label={`${pctToOpen}% of the way to Level ${def.level}`}>
+            <Tipped tip={<Tip title={`${rankRow(def.level).name} · Rank ${def.level}`} body={`You are ${rankRow(level).name} (rank ${level}). The shelf is priced already; Tokens keep until it opens.`} footer={`${xpToOpen} XP to go.`} />} className={styles.martUnlockRow}>
+              <Progress.Root className={styles.martUnlockBar} value={pctToOpen} aria-label={`${pctToOpen}% of the way to rank ${def.level}`}>
                 <Progress.Indicator className={styles.martUnlockFill} style={{ width: `${pctToOpen}%` }} />
               </Progress.Root>
               <span className={`${styles.martUnlockText} tabular`}>{xpToOpen} XP</span>
@@ -186,7 +190,7 @@ function MartCard({ item, account, open, onBuy, onWear }: {
   const canBuy = open && !owned && !pending && affordable;
   const shelfLevel = SHELVES[martShelf(item, content) ?? 'corner'].level;
   // The reason a Buy is greyed rides in its name and its bubble (D4); the banner and the wallet already say it.
-  const reason = owned ? null : pending ? 'Not yet' : !open ? `Opens at Level ${shelfLevel}` : !affordable ? 'Not enough Tokens' : null;
+  const reason = owned ? null : pending ? 'Not yet' : !open ? `Opens at rank ${shelfLevel}` : !affordable ? 'Not enough Tokens' : null;
 
   // What the card is, by kind: face, name, one line, tooltip, and — for a cosmetic — whether it is worn.
   let face: ReactNode;
@@ -216,7 +220,7 @@ function MartCard({ item, account, open, onBuy, onWear }: {
       name = row.name;
       desc = row.effect;
       face = HUB_ICON[item.id];
-      tipNode = hubUpgradeTip(row.name, row.effect, price, shelfLevel, owned, row.pending);
+      tipNode = hubUpgradeTip(row.name, row.effect, price, shelfLevel, owned, row.pending, isKitPerk(item.id));
       break;
     }
     case 'starter': {
@@ -228,22 +232,8 @@ function MartCard({ item, account, open, onBuy, onWear }: {
       desc = met ? (STARTER_BLURB[item.id] ?? '') : '';
       face = !shipped ? <span className={styles.starterBlank} aria-hidden="true">?</span> : <span className={met ? undefined : styles.starterUnmet}><MonIcon speciesId={item.id} size={40} alt={met ? undefined : UNMET_NAME} /></span>;
       const soulbound = bondRank(account.bond[item.id] ?? 0) >= BOND_TIER.soulbound;
-      tipNode = starterTip(name, met ? (STARTER_BLURB[item.id] ?? '') : null, price, soulbound ? 'soulbound' : owned ? 'owned' : pending ? 'pending' : canBuy ? 'buyable' : 'locked', pending ?? (!open ? `The Starters shelf opens at Trainer Level ${shelfLevel}.` : undefined));
+      tipNode = starterTip(name, met ? (STARTER_BLURB[item.id] ?? '') : null, price, soulbound ? 'soulbound' : owned ? 'owned' : pending ? 'pending' : canBuy ? 'buyable' : 'locked', pending ?? (!open ? `The Starters shelf opens at ${rankRow(shelfLevel).name}.` : undefined));
       if (soulbound) ownedTag = 'Soulbound';
-      break;
-    }
-    case 'relic': {
-      const r = content.relic(item.id);
-      name = r.name;
-      const prog = discoveryProgress(account, r);
-      desc = (
-        <>
-          {r.description}
-          {prog && !owned && <span className={styles.shelfProgress}><span className="tabular">{prog.have} / {prog.goal}</span> to discover</span>}
-        </>
-      );
-      face = <img src={itemIcon(r.id)} alt="" width={40} height={40} className={styles.shelfIcon} onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }} />;
-      tipNode = relicTierTip(r, owned ? 'owned' : open ? 'buyable' : 'locked', prog, { price, level: shelfLevel });
       break;
     }
   }

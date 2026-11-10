@@ -729,6 +729,16 @@ export interface RunPerks {
   salveCache?: boolean;
   /** §8.4.2 Apex Pokémon Reveal — Region 3 names the Legendary waiting on Victory Road. */
   apexReveal?: boolean;
+  /**
+   * §8.6.2 — the content this account has not opened, as `kind:id` keys (`run/locks.ts`): a shop, a drop, a find or a
+   * Mystery never draws one. Absent is nothing locked — the fixtures, the harness, a run from before the vault.
+   */
+  locked?: string[];
+  /**
+   * §8.4.5 — what the Trainer Kit packed for this run. The one place the account changes what a run *starts with*;
+   * none of it is a point of damage or HP.
+   */
+  kit?: { money?: number; potions?: number; balls?: number; starterLevels?: number; benchXpShare?: number; tm?: boolean };
 }
 
 /** What a finished combat reports back to the run layer. */

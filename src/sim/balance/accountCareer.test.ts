@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { autoRun, DEFAULT_RUN_POLICY } from './autoRun';
 import { ctx } from '../testing/harness';
 import { STARTER_IDS } from '../run/region';
-import { applyAccountEvents, emptyAccount, levelFor, SHELVES, type ShelfId } from '../meta/account';
+import { applyAccountEvents, emptyAccount, levelFor, SHELVES, takeParcel, type ShelfId } from '../meta/account';
+import { parcelOffer, VAULT } from '../meta/vault';
+import { parcelChoicesFor } from '../meta/rank';
 import { accountContextFor, runPerksFor } from '../meta/unlocks';
 import { shopTotal } from '../meta/mart';
 
@@ -20,11 +22,13 @@ const RUNS = Number(process.env.CAREER_RUNS ?? 40);
 describe.skipIf(!ON)('Account career — §8.3', () => {
   it('prints the career', { timeout: 120 * 60_000 }, () => {
     const actx = accountContextFor(ctx.content);
-    const LEVELS = [2, 3, 4, 5, 6, 8, 10, 15, 20];
+    const LEVELS = [2, 3, 4, 5, 6, 7, 8, 9];
     const reach = new Map<number, number[]>();
     const tokensAt = new Map<number, { track: number[]; medals: number[]; money: number[] }>();
     const paidOff: number[] = [];
     const xpPerRun: number[] = [];
+    const parcels: number[] = [];
+    const opened: number[] = [];
     const total = shopTotal(ctx.content);
     for (const starter of STARTER_IDS) {
       for (let c = 0; c < CAREERS; c++) {
@@ -38,6 +42,9 @@ describe.skipIf(!ON)('Account career — §8.3', () => {
           const xp0 = account.xp;
           const { state, delta } = applyAccountEvents(account, r.metaEvents, actx);
           account = state;
+          parcels.push(delta.parcels);
+          // The career opens its parcels as it earns them, first card of each offer.
+          while (account.parcels > 0 && parcelOffer(account, parcelChoicesFor(levelFor(account.xp))).length) account = takeParcel(account, parcelOffer(account, parcelChoicesFor(levelFor(account.xp)))[0]!.id);
           xpPerRun.push(account.xp - xp0);
           track += delta.rewards.reduce((a, x) => a + x.reward.tokens, 0);
           money += delta.moneyTokens.reduce((a, x) => a + x.tokens, 0);
@@ -58,13 +65,14 @@ describe.skipIf(!ON)('Account career — §8.3', () => {
         }
         for (const L of LEVELS) if (!seen.has(L)) reach.set(L, [...(reach.get(L) ?? []), Infinity]);
         paidOff.push(paid ?? Infinity);
+        opened.push(account.unlocks.length);
       }
     }
     const med = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]!;
     const mean = (xs: number[]) => (xs.reduce((a, b) => a + b, 0) / xs.length).toFixed(0);
     const show = (n: number) => (n === Infinity ? `>${RUNS}` : String(n));
-    console.log(`careers ${STARTER_IDS.length * CAREERS} × ${RUNS} runs · XP a run: mean ${mean(xpPerRun)}`);
-    console.log(`level reached after run (median): ${LEVELS.map((L) => `L${L} ${show(med(reach.get(L)!))}`).join(' · ')}`);
+    console.log(`careers ${STARTER_IDS.length * CAREERS} × ${RUNS} runs · XP a run: mean ${mean(xpPerRun)} · parcels a run: ${(parcels.reduce((a, b) => a + b, 0) / parcels.length).toFixed(2)} · vault opened by the end: ${mean(opened)} of ${VAULT.length}`);
+    console.log(`rank reached after run (median): ${LEVELS.map((L) => `R${L} ${show(med(reach.get(L)!))}`).join(' · ')}`);
     console.log(`shelves: ${(Object.keys(SHELVES) as ShelfId[]).map((s) => `${s} L${SHELVES[s].level}`).join(' · ')}`);
     console.log(`Tokens earned by run (mean · track / medals / ₽): ${[...tokensAt].map(([n, t]) => `${n}: ${mean(t.track)} / ${mean(t.medals)} / ${mean(t.money)}`).join(' · ')}`);
     console.log(`the whole shop (${total} Tokens) earned by run: median ${show(med(paidOff))}`);

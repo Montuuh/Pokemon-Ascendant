@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { buildRegistry } from '@/content/registry';
-import { applyAccountEvents, emptyAccount, RELIC_UNLOCKS_ON } from './account';
+import { applyAccountEvents, emptyAccount } from './account';
 import { ACHIEVEMENTS, type MetaEvent } from './achievements';
 import { progressNotes } from './progress';
-import { accountContextFor, discoverableRelics } from './unlocks';
+import { accountContextFor } from './unlocks';
 
 // §8.7 / §8.6.1 — the notes a fold of the account leaves for the screen (v0.9.6).
 
@@ -35,13 +35,15 @@ describe('Progress notes — §8.7', () => {
     }
   });
 
-  it.skipIf(!RELIC_UNLOCKS_ON)('ProgressNotes_ADiscoveryCounterRising_IsANote_UntilTheRelicIsFound', () => {
-    const id = discoverableRelics(content).find((r) => content.relic(r).discovery);
-    if (!id) return;
-    const d = content.relic(id).discovery!;
+  it('ProgressNotes_AFieldNotesCounterRising_IsANote_UntilItIsWritten', () => {
+    const r = content.allRelics().find((x) => x.discovery && x.discovery.goal > 1)!;
+    const d = r.discovery!;
     const a = emptyAccount();
     const after = { ...a, counters: { [d.counter]: 1 } };
-    const note = progressNotes(a, after, content).find((n) => n.id === id);
-    expect(note).toMatchObject({ kind: 'discovery', from: 0, to: Math.min(1, d.goal), goal: d.goal });
+    const note = progressNotes(a, after, content).find((n) => n.id === r.id);
+    expect(note).toMatchObject({ kind: 'discovery', from: 0, to: 1, goal: d.goal, done: false });
+    // Written up, it says nothing more.
+    const written = { ...after, notes: [r.id] };
+    expect(progressNotes(written, { ...written, counters: { [d.counter]: 2 } }, content).some((n) => n.id === r.id)).toBe(false);
   });
 });

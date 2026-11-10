@@ -4,7 +4,7 @@ import { GATE_TEXT, MOVE_MANAGER_TEXT, RESULT_TEXT, nodeHint, AP_DEBT_TEXT, FIEL
 import { NodeHover } from '@/ui/components/NodeHover';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, MONEY_TO_TOKENS, TRACK_TOKENS, SHELF_ORDER, XP, MART_PRICE, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
@@ -29,7 +29,7 @@ export function runEndTeamTip(name: string, level: number, hp: number, max: numb
 }
 /** §9.4 — results remain accessible behind the final team's record door. */
 export function runEndProgressTip(): ReactNode {
-  return <Tip title="Run record" body="Review your run, Trainer progress, discoveries and Bond gained." />;
+  return <Tip title="Run record" body="The run in numbers, and the team that ended it." />;
 }
 export const typeName = (t: string) => cap(t);
 
@@ -547,11 +547,6 @@ export function kitPathsTip(learns: boolean): ReactNode {
   return <Tip title={DEX_EVO_TEXT.kitByPath} body={`Each evolution rewrites part of the kit. One row per way to get here, with the cards that path leaves it${learns ? ' — and every path also knows its Learnset above' : ''}.`} footer="The active four are picked in the Move Manager." />;
 }
 
-/** §8.6.1 — a relic's availability tier, in the Item Guide. */
-export function relicTierNoteTip(tier: number): ReactNode {
-  return <Tip title={GUIDE_TEXT.relicTier(tier)} body={tier === 3 ? 'Bought with Tokens on the Poké Mart\'s Mastery shelf, then in your pool for good.' : tier === 2 ? 'Discovered once by doing its thing in a run, then in your pool for good.' : 'Always in your pool.'} />;
-}
-
 /** §2.11.2.3 — an item's price, in the Item Guide. */
 export function guidePriceTip(relic: boolean): ReactNode {
   return <Tip title={GUIDE_TEXT.price} body="The merchant on the route sells at this; a City's shops add 30 %." footer={relic ? 'A relic costs a quarter more for every relic the run has already bought (the collector premium).' : undefined} />;
@@ -680,7 +675,7 @@ export function consumableTip(c: ConsumableDef, playable = true, reason: string 
 
 /** §2.14 — Poké Dollars. */
 export function moneyTip(amount: number): ReactNode {
-  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent at the Poké Mart, the Dojo and the Centre's Therapy. What you do not spend carries into the next Region." footer={`When the run ends, every ${MONEY_TO_TOKENS.per} ₽ left becomes a Token, up to ${MONEY_TO_TOKENS.cap}.`} />;
+  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent at the Poké Mart, the Dojo and the Centre's Therapy. What you do not spend carries into the next Region." footer={`When the run ends, every ${TOKENS.moneyPer} ₽ left becomes a Token, up to ${TOKENS.moneyCap}.`} />;
 }
 
 /** §2.6.4 — balls as a counted resource. */
@@ -729,62 +724,70 @@ export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boo
 
 // ── The account (§8.3–§8.6, §5.13) ───────────────────────────────────────────────────────────────────────
 
-/** §8.3.1 — Trainer Level and the bar under it. */
+/** §8.3.3 — the Trainer Rank and the bar under it. */
 export function trainerLevelTip(level: number, into: number, span: number, max: number): ReactNode {
+  const row = rankRow(level);
   const body = level >= max
-    ? 'The prestige cap. Every reward on the track is yours.'
-    : `${span - into} XP to Level ${level + 1}. Trainer XP comes from every fight, recruit, evolution and Badge, and from a lost run too. It is never spent and never a point of damage: each level opens something.`;
-  return <Tip title={`Trainer Level ${level}`} meta={level < max ? [`${into} / ${span} XP`] : ['Max']} body={body} />;
+    ? 'The last rank. Trainer XP still fills Oak\'s Parcels and still becomes Tokens at a run\'s end.'
+    : `${span - into} XP to ${rankRow(level + 1).name}. Trainer XP comes from every fight, recruit, evolution, Badge and Journal entry, and from a lost run too. It is never spent: each rank brings someone to the lobby.`;
+  return <Tip title={`${row.name} · Rank ${level}`} meta={level < max ? [`${into} / ${span} XP`] : ['Top rank']} body={body} />;
 }
 
 /** §8.3.4 — Tokens. */
 export function tokenTip(tokens: number, earned: number): ReactNode {
-  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body={`Every Trainer Level pays Tokens — ${TRACK_TOKENS.level}, more at every fifth — and so does every Gold or Platinum medal, and a run's leftover ₽ (${MONEY_TO_TOKENS.per} ₽ a Token, up to ${MONEY_TO_TOKENS.cap}). They are spent at the Poké Mart: starters, Hub upgrades, relics and cosmetics.`} />;
+  return <Tip title={`${tokens} Token${tokens === 1 ? '' : 's'}`} meta={[`${earned} earned`]} body={`A run's end pays one Token for every ${TOKENS.perRunXp} XP the run earned and one for every ${TOKENS.moneyPer} ₽ it ended with (up to ${TOKENS.moneyCap}). Ranks, Journal entries and League Ladder rungs pay more. They are spent at the Poké Mart: starters, services, Kit perks and things for the card.`} />;
 }
 
-/** §8.3.4 / §8.3.5 — the Poké Mart's shelves, as one sentence: what opens each, and where the Tokens come from. */
+/** §8.4.1 — the Poké Mart's shelves, as one sentence: what opens each, and where the Tokens come from. */
 export function martShelvesTip(): ReactNode {
   return (
     <Tip
-      title="The shop of the pass"
-      body={`Trainer Level opens the shelves: Starters at ${SHELVES.starters.level}, Hub upgrades at ${SHELVES.hub.level}, the Mastery lane at ${SHELVES.mastery.level}; the Trainer's Corner is open from the start. Nothing here is power — starters, conveniences, relics for your pool, and things to wear on the card.`}
-      footer="Tokens come from every level, the Gold and Platinum medals, and the ₽ a run ends with."
+      title="The Poké Mart"
+      body={`The clerk arrives at ${rankRow(SHELVES.starters.level).name} (rank ${SHELVES.starters.level}) with starters, services and the Trainer's Corner; the Trainer Kit shelf opens with your first Kit slot, at ${rankRow(SHELVES.kit.level).name}. Relics, items and TMs are never sold here: they come in Oak's Parcels.`}
+      footer="Tokens come from every run's end, every rank, the Journal and the League Ladder."
     />
   );
 }
 
-/** §8.3.1 / §8.3.4 — Trainer XP and Tokens, for the Trainer Card and the run's summary. */
+/** §8.3.1 / §8.3.4 — Trainer XP and Tokens, for the Trainer Card and the Field Report. */
 export function trainerXpTip(footer?: string): ReactNode {
-  const shelves = SHELF_ORDER.filter((s) => SHELVES[s].level > 1).length;
   return (
     <Tip
-      title="Trainer XP and Tokens"
-      body={`XP is never spent: it moves the level, every level pays Tokens, and ${shelves} levels open a shelf at the Poké Mart. A fight pays ${XP.combat} XP, a first recruit ${XP.recruit}, an evolution ${XP.evolution}, a Badge ${XP.gym}; a lost run pays by how far it got. Tokens also come from Gold and Platinum medals and from the ₽ a run ends with.`}
+      title="Trainer XP"
+      body={`XP is never spent. It moves your Rank, fills the Research bar toward the next Oak's Parcel, and at a run's end becomes Tokens. A fight pays ${XP.combat} XP, a first recruit ${XP.recruit}, an evolution ${XP.evolution}, a Badge ${XP.gym} (${XP.firstBadge} more the first time), a species never met ${XP.newSpecies}; a lost run pays by how far it got.`}
       footer={footer}
     />
   );
 }
 
-/** §8.4.2 — the Hub upgrades, as many as the Mart sells today. */
+/** §8.4.2 — the services. */
 export function hubUpgradesTip(onSale: number): ReactNode {
-  return <Tip title="Hub upgrades" body={`${onSale} conveniences sold at the Poké Mart — the fourth Starting Relic at the Trainer's Corner, the rest on the Hub upgrades shelf from Level ${SHELVES.hub.level}. Each widens an option — a bigger Box, two starters, a second modifier slot — and none adds a point of damage.`} />;
+  return <Tip title="Services" body={`${onSale} sold at the Poké Mart. A service is yours for every run from then on and needs no Kit slot: a bigger Box, two starters, a second modifier slot.`} />;
 }
 
-/** §8.3.4 — the run's leftover ₽ and what it became, on the run's summary. */
+/** §8.4.5 — the Trainer Kit. */
+export function kitTip(slots: number): ReactNode {
+  return <Tip title="Trainer Kit" meta={[`${slots} slot${slots === 1 ? '' : 's'}`]} body={`Perks you pack before a run. Each changes what the run starts with — ₽, Potions, a TM, a peek — and none touches damage or HP. One slot at ${rankRow(KIT_SLOT_RANKS[0]).name}, two at ${rankRow(KIT_SLOT_RANKS[1]).name}, three at ${rankRow(KIT_SLOT_RANKS[2]).name}.`} footer="Bought at the Poké Mart, or handed over by Professor Oak's aide as your Pokédex fills." />;
+}
+
+/** §8.3.4 — the run's leftover ₽ and what it became, on the Field Report. */
 export function moneyTokensTip(money: number, tokens: number): ReactNode {
-  return <Tip title={`${money} ₽ → ${tokens} Token${tokens === 1 ? '' : 's'}`} body={`The ₽ a run ends with, won or lost, becomes Tokens: one for every ${MONEY_TO_TOKENS.per} ₽, up to ${MONEY_TO_TOKENS.cap} a run.`} footer="₽ spent in the run is worth more than ₽ carried out." />;
+  return <Tip title={`${money} ₽ → ${tokens} Token${tokens === 1 ? '' : 's'}`} body={`The ₽ a run ends with, won or lost, becomes Tokens: one for every ${TOKENS.moneyPer} ₽, up to ${TOKENS.moneyCap} a run.`} footer="₽ spent in the run is worth more than ₽ carried out." />;
 }
 
-/** §8.3.5 — one row of the reward track. */
+/** §8.3.5 — one stop of the rank road. */
 export function trackRewardTip(level: number, label: string, state: 'claimed' | 'next' | 'locked', xpNeeded: number): ReactNode {
-  const footer = state === 'claimed' ? 'Claimed.' : state === 'next' ? `${xpNeeded} XP away.` : `Reached at ${xpNeeded} lifetime XP.`;
-  return <Tip title={`Level ${level}`} body={label} footer={footer} />;
+  const footer = state === 'claimed' ? 'Reached.' : state === 'next' ? `${xpNeeded} XP away.` : `${xpNeeded} XP away.`;
+  return <Tip title={`${rankRow(level).name} · Rank ${level}`} body={label} footer={footer} />;
 }
 
-/** §8.4.2 — a Hub upgrade: what it does, and where and for how much the Mart sells it. */
-export function hubUpgradeTip(name: string, effect: string, price: number, shelfLevel: number, owned: boolean, pending?: string): ReactNode {
-  const footer = pending ? (owned ? `Yours, but waiting: ${pending}.` : `Not sold yet: ${pending}.`) : 'Quality of life, never power.';
-  return <Tip title={name} meta={[owned ? 'Yours' : `${price} Tokens`, `Poké Mart · Level ${shelfLevel}`]} body={effect} footer={footer} />;
+/** §8.4.2, §8.4.5 — a service or a Kit perk: what it does, and where it comes from. */
+export function hubUpgradeTip(name: string, effect: string, price: number | null, shelfLevel: number, owned: boolean, pending?: string, perk = false): ReactNode {
+  const footer = pending
+    ? (owned ? `Yours, but waiting: ${pending}.` : `Not sold yet: ${pending}.`)
+    : perk ? 'A Kit perk: in force only while it is packed in a slot.' : 'A service: in force for every run, no slot needed.';
+  const source = price === null ? "Professor Oak's aide" : `Poké Mart · Rank ${shelfLevel}`;
+  return <Tip title={name} meta={[owned ? 'Yours' : price === null ? 'A Pokédex prize' : `${price} Tokens`, source]} body={effect} footer={footer} />;
 }
 
 /** §8.4.4 — a cosmetic on the Trainer's Corner shelf. */
@@ -803,7 +806,7 @@ export function starterTip(name: string, blurb: string | null, price: number, st
     : detail ?? 'Not enough Tokens yet.';
   // §8.9.2 — an unmet starter's blurb would give it away; it says what the silhouette means instead.
   const body = blurb ?? 'A Pokémon you have not met yet. Its name and kit stay hidden until you meet it on a route — or buy it blind.';
-  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, `Poké Mart · Level ${SHELVES.starters.level}`]} body={body} footer={footer} />;
+  return <Tip title={name} meta={[state === 'owned' || state === 'soulbound' ? 'Yours' : `${price} Tokens`, `Poké Mart · Rank ${SHELVES.starters.level}`]} body={body} footer={footer} />;
 }
 
 /** §5.13 / §8.9 — a Pokédex card: number, types, met or not, the line's rank. The sheet has the rest. */
@@ -817,18 +820,26 @@ export function dexCardTip(name: string, dex: number, types: readonly string[], 
 }
 
 /** §8.4 — the Trainer Hub's doors, in the lobby. */
-export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run', tokens: number): ReactNode {
+export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aide' | 'kit' | 'case' | 'hall', tokens: number, extra?: { parcels?: number; slots?: number; badges?: number; wins?: number }): ReactNode {
   switch (spot) {
     case 'mart':
-      return <Tip title="Poké Mart" meta={[`${tokens} Tokens`]} body="Spend Tokens on starters, Hub upgrades, relics for your pool and cosmetics. Trainer Level opens its shelves." />;
+      return <Tip title="Poké Mart" meta={[`${tokens} Tokens`]} body="Spend Tokens on starters, services, Kit perks and things for your Trainer Card." />;
     case 'card':
-      return <Tip title="Trainer Card" body="The nurse keeps the League's register: your level, the road ahead and your record." />;
+      return <Tip title="Trainer Card" body="The nurse keeps the League's register: your rank, the road ahead, your stars and your record." />;
     case 'pc':
-      return <Tip title="PC Terminal" body="The Pokédex and every line's Bond, the medals, and the relics you have discovered." />;
+      return <Tip title="PC Terminal" body="The Pokédex, with every line's Bond and Ribbons." />;
     case 'guide':
-      return <Tip title="Item Guide" body="Every relic, item, held item, Evolution Item and TM in the game: what it does, what it costs and where it turns up." />;
+      return <Tip title="Item Guide" body="Every relic, item, held item, Evolution Item and TM in the game: what it does, what it costs and where it turns up — and what you have yet to open." />;
     case 'run':
       return <Tip title="New run" body="Through the door to the Elite Four: choose a starter, a Starting Relic and the run's options, and set out." />;
+    case 'aide':
+      return <Tip title="Professor Oak's aide" meta={extra?.parcels ? [`${extra.parcels} parcel${extra.parcels === 1 ? '' : 's'} waiting`] : undefined} body="Oak's Parcels — new relics, items, TMs and Mysteries for the world, one of three each — and the Trainer Journal, your deeds and their prizes." />;
+    case 'kit':
+      return <Tip title="Trainer Kit" meta={[`${extra?.slots ?? 0} slot${extra?.slots === 1 ? '' : 's'}`]} body="Pack the perks you own before a run. Each changes what the run starts with, never how hard it hits." />;
+    case 'case':
+      return <Tip title="Badge Case" meta={[`${extra?.badges ?? 0} / 12`]} body="Every Badge you have ever won. A Leader's first Badge brings their TM into the world." />;
+    case 'hall':
+      return <Tip title="Hall of Fame" meta={[`${extra?.wins ?? 0} won`]} body="Every run that beat the Champion: the team, the relics and the League Ladder rung." />;
   }
 }
 
@@ -857,7 +868,7 @@ export function shinyTip(name: string, owned = false): ReactNode {
 
 /** §6.8.1 — how a line's Bond grows, in one voice for the PC Terminal and the line sheet. */
 export function bondRulesText(): string {
-  return `Play the line. +${BOND.win} per trainer or Elite fight won with it on the Active Team (+${BOND.lead} if it led), +${BOND.gym} for a Gym, +${BOND.evolution} per evolution, +${BOND.recruit} the first time you recruit it in a run, +${BOND.shiny} for a shiny of it, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one. Wild fights pay no Bond.`;
+  return `Play the line. +${BOND.win} per trainer or Elite fight won with it on the Active Team (+${BOND.lead} if it led), +${BOND.gym} for a Gym, +${BOND.evolution} per evolution, +${BOND.recruit} the first time you recruit it in a run, +${BOND.shiny} for a shiny of it, +${BOND.runFinished} for finishing a run with it, +${BOND.runWon} for winning one. A line waiting in the Box earns half of a Gym's and of a run's end. Wild fights pay no Bond.`;
 }
 
 /** §6.8.1 — what the last fight paid a line, behind its result's progress door (§9.4.5). */
@@ -873,17 +884,10 @@ export function masteryCardTip(move: MoveDef, ownerName: string): ReactNode {
   return <Tip title={`${move.name} — Mastery`} meta={[typeName(move.type), `${move.apCost} AP`, move.power ? `${move.power} power` : 'Utility']} body={describeMoveDef(move)} footer={`${ownerName}'s Mastery Move: a fifth card no TM or Move Manager can touch.`} />;
 }
 
-/** §8.6.1 — a relic's meta tier, for the Poké Mart and the PC Terminal's discoveries board. */
-export function relicTierTip(r: RelicDef, state: 'pool' | 'discoverable' | 'buyable' | 'owned' | 'locked', progress?: { have: number; goal: number; text: string } | null, sale?: { price: number; level: number }): ReactNode {
-  const tierName = r.tier === 3 ? 'Tier 3 · Mastery' : r.tier === 2 ? 'Tier 2 · Discovered' : 'Tier 1 · Foundation';
-  const discover = progress ? `Discover it: ${progress.text} (${progress.have} / ${progress.goal}).` : null;
-  const footer =
-    state === 'pool' ? 'Always in your pool.'
-    : state === 'owned' ? 'In your pool.'
-    : state === 'buyable' ? [`${sale?.price ?? MART_PRICE.mastery} Tokens at the Poké Mart.`, discover].filter(Boolean).join(' ')
-    : state === 'locked' ? [`The Poké Mart sells it from Trainer Level ${sale?.level ?? SHELVES.mastery.level}.`, discover].filter(Boolean).join(' ')
-    : discover ?? 'Discovered by doing its thing in a run — the Poké Mart does not sell it.';
-  return <Tip icon={<img src={itemIcon(r.id)} alt="" width={22} height={22} />} title={r.name} meta={[cap(r.rarity), tierName]} body={r.description} footer={r.pending ? `Not working yet: ${r.pending}` : footer} />;
+/** §8.6.1 — something the vault still holds: what it is, and how it opens. */
+export function vaultTip(name: string, kind: string, description: string, source: 'parcel' | 'badge' | 'note', detail?: string): ReactNode {
+  const footer = source === 'badge' ? `Opens with ${detail ?? 'a Leader\'s first Badge'}.` : source === 'note' ? `Opens by a Field Note — ${detail} — or in an Oak's Parcel.` : "Arrives in an Oak's Parcel.";
+  return <Tip title={name} meta={[kind, 'Not opened yet']} body={description} footer={footer} />;
 }
 
 /** §3.1.2 — the Run button: what it costs here, or why it cannot be pressed. */
@@ -1703,28 +1707,32 @@ export function tollTip(money: number, pct: number): ReactNode {
 /** §6.8.2 — a line's Bond with you as it stands: its rank, and everything that rank has opened. */
 export function bondStatusTip(rank: number, lineName: string): ReactNode {
   const open: Record<number, string> = {
-    1: 'Shiny Charm: wild ones three times as likely to be shiny.',
-    2: 'Its hidden ability is open.',
-    3: 'The whole Mastery: its fifth card at every stage.',
-    4: 'Soulbound: it can start a run.',
+    1: 'You know it: its hidden intents show when you face one.',
+    2: 'Shiny Charm: wild ones three times as likely to be shiny.',
+    3: 'Its hidden ability is open.',
+    4: 'The whole Mastery: its fifth card at every stage.',
+    5: 'Soulbound: it can start a run.',
+    6: 'Partner: it walks your lobby and starts a run one level higher.',
   };
-  const lines = [1, 2, 3, 4].filter((r) => r <= rank).map((r) => <div key={r}>{open[r]}</div>);
-  return <Tip title={`${lineName} — ${BOND_RANK_NAME[rank]}`} meta={['Bond', `rank ${rank} of 4`]} body={lines} footer="Bond grows with every run the line is part of." />;
+  const lines = Array.from({ length: MAX_BOND_RANK }, (_, i) => i + 1).filter((r) => r <= rank).map((r) => <div key={r}>{open[r]}</div>);
+  return <Tip title={`${lineName} — ${BOND_RANK_NAME[rank]}`} meta={['Bond', `rank ${rank} of ${MAX_BOND_RANK}`]} body={lines} footer="Bond grows with every run the line is part of." />;
 }
 
 /** §6.8.2 — what a Bond rank opened. */
 export function bondUnlockTip(rank: number, lineName: string): ReactNode {
   const body: Record<number, string> = {
-    1: `The Shiny Charm: every new ${lineName} may be shiny, and wild ones are three times as likely to be.`,
-    3: `The whole Mastery: ${lineName}'s fifth card, at every stage it reaches.`,
-    4: `${lineName} can start a run from the Hub.`,
+    1: `You know ${lineName} now: when you face one, its hidden intents show from turn one.`,
+    2: `The Shiny Charm: every new ${lineName} may be shiny, and wild ones are three times as likely to be.`,
+    4: `The whole Mastery: ${lineName}'s fifth card, at every stage it reaches.`,
+    5: `${lineName} can start a run from the Hub.`,
+    6: `${lineName} walks your lobby, and as your starter it begins one level higher.`,
   };
   return <Tip title={`${BOND_RANK_NAME[rank]} — rank ${rank}`} meta={['Bond']} body={body[rank] ?? ''} />;
 }
 
 /** The money a fight paid, and the wallet it went into. */
 export function rewardMoneyTip(gain: number, total: number): ReactNode {
-  return <Tip title={`+${gain} ₽`} meta={[`${total.toLocaleString('en-GB')} ₽ in the wallet`]} body="Spend it at the Poké Mart, the Dojo and the Centre's Therapy." footer={`When the run ends, every ${MONEY_TO_TOKENS.per} ₽ left becomes a Token, up to ${MONEY_TO_TOKENS.cap}.`} />;
+  return <Tip title={`+${gain} ₽`} meta={[`${total.toLocaleString('en-GB')} ₽ in the wallet`]} body="Spend it at the Poké Mart, the Dojo and the Centre's Therapy." footer={`When the run ends, every ${TOKENS.moneyPer} ₽ left becomes a Token, up to ${TOKENS.moneyCap}.`} />;
 }
 
 /** A medal's or a discovery's progress line: what it is for. */

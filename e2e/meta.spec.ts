@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// §8.3 / §8.4 / §8.6 / §8.7 / §9.6 — the screens that live outside a run: the Hub's four open kiosks, the
-// account they read, the medals, and the settings that have to survive a reload.
+// §8.3 / §8.4 / §8.6 / §8.7 / §9.6 — the screens that live outside a run: the Hub's kiosks as the rank brings
+// them, the account they read, the Journal, and the settings that have to survive a reload.
 
 async function menu(page: Page): Promise<void> {
   await page.goto('/?screen=menu');
@@ -11,7 +11,7 @@ async function menu(page: Page): Promise<void> {
 }
 
 /** §8.4 — a door in the Hub's lobby: back to the lobby first if a kiosk is open over it. */
-async function openKiosk(page: Page, id: 'pc' | 'mart' | 'card' | 'guide'): Promise<void> {
+async function openKiosk(page: Page, id: 'pc' | 'mart' | 'card' | 'guide' | 'aide' | 'kit'): Promise<void> {
   const lobby = page.getByTestId('btn-hub-lobby');
   if (await lobby.isVisible()) await lobby.click();
   await page.getByTestId(`kiosk-${id}`).click();
@@ -27,7 +27,7 @@ const win = () => ({
 });
 
 test.describe('The Trainer Hub — §8.4', () => {
-  test('a fresh account opens on the lobby at Level 1, and the nurse keeps the Trainer Card', async ({ page }) => {
+  test('a fresh account opens on the lobby as a Newcomer, and the nurse keeps the Trainer Card', async ({ page }) => {
     await menu(page);
     await page.getByTestId('btn-hub').click();
     await expect(page.getByTestId('hub-screen')).toBeVisible();
@@ -35,21 +35,24 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('hub-lobby')).toBeVisible();
     await openKiosk(page, 'card');
     await expect(page.getByTestId('trainer-card')).toBeVisible();
-    await expect(page.getByTestId('level-ring-caption').first()).toHaveAttribute('data-span', '1000');
+    await expect(page.getByTestId('level-ring-caption').first()).toHaveAttribute('data-span', '300');
+    await expect(page.getByTestId('card-rank')).toHaveText('Newcomer');
+    // §8.15 — four stars, none earned; §8.14 — twelve places in the Badge Case, none won.
+    await expect(page.locator('[data-testid^="star-"][data-got="false"]')).toHaveCount(4);
+    await expect(page.locator('[data-testid^="case-"][data-won="false"]')).toHaveCount(12);
 
-    // §8.3.5 — the whole road is there: 29 stops, level 2 is next and is the one explained, nothing claimed.
-    await expect(page.locator('li[data-testid^="track-"]')).toHaveCount(29);
+    // §8.3.5 — the whole road is there: eight stops, Rookie is next and is the one explained, nothing reached.
+    await expect(page.locator('li[data-testid^="track-"]')).toHaveCount(8);
     await expect(page.getByTestId('track-2')).toHaveAttribute('data-state', 'next');
-    await expect(page.getByTestId('track-detail')).toContainText('Level 2');
-    await expect(page.getByTestId('track-detail')).toContainText('+3 Tokens');
-    // The storefront stops say which shelf they open: level 2 opens the Starters (v0.9.2).
-    await expect(page.getByTestId('track-2')).toHaveAttribute('data-opens', 'starters');
-    await expect(page.getByTestId('track-detail')).toContainText('Starters shelf opens');
-    await expect(page.getByTestId('track-detail')).toContainText('Three more Pokémon to start a run with');
+    await expect(page.getByTestId('track-detail')).toContainText('Rookie');
+    await expect(page.getByTestId('track-detail')).toContainText("Professor Oak's aide");
+    await expect(page.getByTestId('track-detail')).toContainText('+5');
 
-    // §8.4.1 — the lobby: the Mart's counter, the nurse (the Trainer Card), the PC, the door to a run, the doormat out.
+    // §8.4.6 — the first day's lobby: the nurse (the Trainer Card), the PC, the Item Guide, the door to a run, the
+    // doormat out. The aide, the Mart's clerk and the Kit table are not there yet.
     await page.getByTestId('btn-hub-lobby').click();
-    for (const id of ['card', 'pc', 'mart', 'guide', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
+    for (const id of ['card', 'pc', 'guide', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
+    for (const id of ['aide', 'mart', 'kit']) await expect(page.getByTestId(`kiosk-${id}`)).toHaveCount(0);
     await expect(page.getByTestId('hub-exit')).toBeVisible();
     await page.screenshot({ path: 'playtest/hub-lobby.png' });
 
@@ -72,6 +75,9 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.getByTestId('dex-sheet-tab-line').click();
     await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-line', 'squirtle');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny Charm');
+    await expect(page.locator('[data-testid="line-sheet-ladder"] li')).toHaveCount(6);
+    // §6.8.5 — and the four Ribbons, none pinned.
+    await expect(page.locator('[data-testid="line-sheet-ribbons"] li[data-on="false"]')).toHaveCount(4);
     await expect(page.getByTestId('line-sheet-ladder')).not.toContainText('Aqua Tail');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Shiny');
     // How Bond grows is a door, not a paragraph: the InfoDot by the Bond heading carries it.
@@ -107,14 +113,11 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('pc-sheet')).toHaveCount(0);
 
-    // §8.7 — the medal case: every row, all visible, none earned; a hidden row keeps its description.
-    await page.getByTestId('pc-tab-medals').click();
-    await expect(page.locator('[data-testid^="achievement-"]')).toHaveCount(27);
-    await expect(page.getByTestId('pc-tab-medals')).toContainText('0 / 27');
-    await expect(page.getByTestId('achievement-full-house')).toContainText('???');
-    await expect(page.getByTestId('achievement-full-house')).toContainText('hidden');
-
+    // §8.15 — the Hall of Fame is the PC's second tab, and empty.
+    await page.getByTestId('pc-tab-hall').click();
+    await expect(page.getByTestId('hall-empty')).toBeVisible();
     await page.getByTestId('pc-tab-dex').click();
+
     await openKiosk(page, 'card');
     // The road staggers its stops in over ~0.6 s; the screenshot is of the finished picture.
     await page.waitForTimeout(800);
@@ -172,10 +175,10 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.screenshot({ path: 'playtest/hub-pokedex-evolutions.png' });
   });
 
-  test('fights pay XP, cross levels, discover relics and fill the Pokédex — and it all survives a reload', async ({ page }) => {
+  test('fights pay XP, cross ranks, write Field Notes and fill the Pokédex — and it all survives a reload', async ({ page }) => {
     await menu(page);
-    // §8.3.2 — 303 clean wins is 1 515 XP plus the medals' — level 3 on the v0.9.2 curve; §8.6.1 discovers Barrier
-    // Charm on the first no-faint win and Lucky Egg at fifty; §5.13.1 takes Pidgey all the way to Master (50).
+    // §8.3.2 — 303 clean wins is 1 515 XP plus the Journal's — Trainer, rank 3; §8.7.1 writes Barrier Charm's Field
+    // Note on the first no-faint win and Lucky Egg Token's at fifty; §5.13.1 takes Pidgey to Familiar.
     await page.evaluate((w) => {
       window.__ascendant!.meta.record(Array.from({ length: 303 }, () => w) as never[]);
     }, win());
@@ -185,11 +188,11 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-3')).toHaveAttribute('data-state', 'claimed');
     await expect(page.getByTestId('track-4')).toHaveAttribute('data-state', 'next');
 
-    // §6.8 — 303 wins leading with Squirtle is 606 Bond: all four pips on every card of the line, "By Bond" puts
+    // §6.8 — 303 wins leading with Squirtle is 606 Bond: all six pips on every card of the line, "By Bond" puts
     // the line first, and every rung is lit on the sheet.
     await openKiosk(page, 'pc');
-    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
-    await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '4');
+    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '6');
+    await expect(page.getByTestId('dex-blastoise')).toHaveAttribute('data-rank', '6');
     await expect(page.getByTestId('dex-legend')).toContainText('1 of 79 lines played');
     await page.getByTestId('dex-order-bond').click();
     await expect(page.locator('[data-testid="dex-grid"] li').first()).toContainText('Squirtle');
@@ -197,12 +200,12 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.screenshot({ path: 'playtest/hub-pokedex-by-bond.png' });
     await page.getByTestId('dex-squirtle').click();
     await page.getByTestId('dex-sheet-tab-line').click();
-    await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '4');
-    // Squirtle was a starter already: its rank 4 strikes the run and promises the palette.
+    await expect(page.getByTestId('line-sheet')).toHaveAttribute('data-rank', '6');
+    // Squirtle was a starter already: its Soulbound strikes the run and promises the palette.
     await expect(page.getByTestId('line-sheet')).toContainText('Always shiny');
     await expect(page.getByTestId('rung-struck')).toContainText('The line can start a run');
     await expect(page.getByTestId('line-sheet-ladder')).toContainText('Your starter will always be shiny');
-    await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(4);
+    await expect(page.locator('[data-testid="line-sheet-ladder"] li[data-on="true"]')).toHaveCount(6);
     await page.screenshot({ path: 'playtest/hub-line-sheet.png' });
     await page.keyboard.press('Escape');
     await page.getByTestId('dex-order-dex').click();
@@ -221,43 +224,53 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('dex-stat-lead')).toContainText('909');
     await page.screenshot({ path: 'playtest/hub-pokedex-record.png' });
     await page.keyboard.press('Escape');
-    await page.getByTestId('pc-tab-medals').click();
-    await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
-
-    // §8.6.1 — relic unlocks are off (v0.9.99): every relic is in the pool, so the PC has no discoveries tab.
-    await expect(page.getByTestId('pc-tab-relics')).toHaveCount(0);
     await page.screenshot({ path: 'playtest/hub-pc.png' });
+
+    // §8.7 — the Journal is kept by Professor Oak's aide, who arrived at Rookie: the medal is done, both Field
+    // Notes are written, and Barrier Charm has left the vault.
+    await openKiosk(page, 'aide');
+    await page.getByTestId('aide-tab-journal').click();
+    await expect(page.getByTestId('achievement-first-blood')).toHaveAttribute('data-done', 'true');
+    await expect(page.getByTestId('note-barrier-charm')).toHaveAttribute('data-done', 'true');
+    await expect(page.getByTestId('note-lucky-egg-token')).toHaveAttribute('data-done', 'true');
+    expect(await page.evaluate(() => window.__ascendant!.meta.account().unlocks)).toEqual(expect.arrayContaining(['relic:barrier-charm', 'relic:lucky-egg-token']));
+    // §8.7.2 — an open entry can be pinned, three at most, and the pin is kept.
+    await page.getByTestId('pin-champion').click();
+    await expect(page.getByTestId('achievement-champion')).toHaveAttribute('data-pinned', 'true');
+    await page.screenshot({ path: 'playtest/hub-journal.png' });
 
     // A reload is the real test: the account lives in its own key, beside the run save and not inside it.
     await page.reload();
     await page.goto('/?screen=hub');
     await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '3');
     await openKiosk(page, 'pc');
-    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '4');
+    await expect(page.getByTestId('dex-squirtle')).toHaveAttribute('data-rank', '6');
     await expect(page.getByTestId('dex-pidgey')).toHaveAttribute('data-tier', '1');
     await page.getByTestId('dex-squirtle').click();
     await expect(page.getByTestId('dex-stat-kos')).toContainText('303');
+    expect(await page.evaluate(() => window.__ascendant!.meta.account().pins)).toEqual(['champion']);
   });
 
-  test('the Poké Mart opens a shelf per level and sells for Tokens — cosmetics from Level 1, Hub upgrades from 4', async ({ page }) => {
+  test('the Poké Mart arrives at Trainer, opens the Kit shelf at Challenger, and sells for Tokens', async ({ page }) => {
     await menu(page);
-    await page.getByTestId('btn-hub').click();
+    // §8.4.6 — no clerk before Trainer: the counter is furniture.
+    await page.goto('/?screen=hub');
+    await expect(page.getByTestId('kiosk-mart')).toHaveCount(0);
+    await page.evaluate(() => window.__ascendant!.meta.rank(3));
+    await page.goto('/?screen=hub');
     await openKiosk(page, 'mart');
-    // Level 1: the Trainer's Corner is open, the other three shelves are tabs that say their level, and a
-    // closed shelf is still readable — priced, with a banner that says what opens it.
-    await expect(page.getByTestId('mart-tab-corner')).toHaveAttribute('data-open', 'true');
-    // §8.6.1 — no Mastery lane while relic unlocks are off (v0.9.99): no relic is sold for Tokens.
-    await expect(page.getByTestId('mart-tab-mastery')).toHaveCount(0);
-    await expect(page.getByTestId('mart-tab-hub')).toHaveAttribute('data-open', 'false');
-    await expect(page.getByTestId('mart-tab-hub')).toContainText('Lv 4');
-    await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-price-title-veteran')).toHaveAttribute('aria-disabled', 'true');
-    await page.getByTestId('mart-tab-hub').click();
+    // Trainer: Starters, Services and the Corner are open; the Kit shelf is a tab that says its rank, and a closed
+    // shelf is still readable — priced, with a banner that says what opens it.
+    for (const shelf of ['starters', 'hub', 'corner']) await expect(page.getByTestId(`mart-tab-${shelf}`)).toHaveAttribute('data-open', 'true');
+    await expect(page.getByTestId('mart-tab-kit')).toHaveAttribute('data-open', 'false');
+    await expect(page.getByTestId('mart-tab-kit')).toContainText('Rank 4');
+    await page.getByTestId('mart-tab-kit').click();
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-banner')).toContainText('opens at Trainer Level 4');
-    await expect(page.getByTestId('mart-expanded-box')).toHaveAttribute('data-state', 'locked');
-    await expect(page.getByTestId('mart-price-expanded-box')).toHaveAttribute('aria-label', /Opens at Level 4/);
+    await expect(page.getByTestId('mart-banner')).toContainText('opens at Challenger');
+    await expect(page.getByTestId('mart-moms-allowance')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('mart-price-moms-allowance')).toHaveAttribute('aria-label', /Opens at rank 4/);
+    // §8.9.3 — a perk Oak's aide hands over is not on the shelf at all.
+    await expect(page.getByTestId('mart-exp-share')).toHaveCount(0);
     await page.screenshot({ path: 'playtest/hub-mart-locked.png' });
     // §8.9.2 — a starter never met is the Pokédex's silhouette on the shelf too: no name, no blurb.
     await page.getByTestId('mart-tab-starters').click();
@@ -265,80 +278,165 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('mart-magikarp')).not.toContainText('Magikarp');
     await page.screenshot({ path: 'playtest/hub-mart-starters-unmet.png' });
 
-    // §8.4.4 — seven Tokens at Level 1 buy a title, an avatar and a frame at the Corner; the Trainer Card
-    // wears each the moment it is bought, and a second title is a Wear button away.
-    await page.evaluate(() => window.__ascendant!.meta.tokens(9));
+    // §8.4.4 — twenty Tokens buy two titles and an avatar at the Corner; the Trainer Card wears each the moment
+    // it is bought, and the first title is a Wear button away. A Journal trophy is not on the shelf.
+    await page.evaluate(() => window.__ascendant!.meta.tokens(20));
     await page.goto('/?screen=hub');
     await openKiosk(page, 'mart');
-    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '9');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '20');
     // B28 — one wallet: the header's. The Mart repeats no balance of its own beside the shelf.
     await expect(page.getByTestId('hub-tokens')).toHaveCount(1);
     await expect(page.getByTestId('poke-mart').getByText('You have', { exact: true })).toHaveCount(0);
-    await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'buyable');
-    await page.getByTestId('mart-price-title-veteran').click();
-    await expect(page.getByTestId('mart-notice')).toContainText('Veteran is yours');
-    await expect(page.getByTestId('mart-title-veteran')).toHaveAttribute('data-state', 'owned');
-    await expect(page.getByTestId('mart-title-veteran')).toContainText('Wearing');
-    await page.getByTestId('mart-price-avatar-hiker').click();
-    await page.getByTestId('mart-price-frame-great').click();
+    await page.getByTestId('mart-tab-corner').click();
+    await expect(page.getByTestId('mart-title-veteran')).toHaveCount(0);
+    await expect(page.getByTestId('mart-title-ace-trainer')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-title-ace-trainer').click();
-    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '0');
+    await expect(page.getByTestId('mart-notice')).toContainText('Ace Trainer is yours');
+    await expect(page.getByTestId('mart-title-ace-trainer')).toHaveAttribute('data-state', 'owned');
     await expect(page.getByTestId('mart-title-ace-trainer')).toContainText('Wearing');
-    await expect(page.getByTestId('mart-wear-title-veteran')).toBeVisible();
+    await page.getByTestId('mart-price-avatar-gambler').click();
+    await page.getByTestId('mart-price-title-collector').click();
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '0');
+    await expect(page.getByTestId('mart-title-collector')).toContainText('Wearing');
+    await expect(page.getByTestId('mart-wear-title-ace-trainer')).toBeVisible();
     await page.screenshot({ path: 'playtest/hub-mart-corner.png' });
-    await page.getByTestId('mart-wear-title-veteran').click();
-    await expect(page.getByTestId('mart-title-veteran')).toContainText('Wearing');
+    await page.getByTestId('mart-wear-title-ace-trainer').click();
+    await expect(page.getByTestId('mart-title-ace-trainer')).toContainText('Wearing');
     await openKiosk(page, 'card');
-    await expect(page.getByTestId('card-title')).toHaveText('Veteran');
+    await expect(page.getByTestId('card-title')).toHaveText('Ace Trainer');
     await expect(page.getByTestId('card-avatar')).toBeVisible();
-    await expect(page.getByTestId('card-head')).toHaveAttribute('data-frame', 'frame-great');
     await page.waitForTimeout(800);
     await page.screenshot({ path: 'playtest/hub-card-worn.png' });
 
-    // §8.3.4 — Level 10 with Tokens in hand: the Mart opens on the newest shelf (Hub upgrades, with the Mastery
-    // lane off), the Starters shelf sells Eevee for six, and the Tokens come off.
+    // §8.3.4 — Ace with Tokens in hand: the Mart opens on the newest shelf (the Trainer Kit), a perk bought there
+    // is packed at the Kit table, and the Starters shelf sells Eevee for thirty-five.
     await page.evaluate(() => {
-      window.__ascendant!.meta.xp(20_000);
-      window.__ascendant!.meta.tokens(8);
+      window.__ascendant!.meta.rank(5);
+      window.__ascendant!.meta.tokens(60);
     });
     await page.goto('/?screen=hub');
     await openKiosk(page, 'mart');
-    await expect(page.getByTestId('mart-tab-hub')).toHaveAttribute('data-open', 'true');
+    await expect(page.getByTestId('mart-tab-kit')).toHaveAttribute('data-open', 'true');
     await expect(page.getByTestId('mart-banner')).toHaveAttribute('data-state', 'open');
-    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '8');
+    await expect(page.getByTestId('mart-moms-allowance')).toHaveAttribute('data-state', 'buyable');
+    await page.getByTestId('mart-price-moms-allowance').click();
+    await expect(page.getByTestId('mart-notice')).toContainText('Pack it at the Trainer Kit desk');
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '40');
     await page.screenshot({ path: 'playtest/hub-mart.png' });
     await page.getByTestId('mart-tab-starters').click();
     await expect(page.getByTestId('mart-eevee')).toHaveAttribute('data-state', 'buyable');
     await page.getByTestId('mart-price-eevee').click();
     await expect(page.getByTestId('mart-notice')).toContainText('Eevee can start your next run');
-    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '2');
-    // Magikarp at four is now unaffordable, and the shelf says so without hiding it; so is Pikachu at six, whose
-    // kit shipped with Region 2 (v0.7.3) — sold, just not to a wallet of two.
+    await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '5');
+    // Magikarp at twenty-five is now unaffordable, and the shelf says so without hiding it; so is Pikachu.
     await expect(page.getByTestId('mart-price-magikarp')).toHaveAttribute('aria-label', /Not enough Tokens/);
     await expect(page.getByTestId('mart-magikarp')).toHaveAttribute('data-state', 'locked');
     await expect(page.getByTestId('mart-price-pikachu')).toHaveAttribute('aria-label', /Not enough Tokens/);
     await page.screenshot({ path: 'playtest/hub-mart-starters.png' });
 
+    // §8.4.5 — the Kit table: two slots at Ace, the third still shut; the perk packs with a click, and the new-run
+    // screen names it.
+    await openKiosk(page, 'kit');
+    await expect(page.getByTestId('trainer-kit')).toHaveAttribute('data-slots', '2');
+    await expect(page.getByTestId('kit-slot-3')).toHaveAttribute('data-state', 'locked');
+    await expect(page.getByTestId('kit-perk-moms-allowance')).toHaveAttribute('data-state', 'ready');
+    await page.getByTestId('kit-perk-moms-allowance').click();
+    await expect(page.getByTestId('kit-perk-moms-allowance')).toHaveAttribute('data-state', 'packed');
+    await expect(page.getByTestId('kit-slot-1')).toContainText("Mom's Allowance");
+    await expect(page.getByTestId('kit-perk-exp-share')).toHaveAttribute('data-state', 'missing');
+    await page.screenshot({ path: 'playtest/hub-kit.png' });
+
     // §8.4.1 — and the door to the Elite Four is the way into a run, where the starters wait.
     await page.getByTestId('btn-hub-lobby').click();
     await page.getByTestId('kiosk-run').click();
     await expect(page.getByTestId('starter-select')).toBeVisible();
+    await expect(page.getByTestId('run-kit')).toContainText("Mom's Allowance");
+  });
+
+  test("Oak's Parcels open the vault a card at a time — §8.6.2", async ({ page }) => {
+    await menu(page);
+    await page.evaluate(() => {
+      window.__ascendant!.meta.rank(2);
+      window.__ascendant!.meta.parcels(2);
+    });
+    await page.goto('/?screen=hub');
+    // The aide's plate counts the parcels waiting.
+    await expect(page.getByTestId('kiosk-aide')).toContainText('2');
+    await openKiosk(page, 'aide');
+    await expect(page.getByTestId('parcel-offer')).toHaveAttribute('data-waiting', '2');
+    const cards = page.locator('[data-testid^="parcel-card-"]');
+    await expect(cards).toHaveCount(3);
+    await expect(page.getByTestId('vault-count')).toContainText('0 / 55');
+    await page.screenshot({ path: 'playtest/hub-parcel.png' });
+    const taken = (await cards.first().getAttribute('data-testid'))!.replace('parcel-card-', '');
+    await cards.first().click();
+    await expect(page.getByTestId('parcel-notice')).toContainText('joins the world');
+    await expect(page.getByTestId('vault-count')).toContainText('1 / 55');
+    expect(await page.evaluate(() => window.__ascendant!.meta.account().unlocks)).toEqual([taken]);
+    // The second parcel is a new offer, without the card just taken.
+    await expect(page.getByTestId('parcel-offer')).toHaveAttribute('data-waiting', '1');
+    await expect(page.getByTestId(`parcel-card-${taken}`)).toHaveCount(0);
+    await cards.first().click();
+    await expect(page.getByTestId('parcel-empty')).toBeVisible();
+    // §8.6.2 — and the run's pool grew by exactly those two: what is still locked never turns up.
+    const locked = await page.evaluate(() => {
+      const a = window.__ascendant!;
+      a.run.new('bulbasaur', 7, { vault: true });
+      return a.run.state()!.perks.locked!.length;
+    });
+    expect(locked).toBeGreaterThan(0);
+    expect(await page.evaluate(() => window.__ascendant!.run.state()!.perks.locked!.includes(window.__ascendant!.meta.account().unlocks[0]!))).toBe(false);
   });
 });
 
-test.describe('Leftover money — §8.3.4', () => {
-  test('the ₽ a run ends with becomes Tokens, and the summary says so', async ({ page }) => {
+test.describe('The Field Report — §8.3.6', () => {
+  test('a lost run is paid on the screen: the tally, a parcel, the rank, and the ₽ as Tokens', async ({ page }) => {
     await menu(page);
-    await page.evaluate(() => {
-      const A = window.__ascendant as unknown as { run: { new: (s: string, seed?: number) => void }; meta: { record: (e: unknown[]) => void }; goTo: (s: string) => void };
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.evaluate((w) => {
+      const A = window.__ascendant!;
       A.run.new('squirtle', 7);
-      A.meta.record([{ t: 'run-end', won: false, catches: 0, badges: 0, layersCleared: 4, moneyLeft: 540 }]);
+      A.meta.record([...Array.from({ length: 6 }, () => w), { t: 'badge-awarded', badgeId: 'cascade-badge', activeSpecies: ['squirtle'] }, { t: 'run-end', won: false, catches: 0, badges: 1, layersCleared: 4, moneyLeft: 540, activeSpecies: ['squirtle'] }] as never[]);
+      A.run.patch((d) => {
+        d.box.forEach((m) => { m.hp = 0; });
+        d.phase = 'ended';
+        d.outcome = 'defeat';
+      });
       A.goTo('defeat');
-    });
+    }, win());
+    const report = page.getByTestId('field-report');
+    await expect(report).toBeVisible();
+    // The six panels are all on the screen at rest.
+    for (const id of ['tally', 'research', 'rank', 'bond', 'earned', 'next']) await expect(page.getByTestId(`report-${id}`)).toBeVisible();
+    await expect(page.getByTestId('report-tally')).toContainText('Fights won');
+    await expect(page.getByTestId('report-tally')).toContainText('Distance covered');
+    // §8.3.4 — 540 ₽ is five Tokens, said beside the run's own.
+    await expect(page.getByTestId('summary-money')).toContainText('540');
+    await expect(page.getByTestId('report-tokens')).toContainText('5 from ₽');
+    // §8.3.3 — the run crossed Rookie, and the panel says who that brings.
+    await expect(page.getByTestId('report-rank-up')).toContainText('Rookie');
+    await expect(page.getByTestId('report-earned')).toContainText("Professor Oak's aide");
+    // §8.14 — the Leader's first Badge is on the wall and their TM is in the world.
+    await expect(page.getByTestId('report-earned')).toContainText('Cascade Badge');
+    await expect(page.getByTestId('report-earned')).toContainText('Surf');
+    // §6.8 — Squirtle's row: the Bond it earned and the rank it crossed.
+    await expect(page.getByTestId('report-bond-squirtle')).toHaveAttribute('data-crossed', 'true');
+    // §8.7.2 — what to chase next: three entries.
+    await expect(page.locator('[data-testid^="report-goal-"]')).toHaveCount(3);
+    await page.screenshot({ path: 'playtest/run-end-report.png' });
+
+    // §8.6.2 — the parcel is opened here, without a trip to the Hub.
+    await expect(page.getByTestId('report-parcels')).toBeVisible();
+    await page.getByTestId('btn-open-parcel').click();
+    await expect(page.getByTestId('parcel-sheet')).toBeVisible();
+    await page.locator('[data-testid^="parcel-card-"]').first().click();
+    await expect(page.getByTestId('parcel-notice')).toContainText('joins the world');
+    await page.screenshot({ path: 'playtest/run-end-parcel.png' });
+    await page.getByTestId('btn-parcel-later').click();
+    await expect(page.getByTestId('parcel-sheet')).toHaveCount(0);
+    // The run's own numbers are still one door away.
     await page.getByTestId('btn-run-record').click();
-    await expect(page.getByTestId('account-summary')).toContainText('540 left → 2 Tokens');
-    await page.waitForTimeout(600);
-    await page.screenshot({ path: 'playtest/run-end-money.png' });
+    await expect(page.getByTestId('run-record')).toBeVisible();
   });
 });
 
@@ -429,31 +527,31 @@ test.describe('Settings — §9.6', () => {
   });
 });
 
-test('a medal case from before the rename becomes the first account, paid what it was worth', async ({ page }) => {
-  // §10.8 — the project was renamed on 2026-09-20 and the localStorage keys moved with it; then v0.6 folded
-  // the medal case into the account. A player who updates across both keeps the medal *and* its XP.
+test('an account from before the rework starts again, and the settings it carried stay — §8.10', async ({ page }) => {
+  // §8.10 — account v4 is a reset (v0.9.110, the user's call): the vault changes what a first run holds, so an
+  // older account — and the medal case that predates accounts — starts again as a Newcomer. §10.8 — the settings
+  // key, renamed on 2026-09-20, is still carried.
   await page.goto('/?screen=menu');
   await page.evaluate(() => {
     localStorage.clear();
+    localStorage.setItem('ascendant.account.v1', JSON.stringify({ account: { version: 3, xp: 12_000, tokens: 40, hub: ['twin-run'], relics: ['barrier-charm'] } }));
     localStorage.setItem('evoline.achievements.v1', JSON.stringify({ counts: { 'first-blood': 1 }, species: ['pidgey'], winStreak: 2, unlocked: ['first-blood'] }));
     localStorage.setItem('evoline.settings.v1', JSON.stringify({ textScale: 1.25, motion: 'reduced' }));
   });
   await page.goto('/?screen=hub');
-
-  // The medal survived, the account holds it, and the pre-account keys are gone.
-  await openKiosk(page, 'pc');
-  await page.getByTestId('pc-tab-medals').click();
-  await expect(page.getByTestId('achievement-first-blood')).toContainText('Earned');
+  await expect(page.getByTestId('hub-level')).toHaveAttribute('data-level', '1');
+  await expect(page.getByTestId('hub-tokens')).toHaveAttribute('data-tokens', '0');
   const keys = await page.evaluate(() => ({
-    account: localStorage.getItem('ascendant.account.v1'),
+    account: JSON.parse(localStorage.getItem('ascendant.account.v1')!).account,
     ach: localStorage.getItem('ascendant.achievements.v1'),
     oldAch: localStorage.getItem('evoline.achievements.v1'),
     newSet: localStorage.getItem('ascendant.settings.v1'),
   }));
-  expect(keys.account).toContain('first-blood');
-  // §8.7.0 — First Blood is Bronze: 75 XP, back-paid.
-  expect(JSON.parse(keys.account!).account.xp).toBeGreaterThan(0);
-  expect(keys.ach, 'the medal case is folded into the account and then removed').toBeNull();
+  expect(keys.account.version).toBe(4);
+  expect(keys.account.xp).toBe(0);
+  expect(keys.account.hub).toEqual([]);
+  expect(keys.account.salt).toBeGreaterThan(0);
+  expect(keys.ach, 'the medal case goes with the reset').toBeNull();
   expect(keys.oldAch, 'the pre-rename key should be cleared once it is carried').toBeNull();
   expect(keys.newSet).toContain('1.25');
 

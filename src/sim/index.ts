@@ -68,26 +68,46 @@ export { serialiseRun, deserialiseRun, describeSave, type SaveProvider, type Sav
 // §8.7 — achievements. Pure definitions and a pure fold; persistence is the app layer's (achievementStore).
 export {
   ACHIEVEMENTS, MEDAL_XP, achievementById, applyMetaEvent, applyMetaEvents, emptyProgress, metaEventsFor,
-  type AchievementDef, type AchievementProgress, type MedalTier, type MetaEvent,
+  type AchievementDef, type AchievementProgress, type MedalTier, type MetaEvent, type HallTeamMember,
 } from './meta/achievements';
 
-// §8.3–§8.6, §8.9, §8.10 — the account: Trainer XP, the track, Tokens, the Pokédex, Mastery, what is unlocked.
+// §8.3–§8.10, §8.14, §8.15 — the account: Trainer XP and Rank, Research and Oak's Parcels, Tokens, the Kit, the
+// Pokédex, the Bond, the Journal, the Badge Case, the League Ladder and the Hall of Fame.
 // Pure state and a pure fold; persistence is the app layer's (accountStore).
 export {
-  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, TRACK_TOKENS, MONEY_TO_TOKENS, tokensForMoney, LEVEL_CURVE, SHELVES, SHELF_ORDER, RELIC_UNLOCKS_ON, HUB_UPGRADE_LABEL, XP,
-  emptyAccount, emptyDelta, xpForLevel, levelFor, levelProgress, trackTokensBetween, applyAccountEvent, applyAccountEvents, accountFromProgress,
-  upgradeAccount, hasHubUpgrade, medalCount, lineOf,
-  type AccountState, type AccountDelta, type AccountContext, type TrackReward, type ShelfId, type HubUpgrade, type LifetimeStats, type LegacyAccountFields, speciesMet } from './meta/account';
-// §8.3.4, §8.4.1, §8.4.4 — the Poké Mart: shelves by level, prices in Tokens, cosmetics.
+  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, TOKENS, tokensForMoney, SHELVES, SHELF_ORDER, HUB_UPGRADE_LABEL, KIT, XP, AIDES, REPORT_LINES, STARS, HALL_SIZE, PIN_LIMIT,
+  emptyAccount, emptyDelta, mergeDelta, xpForLevel, levelFor, levelProgress, trackTokensBetween, applyAccountEvent, applyAccountEvents,
+  upgradeAccount, hasHubUpgrade, isKitPerk, kitSlots, packKit, takeParcel, pinEntry, medalCount, lineOf, speciesOwned, starsOf, speciesMet,
+  type AccountState, type AccountDelta, type AccountContext, type TrackReward, type ShelfId, type HubUpgrade, type HubUpgradeRow, type LifetimeStats,
+  type ReportLine, type AideRow, type HallEntry, type StarId,
+} from './meta/account';
+export { RANKS, MAX_RANK, rankRow, rankFor, rankProgress, xpForRank, kitSlotsFor, parcelChoicesFor, KIT_SLOT_RANKS, ARRIVAL_RANK, type RankRow } from './meta/rank';
+// §8.6 — the vault and Oak's Parcels.
+export {
+  VAULT, PLATES, LEADER_TM, PARCEL, vaultEntry, vaultEntryFor, lockedKeys, isVaulted, parcelPool, parcelCost, parcelOffer, vaultCard,
+  type VaultEntry,
+} from './meta/vault';
+export { lockKey, isLocked, lockedIds, type LockKind } from './run/locks';
+// §8.7 — the Trainer Journal.
+export {
+  MEDAL_TOKENS, JOURNAL_COSMETICS, JOURNAL_SHELVES, journalReward, journalEntries, nextGoals, noteId,
+  type JournalReward, type JournalShelf, type JournalEntry,
+} from './meta/journal';
+// §8.8.5 — the League Ladder.
+export { LADDER, LADDER_TOP, LADDER_PRIZE, ladderModifiers, ladderRungOf } from './meta/ladder';
+// §8.3.4, §8.4.1, §8.4.4 — the Poké Mart: shelves by rank, prices in Tokens, cosmetics.
 export {
   MART_PRICE, META_STARTERS, shelfOpen, martShelf, martPrice, martOwned, martPending, shelfItems, shopTotal, buy, wear,
   type MartItem, type MartError,
 } from './meta/mart';
-export { COSMETICS, COSMETIC_PRICE, cosmeticById, TITLE_ID_BY_NAME, type CosmeticDef, type CosmeticKind } from './meta/cosmetics';
+export { COSMETICS, COSMETIC_PRICE, cosmeticById, type CosmeticDef, type CosmeticKind } from './meta/cosmetics';
 export { DEX_FAMILIAR, DEX_TIER_XP, DEX_TIER_NAME, dexTierFor, dexNext, emptyDexEntry, normalizeDexEntry, isMet, UNMET_NAME, type DexTier, type DexEntry } from './meta/pokedex';
-export { BOND, BOND_TIER, BOND_TIER_COST, BOND_RANKS, BOND_RANK_NAME, BOND_LADDER, MAX_BOND_RANK, bondRank, bondProgress, bondUnlocks, hiddenAbilityOf, type BondUnlocks } from './meta/bond';
 export {
-  relicTier, discoverableRelics, masteryRelics, relicUnlocked, relicPoolFor, discoveryProgress,
+  BOND, BOND_TIER, BOND_RANKS, BOND_RANK_NAME, BOND_LADDER, MAX_BOND_RANK, PARTNER_START_LEVELS, RIBBONS, bondRank, bondProgress, bondUnlocks, hiddenAbilityOf,
+  type BondUnlocks, type RibbonId,
+} from './meta/bond';
+export {
+  relicUnlocked, relicPoolFor, ladderOpen, nextRung,
   modifierUnlocked, modifierSlots, unlockedStarters, masteryTierFor, twinRun, startingRelicOffers,
   defaultPerks, runPerksFor, accountContextFor,
 } from './meta/unlocks';

@@ -1,18 +1,21 @@
 import { create } from 'zustand';
 import {
+  ACCOUNT_VERSION,
   accountContextFor,
-  accountFromProgress,
   applyAccountEvents,
   buy as buyItem,
   emptyAccount,
   emptyDelta,
   levelFor,
+  mergeDelta,
+  packKit,
+  pinEntry,
+  takeParcel,
   metaEventsFor,
   modifierXpMultiplier,
   normalizeDexEntry,
   progressNotes,
   type ProgressNote,
-  upgradeAccount,
   wear as wearItem,
   type AccountDelta,
   type AccountState,
@@ -21,7 +24,7 @@ import {
   type CombatOutcomeReport,
   type CosmeticKind,
   type DexEntry,
-  type LegacyAccountFields,
+  type HubUpgrade,
   type MartError,
   type MartItem,
   type MetaEvent,
@@ -34,17 +37,21 @@ import { ACCOUNT_KEY, ACHIEVEMENTS_KEY, claimLegacyKey } from './storageKeys';
 //
 // It lives beside the run save rather than inside it, and the difference matters: a run save is one run and
 // is deleted when that run ends (§10.8), while this survives every run and is the point of playing more than
-// one. Abandoning a run must never cost you a level.
+// one. Abandoning a run must never cost you a rank.
 //
 // Canon says the account is written at run end and on every Poké Mart purchase. A browser tab is not a
 // console: it is closed mid-run without ceremony, so this writes after every fold instead. The fold is
-// idempotent through `claimedLevels`, the medal list and the discovery list, so an extra write costs nothing.
+// idempotent through `claimedLevels`, the medal list and the notes, so an extra write costs nothing.
 
-/** What one run has earned so far, kept beside the account so a reload mid-run does not forget the summary. */
-interface Ledger extends AccountDelta {
-  /** The level the run started at, so the summary can say "Level 3 → 5" rather than list every step. */
+/** What one run has earned so far, kept beside the account so a reload mid-run does not forget the Field Report. */
+export interface Ledger extends AccountDelta {
+  /** The rank the run started at, so the report can say "Rank 3 → 4" rather than list every step. */
   levelAtStart: number;
   xpAtStart: number;
+  /** §8.3.6 — where the Research bar and each line's Bond stood when the run began: the bars fill *from* here. */
+  researchAtStart: number;
+  parcelsEarnedAtStart: number;
+  bondAtStart: Record<string, number>;
 }
 
 interface Persisted {
@@ -52,11 +59,24 @@ interface Persisted {
   ledger: Ledger;
 }
 
-const emptyLedger = (account: AccountState): Ledger => ({ ...emptyDelta(), levelAtStart: levelFor(account.xp), xpAtStart: account.xp });
+const emptyLedger = (account: AccountState): Ledger => ({
+  ...emptyDelta(),
+  levelAtStart: levelFor(account.xp),
+  xpAtStart: account.xp,
+  researchAtStart: account.research,
+  parcelsEarnedAtStart: account.parcelsEarned,
+  bondAtStart: { ...account.bond },
+});
+
+/** §8.6.2 — what makes an account's parcels its own. The app's to roll: the sim reads no dice of its own. */
+const newSalt = (): number => Math.floor(Math.random() * 0x7fffffff) + 1;
 
 function isProgress(v: unknown): v is AchievementProgress {
   return !!v && typeof v === 'object' && Array.isArray((v as AchievementProgress).unlocked);
 }
+
+const list = <T,>(v: unknown, fallback: T[]): T[] => (Array.isArray(v) ? (v as T[]) : fallback);
+const record = <T,>(v: unknown, fallback: Record<string, T>): Record<string, T> => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, T>) : fallback);
 
 function load(): Persisted {
   claimLegacyKey(ACHIEVEMENTS_KEY);
@@ -64,45 +84,49 @@ function load(): Persisted {
     const raw = localStorage.getItem(ACCOUNT_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<Persisted>;
-      // Defensive rather than schema-validated on purpose: a corrupt field should cost you that field, not
-      // the ability to start the game. Every top-level field falls back to its empty value on its own.
-      const base = emptyAccount();
-      const a = (parsed.account ?? {}) as Partial<AccountState> & LegacyAccountFields;
-      const loaded: AccountState & LegacyAccountFields = {
-        ...base,
-        ...a,
-        version: typeof a.version === 'number' ? a.version : 1,
-        achievements: isProgress(a.achievements) ? a.achievements : base.achievements,
-        stats: { ...base.stats, ...(a.stats ?? {}) },
-        // §8.9 — an entry saved before a record field existed is made whole, so the sheet never reads undefined.
-        dex: a.dex && typeof a.dex === 'object' ? Object.fromEntries(Object.entries(a.dex).map(([id, e]) => [id, normalizeDexEntry(e as Partial<DexEntry>)])) : {},
-        bond: a.bond && typeof a.bond === 'object' ? a.bond : bondFromMastery((a as { mastery?: Record<string, number> }).mastery),
-        cosmetics: Array.isArray(a.cosmetics) ? a.cosmetics : [],
-        wearing: a.wearing && typeof a.wearing === 'object' ? a.wearing : {},
-        counters: a.counters && typeof a.counters === 'object' ? a.counters : {},
-      };
-      // v1 → v2: the track pays every level now and the Mart sells; `upgradeAccount` back-pays and re-keys the titles.
-      const account = upgradeAccount(loaded);
-      // v0.6.0 Pokédex tiers went to Master (3); §5.13 has only Familiar since 2026-09-21. Clamp, keep the count.
-      for (const e of Object.values(account.dex)) if (e.tier > 1) e.tier = 1;
-      const ledger = parsed.ledger && typeof parsed.ledger === 'object' ? { ...emptyLedger(account), ...parsed.ledger } : emptyLedger(account);
-      return { account, ledger };
+      const a = (parsed.account ?? {}) as Partial<AccountState>;
+      // §8.10 — v0.9.110 is a reset (the user's call): an account from before the rework starts again.
+      if (typeof a.version === 'number' && a.version >= ACCOUNT_VERSION) {
+        // Defensive rather than schema-validated on purpose: a corrupt field should cost you that field, not
+        // the ability to start the game. Every top-level field falls back to its empty value on its own.
+        const base = emptyAccount(typeof a.salt === 'number' && a.salt > 0 ? a.salt : newSalt());
+        const account: AccountState = {
+          ...base,
+          ...a,
+          salt: base.salt,
+          achievements: isProgress(a.achievements) ? a.achievements : base.achievements,
+          stats: { ...base.stats, ...(a.stats ?? {}) },
+          // §8.9 — an entry saved before a record field existed is made whole, so the sheet never reads undefined.
+          dex: Object.fromEntries(Object.entries(record<Partial<DexEntry>>(a.dex, {})).map(([id, e]) => [id, normalizeDexEntry(e)])),
+          bond: record(a.bond, {}),
+          ribbons: record(a.ribbons, {}),
+          counters: record(a.counters, {}),
+          wearing: record(a.wearing, {}) as AccountState['wearing'],
+          unlocks: list(a.unlocks, []),
+          claimedLevels: list(a.claimedLevels, []),
+          starters: list(a.starters, []),
+          hub: list(a.hub, []),
+          kit: list(a.kit, []),
+          cosmetics: list(a.cosmetics, []),
+          badges: list(a.badges, []),
+          hall: list(a.hall, []),
+          notes: list(a.notes, []),
+          pins: list(a.pins, []),
+          aides: list(a.aides, []),
+        };
+        const ledger = parsed.ledger && typeof parsed.ledger === 'object' ? { ...emptyLedger(account), ...parsed.ledger } : emptyLedger(account);
+        return { account, ledger };
+      }
     }
-    // v0.5 kept only the medal case. It becomes the first account, paid what those medals were worth.
-    const legacy = localStorage.getItem(ACHIEVEMENTS_KEY);
-    if (legacy) {
-      const progress = JSON.parse(legacy) as unknown;
-      const account = isProgress(progress) ? accountFromProgress(progress, accountContextFor(getContent())) : emptyAccount();
-      const out = { account, ledger: emptyLedger(account) };
-      persist(out);
-      localStorage.removeItem(ACHIEVEMENTS_KEY);
-      return out;
-    }
+    // v0.5's medal case predates the account; it goes with the reset.
+    localStorage.removeItem(ACHIEVEMENTS_KEY);
   } catch {
     /* fall through to a fresh account */
   }
-  const account = emptyAccount();
-  return { account, ledger: emptyLedger(account) };
+  const account = emptyAccount(newSalt());
+  const out = { account, ledger: emptyLedger(account) };
+  persist(out);
+  return out;
 }
 
 function persist(p: Persisted): void {
@@ -113,31 +137,7 @@ function persist(p: Persisted): void {
   }
 }
 
-/**
- * v0.6.0 kept a Mastery tier per line, earned by §6.8.1's triggers. Bond (§6.8, 2026-09-21) replaces it; a
- * tier already earned lands at the first rank that grants the same thing, so nobody loses a fifth card.
- */
-function bondFromMastery(mastery: Record<string, number> | undefined): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const [line, tier] of Object.entries(mastery ?? {})) out[line] = tier >= 3 ? 100 : tier === 2 ? 60 : tier === 1 ? 5 : 0;
-  return out;
-}
-
-function addTo(ledger: Ledger, d: AccountDelta): Ledger {
-  return {
-    ...ledger,
-    xp: ledger.xp + d.xp,
-    tokens: ledger.tokens + d.tokens,
-    levelsGained: [...ledger.levelsGained, ...d.levelsGained],
-    rewards: [...ledger.rewards, ...d.rewards],
-    unlockedAchievements: [...ledger.unlockedAchievements, ...d.unlockedAchievements],
-    dexPromotions: [...ledger.dexPromotions, ...d.dexPromotions],
-    bondGains: [...ledger.bondGains, ...d.bondGains],
-    bondRankUps: [...ledger.bondRankUps, ...d.bondRankUps],
-    discoveredRelics: [...ledger.discoveredRelics, ...d.discoveredRelics],
-    moneyTokens: [...(ledger.moneyTokens ?? []), ...d.moneyTokens],
-  };
-}
+const addTo = (ledger: Ledger, d: AccountDelta): Ledger => ({ ...ledger, ...mergeDelta(ledger, d) });
 
 interface AccountStore {
   account: AccountState;
@@ -147,7 +147,7 @@ interface AccountStore {
   fresh: AchievementDef[];
   /** §6.8.1 — what the last fight paid each line, for its result's progress door (§9.4.5). Not persisted: it is the moment's. */
   lastBond: { line: string; points: number; rankUps: number[] }[];
-  /** §8.7 / §8.6.1 — what the last fight moved on the account's medals and discoveries, for its result's progress door. */
+  /** §8.7 — what the last fight moved in the Journal, for its result's progress door. */
   lastProgress: ProgressNote[];
   /** The same notes from every fold, waiting for the progress panel (v0.9.6). Not persisted: they are the moment's. */
   toasts: (ProgressNote & { key: number })[];
@@ -160,6 +160,14 @@ interface AccountStore {
   buy: (item: MartItem) => MartError | null;
   /** §8.4.4 — wear an owned cosmetic, or none of that kind. */
   wear: (kind: CosmeticKind, id: string | null) => void;
+  /** §8.6.2 — open one Oak's Parcel by taking a card from its offer. */
+  openParcel: (entryId: string) => void;
+  /** §8.4.5 — pack or unpack a Kit perk. */
+  pack: (perk: HubUpgrade, on: boolean) => void;
+  /** §8.7.2 — pin or unpin a Journal entry. */
+  pin: (id: string, on: boolean) => void;
+  /** Replace the account outright — the dev hook and the tests set a rank or a wallet this way. */
+  replace: (account: AccountState) => void;
   /** A new run opens a new ledger. */
   beginRun: () => void;
   acknowledge: () => void;
@@ -169,73 +177,80 @@ interface AccountStore {
 const initial = load();
 let toastSerial = 0;
 
-export const useAccountStore = create<AccountStore>((set, get) => ({
-  account: initial.account,
-  ledger: initial.ledger,
-  fresh: [],
-  lastBond: [],
-  lastProgress: [],
-  toasts: [],
-
-  observe: (before, after, report) => {
-    if (!before || !after) return;
-    const events = metaEventsFor(before, after, getContent(), report);
-    if (events.length === 0) return;
-    // §8.8.3 — the run's difficulty multiplier rides on every XP the run earns.
-    get().record(events, modifierXpMultiplier(after.modifiers));
-  },
-
-  record: (events, xpMultiplier = 1) => {
-    const before = get().account;
-    const { state, delta } = applyAccountEvents(before, events, accountContextFor(getContent(), xpMultiplier));
-    const notes = progressNotes(before, state, getContent());
-    const ledger = addTo(get().ledger, delta);
-    persist({ account: state, ledger });
-    // §6.8.1 — a fight's Bond is its result's to show; any other fold that paid none leaves it standing.
-    const byLine = new Map<string, { line: string; points: number; rankUps: number[] }>();
-    for (const g of delta.bondGains) byLine.set(g.line, { line: g.line, points: (byLine.get(g.line)?.points ?? 0) + g.points, rankUps: byLine.get(g.line)?.rankUps ?? [] });
-    for (const r of delta.bondRankUps) byLine.get(r.line)?.rankUps.push(r.rank);
-    const fight = events.some((e) => e.t === 'combat-end');
-    set({
-      account: state,
-      ledger,
-      fresh: delta.unlockedAchievements.length ? [...get().fresh, ...delta.unlockedAchievements] : get().fresh,
-      ...(fight ? { lastBond: [...byLine.values()], lastProgress: notes } : {}),
-      // A fight's notes are listed behind its result's door; the panel carries what moved anywhere else.
-      toasts: notes.length && !fight ? [...get().toasts, ...notes.map((n) => ({ ...n, key: ++toastSerial }))] : get().toasts,
-    });
-    return delta;
-  },
-
-  buy: (item) => {
-    const result = buyItem(get().account, item, getContent());
-    if ('error' in result) return result.error;
-    persist({ account: result.state, ledger: get().ledger });
-    set({ account: result.state });
-    return null;
-  },
-
-  wear: (kind, id) => {
-    const account = wearItem(get().account, kind, id);
+export const useAccountStore = create<AccountStore>((set, get) => {
+  /** Swap in an account a pure function returned, if it changed anything. */
+  const commit = (account: AccountState): void => {
     if (account === get().account) return;
     persist({ account, ledger: get().ledger });
     set({ account });
-  },
+  };
 
-  beginRun: () => {
-    const ledger = emptyLedger(get().account);
-    persist({ account: get().account, ledger });
-    set({ ledger });
-  },
+  return {
+    account: initial.account,
+    ledger: initial.ledger,
+    fresh: [],
+    lastBond: [],
+    lastProgress: [],
+    toasts: [],
 
-  acknowledge: () => set({ fresh: [] }),
+    observe: (before, after, report) => {
+      if (!before || !after) return;
+      const events = metaEventsFor(before, after, getContent(), report);
+      if (events.length === 0) return;
+      // §8.8.3 — the run's difficulty multiplier rides on every XP the run earns.
+      get().record(events, modifierXpMultiplier(after.modifiers));
+    },
 
-  dismissToast: (key) => set({ toasts: get().toasts.filter((t) => t.key !== key) }),
+    record: (events, xpMultiplier = 1) => {
+      const before = get().account;
+      const { state, delta } = applyAccountEvents(before, events, accountContextFor(getContent(), xpMultiplier));
+      const notes = progressNotes(before, state, getContent());
+      const ledger = addTo(get().ledger, delta);
+      persist({ account: state, ledger });
+      // §6.8.1 — a fight's Bond is its result's to show; any other fold that paid none leaves it standing.
+      const byLine = new Map<string, { line: string; points: number; rankUps: number[] }>();
+      for (const g of delta.bondGains) byLine.set(g.line, { line: g.line, points: (byLine.get(g.line)?.points ?? 0) + g.points, rankUps: byLine.get(g.line)?.rankUps ?? [] });
+      for (const r of delta.bondRankUps) byLine.get(r.line)?.rankUps.push(r.rank);
+      const fight = events.some((e) => e.t === 'combat-end');
+      set({
+        account: state,
+        ledger,
+        fresh: delta.unlockedAchievements.length ? [...get().fresh, ...delta.unlockedAchievements] : get().fresh,
+        ...(fight ? { lastBond: [...byLine.values()], lastProgress: notes } : {}),
+        // A fight's notes are listed behind its result's door; the panel carries what moved anywhere else.
+        toasts: notes.length && !fight ? [...get().toasts, ...notes.map((n) => ({ ...n, key: ++toastSerial }))] : get().toasts,
+      });
+      return delta;
+    },
 
-  reset: () => {
-    const account = emptyAccount();
-    const ledger = emptyLedger(account);
-    persist({ account, ledger });
-    set({ account, ledger, fresh: [] });
-  },
-}));
+    buy: (item) => {
+      const result = buyItem(get().account, item, getContent());
+      if ('error' in result) return result.error;
+      commit(result.state);
+      return null;
+    },
+
+    wear: (kind, id) => commit(wearItem(get().account, kind, id)),
+    openParcel: (entryId) => commit(takeParcel(get().account, entryId)),
+    pack: (perk, on) => commit(packKit(get().account, perk, on)),
+    pin: (id, on) => commit(pinEntry(get().account, id, on)),
+    replace: (account) => commit(account),
+
+    beginRun: () => {
+      const ledger = emptyLedger(get().account);
+      persist({ account: get().account, ledger });
+      set({ ledger });
+    },
+
+    acknowledge: () => set({ fresh: [] }),
+
+    dismissToast: (key) => set({ toasts: get().toasts.filter((t) => t.key !== key) }),
+
+    reset: () => {
+      const account = emptyAccount(newSalt());
+      const ledger = emptyLedger(account);
+      persist({ account, ledger });
+      set({ account, ledger, fresh: [] });
+    },
+  };
+});

@@ -101,13 +101,15 @@ export function placeLedge(map: Pick<RegionMap, 'nodes'>, mapCursor: number, isS
  * map's own, so one map never holds the same event twice. It stays a "?" until it is entered (the user, 2026-11-09: "los
  * mystery deberían seguir siendo mystery"); v0.9.107 showed it as its place.
  */
-export function placeEvents(map: Pick<RegionMap, 'nodes'>, mapCursor: number, seen: readonly string[]): void {
+export function placeEvents(map: Pick<RegionMap, 'nodes'>, mapCursor: number, seen: readonly string[], locked: readonly string[] = []): void {
   const rng = streamOf(mapCursor, 'PlaceRNG');
   const taken = new Set(seen);
   const mysteries = Object.values(map.nodes).filter((n) => n.kind === 'mystery').sort((a, b) => a.layer - b.layer || a.col - b.col);
   for (const n of mysteries) {
-    const pool = MYSTERY_EVENTS.filter((e) => !taken.has(e.id));
-    const from = pool.length ? pool : MYSTERY_EVENTS;
+    // §8.6.2 — an event the account has not opened is never placed, not even when the rest have run out.
+    const open = locked.length ? MYSTERY_EVENTS.filter((e) => !locked.includes(e.id)) : MYSTERY_EVENTS;
+    const pool = open.filter((e) => !taken.has(e.id));
+    const from = pool.length ? pool : open;
     const total = from.reduce((a, e) => a + (e.weight ?? 1), 0);
     let roll = rng.range01() * total;
     const event = from.find((e) => (roll -= e.weight ?? 1) <= 0) ?? from[from.length - 1]!;

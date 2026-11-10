@@ -36,7 +36,11 @@ interface RunStore {
    * account's perks (§8.10) are snapshotted from the account store at the same moment. `twin` is §8.4.2's
    * second starter.
    */
-  newRun: (starterId: string, seed?: number, modifiers?: readonly string[], startingRelic?: string, regionModifier?: string, twin?: string) => void;
+  /**
+   * Start a run with the account's perks (§8.10). `openVault` is the dev hook's: the run draws the whole catalogue,
+   * as a fixture does, so a seed is the same route on every account (§8.6.2).
+   */
+  newRun: (starterId: string, seed?: number, modifiers?: readonly string[], startingRelic?: string, regionModifier?: string, twin?: string, opts?: { openVault?: boolean }) => void;
   dispatch: (action: RunAction) => boolean;
   /** Enter the pending node's fight: reduce, then boot the combat store with the generated scenario. */
   beginCombat: () => boolean;
@@ -66,9 +70,10 @@ export const useRunStore = create<RunStore>((set, get) => ({
   lastRejected: null,
   runKey: 0,
 
-  newRun: (starterId, seed, modifiers = [], startingRelic, regionModifier, twin) => {
+  newRun: (starterId, seed, modifiers = [], startingRelic, regionModifier, twin, opts) => {
     const account = useAccountStore.getState();
-    const perks = runPerksFor(account.account, getContent(), !!twin);
+    const own = runPerksFor(account.account, getContent(), !!twin);
+    const perks = opts?.openVault ? { ...own, relicPool: null, locked: [] } : own;
     const run = createRun(starterId, seed ?? freshSeed(), ctx(), 0, modifiers, startingRelic, regionModifier, perks, twin);
     run.stats.startedAt = Date.now();
     account.beginRun();

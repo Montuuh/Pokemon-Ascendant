@@ -72,8 +72,19 @@ export interface AscendantDevTools {
     /** Set lifetime XP outright (levels settle on the next fold) — the fast way to see a track reward. */
     xp: (xp: number) => void;
     tokens: (n: number) => void;
-    /** Hand the account a Hub upgrade outright (the Twin Run, say) without buying it. */
+    /**
+     * Hand the account a service or a Kit perk outright (the Twin Run, say) without buying it. A perk is packed too,
+     * and the rank is raised to one with a slot for it, so the perk is in force for the next run (§8.4.5).
+     */
     grantHub: (...ids: sim.HubUpgrade[]) => void;
+    /** §8.3.3 — put the account at a Trainer Rank (its purses settle on the fold). */
+    rank: (rank: number) => void;
+    /** §8.6.2 — hand over Oak's Parcels to open. */
+    parcels: (n: number) => void;
+    /** §8.6.1 — open the whole vault, so a run draws the full catalogue as a fixture does. */
+    openVault: () => void;
+    /** Edit the account in place — for a test that needs a Badge Case, a Bond or a Hall laid out just so. */
+    patch: (recipe: (draft: sim.AccountState) => void) => void;
     /** §8.9.2 — mark species as met (faced once), so their Pokédex sheets open. */
     meet: (...speciesIds: string[]) => void;
     reset: () => void;
@@ -83,7 +94,11 @@ export interface AscendantDevTools {
 
 /** The run-layer half of the hook. Everything here goes through the real reducer, never around it. */
 export interface AscendantRunTools {
-  new: (starterId?: string, seed?: number) => void;
+  /**
+   * Start a run. It draws the whole catalogue whatever the account has opened, so a seed is the same route in every
+   * test; `{ vault: true }` keeps the account's locks (§8.6.2), for a test about them.
+   */
+  new: (starterId?: string, seed?: number, opts?: { vault?: boolean }) => void;
   dump: () => Record<string, unknown> | null;
   state: () => sim.RunState | null;
   dispatch: (action: sim.RunAction) => boolean;
@@ -158,7 +173,29 @@ export function installDevTools(): void {
       },
       grantHub: (...ids) => {
         const account = useAccountStore.getState().account;
-        useAccountStore.setState({ account: { ...account, hub: [...new Set([...account.hub, ...ids])] } });
+        const kit = [...new Set([...account.kit, ...ids.filter(sim.isKitPerk)])].slice(0, sim.KIT_SLOT_RANKS.length);
+        // A packed perk needs a slot: the rank is raised to the one that has as many as the Kit now holds.
+        const xp = kit.length ? Math.max(account.xp, sim.xpForRank(sim.KIT_SLOT_RANKS[kit.length - 1]!)) : account.xp;
+        useAccountStore.setState({ account: { ...account, xp, kit, hub: [...new Set([...account.hub, ...ids])] } });
+        useAccountStore.getState().record([]);
+      },
+      rank: (rank) => {
+        useAccountStore.setState({ account: { ...useAccountStore.getState().account, xp: sim.xpForRank(rank) } });
+        useAccountStore.getState().record([{ t: 'relic-acquired', relicId: 'dev', heldCount: 0 }]);
+      },
+      parcels: (n) => {
+        const account = useAccountStore.getState().account;
+        useAccountStore.setState({ account: { ...account, parcels: account.parcels + n } });
+        useAccountStore.getState().record([]);
+      },
+      openVault: () => {
+        useAccountStore.setState({ account: { ...useAccountStore.getState().account, unlocks: sim.VAULT.map((e) => e.id) } });
+        useAccountStore.getState().record([]);
+      },
+      patch: (recipe) => {
+        const account = structuredClone(useAccountStore.getState().account);
+        recipe(account);
+        useAccountStore.setState({ account });
         useAccountStore.getState().record([]);
       },
       meet: (...ids) => {
@@ -252,7 +289,7 @@ export function installDevTools(): void {
       return done;
     },
     run: {
-      new: (starterId = 'squirtle', seed) => useRunStore.getState().newRun(starterId, seed),
+      new: (starterId = 'squirtle', seed, opts) => useRunStore.getState().newRun(starterId, seed, [], undefined, undefined, undefined, { openVault: !opts?.vault }),
       state: () => useRunStore.getState().run,
       dispatch: (action) => useRunStore.getState().dispatch(action),
       save: () => useRunStore.getState().save(),

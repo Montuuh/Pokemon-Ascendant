@@ -160,7 +160,10 @@ for (const viewport of [
         await ending(page, outcome);
         await expect(page.locator('[data-testid^="run-end-mon-"]')).toHaveCount(6);
         await expect(page.locator('[data-testid^="run-end-badge-"]')).toHaveCount(3);
-        await expect(page.getByTestId('account-summary')).toHaveCount(0);
+        // §8.3.6 — what the run earned is on the screen, beside the team: the ₽ it ended with, as Tokens.
+        await expect(page.getByTestId('field-report')).toBeVisible();
+        await expect(page.getByTestId('summary-money')).toContainText('540');
+        await expect(page.getByTestId('report-tokens')).toContainText('5 from ₽');
         const shiny = page.locator('[data-testid^="run-end-mon-"][data-shiny="true"]');
         await expect(shiny.locator('img').first()).toHaveAttribute('src', /charizard-shiny\.png/);
         await noOverflow(page);
@@ -170,7 +173,8 @@ for (const viewport of [
         await page.getByTestId('btn-run-record').focus();
         await page.keyboard.press('Enter');
         await expect(page.getByTestId('run-record')).toBeVisible();
-        await expect(page.getByTestId('account-summary')).toContainText('540 left → 2 Tokens');
+        // The record keeps the run's own numbers; the account's are the Field Report's.
+        await expect(page.getByTestId('run-record').getByTestId('field-report')).toHaveCount(0);
         await expect(page.getByTestId('run-record')).toContainText('Fights won');
         await expect(page.getByTestId('run-record')).toContainText('Trauma ×1');
         await capture(page, `run-end-${outcome}-record-${viewport.width}`);

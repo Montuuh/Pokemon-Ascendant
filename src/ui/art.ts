@@ -64,6 +64,8 @@ export const mysterySign = () => asset('art/icons/map/node-mystery-sign.svg');
 /** §2.12.4 — the Summit's peak and pennant, on the Mystery sign's 16-px grid. */
 export const summitSign = () => asset('art/icons/map/node-summit-sign.svg');
 export const trainerSprite = (sprite: string) => asset(`art/trainers/${sprite}.png`);
+/** §2.5 / §8.4.6 — a person as the overworld draws them (16×32, FRLG): on the route, and in the Hub lobby. */
+export const mapPerson = (sprite: string) => asset(`art/map/people/${sprite}.png`);
 /** The games' own pixel type label (32×12, FireRed/LeafGreen), fetched by `npm run art:types`. */
 export const typeGlyph = (type: string) => asset(`art/icons/type/icon-type-${type}.png`);
 export const statusGlyph = (status: string) => asset(`art/icons/status/icon-status-${status}.svg`);

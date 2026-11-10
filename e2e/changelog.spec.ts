@@ -25,7 +25,7 @@ test.describe("What's new — the release doctrine", () => {
     if ((await page.getByTestId('changelog-v0.7.5').count()) === 0) await page.getByTestId('changelog-v0.7').getByRole('button').first().click();
     await expect(page.getByTestId('changelog-v0.7.5')).toHaveAttribute('data-level', 'patch');
     await expect(page.getByTestId('changelog-stage')).toHaveText('Beta');
-    await expect(page.getByTestId('changelog-v0.7.5')).toContainText('Region 2');
+    await expect(page.getByTestId('changelog-v0.7.5')).toContainText('Regions 2 and 3');
     // D10 — dates in the game's language whatever the browser's.
     await expect(page.getByTestId('changelog-v0.7.5')).toContainText('24 Sep 2026');
     // The outline follows the sizes: a minor is a heading one level above its patches.

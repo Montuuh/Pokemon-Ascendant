@@ -1,42 +1,31 @@
 import { useMemo, useState } from 'react';
-import { IconCheck, IconPokeball } from '@tabler/icons-react';
+import { IconPokeball } from '@tabler/icons-react';
 import { motion } from 'motion/react';
-import { Progress, Tabs } from 'radix-ui';
+import { Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { ACHIEVEMENTS, RELIC_UNLOCKS_ON, BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, discoveryProgress, isOfferable, normalizeDexEntry, relicTier, relicUnlocked, type AchievementDef, speciesMet } from '@/sim';
-import { MedalIcon } from '@/ui/components/MedalIcon';
+import { BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, normalizeDexEntry, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
-import { itemIcon } from '@/ui/art';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { bondRulesText, dexCardTip, relicTierTip } from '@/ui/tips';
+import { bondRulesText, dexCardTip } from '@/ui/tips';
+import { JOURNEY_TEXT } from '@/ui/strings';
+import journey from './Journey.module.css';
 import { ShinyMark } from '@/ui/components/ShinyMark';
 import { PcSheet } from './PcSheet';
 import { usePcSheet } from './usePcSheet';
 import styles from './Hub.module.css';
 
-// §8.4.1 — the PC Terminal: what the account *knows* and what it has *earned*. Three tabs — the Pokédex
-// (§5.13, §8.9, and the Bond of every line inside it, §6.8), the medal case (§8.7) and the relic discoveries
-// (§8.6.1).
+// §8.4.1 — the PC Terminal: what the account *knows*, and the runs it has won. Two tabs — the Pokédex (§5.13,
+// §8.9, and the Bond of every line inside it, §6.8) and the Hall of Fame (§8.15). The medals and the relic
+// discoveries that used to live here are the Trainer Journal now, with Professor Oak's aide (§8.7).
 //
 // The Pokédex is a *picture*: a card per species with number, sprite, name, type label and the line's rank as
-// four pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
+// six pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
 // species' record and kit, and the line's stages, Bond bar and ladder (docs/design/ui-doctrine.md — the picture
 // on the grid, the paragraph one click away). The Bond is per line and a line is a page of the Pokédex, so it
 // lives here; "By Bond" orders the book by the lines you have played.
-
-const CATEGORY_LABEL: Record<AchievementDef['category'], string> = {
-  'first-steps': 'First steps',
-  recruitment: 'Recruitment',
-  evolution: 'Evolution',
-  mastery: 'Bond',
-  combat: 'Combat',
-  boss: 'Gym Leaders and the League',
-  'build-identity': 'Build identity',
-  endurance: 'Endurance',
-};
 
 export function PcTerminal() {
   const account = useAccountStore((s) => s.account);
@@ -62,19 +51,6 @@ export function PcTerminal() {
   const shinies = species.filter((s) => normalizeDexEntry(account.dex[s.id]).shinyCaught > 0).length;
   const linesTotal = species.filter((s) => s.stage === 'basic').length;
 
-  const byCategory = useMemo(() => {
-    const out = new Map<AchievementDef['category'], AchievementDef[]>();
-    for (const a of ACHIEVEMENTS) {
-      if (!out.has(a.category)) out.set(a.category, []);
-      out.get(a.category)!.push(a);
-    }
-    return [...out.entries()];
-  }, []);
-  const progress = account.achievements;
-
-  const discoverable = content.allRelics().filter((r) => relicTier(r) === 2 && isOfferable(r));
-  const discovered = discoverable.filter((r) => relicUnlocked(account, r)).length;
-
   return (
     <>
     <PcSheet sheet={sheet} account={account} />
@@ -83,15 +59,9 @@ export function PcTerminal() {
         <Tabs.Trigger className={styles.tab} value="dex" data-testid="pc-tab-dex">
           Pokédex <span className={`${styles.muted} tabular`}>{met} / {species.length}</span>
         </Tabs.Trigger>
-        <Tabs.Trigger className={styles.tab} value="medals" data-testid="pc-tab-medals">
-          Medals <span className={`${styles.muted} tabular`}>{progress.unlocked.length} / {ACHIEVEMENTS.length}</span>
+        <Tabs.Trigger className={styles.tab} value="hall" data-testid="pc-tab-hall">
+          {JOURNEY_TEXT.hall.tab} <span className={`${styles.muted} tabular`}>{account.hall.length}</span>
         </Tabs.Trigger>
-        {/* §8.6.1 — no discoveries while relic unlocks are off (v0.9.99): every relic is already in the pool. */}
-        {RELIC_UNLOCKS_ON && (
-          <Tabs.Trigger className={styles.tab} value="relics" data-testid="pc-tab-relics">
-            Relic discoveries <span className={`${styles.muted} tabular`}>{discovered} / {discoverable.length}</span>
-          </Tabs.Trigger>
-        )}
       </Tabs.List>
 
       {/* ── Pokédex (§5.13, §8.9) ─────────────────────────────────────────────────────────────────────── */}
@@ -99,7 +69,7 @@ export function PcTerminal() {
         <div className={styles.dexHead}>
           <p className={styles.lede} data-testid="dex-legend">
             {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played{shinies > 0 ? ` · ${shinies} shin${shinies === 1 ? 'y' : 'ies'}` : ''}.
-            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the four pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A sparkle marks a species you have caught shiny. ${bondRulesText()} Ranks at ${BOND_RANKS.join(' · ')}.`} />} />
+            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A sparkle marks a species you have caught shiny. ${bondRulesText()} Ranks at ${BOND_RANKS.join(' · ')}.`} />} />
           </p>
           <div className={styles.order} role="group" aria-label="Order">
             <button type="button" className={`${styles.orderBtn} ${order === 'dex' ? styles.orderOn : ''}`} onClick={() => setOrder('dex')} aria-pressed={order === 'dex'} data-testid="dex-order-dex">By number</button>
@@ -150,82 +120,32 @@ export function PcTerminal() {
         </ul>
       </Tabs.Content>
 
-      {/* ── Medals ──────────────────────────────────────────────────────────────────────────────────────── */}
-      <Tabs.Content value="medals" className={styles.tabPanel}>
-        <div className={styles.medals}>
-          {byCategory.map(([category, list]) => (
-            <div key={category} className={styles.group}>
-              <h2 className={styles.groupTitle}>{CATEGORY_LABEL[category]}</h2>
-              <ul className={styles.list}>
-                {list.map((a) => {
-                  const got = progress.unlocked.includes(a.id);
-                  const at = progress.counts[a.id] ?? 0;
-                  // §8.7.3 — a hidden row keeps its description until it completes. The *name* stays visible:
-                  // hiding both leaves a row that says nothing at all, which is a gap, not a secret.
-                  const blurb = a.hidden && !got ? '???' : a.description;
-                  return (
-                    <li key={a.id} className={got ? styles.got : styles.pendingRow} data-testid={`achievement-${a.id}`}>
-                      <span className={styles.medal} aria-hidden="true"><MedalIcon tier={a.tier} size={28} /></span>
-                      <span className={styles.rowBody}>
-                        <span className={`${styles.rowName} display`}>{a.hidden && !got ? `${a.name} (hidden)` : a.name}</span>
-                        <span className={styles.rowDesc}>{blurb}</span>
-                      </span>
-                      {a.goal > 1 && !got ? (
-                        <Progress.Root className={`${styles.bar} tabular`} value={Math.round((at / a.goal) * 100)} aria-label={`${at} of ${a.goal}`}>
-                          <Progress.Indicator className={styles.fill} style={{ width: `${Math.round((at / a.goal) * 100)}%` }} />
-                          <span className={styles.barText}>{at} / {a.goal}</span>
-                        </Progress.Root>
-                      ) : (
-                        <span className={`${styles.state} ${got ? styles.stateGot : ''}`}>{got ? <><IconCheck size={14} /> Earned</> : 'Not yet'}</span>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-          <p className={styles.note}>
-            {ACHIEVEMENTS.length} of fifty medals so far.
-            <InfoDot tip={<Tip title="Why not fifty" body="The rest wait on Regions 2 and 3, the League and the systems that make them possible. A medal you could never earn is not a goal, it is a blank — they arrive with their systems." />} />
-          </p>
-        </div>
-      </Tabs.Content>
-
-      {RELIC_UNLOCKS_ON && (<>
-      {/* ── Relic discoveries ───────────────────────────────────────────────────────────────────────────── */}
-      <Tabs.Content value="relics" className={styles.tabPanel}>
-        <p className={styles.lede}>
-          {discoverable.length} relics join your pool the first time you do a particular thing, in any run.
-          <InfoDot tip={<Tip title="Tier-2 relics" body="Your pool is what a run can drop, offer or stock. Tier 1 is always in it; Tier 2 joins when you meet its criterion; Tier 3 is bought at the Poké Mart. A Tier-2 relic is never sold: meeting its criterion is the only way in." footer="Tier is not rarity: tier decides whether a relic is in your pool at all; rarity decides how often it drops once it is." />} />
-        </p>
-        <ul className={styles.discoveries} data-testid="discoveries">
-          {discoverable.map((r) => {
-            const got = relicUnlocked(account, r);
-            const prog = discoveryProgress(account, r);
-            const pct = prog ? Math.round((prog.have / prog.goal) * 100) : 0;
-            return (
-              <li key={r.id} className={`${styles.discovery} ${got ? styles.discoveryOn : ''}`} data-testid={`discovery-${r.id}`} data-state={got ? 'open' : 'locked'}>
-                <Tipped tip={relicTierTip(r, got ? 'owned' : 'discoverable', prog)} className={styles.discoveryInner}>
-                  <img src={itemIcon(r.id)} alt="" width={28} height={28} className={styles.discoveryIcon} onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden'; }} />
-                  <span className={styles.discoveryBody}>
-                    <span className={styles.discoveryName}>{r.name}{got && <span className={styles.discoveryTick}><IconCheck size={12} stroke={3} /></span>}</span>
-                    <span className={styles.discoveryHow}>
-                      {got ? 'In your pool' : prog ? prog.text : 'Reward track only'}
+      {/* ── Hall of Fame (§8.15) ─────────────────────────────────────────────────────────────────────── */}
+      <Tabs.Content value="hall" className={styles.tabPanel}>
+        {account.hall.length === 0 ? (
+          <p className={journey.empty} data-testid="hall-empty">{JOURNEY_TEXT.hall.empty}</p>
+        ) : (
+          <ol className={journey.hall} data-testid="hall-of-fame">
+            {[...account.hall].reverse().map((h) => (
+              <li key={h.run} className={journey.hallRow} data-testid={`hall-${h.run}`}>
+                <span className={`${journey.hallRun} display tabular`}>{JOURNEY_TEXT.hall.run(h.run)}</span>
+                <span className={journey.hallTeam}>
+                  {h.team.map((m, i) => (
+                    <span key={i} className={journey.hallMon}>
+                      <MonIcon speciesId={m.speciesId} size={48} {...(m.shiny ? { shiny: true } : {})} />
+                      <span className="tabular">Lv {m.level}</span>
                     </span>
-                    {!got && prog && prog.goal > 1 && (
-                      <Progress.Root className={styles.discoveryBar} value={pct} aria-label={`${prog.have} of ${prog.goal}`}>
-                        <Progress.Indicator className={styles.discoveryFill} style={{ width: `${pct}%` }} />
-                        <span className={`${styles.discoveryBarText} tabular`}>{prog.have} / {prog.goal}</span>
-                      </Progress.Root>
-                    )}
-                  </span>
-                </Tipped>
+                  ))}
+                </span>
+                <span className={`${journey.hallFacts} tabular`}>
+                  <span>{JOURNEY_TEXT.hall.rung(h.rung)}</span>
+                  <span>{JOURNEY_TEXT.hall.badges(h.badges.length)} · {JOURNEY_TEXT.hall.relics(h.relics.length)}</span>
+                </span>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ol>
+        )}
       </Tabs.Content>
-      </>)}
     </Tabs.Root>
     </>
   );

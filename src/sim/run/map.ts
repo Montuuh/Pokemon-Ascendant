@@ -9,6 +9,7 @@ import { AID_HEAL_PCT } from './economy';
 import { hasModifier } from './modifiers';
 import { rollGroundFind, type GroundFind } from './rewards';
 import { placeReels } from './finds';
+import { lockedIds } from './locks';
 import { placeObjectives } from './objectives';
 import { placeTrader } from './trader';
 import { placeEvents, placeGates, placeLedge } from './routeFeatures';
@@ -625,7 +626,7 @@ function shifted(preview: NodePreview, offset: number, content: ContentRegistry)
 }
 
 /** §2.5 — build a Region. Deterministic in `rng`, which the caller seeds from the run seed. */
-export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = [], rareChance = WILD_RARE_CHANCE, seenEvents: readonly string[] = []): RegionMap {
+export function generateRegion(rng: GameRng, content: ContentRegistry, regionIndex = 0, seed = 0, modifiers: readonly string[] = [], excludeGyms: readonly string[] = [], rareChance = WILD_RARE_CHANCE, seenEvents: readonly string[] = [], locked: readonly string[] = []): RegionMap {
   // §2.1 — which Region's tables this route is built from.
   const region = regionContent(regionIndex);
   // §5.9.2 — two distinct Gyms, drawn before anything else so every lane node can be themed by its own.
@@ -740,11 +741,11 @@ export function generateRegion(rng: GameRng, content: ContentRegistry, regionInd
   // §2.9.6 — and the roadside trader, on about half of all routes.
   placeTrader({ nodes }, rng.cursor);
   // §2.9.5 — every plain find's reel, each on a stream of its own.
-  placeReels({ nodes }, rng.cursor, regionIndex, content);
+  placeReels({ nodes }, rng.cursor, regionIndex, content, lockedIds({ locked: [...locked] }, 'tm'));
   // §2.5.5 — the ledge, then the field moves' obstacles; §2.10 — and every Mystery's event.
   placeLedge({ nodes }, rng.cursor, (layer) => stops.has(layer), Y_LAYER - 1);
   placeGates({ nodes, regionIndex }, rng.cursor);
-  placeEvents({ nodes }, rng.cursor, seenEvents);
+  placeEvents({ nodes }, rng.cursor, seenEvents, lockedIds({ locked: [...locked] }, 'event'));
 
   return {
     seed,

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { IconBuildingStore, IconCheck } from '@tabler/icons-react';
+import { IconBackpack, IconBuildingStore, IconCheck, IconCoins, IconMicroscope, IconPackages } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import { ScrollArea } from 'radix-ui';
-import { MAX_LEVEL, REWARD_TRACK, SHELVES, levelFor, xpForLevel, type AccountState, type TrackReward } from '@/sim';
+import { ARRIVAL_RANK, KIT_SLOT_RANKS, MAX_LEVEL, REWARD_TRACK, levelFor, rankRow, xpForLevel, type AccountState } from '@/sim';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { Tipped } from '@/ui/tooltip';
 import { trackRewardTip } from '@/ui/tips';
@@ -10,19 +10,18 @@ import { TokenIcon } from './TokenIcon';
 import { trackRewardLabel } from './trackText';
 import styles from './RewardTrack.module.css';
 
-// §8.3.5 — the reward track as a road: twenty-nine stops on a line, each drawn as what it pays, the next one
-// lit and named. Every stop pays Tokens now, so the face *is* the number — a road of identical ticket icons
-// would say nothing — and the four stops that open a shelf at the Poké Mart wear a storefront instead, bigger,
-// because those are the ones worth walking toward. Horizontal so the *order* is the reading.
+// §8.3.5 — the rank road: eight stops on a line, each drawn as what it brings — the aide, the clerk, a Kit slot,
+// a fuller parcel, a purse — the next one lit and named. Until v0.9.110 it was twenty-nine stops that nearly all
+// paid the same three Tokens; a rank is worth walking toward because every one has a face. Horizontal so the
+// *order* is the reading.
 
-/** What the stop shows inside its circle: the amount, or the storefront on a stop that opens a shelf. */
-function StopFace({ reward, size }: { reward: TrackReward; size: number }) {
-  if (reward.opens) return <IconBuildingStore size={size} stroke={2.2} />;
-  return (
-    <span className={`${styles.amount} tabular`}>
-      <TokenIcon size={Math.round(size * 0.7)} />+{reward.tokens}
-    </span>
-  );
+/** What the stop shows inside its circle: who or what the rank brings. */
+function StopFace({ rank, size }: { rank: number; size: number }) {
+  if (rank === ARRIVAL_RANK.aide) return <IconMicroscope size={size} stroke={2.2} />;
+  if (rank === ARRIVAL_RANK.clerk) return <IconBuildingStore size={size} stroke={2.2} />;
+  if ((KIT_SLOT_RANKS as readonly number[]).includes(rank)) return <IconBackpack size={size} stroke={2.2} />;
+  if (rank === 6) return <IconPackages size={size} stroke={2.2} />;
+  return <IconCoins size={size} stroke={2.2} />;
 }
 
 export function RewardTrack({ account }: { account: AccountState }) {
@@ -55,7 +54,7 @@ export function RewardTrack({ account }: { account: AccountState }) {
                 <motion.li
                   key={lv}
                   ref={state === 'next' ? nextRef : undefined}
-                  className={`${styles.stop} ${styles[`stop_${state}`]} ${selected === lv ? styles.stopSelected : ''} ${reward.opens ? styles.stopShelf : ''}`}
+                  className={`${styles.stop} ${styles[`stop_${state}`]} ${selected === lv ? styles.stopSelected : ''} ${styles.stopShelf}`}
                   data-testid={`track-${lv}`}
                   data-state={state}
                   data-opens={reward.opens}
@@ -70,10 +69,10 @@ export function RewardTrack({ account }: { account: AccountState }) {
                     className={styles.stopButton}
                     onClick={() => setSelected(lv)}
                     aria-pressed={selected === lv}
-                    aria-label={`Level ${lv}: ${label}`}
+                    aria-label={`${rankRow(lv).name}, rank ${lv}: ${label}`}
                   >
                     <span className={styles.face}>
-                      <StopFace reward={reward} size={22} />
+                      <StopFace rank={lv} size={22} />
                       {state === 'claimed' && <span className={styles.check}><IconCheck size={11} stroke={3} /></span>}
                     </span>
                     <span className={`${styles.lvl} tabular`}>{lv}</span>
@@ -90,15 +89,15 @@ export function RewardTrack({ account }: { account: AccountState }) {
 
       <div className={styles.detail} data-testid="track-detail" data-state={selState}>
         <span className={styles.detailFace}>
-          <StopFace reward={sel} size={26} />
+          <StopFace rank={selected} size={26} />
         </span>
         <span className={styles.detailBody}>
           <span className={styles.detailKicker}>
-            Level {selected} · {sel.opens ? `Tokens + ${SHELVES[sel.opens].name}` : 'Tokens'}
-            {selState === 'claimed' ? ' · claimed' : selState === 'next' ? ' · next' : ''}
+            {rankRow(selected).name} · Rank {selected}
+            {selState === 'claimed' ? ' · reached' : selState === 'next' ? ' · next' : ''}
           </span>
-          <span className={`${styles.detailTitle} display`}>{trackRewardLabel(sel)}</span>
-          {sel.opens && <span className={styles.detailWhy}>{SHELVES[sel.opens].sells}</span>}
+          <span className={`${styles.detailTitle} display`}>{sel.arrives}</span>
+          <span className={styles.detailWhy}>{sel.why} <TokenIcon size={13} /> +{sel.tokens}</span>
         </span>
         <span className={`${styles.detailXp} tabular`}>
           {selState === 'claimed' ? 'Yours' : xpToSel > 0 ? `${xpToSel} XP away` : 'Now'}
