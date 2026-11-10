@@ -1,0 +1,549 @@
+<title>Meta Progression Rework</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pixelify+Sans:wght@500;700&family=Tiny5&display=swap">
+<style>
+/* Layout: one reading column in the game's own paper-and-ink look; wide tables scroll inside their own frame. */
+:root {
+  --bg: #fbf4e6; --panel: #fffdf8; --panel-2: #f3e7d0; --line: #d9c4a0;
+  --ink: #3a2e22; --ink-2: #6b5a45;
+  --accent: #ffcb3d; --accent-ink: #7a5600;
+  --new: #1d5f9e; --new-fill: #dbe9f7;
+  --good: #1c7a47; --bad: #b23a3a; --bad-fill: #f9dfd8;
+  --font-display: 'Pixelify Sans', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --font-num: 'Tiny5', 'Pixelify Sans', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #2a2230; --panel: #3a3040; --panel-2: #4a3e50; --line: #5a4c62;
+    --ink: #fff6ec; --ink-2: #e0d2c2;
+    --accent: #ffcb3d; --accent-ink: #ffcb3d;
+    --new: #8cc2f5; --new-fill: #2c3f55;
+    --good: #54d98a; --bad: #ff8f8f; --bad-fill: #4d2c33;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #2a2230; --panel: #3a3040; --panel-2: #4a3e50; --line: #5a4c62;
+  --ink: #fff6ec; --ink-2: #e0d2c2;
+  --accent: #ffcb3d; --accent-ink: #ffcb3d;
+  --new: #8cc2f5; --new-fill: #2c3f55;
+  --good: #54d98a; --bad: #ff8f8f; --bad-fill: #4d2c33;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-block: 32px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.page { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 6vw, 3rem); font-weight: 700; }
+h2 { font-size: 1.6rem; font-weight: 700; padding-bottom: 6px; border-bottom: 3px solid var(--ink); }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p, ul, ol { margin: 0; max-width: 68ch; }
+ul, ol { padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+a { color: var(--new); }
+a:focus-visible { outline: 2px solid var(--new); outline-offset: 2px; }
+strong { font-weight: 800; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 0.86em; background: var(--panel-2); padding: 1px 5px; border-radius: 3px; }
+.meta { color: var(--ink-2); font-size: 0.92rem; }
+.lede { font-size: 1.15rem; max-width: 62ch; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.92rem; padding: 0; list-style: none; max-width: none; flex-direction: row; }
+.thesis { background: var(--panel); border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.thesis p { max-width: none; }
+.goal { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-display); font-weight: 700; background: var(--panel-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 7px; border-radius: 3px; white-space: nowrap; }
+.tag.today { background: var(--bad-fill); color: var(--bad); }
+.tag.new { background: var(--new-fill); color: var(--new); }
+.tag.keep { background: var(--panel-2); color: var(--ink-2); }
+.findings { list-style: none; padding: 0; gap: 14px; max-width: none; counter-reset: f; }
+.findings li { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 4px 12px; counter-increment: f; }
+.findings li::before { content: counter(f); font-family: var(--font-num); font-size: 2rem; line-height: 1; color: var(--bad); grid-row: span 2; }
+.findings h3, .findings p { grid-column: 2; max-width: 68ch; }
+.ev { color: var(--ink-2); font-size: 0.9rem; }
+.prop { border-top: 2px solid var(--line); padding-top: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.prop-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.pid { font-family: var(--font-num); font-size: 1.5rem; color: var(--accent-ink); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.facts div { background: var(--panel); border: 1px solid var(--line); padding: 10px 12px; font-size: 0.9rem; min-width: 0; }
+.facts b { display: block; font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.steps { list-style: none; padding: 0; counter-reset: s; gap: 0; max-width: none; border: 1px solid var(--line); background: var(--panel); }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); align-items: baseline; }
+.steps li:last-child { border-bottom: 0; }
+.steps li::before { content: counter(s); font-family: var(--font-num); font-size: 1.5rem; color: var(--accent-ink); }
+.steps .t { color: var(--ink-2); font-size: 0.82rem; white-space: nowrap; }
+.chart text { font-family: var(--font-body); font-size: 12px; fill: var(--ink); }
+.chart .muted { fill: var(--ink-2); }
+.chart .axis { stroke: var(--line); stroke-width: 1; }
+.chart .old { fill: var(--bad); }
+.chart .old-hollow { fill: var(--panel); stroke: var(--bad); stroke-width: 2; }
+.chart .nw { fill: var(--new); }
+.chart .band-old { fill: var(--bad-fill); }
+.chart .band-new { fill: var(--new-fill); }
+.chart .head { font-family: var(--font-display); font-weight: 700; font-size: 13px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.cols > div { background: var(--panel); border: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.rec { border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.note { font-size: 0.88rem; color: var(--ink-2); }
+</style>
+
+<div class="page">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <p class="meta">Pokémon Ascendant · documento de diseño · propuesta, pendiente de tu dirección · 2026-11-10 · sobre v0.9.109</p>
+  <h1>Meta Progression Rework</h1>
+  <p class="lede">Una partida de Ascendant dura una hora y casi siempre acaba en derrota. Hoy esa hora deja en la cuenta un número que sube y uno o dos Tokens. Este documento explica por qué no se siente progreso y propone un sistema nuevo, de hoja en blanco, en el que ninguna partida termina vacía.</p>
+  <ul class="toc">
+    <li><a href="#hoy">Diseño actual</a></li>
+    <li><a href="#diagnostico">Diagnóstico</a></li>
+    <li><a href="#principios">Principios</a></li>
+    <li><a href="#modelo">El modelo</a></li>
+    <li><a href="#propuestas">Propuestas P1–P9</a></li>
+    <li><a href="#diez">Primeras runs</a></li>
+    <li><a href="#economia">Economía</a></li>
+    <li><a href="#canon">Canon afectado</a></li>
+    <li><a href="#riesgos">Riesgos</a></li>
+    <li><a href="#fases">Fases</a></li>
+    <li><a href="#decisiones">Decisiones abiertas</a></li>
+  </ul>
+</header>
+
+<section class="thesis">
+  <p class="goal">Objetivo único: nunca una run vacía.</p>
+  <p>Toda partida, incluida una derrota en la Región 1, termina con al menos <strong>una cosa con nombre</strong> que el jugador no tenía: una reliquia nueva en el mundo, un rango de Bond en un Pokémon, una persona nueva en el lobby. Las monedas y las barras acompañan, pero no cuentan como recompensa.</p>
+  <p>Tus respuestas marcan el encargo: hoja en blanco, se puede romper el canon, se vuelve a bloquear una parte amplia del contenido, y las cuatro fantasías mandan a la vez (juguetes nuevos, mis Pokémon crecen conmigo, carrera de entrenador, el Hub cambia).</p>
+</section>
+
+<section id="hoy">
+  <h2>El diseño actual, recuperado</h2>
+  <p>Todo lo que sobrevive a una partida vive en el Topic 8 (<code>docs/design/08-meta.md</code>), más el Bond de §6.8 y la Pokédex de §5.13. El código está en <code>src/sim/meta/</code>.</p>
+  <div class="scroll"><table>
+    <tr><th>Sistema</th><th>§</th><th>Qué paga</th><th>Ritmo medido o escrito en canon</th></tr>
+    <tr><td><strong>Trainer XP y Level</strong> (30 niveles)</td><td>§8.3</td><td>Cada nivel paga 3 Tokens. Tres niveles abren un estante del Poké Mart (2, 4, 6). Nada más.</td><td>350–790 XP por run. Estantes en las runs 1, ~4 y ~9. Nivel 10 en la run ~23.</td></tr>
+    <tr><td><strong>Trainer Tokens</strong></td><td>§8.3.4</td><td>Compran starters (4–6), mejoras de Hub (3–8) y cosméticos (2–3).</td><td>~2,3 por run. La tienda entera costaba 134: run 62.</td></tr>
+    <tr><td><strong>Poké Mart</strong>, 4 estantes</td><td>§8.3.5</td><td>Corner (cosméticos), Starters, Hub upgrades, Mastery lane.</td><td>El Mastery lane está vacío desde v0.9.99.</td></tr>
+    <tr><td><strong>Hub upgrades</strong> (7)</td><td>§8.4.2</td><td>4ª oferta de Starting Relic, Pokédex Insight, Salve Cache, Apex Reveal, Expanded Box, Modifier Slot, Twin Run.</td><td>Comprables desde el nivel 4.</td></tr>
+    <tr><td><strong>Bond</strong> por línea evolutiva</td><td>§6.8</td><td>4 rangos de 100: Shiny Charm, habilidad oculta, Mastery Move, empezar la run con la línea.</td><td>~20 Bond por run en el equipo activo: runs 5, 11, 16 y 21.</td></tr>
+    <tr><td><strong>Pokédex</strong> (Familiar)</td><td>§5.13</td><td>10 / 5 / 2 KOs de una especie revelan sus intents ocultos.</td><td>Por especie enemiga.</td></tr>
+    <tr><td><strong>Achievements</strong></td><td>§8.7</td><td>XP siempre; Tokens solo en Gold y Platinum.</td><td>26 de 50 construidos. Se ven en el PC.</td></tr>
+    <tr><td><strong>Difficulty modifiers</strong> (10)</td><td>§8.8</td><td>Multiplican el XP de la run ×1,10–1,50.</td><td>Se abren por Trainer Level 3–15.</td></tr>
+    <tr><td><strong>Relic tiers</strong></td><td>§8.6</td><td>Tier 2 por descubrimiento, Tier 3 por Tokens.</td><td><strong>Apagado</strong> (<code>RELIC_UNLOCKS_ON</code>). Las 65 reliquias están abiertas desde la run 1.</td></tr>
+    <tr><td><strong>Fin de run</strong></td><td>§2.1.7</td><td>Título, último equipo, y un botón "Progress +N XP" que abre un diálogo con el libro de cuenta.</td><td><code>RunEndScreen.tsx</code>, <code>RunRecord.tsx</code>.</td></tr>
+    <tr><td><strong>Hub</strong></td><td>§8.4</td><td>El lobby del Indigo Plateau como sala: puerta de la Liga, Mart, enfermera, PC, mesa del Item Guide.</td><td>Igual en la run 1 que en la 60.</td></tr>
+  </table></div>
+  <p class="note">Trauma (§8.2) también vive en el Topic 8, pero es consecuencia dentro de la run y no se toca aquí.</p>
+</section>
+
+<section id="diagnostico">
+  <h2>Diagnóstico: por qué no se siente progreso</h2>
+  <ol class="findings">
+    <li><h3>No queda casi nada que desbloquear</h3>
+      <p>Con las reliquias abiertas y el Mastery lane apagado, la tienda son unos 25 objetos por unos 88 Tokens, y 15 de ellos son cosméticos de la Trainer Card. Los "juguetes" reales son 3 starters y 7 mejoras de Hub. El sistema entero promete horizontalidad y no tiene contenido horizontal que dar.</p>
+      <p class="ev">Calculado de §8.4.2, §8.4.4 y §8.5.2. El propio canon lo reconoce en la nota de §8.6.</p></li>
+    <li><h3>El nivel no tiene cara</h3>
+      <p>24 de los 29 niveles pagan "3 Tokens" y nada más. Subir de nivel no abre, no enseña y no cambia nada visible. El jugador aprende pronto que el dial del Hub es un contador.</p>
+      <p class="ev">§8.3.5.</p></li>
+    <li><h3>El goteo es demasiado fino para una partida de una hora</h3>
+      <p>Una derrota en la Región 1 paga ~350 XP. El salto del nivel 3 al 4 son 1 116 XP, así que esa hora mueve la barra un 31 % y deja 1 o 2 Tokens, que no compran nada con efecto en la run. La mayoría de partidas terminan sin una sola compra posible.</p>
+      <p class="ev">§8.3.2, §8.3.3 (<code>floor(330 × N^1.6)</code>), §8.3.4 (2,3 Tokens por run).</p></li>
+    <li><h3>La derrota es el final normal, y es el peor pagado</h3>
+      <p>El auto-player limpia la Región 1 en el 22 % de las runs (v0.9.108) y antes del último recorte ganaba la run entera en el 8 %. Un humano lo hará mejor, pero el final típico sigue siendo una derrota temprana. Todo lo que el meta reserva para ganar (Champion XP, modifiers, "highest difficulty cleared") no existe para ese jugador.</p>
+      <p class="ev"><code>docs/session/active.md</code>, harness de balance.</p></li>
+    <li><h3>El Bond llega tarde y empieza por una probabilidad</h3>
+      <p>La primera recompensa de una línea llega en la run 5 si se juega en todas, y es un Shiny Charm: una probabilidad mejor, no algo que se vea. Quien rota de equipo puede pasar diez partidas sin un solo rango.</p>
+      <p class="ev">§6.8.1 y §6.8.2 (<code>bondCareer.test.ts</code>).</p></li>
+    <li><h3>El final de la run esconde lo ganado</h3>
+      <p>La pantalla enseña el equipo y un botón. El XP, los Tokens, el Bond y las medallas están detrás de una puerta, en un diálogo con texto. No hay barra que se llene, ni subida de nivel, ni objeto que aparezca. Es el momento en que el juego debería cobrar toda la partida y lo hace en silencio.</p>
+      <p class="ev"><code>src/ui/screens/RunEndScreen.tsx</code>. Va contra la regla ya acordada de que los momentos de recompensa se reproduzcan como en la serie.</p></li>
+    <li><h3>No hay objetivo a la vista, y el Hub no cambia</h3>
+      <p>Los achievements viven en una pestaña del PC y nada los recuerda durante la run. El lobby es el mismo cuadro el primer día y el último. No hay respuesta a "¿qué persigo en la próxima partida?" ni prueba visible de lo ya hecho.</p>
+      <p class="ev">§8.7.2, §8.4.1.</p></li>
+  </ol>
+  <p>Los siete se resumen en uno: el sistema está montado como una tienda con sueldo bajo, y la tienda está casi vacía. Subir el sueldo no basta. Hace falta contenido que ganar, una entrega que se vea y metas que se elijan.</p>
+</section>
+
+<section id="principios">
+  <h2>Principios del sistema nuevo</h2>
+  <p>Sustituyen a las tres garantías de §8.1.</p>
+  <div class="scroll"><table>
+    <tr><th>Principio</th><th>Regla comprobable</th></tr>
+    <tr><td><strong>Nunca una run vacía</strong></td><td>Toda run que supera la primera capa entrega al menos un desbloqueo con nombre. Runs 1–10: dos o tres. Runs 10–30: uno o dos. Después: uno, más avance visible en una meta larga.</td></tr>
+    <tr><td><strong>Tres relojes</strong></td><td>Siempre hay algo que llega esta run, algo a 3–5 runs y algo a 20 o más. Ninguna superficie mezcla los tres.</td></tr>
+    <tr><td><strong>El progreso tiene cara</strong></td><td>Lo que se gana es un objeto, un Pokémon, una persona o un lugar. Ninguna recompensa es solo un número.</td></tr>
+    <tr><td><strong>El jugador elige qué persigue</strong></td><td>Cada entrega incluye una elección (1 de 3) y hay hasta tres metas fijadas que la run enseña.</td></tr>
+    <tr><td><strong>El combate es igual para todos</strong></td><td>Ninguna mejora de cuenta toca daño, HP ni fórmulas. La cuenta sí puede cambiar con qué empieza una run, dentro de un presupuesto de huecos (P7).</td></tr>
+    <tr><td><strong>La derrota paga en la misma moneda que la victoria</strong></td><td>Ganar da más de lo mismo, no cosas de otra clase. Solo la Ladder y el Hall of Fame exigen ganar.</td></tr>
+  </table></div>
+  <p>El quinto es el cambio de canon más serio. §8.1 prohibía cualquier ventaja; aquí se permite una ventaja de salida acotada y elegida. Los cinco pilares del juego quedan intactos.</p>
+</section>
+
+<section id="modelo">
+  <h2>El modelo: qué sistema sirve a qué reloj</h2>
+  <div class="scroll"><table>
+    <tr><th>Reloj</th><th>Sistema</th><th>Se alimenta de</th><th>Entrega</th><th>Fantasía</th></tr>
+    <tr><td rowspan="3"><strong>Esta run</strong></td><td>Field Report y Oak's Parcels (P1, P2)</td><td>Puntuación de la run</td><td>Contenido nuevo para el mundo, a elegir 1 de 3</td><td>Juguetes nuevos</td></tr>
+    <tr><td>Bond, 6 rangos (P4)</td><td>Jugar la línea</td><td>Desbloqueos de esa línea</td><td>Mis Pokémon crecen</td></tr>
+    <tr><td>Tokens (P7)</td><td>Informe, ₽ sobrante, hazañas</td><td>Compras en el Mart</td><td>Elección</td></tr>
+    <tr><td rowspan="3"><strong>3–5 runs</strong></td><td>Trainer Journal (P3)</td><td>Hazañas concretas</td><td>Un juguete con nombre por hazaña</td><td>Juguetes, carrera</td></tr>
+    <tr><td>Trainer Rank (P5)</td><td>XP de carrera</td><td>Gente y servicios en el lobby, huecos de Kit</td><td>Carrera, el Hub cambia</td></tr>
+    <tr><td>Badge Case (P6)</td><td>Primera victoria sobre cada Líder</td><td>La TM del Líder y el Líder en el lobby</td><td>Carrera, el Hub cambia</td></tr>
+    <tr><td rowspan="3"><strong>20+ runs</strong></td><td>Ribbons y Hall of Fame (P4, P8)</td><td>Victorias con cada línea</td><td>Colección por línea</td><td>Mis Pokémon crecen</td></tr>
+    <tr><td>League Ladder (P8)</td><td>Ganar en cada peldaño</td><td>Estrellas de la Trainer Card</td><td>Carrera</td></tr>
+    <tr><td>Pokédex y los ayudantes de Oak (P9)</td><td>Especies capturadas</td><td>Perks de Kit, como en FireRed</td><td>Colección</td></tr>
+  </table></div>
+  <p>El jugador ve como mucho tres barras al acabar una run (Research, Rank, Bond) y una sola cartera (Tokens). Todo lo demás son libros que se consultan.</p>
+</section>
+
+<section id="propuestas">
+  <h2>Propuestas</h2>
+
+  <div class="prop" id="p1">
+    <div class="prop-head"><span class="pid">P1</span><h3>The Field Report: el final de la run como entrega de premios</h3><span class="tag new">Mayor impacto, menor coste</span></div>
+    <p>La pantalla de fin de run pasa de ser un cuadro con un botón a una secuencia que cobra la partida, al estilo de la serie: el recuento se cuenta, las barras se llenan y lo ganado aparece como objeto. Dura unos 20 segundos y se puede saltar entera.</p>
+    <ol class="steps">
+      <li><span><strong>Resultado.</strong> "Blacked out" con el punto del mapa alcanzado, o la entrada al Hall of Fame.</span><span class="t">2 s</span></li>
+      <li><span><strong>Informe de campo.</strong> Las líneas de puntuación se cuentan una a una: Badges, combates, capturas, especies nuevas, evoluciones, jefes. Suman el XP de la run.</span><span class="t">4 s</span></li>
+      <li><span><strong>Research.</strong> La barra se llena con ese XP. Cada vez que se completa, llega un Oak's Parcel.</span><span class="t">2 s</span></li>
+      <li><span><strong>Abrir el paquete.</strong> Tres cartas boca arriba, se elige una. "Añadido al mundo."</span><span class="t">jugador</span></li>
+      <li><span><strong>Trainer Rank.</strong> La misma cifra llena la barra de rango. Si sube, se anuncia quién llega al lobby.</span><span class="t">2 s</span></li>
+      <li><span><strong>Bond.</strong> Cada línea del equipo llena su barra junto a su sprite, como el reparto de experiencia. Los rangos nuevos saltan.</span><span class="t">3 s</span></li>
+      <li><span><strong>Journal.</strong> Las hazañas cumplidas se sellan con su premio.</span><span class="t">2 s</span></li>
+      <li><span><strong>Tokens.</strong> El total, con el ₽ sobrante convertido.</span><span class="t">1 s</span></li>
+      <li><span><strong>La próxima vez.</strong> Las tres metas más cercanas con su barra, y "Run again" como botón principal.</span><span class="t">jugador</span></li>
+    </ol>
+    <div class="facts">
+      <div><b>Por qué</b>Ataca el hallazgo 6 de frente y hace visibles todos los demás sistemas. El último paso convierte el final en el principio de la siguiente run.</div>
+      <div><b>Coste</b>Solo UI y un evento por paso. La sim ya calcula el libro de cuenta (<code>ledger</code>). Se puede hacer antes que nada, con los números de hoy.</div>
+      <div><b>Canon</b>§2.1.7 y la pantalla de fin de run. Sigue la regla de paneles transitorios y beats de la serie.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p2">
+    <div class="prop-head"><span class="pid">P2</span><h3>Volver a bloquear, y Oak's Parcels</h3><span class="tag new">Juguetes nuevos</span></div>
+    <p>La run 1 se juega con un núcleo del contenido. El resto se gana en paquetes del Profesor Oak: cada vez que la barra de Research se llena, el ayudante de Oak entrega uno, se abren tres cartas del contenido bloqueado y el jugador se queda una. Las otras dos vuelven al fondo. Sustituye al track de niveles, a los tiers de reliquia y al Mastery lane.</p>
+    <div class="scroll"><table>
+      <tr><th>Clase</th><th class="n">Abierto hoy</th><th class="n">Run 1 propuesta</th><th class="n">A ganar</th><th>Vía</th></tr>
+      <tr><td>Relics (C / U / R / L)</td><td class="n">65 (32 / 18 / 9 / 6)</td><td class="n">38 (19 / 11 / 5 / 3)</td><td class="n">27</td><td>Parcels; las Legendarias por hazaña (P3)</td></tr>
+      <tr><td>Consumables</td><td class="n">15</td><td class="n">10</td><td class="n">5, y 13 por construir</td><td>Parcels</td></tr>
+      <tr><td>Held items</td><td class="n">19</td><td class="n">11</td><td class="n">8</td><td>Parcels</td></tr>
+      <tr><td>Mystery events</td><td class="n">14</td><td class="n">9</td><td class="n">5, y 11 por construir</td><td>Parcels y hazañas</td></tr>
+      <tr><td>TMs</td><td class="n">3</td><td class="n">3</td><td class="n">12 por construir</td><td>Badge Case (P6)</td></tr>
+      <tr><td>Especies reclutables</td><td class="n">todas</td><td class="n">todas</td><td class="n">0</td><td>No se bloquean: el equipo es el mazo</td></tr>
+      <tr><td><strong>Total a ganar</strong></td><td class="n"></td><td class="n"></td><td class="n"><strong>45 hoy, ~81 con el contenido previsto</strong></td><td></td></tr>
+    </table></div>
+    <ul>
+      <li><strong>El bloqueo es proporcional por rareza</strong> (un 58 % de cada una abierto). Es la lección de v0.9.98: una cuenta nueva tenía 3 de 18 Uncommons y la rareza dejó de significar algo. Un test de contenido fija el mínimo por rareza.</li>
+      <li><strong>Lo bloqueado se ve.</strong> El Item Guide lo enseña en silueta, como la Pokédex, con "llega en un Oak's Parcel" o la hazaña que lo abre.</li>
+      <li><strong>Qué se queda fuera en la run 1:</strong> lo que cambia reglas o pide conocer el juego. El núcleo son las piezas que se entienden solas, de modo que el bloqueo también ordena el aprendizaje.</li>
+      <li><strong>Ritmo:</strong> los diez primeros paquetes cuestan 300 de Research y los siguientes 450, con el sobrante acumulado. Una derrota en la Región 1 entrega uno; una victoria, dos o tres.</li>
+      <li><strong>Fondo agotado:</strong> el paquete paga Tokens. El contenido que se construya después entra bloqueado, así que cada versión de contenido alarga la cola sola.</li>
+    </ul>
+    <div class="facts">
+      <div><b>Por qué</b>Es el único cambio que da "juguetes nuevos" de verdad, y garantiza el principio 1 sin depender de la habilidad.</div>
+      <div><b>Coste</b>Medio. Los contadores de descubrimiento siguen plegándose y cada reliquia ya lleva su tier. Falta el reparto del núcleo, el fondo y la UI del paquete.</div>
+      <div><b>Canon</b>§8.6 se reescribe; §8.3.5 desaparece como track; <code>RELIC_UNLOCKS_ON</code> se retira.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p3">
+    <div class="prop-head"><span class="pid">P3</span><h3>Trainer Journal: hazañas que dan cosas</h3><span class="tag new">Metas elegidas</span></div>
+    <p>Los 50 achievements y los 20 criterios de descubrimiento se funden en un solo libro. Cada entrada es una hazaña y su premio es un objeto con nombre, nunca solo XP. Se pueden fijar tres, y las fijadas se ven en la pantalla de inicio de run, en el mapa y en el paso final del Field Report.</p>
+    <div class="scroll"><table>
+      <tr><th>Estante</th><th>Tipo de hazaña</th><th>Premio</th><th>Origen</th></tr>
+      <tr><td><strong>Field Notes</strong></td><td>Hacer algo una vez: evolucionar con piedra, ganar un combate sin Swap, capturar con el Box lleno</td><td>Una reliquia o un Mystery event concretos</td><td>Los 20 criterios de Tier 2, ya escritos y con contador</td></tr>
+      <tr><td><strong>Challenges</strong></td><td>Ganar con una restricción: equipo de un solo tipo, sin evoluciones, un Gym sin bajas</td><td>Reliquias Legendarias, variantes de starter, cosméticos raros</td><td>Categorías Combat, Boss, Build Identity y Endurance de §8.7</td></tr>
+      <tr><td><strong>Milestones</strong></td><td>Acumular: reclutar 25 especies, evolucionar 30 veces</td><td>Tokens y un perk de Kit en los hitos altos</td><td>Recruitment, Evolution, Mastery</td></tr>
+    </table></div>
+    <p>Las medallas (Bronze a Platinum) quedan como marca de dificultad. Las ocultas bajan del 20 % al 10 %: lo que se persigue tiene que poder leerse.</p>
+    <div class="facts">
+      <div><b>Por qué</b>Responde a "¿qué persigo en la próxima?" y hace que una run perdida pueda ser un éxito en lo que el jugador se propuso.</div>
+      <div><b>Coste</b>Bajo o medio. 26 achievements y 20 criterios ya tienen disparador. Falta asignar premios, las fijaciones y su chip en el mapa.</div>
+      <div><b>Canon</b>§8.7 se reescribe; <code>catalogs/achievements.md</code> gana la columna de premio.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p4">
+    <div class="prop-head"><span class="pid">P4</span><h3>Bond en seis rangos, y Ribbons</h3><span class="tag new">Mis Pokémon crecen conmigo</span></div>
+    <p>El Bond conserva su techo (unas 21 runs para una línea fija) y gana dos peldaños por abajo, de modo que la primera partida con una línea ya entrega algo.</p>
+    <div class="scroll"><table>
+      <tr><th>Rango</th><th class="n">Bond</th><th class="n">Run (línea fija)</th><th>Abre en la línea</th><th></th></tr>
+      <tr><td>1 Acquainted</td><td class="n">20</td><td class="n">1</td><td>Su página completa en la Pokédex (todas las rutas evolutivas) y elegir la Poké Ball de la que sale</td><td><span class="tag new">nuevo</span></td></tr>
+      <tr><td>2 Companion</td><td class="n">60</td><td class="n">3</td><td>Shiny Charm</td><td><span class="tag keep">antes run 5</span></td></tr>
+      <tr><td>3 Trusted</td><td class="n">120</td><td class="n">6</td><td>Habilidad oculta</td><td><span class="tag keep">antes run 11</span></td></tr>
+      <tr><td>4 Deep Bond</td><td class="n">200</td><td class="n">10</td><td>Mastery Move</td><td><span class="tag keep">antes run 16</span></td></tr>
+      <tr><td>5 Soulbound</td><td class="n">300</td><td class="n">15</td><td>Puede empezar una run; en líneas starter, inicio shiny</td><td><span class="tag keep">antes run 21</span></td></tr>
+      <tr><td>6 Partner</td><td class="n">420</td><td class="n">21</td><td>Pasea por el lobby. Como starter empieza con su objeto insignia</td><td><span class="tag new">nuevo</span></td></tr>
+    </table></div>
+    <ul>
+      <li><strong>El Box también gana Bond</strong>, la mitad que el equipo activo. Rotar deja de costar progreso.</li>
+      <li><strong>Ribbons por línea</strong>, cuatro: Gym Ribbon (ganar un Gym con ella), League Ribbon (llegar a la Liga), Champion Ribbon (ganar la run) y Ladder Ribbon. Se ven en su carta de la Pokédex y junto a su nombre en la run. Una derrota tras el primer Gym ya sella hasta tres líneas.</li>
+      <li><strong>La colección larga</strong> es "Champion Ribbon en las 79 líneas". Convierte cada victoria en un sello distinto y da un motivo para ganar con equipos nuevos.</li>
+    </ul>
+    <div class="facts">
+      <div><b>Por qué</b>Ataca el hallazgo 5. El coste total de los rangos antiguos apenas cambia; solo se reparte antes.</div>
+      <div><b>Coste</b>Bajo. Constantes de <code>bond.ts</code>, dos rangos nuevos y los Ribbons como contador de cuenta.</div>
+      <div><b>Canon</b>§6.8.1 y §6.8.2. El rango 6 es la única pieza con ventaja de salida y cuenta contra el presupuesto de P7.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p5">
+    <div class="prop-head"><span class="pid">P5</span><h3>Trainer Rank: nueve rangos con cara</h3><span class="tag new">Carrera</span></div>
+    <p>Los 30 niveles se sustituyen por nueve rangos. Cada uno trae una persona o un servicio al lobby. El XP de carrera es la misma cifra del Field Report, así que no hay moneda nueva que entender.</p>
+    <div class="scroll"><table>
+      <tr><th>Rango</th><th class="n">XP acumulado</th><th class="n">Run objetivo</th><th>Llega al lobby</th></tr>
+      <tr><td>1 Newcomer</td><td class="n">0</td><td class="n">—</td><td>La enfermera (Trainer Card), el PC, la puerta de la Liga</td></tr>
+      <tr><td>2 Rookie</td><td class="n">300</td><td class="n">1</td><td>El ayudante de Oak: Parcels y Trainer Journal</td></tr>
+      <tr><td>3 Trainer</td><td class="n">1 000</td><td class="n">2</td><td>El dependiente abre el Poké Mart</td></tr>
+      <tr><td>4 Challenger</td><td class="n">2 200</td><td class="n">4</td><td>Trainer Kit, primer hueco (P7)</td></tr>
+      <tr><td>5 Ace</td><td class="n">3 800</td><td class="n">7</td><td>Segundo hueco de Kit</td></tr>
+      <tr><td>6 Veteran</td><td class="n">6 000</td><td class="n">11</td><td>La Mystery Door: retos de regla fija y, cuando exista, la Daily Route</td></tr>
+      <tr><td>7 Expert</td><td class="n">9 500</td><td class="n">17</td><td>Tercer hueco de Kit</td></tr>
+      <tr><td>8 Elite</td><td class="n">14 500</td><td class="n">26</td><td>Los paquetes ofrecen 4 cartas en vez de 3</td></tr>
+      <tr><td>9 Master</td><td class="n">22 000</td><td class="n">40</td><td>Título y marco de Master; el Research sobrante paga Tokens dobles</td></tr>
+    </table></div>
+    <p><strong>Las estrellas de la Trainer Card</strong> son otra cosa, como en FireRed: cuatro, cada una por una proeza (primer Champion, las 12 Badges, 151 especies vistas, la cima de la Ladder). La tarjeta cambia de color con cada estrella.</p>
+    <div class="facts">
+      <div><b>Por qué</b>Ataca el hallazgo 2. Nueve hitos con consecuencia valen más que treinta sin ella, y los cuatro primeros llegan en cuatro partidas.</div>
+      <div><b>Coste</b>Bajo en sim (una tabla). El coste real es el del lobby, en P6.</div>
+      <div><b>Canon</b>§8.3.3 y §8.3.5.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p6">
+    <div class="prop-head"><span class="pid">P6</span><h3>Un lobby que se llena, y la Badge Case</h3><span class="tag new">El Hub cambia</span></div>
+    <p>El lobby empieza casi vacío y cada cosa conseguida deja algo en él. El progreso se mira en la sala, no en un menú.</p>
+    <ul>
+      <li><strong>Gente por rango</strong> (P5): el ayudante de Oak, el dependiente, el encargado del Kit, el guardián de la Mystery Door.</li>
+      <li><strong>Badge Case en la pared.</strong> Hay doce Líderes y cada run solo cruza tres. La primera vez que se vence a cada uno, su Badge se cuelga en el lobby, <strong>su TM entra en el mundo</strong> (los Líderes dan TMs, como en la serie) y el Líder aparece de visita con un reto de tres pasos cuyo premio es su objeto insignia.</li>
+      <li><strong>Partners.</strong> Las líneas en rango 6 pasean por la sala con su sprite de overworld.</li>
+      <li><strong>Trofeos.</strong> La máquina del Hall of Fame se enciende con la primera victoria. Cada estrella de la tarjeta deja una pieza: una estatua dorada, una placa.</li>
+      <li><strong>Decoración comprada</strong> con Tokens en el Mart: pósters, alfombra, plantas. Es el destino barato de los Tokens sueltos.</li>
+    </ul>
+    <div class="facts">
+      <div><b>Por qué</b>La Badge Case da una carrera a quien todavía no gana: "vencer al otro Gym de la Región 1" es una meta de dos o tres partidas. Las doce Badges piden recorrer todas las bifurcaciones.</div>
+      <div><b>Coste</b>Alto en arte, bajo en reglas. Los sprites de overworld de FRLG ya se extraen de pret. Las TMs de los Líderes coinciden con las 12 que faltan por construir.</div>
+      <div><b>Canon</b>§8.4 y §8.4.1; un apartado nuevo para la Badge Case.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p7">
+    <div class="prop-head"><span class="pid">P7</span><h3>Trainer Kit: ventaja de salida, por huecos</h3><span class="tag new">Rompe §8.1</span></div>
+    <p>La cuenta puede mejorar con qué empieza una run, pero no acumulando: los perks se compran una vez y se equipan en uno, dos o tres huecos según el rango. Elegir el Kit es una decisión de construcción antes de salir. Tokens también compra starters, servicios permanentes y cosmética.</p>
+    <div class="scroll"><table>
+      <tr><th>Perk de Kit (ejemplos)</th><th>Efecto al empezar la run</th><th class="n">Tokens</th></tr>
+      <tr><td>Mom's Allowance</td><td>₽ extra en el bolsillo</td><td class="n">15</td></tr>
+      <tr><td>First-Aid Pouch</td><td>Dos Potions</td><td class="n">15</td></tr>
+      <tr><td>Ball Case</td><td>Tres Poké Balls más</td><td class="n">15</td></tr>
+      <tr><td>Running Shoes</td><td>Un reroll de una elección 1 de 3 por Región</td><td class="n">25</td></tr>
+      <tr><td>Exp. Share</td><td>El banquillo gana el 100 % del XP en vez del 75 %</td><td class="n">30</td></tr>
+      <tr><td>Curated Relic · Pokédex Insight · Salve Cache · Apex Reveal</td><td>Las cuatro mejoras de Hub actuales, ahora como perks que ocupan hueco</td><td class="n">15–25</td></tr>
+    </table></div>
+    <ul>
+      <li><strong>Servicios permanentes</strong> (no ocupan hueco, amplían opciones): Expanded Box 40, Modifier Slot 50, Twin Run 70. Starters: Magikarp 25, Eevee 35, Pikachu 35.</li>
+      <li><strong>Presupuesto de poder</strong>, medido con el harness: un perk no sube la tasa de victoria más de 3 puntos y un Kit completo no más de 8. Ningún perk toca daño, HP, AP ni robo.</li>
+      <li><strong>Ingreso objetivo:</strong> unos 14 Tokens por run (informe, ₽ sobrante a 100 ₽ por Token con tope de 10, hazañas). Cada partida compra algo pequeño o acerca algo grande.</li>
+    </ul>
+    <div class="facts">
+      <div><b>Por qué</b>Con una tasa de victoria tan baja, un poco de ayuda elegida es lo que hace que la décima partida llegue más lejos que la primera. Los huecos mantienen el techo bajo y visible.</div>
+      <div><b>Coste</b>Medio. Cuatro perks ya existen como mejoras de Hub. Requiere pase de balance por perk.</div>
+      <div><b>Canon</b>§8.1 regla 2, §8.3.4, §8.4.2. Es la decisión D1.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p8">
+    <div class="prop-head"><span class="pid">P8</span><h3>League Ladder y Hall of Fame</h3><span class="tag new">Carrera, cola larga</span></div>
+    <p>Los diez difficulty modifiers dejan de abrirse por nivel y se ordenan en una escalera de diez peldaños que se abre con la primera victoria sobre el Champion. Cada peldaño añade un modifier a los anteriores, en el orden de §8.8.2. Ganar un peldaño abre el siguiente, deja ese modifier disponible para runs a la carta y paga un paquete y Tokens.</p>
+    <ul>
+      <li>Antes de la primera victoria la carrera es la Badge Case (P6). La Ladder es la respuesta a "ya he ganado, ¿y ahora?".</li>
+      <li>El Hall of Fame guarda cada victoria en el PC: equipo, niveles, rutas evolutivas, reliquias, semilla y peldaño. Es la versión local de lo que el backlog reserva para el multijugador.</li>
+      <li>La regla de §8.8.4 se mantiene: no hay modo fácil.</li>
+    </ul>
+    <div class="facts">
+      <div><b>Por qué</b>Hoy los modifiers son un premio de nivel para un jugador que aún no gana. En escalera son una meta legible para el que sí.</div>
+      <div><b>Coste</b>Bajo. Los diez modifiers existen; la escalera es una lista ordenada y un contador.</div>
+      <div><b>Canon</b>§8.8.1 y la columna Unlock de §8.8.2.</div>
+    </div>
+  </div>
+
+  <div class="prop" id="p9">
+    <div class="prop-head"><span class="pid">P9</span><h3>La Pokédex paga: los ayudantes de Oak</h3><span class="tag new">Colección</span></div>
+    <p>En FireRed los ayudantes del Profesor Oak esperan en las casetas y entregan un objeto cuando has capturado bastantes especies. Aquí hacen lo mismo en el lobby: a 10, 25, 50, 80, 110 y 151 especies capturadas el ayudante entrega un perk de Kit exclusivo (el Exp. Share a las 50, como en el original) o un paquete raro. El Field Report suma 5 puntos por cada especie vista por primera vez.</p>
+    <div class="facts">
+      <div><b>Por qué</b>La Pokédex ya es el libro más bonito del juego y hoy solo paga 25 XP. Así cada captura nueva cuenta para algo que se ve venir.</div>
+      <div><b>Coste</b>Bajo. Los contadores existen en §8.9.1.</div>
+      <div><b>Canon</b>§8.9 y §5.13 (Familiar no cambia).</div>
+    </div>
+  </div>
+</section>
+
+<section id="diez">
+  <h2>Las primeras runs, hoy y con la propuesta</h2>
+  <p>Hitos con nombre que una cuenta nueva recibe en sus primeras 24 partidas. La fila de hoy sale de los números del canon; la de la propuesta son objetivos de diseño, todavía sin medir.</p>
+  <div class="scroll">
+    <svg class="chart" viewBox="0 0 960 330" width="960" height="330" role="img" aria-label="Hitos por run, diseño actual frente a propuesta" style="display:block;min-width:820px;max-width:100%;height:auto">
+      <text class="head" x="8" y="20">Hoy</text>
+      <text x="8" y="50">Nivel abre estante</text>
+      <text x="8" y="80">Bond (línea fija)</text>
+      <text x="8" y="110">Compra en el Mart</text>
+      <line class="axis" x1="170" y1="46" x2="946" y2="46"/>
+      <line class="axis" x1="170" y1="76" x2="946" y2="76"/>
+      <rect class="old" x="179" y="39" width="14" height="14"/>
+      <rect class="old" x="275" y="39" width="14" height="14"/>
+      <rect class="old-hollow" x="435" y="39" width="14" height="14"/>
+      <text class="muted" x="456" y="50">run 9: Mastery lane, hoy vacío</text>
+      <circle class="old" cx="314" cy="76" r="7"/>
+      <circle class="old" cx="506" cy="76" r="7"/>
+      <circle class="old" cx="666" cy="76" r="7"/>
+      <circle class="old" cx="826" cy="76" r="7"/>
+      <rect class="band-old" x="170" y="97" width="776" height="18"/>
+      <text x="178" y="110">2,3 Tokens por run: una compra cada dos runs, más de la mitad cosméticos</text>
+
+      <text class="head" x="8" y="160">Propuesta (objetivo)</text>
+      <text x="8" y="190">Oak's Parcel</text>
+      <text x="8" y="220">Bond (línea fija)</text>
+      <text x="8" y="250">Trainer Rank</text>
+      <text x="8" y="280">Tokens</text>
+      <line class="axis" x1="170" y1="186" x2="946" y2="186"/>
+      <line class="axis" x1="170" y1="216" x2="946" y2="216"/>
+      <line class="axis" x1="170" y1="246" x2="946" y2="246"/>
+      <g id="parcels"></g>
+      <circle class="nw" cx="186" cy="216" r="7"/>
+      <circle class="nw" cx="250" cy="216" r="7"/>
+      <circle class="nw" cx="346" cy="216" r="7"/>
+      <circle class="nw" cx="474" cy="216" r="7"/>
+      <circle class="nw" cx="634" cy="216" r="7"/>
+      <circle class="nw" cx="826" cy="216" r="7"/>
+      <rect class="nw" x="179" y="239" width="14" height="14"/>
+      <rect class="nw" x="211" y="239" width="14" height="14"/>
+      <rect class="nw" x="275" y="239" width="14" height="14"/>
+      <rect class="nw" x="371" y="239" width="14" height="14"/>
+      <rect class="nw" x="499" y="239" width="14" height="14"/>
+      <rect class="nw" x="691" y="239" width="14" height="14"/>
+      <rect class="band-new" x="170" y="267" width="776" height="18"/>
+      <text x="178" y="280">~14 Tokens por run: una compra pequeña cada run, o ahorro hacia un perk</text>
+
+      <line class="axis" x1="170" y1="300" x2="946" y2="300"/>
+      <g id="ticks"></g>
+      <text class="muted" x="8" y="318">Run</text>
+    </svg>
+  </div>
+  <p class="note">Los Parcels llegan en todas las runs, y de dos en dos en las seis primeras. A esto se suman las hazañas del Journal, las Badges nuevas y los Ribbons, que dependen de lo que el jugador haga.</p>
+
+  <h3>Una misma partida: derrota en la Región 1, tercera run</h3>
+  <div class="scroll"><table>
+    <tr><th></th><th>Hoy</th><th>Propuesta</th></tr>
+    <tr><td><strong>Pantalla</strong></td><td>Título, equipo, botón "Progress +350 XP"</td><td>Field Report de nueve pasos</td></tr>
+    <tr><td><strong>Cuenta</strong></td><td>Barra de nivel +31 %. Sin nivel nuevo</td><td>Research completa un paquete: se elige 1 de 3</td></tr>
+    <tr><td><strong>Cartera</strong></td><td>1–2 Tokens. Nada que comprar con efecto</td><td>~9 Tokens: un cosmético ya, o medio perk</td></tr>
+    <tr><td><strong>Pokémon</strong></td><td>+20 Bond en el starter (60 de 100). Sin rango</td><td>Starter a rango 2 (Shiny Charm). Una línea nueva a rango 1. Gym Ribbon si cayó el primer Gym</td></tr>
+    <tr><td><strong>Meta siguiente</strong></td><td>Ninguna a la vista</td><td>Tres hazañas fijadas con su barra; la Badge del otro Gym de la Región 1</td></tr>
+    <tr><td><strong>Cosas con nombre</strong></td><td><strong>0</strong></td><td><strong>3 o 4</strong></td></tr>
+  </table></div>
+</section>
+
+<section id="economia">
+  <h2>Economía: objetivos a validar</h2>
+  <p>Ninguna de estas cifras está medida. Son los objetivos que <code>balance/accountCareer.test.ts</code> y <code>bondCareer.test.ts</code> tendrían que confirmar o corregir antes de escribirlas en canon.</p>
+  <div class="scroll"><table>
+    <tr><th>Magnitud</th><th class="n">Hoy</th><th class="n">Objetivo</th><th>Palanca</th></tr>
+    <tr><td>Desbloqueos con nombre por run, runs 1–10</td><td class="n">~0,5</td><td class="n">2–3</td><td>Coste del paquete (300), rangos 1–2 de Bond</td></tr>
+    <tr><td>Desbloqueos con nombre por run, runs 10–30</td><td class="n">~0,4</td><td class="n">1–2</td><td>Coste del paquete (450)</td></tr>
+    <tr><td>Primera recompensa de Bond</td><td class="n">run 5</td><td class="n">run 1</td><td>Rango 1 a 20 Bond</td></tr>
+    <tr><td>Runs hasta vaciar el fondo de Parcels</td><td class="n">—</td><td class="n">~36 hoy, ~65 con el contenido previsto</td><td>Tamaño del fondo</td></tr>
+    <tr><td>Tokens por run</td><td class="n">2,3</td><td class="n">~14</td><td>Informe ÷ 50, ₽ a 100 por Token con tope 10</td></tr>
+    <tr><td>Runs hasta comprar todo el Mart</td><td class="n">62 (con el Mastery lane)</td><td class="n">~50</td><td>Precios</td></tr>
+    <tr><td>Subida de la tasa de victoria por un Kit completo</td><td class="n">0</td><td class="n">≤ 8 puntos</td><td>Lista de perks</td></tr>
+    <tr><td>Rango 4 (primer hueco de Kit)</td><td class="n">—</td><td class="n">run 4</td><td>Tabla de rangos</td></tr>
+  </table></div>
+  <p>Las fuentes de XP de §8.3.2 se mantienen como líneas del informe, con tres nuevas que premian la novedad: especie vista por primera vez (+5), primera victoria sobre un Líder (+100) y hazaña del Journal (+50 a +150).</p>
+</section>
+
+<section id="canon">
+  <h2>Qué cambia en el canon</h2>
+  <p>Los números de sección no se renumeran. Las secciones se reescriben en su sitio y lo nuevo se añade al final del Topic 8.</p>
+  <div class="scroll"><table>
+    <tr><th>§</th><th>Hoy</th><th>Pasa a ser</th></tr>
+    <tr><td>§8.1</td><td>Tres garantías; nunca poder</td><td>Los seis principios; ventaja de salida por huecos</td></tr>
+    <tr><td>§8.3</td><td>Trainer XP, 30 niveles, track de Tokens</td><td>Field Report, Research, Trainer Rank de nueve rangos</td></tr>
+    <tr><td>§8.3.4</td><td>Dos monedas; 2,3 Tokens por run</td><td>XP de carrera (automático) y Tokens reescalados</td></tr>
+    <tr><td>§8.4</td><td>Lobby fijo; siete Hub upgrades</td><td>Lobby que se llena; servicios permanentes y Trainer Kit</td></tr>
+    <tr><td>§8.6</td><td>Tiers de reliquia, apagados</td><td>Núcleo de la run 1, fondo bloqueado, Oak's Parcels</td></tr>
+    <tr><td>§8.7</td><td>50 achievements que pagan XP</td><td>Trainer Journal: hazaña y premio, con fijaciones</td></tr>
+    <tr><td>§8.8</td><td>Modifiers por Trainer Level</td><td>League Ladder de diez peldaños</td></tr>
+    <tr><td>§8.9</td><td>La Pokédex paga 25 XP</td><td>Hitos de captura con los ayudantes de Oak</td></tr>
+    <tr><td>§6.8</td><td>Bond en cuatro rangos de 100</td><td>Seis rangos, Bond en el Box, Ribbons</td></tr>
+    <tr><td>§2.1.7</td><td>Resumen de run</td><td>La secuencia del Field Report</td></tr>
+    <tr><td>Nuevo</td><td>—</td><td>Badge Case, Hall of Fame local, estrellas de la Trainer Card</td></tr>
+  </table></div>
+  <p>Guardado: la cuenta pasa de v3 a v4. Starters, servicios y cosméticos se conservan, el XP se convierte en rango y los Tokens se reescalan. Qué hacer con las reliquias de una cuenta existente es la decisión D5.</p>
+</section>
+
+<section id="riesgos">
+  <h2>Riesgos</h2>
+  <div class="scroll"><table>
+    <tr><th>Riesgo</th><th>Mitigación</th></tr>
+    <tr><td><strong>Repetir el problema de v0.9.98</strong>: el bloqueo vacía una rareza y las primeras runs se sienten pobres</td><td>Bloqueo proporcional con mínimo por rareza bajo test; el núcleo se elige por claridad; dos paquetes por run al principio</td></tr>
+    <tr><td><strong>Demasiados sistemas</strong> para un proyecto de una persona</td><td>Cuatro fases que se sostienen solas. La primera es solo UI y constantes</td></tr>
+    <tr><td><strong>El Kit convierte el juego en grind</strong>: "pierdo porque me falta comprar"</td><td>Huecos, no acumulación; presupuesto de 8 puntos medido; la Ladder absorbe a quien ya gana</td></tr>
+    <tr><td><strong>El Field Report cansa</strong> a la vigésima vez</td><td>Saltable entero; los pasos sin novedad se omiten; 20 s de techo</td></tr>
+    <tr><td><strong>Arte del lobby</strong></td><td>Sprites de overworld de FRLG desde pret, como en la ruta. Empezar por cuatro personas y la Badge Case</td></tr>
+    <tr><td><strong>Los goldens y el harness</strong> asumen el fondo completo</td><td>El harness corre con el fondo completo y con el núcleo; la carrera de cuenta mide el camino entre ambos</td></tr>
+  </table></div>
+</section>
+
+<section id="fases">
+  <h2>Plan por fases</h2>
+  <div class="scroll"><table>
+    <tr><th>Fase</th><th>Contenido</th><th>Qué siente el jugador</th><th>Tamaño</th></tr>
+    <tr><td><strong>1 · The Field Report</strong></td><td>P1 completo. Bond en seis rangos y en el Box (P4). Tokens reescalados. Tres achievements fijados</td><td>Cada partida termina con una entrega y casi siempre con un rango de Bond</td><td>Pequeño. Sin cambio de guardado mayor</td></tr>
+    <tr><td><strong>2 · Oak's Parcels</strong></td><td>P2 y P3: núcleo, fondo, paquetes, Journal con premios, siluetas en el Item Guide</td><td>Juguetes nuevos en cada run y metas elegidas</td><td>Medio. Cuenta v4</td></tr>
+    <tr><td><strong>3 · A lobby that fills</strong></td><td>P5 y P6: rangos, gente, Badge Case, Ribbons, Hall of Fame</td><td>El Hub cuenta la historia de la cuenta</td><td>Medio, con peso de arte</td></tr>
+    <tr><td><strong>4 · Kit and Ladder</strong></td><td>P7, P8 y P9</td><td>Preparar la salida, y una escalera después de ganar</td><td>Medio, con pase de balance</td></tr>
+  </table></div>
+  <p>Cada fase es una versión con su changelog. La primera se puede construir mientras se deciden las demás.</p>
+</section>
+
+<section id="decisiones">
+  <h2>Decisiones abiertas</h2>
+  <p>Son de dirección y son tuyas. La opción recomendada va enmarcada.</p>
+  <div class="cols">
+    <div class="rec"><h3>D1 · Poder de cuenta</h3><p><strong>A. Trainer Kit por huecos.</strong> Ventaja de salida elegida y con techo medido.</p><p class="note">B. Horizontal puro, como hoy. C. Mejoras permanentes de stats al estilo Hades, con la Ladder como contrapeso.</p></div>
+    <div class="rec"><h3>D2 · Especies</h3><p><strong>Todas las especies reclutables siguen abiertas.</strong> Se bloquean objetos, eventos y TMs.</p><p class="note">Alternativa: bloquear también encuentros raros (Elite Wilds, Legendarios del Apex) tras hazañas.</p></div>
+    <div class="rec"><h3>D3 · Monedas</h3><p><strong>Una cartera, Tokens</strong>, para el Mart; el contenido llega por paquetes, sin precio.</p><p class="note">Alternativa: sin moneda; todo por rango, paquete y hazaña. Más simple, menos elección.</p></div>
+    <div class="rec"><h3>D4 · League Ladder</h3><p><strong>Una escalera por cuenta</strong>, diez peldaños.</p><p class="note">Alternativa: una por starter, como Slay the Spire. Cola mucho más larga, más repetición.</p></div>
+    <div class="rec"><h3>D5 · Cuentas existentes</h3><p><strong>Paquetes de bienvenida:</strong> la cuenta recibe de golpe los que su XP habría pagado, con tope de 15, y los abre uno a uno.</p><p class="note">Alternativa: conservar todo abierto en cuentas antiguas, o empezar de cero.</p></div>
+    <div class="rec"><h3>D6 · Orden</h3><p><strong>Fase 1 ya</strong>, por delante de lo que queda de v0.9, porque no depende de ninguna otra decisión.</p><p class="note">Alternativa: esperar a cerrar D1–D5 y construir todo seguido.</p></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var x = function (run) { return 186 + (run - 1) * 32; };
+  var ticks = document.getElementById('ticks');
+  var parcels = document.getElementById('parcels');
+  for (var r = 1; r <= 24; r++) {
+    var t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', x(r)); t.setAttribute('y', 318);
+    t.setAttribute('text-anchor', 'middle'); t.setAttribute('class', 'muted');
+    t.textContent = r; ticks.appendChild(t);
+    var d = document.createElementNS(NS, 'path');
+    var cx = x(r), cy = 186;
+    d.setAttribute('d', 'M' + cx + ' ' + (cy - 8) + ' L' + (cx + 8) + ' ' + cy + ' L' + cx + ' ' + (cy + 8) + ' L' + (cx - 8) + ' ' + cy + ' Z');
+    d.setAttribute('class', 'nw'); parcels.appendChild(d);
+  }
+})();
+</script>

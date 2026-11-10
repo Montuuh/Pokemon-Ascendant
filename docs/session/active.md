@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
 **Date:** 2026-11-10 · **Version:** v0.9.109 (*Faces on the road*).
+**Meta-progression rework, proposed 2026-11-10 (no code, no canon change yet):** `docs/reviews/2026-11-10-meta-progression-rework.html` (claude.ai/artifact/PWynspTEvWfyvYbDTESPcW) — nine proposals, four phases; the user allowed breaking canon and a blank slate. **Waiting on decisions D1–D6**, then canon (§8, §6.8) and Phase 1 (the Field Report).
 **Shipped 2026-11-10 (v0.9.109):** route people face the viewer at 4/3 of the tiles (`personScale`, hit box × `--person-k`);
 the Gym is the only building (no houses, pond, Center or Mart). UI review Ship with fixes, fixed. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.108):** seven-row map (level tracks, density 2/3), each Gym's field over all its ground and
