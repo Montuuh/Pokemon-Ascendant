@@ -90,7 +90,8 @@ state, and any place the build still disagrees with canon.
   `.claude/skills/ship-version`; a version is for a change that earns one (R0), not for every commit: the `CHANGELOG.md` entry (the game's What's new screen reads it; brief and technical — the main
   points, no roleplay; a release takes the next patch, there is no `## Next`), `npm version X.Y.Z --no-git-tag-version`, the roadmap mark, the
   README Status line, the session header. `npm run check:version` fails the check until all of them agree.
-- Subagents (`.claude/agents/`): `designer` for pillar/balance review, `qa` for edge-case hunts, `ui-reviewer` for every visual change (doctrine in `docs/design/ui-doctrine.md`). Use them for review, not for writing code in parallel on the same files.
+- Subagents (`.claude/agents/`): `designer` for pillar/balance review, `sim-reviewer` for a sim or content diff before it is committed, `qa` for edge-case hunts, `ui-reviewer` for every visual change (doctrine in `docs/design/ui-doctrine.md`), `canon-auditor` for drift between canon, catalogues, JSON and code, `playtester` to play a fight or a run and bring back the report. Use them for review, not for writing code in parallel on the same files.
+- Skills for the recurring jobs: `sim-rule` (a rule from its §), `content-add` (a row from catalogue to JSON), `bugfix` (repro → failing test → fix → proof), `session-close` (commit and push a finished unit). The whole workshop — rules, skills, agents, hooks, MCP, and what each hook refuses — is mapped in `.claude/README.md`.
 
 ## Art
 
