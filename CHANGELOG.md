@@ -19,6 +19,12 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.118 — Clear skies · 2026-11-12
+
+A fix to Defog.
+
+- **Defog.** A cleared field no longer comes back when a move's turns end.
+
 ### v0.9.117 — Home and after · 2026-11-12
 
 The last text pass: results, the run's end, the Hub and the menus.

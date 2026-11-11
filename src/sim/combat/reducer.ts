@@ -314,6 +314,8 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
       // §4.3.6 Defog — every field goes, Battlefield and Home Field, for the rest of the fight.
       const had = Object.keys(state.fields).length > 0;
       state.fields = {};
+      // §4.3.6 / §4.3.15 — a move-set field's memory of the opening ground goes too: nothing comes back when its turns end.
+      delete state.fieldTimers;
       emit(state, { t: 'field', fields: {} });
       log(state, 'system', had ? 'The fog lifts — every field is cleared.' : 'It had no effect: no field stands.');
       break;

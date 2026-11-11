@@ -98,6 +98,22 @@ describe('Field effects — §4.3', () => {
     if (s.enemies[0]!.intent?.moveId === 'rock-throw') expect(hitAfter).toBeLessThan(hitBefore);
   });
 
+  it('Defog_UnderAMoveSetField_TheOpeningGroundDoesNotComeBack_§4.3.6', () => {
+    // §4.3.6 / §4.3.15 — a Rain Dance over the fight's Sun remembers the Sun; a Defog clears both for the rest of the
+    // fight, so when the Rain's turns run out nothing returns.
+    let s = start(withFields(scenario({ team: [CHARMANDER], enemies: [RATTATA], consumables: ['defog'] }), { weather: 'sunny-day' }));
+    s = tweak(s, (d) => {
+      d.player.ap = 3;
+      d.fields = { ...d.fields, weather: 'rain-dance' };
+      d.fieldTimers = { weather: { turnsLeft: 1, restore: 'sunny-day' } };
+    });
+    s = withConsumableHand(s, ['defog']);
+    const cleared = dispatch(s, { type: 'use-consumable', cardId: consumableCard(s, 'defog').id });
+    expect(cleared.fields).toEqual({});
+    const next = dispatch(cleared, { type: 'end-turn' });
+    expect(next.fields.weather).toBeUndefined();
+  });
+
   // §4.3.8–§4.3.13 — the six fields v0.8.7 added, so every Gym has ground of its own (§4.3.14).
   const quiet = (d: { enemies: { intent: unknown }[] }) => {
     for (const e of d.enemies) e.intent = { kind: 'incapacitated', moveId: null, targetSlot: null, hidden: false };

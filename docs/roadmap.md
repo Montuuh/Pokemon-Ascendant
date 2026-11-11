@@ -1540,6 +1540,13 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.118 — Clear skies  ✅ 2026-11-12
+
+**Shipped.** The user (2026-11-12): "sí, arréglalo", on the bug the v0.9.116 review found. Defog (§4.3.6) cleared the
+fields but not a move-set field's timer (§4.3.15), so when a Rain Dance laid over the fight's Sun ran out, the Sun came
+back after the Defog. `clear-fields` now drops the timers with the fields. `fields.test.ts`
+`Defog_UnderAMoveSetField_TheOpeningGroundDoesNotComeBack_§4.3.6` fails without the fix; `npm run check`.
+
 ### v0.9.117 — Home and after  ✅ 2026-11-12
 
 **Shipped.** The last package of "lanza TODOS los paquetes restantes": the fight results, the run's end, the Hub

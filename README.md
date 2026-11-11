@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.117 — Home and after** (Beta). The last text pass: results, the run's end, the Hub and the menus. Before it, v0.9.116 checked the team and bag texts, v0.9.115 cleaned the fight bubbles, v0.9.114 fixed the map's node bubbles, v0.9.113 trimmed the Cities and shops, v0.9.112 gave every trainer its opening line, v0.9.111 cut every string in the game to what a player needs, and v0.9.110 rebuilt the account: a Field Report, Oak's Parcels, nine Trainer Ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
+**v0.9.118 — Clear skies** (Beta). A Defog fix: a cleared field no longer comes back. Before it, v0.9.117 finished the text pass, v0.9.116 checked the team and bag texts, v0.9.115 cleaned the fight bubbles, v0.9.114 fixed the map's node bubbles, v0.9.113 trimmed the Cities and shops, v0.9.112 gave every trainer its opening line, v0.9.111 cut every string in the game to what a player needs, and v0.9.110 rebuilt the account: a Field Report, Oak's Parcels, nine Trainer Ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
 
 ## Run it locally
 
