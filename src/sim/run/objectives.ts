@@ -90,7 +90,7 @@ export function runnerRewardLine(r: RunnerReward): string {
   const parts = [
     ...(r.xpMultiplier ? [`XP ×${r.xpMultiplier}`] : []),
     ...(r.candy ? [r.candy === 1 ? 'a Rare Candy' : `${r.candy} Rare Candies`] : []),
-    ...(r.purse ? [`Pay Day: ₽ ×${r.purse} a trainer's purse`] : []),
+    ...(r.purse ? [`${r.purse}× a trainer's prize money`] : []),
   ];
   return parts.join(' and ');
 }
@@ -144,7 +144,7 @@ function runnerPreview(node: MapNode, runner: RunnerDef, regionIndex: number, co
   const objective: NodeObjective = { kind: 'flee', runner: runner.id, turns: runner.turns };
   return {
     title: `Wild ${name}`,
-    detail: `It won't stay long · knock it out first: ${runnerRewardLine(runner.reward)}`,
+    detail: `Knock it out before it runs: ${runnerRewardLine(runner.reward)}`,
     speciesIds: [species],
     levelBand: [level, level],
     enemies: [{ species, level }],
@@ -154,7 +154,6 @@ function runnerPreview(node: MapNode, runner: RunnerDef, regionIndex: number, co
 }
 
 function guardPreview(find: NodePreview, guard: GuardDef, level: number, prize: HoldPrize, content: ContentRegistry): NodePreview {
-  const names = guard.team.length > 1 ? `${guard.team.length} ${content.species(guard.team[0]!.species).name}` : content.species(guard.team[0]!.species).name;
   const items = find.find!;
   const findLine = [
     ...(items.items.length ? [supplyLabel(items.items, (id) => content.consumable(id).name)] : []),
@@ -163,7 +162,7 @@ function guardPreview(find: NodePreview, guard: GuardDef, level: number, prize: 
   const objective: NodeObjective = { kind: 'hold', guard: guard.id, turns: guard.turns, prize };
   return {
     title: 'A guarded find',
-    detail: `${names} ${guard.team.length > 1 ? 'stand' : 'stands'} over ${findLine || 'something'} and ${holdPrizeLine(prize)}`,
+    detail: `Prize: ${[findLine, holdPrizeLine(prize)].filter(Boolean).join(', ')}`,
     speciesIds: guard.team.map((m) => m.species),
     levelBand: [level, level],
     enemies: guard.team.map((m) => ({ species: m.species, level })),

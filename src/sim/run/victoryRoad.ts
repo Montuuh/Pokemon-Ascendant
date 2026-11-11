@@ -42,7 +42,7 @@ export type TrainingUpgrade = (typeof TRAINING_UPGRADES)[number];
 
 export const TRAINING_PREVIEW: NodePreview = {
   title: 'Training Grounds',
-  detail: 'No fight. One Pokémon, one upgrade.',
+  detail: 'No fight, no cost. One Pokémon, one upgrade.',
   speciesIds: [],
   levelBand: [0, 0],
   icon: 'training',
@@ -51,7 +51,7 @@ export const TRAINING_PREVIEW: NodePreview = {
 
 export const SUMMIT_PREVIEW: NodePreview = {
   title: 'The Summit',
-  detail: 'Every Pokémon in the Box healed in full, and a Legendary relic to choose. Then the League.',
+  detail: 'The whole Box healed, and a Legendary relic to choose. Then the League.',
   speciesIds: [],
   levelBand: [0, 0],
   icon: 'summit',
@@ -178,7 +178,7 @@ function previewFor(kind: NodeKind, rng: GameRng, content: ContentRegistry, pick
     }
     return {
       title: `Ace Trainer ${pick(VICTORY_ROAD.gauntlet.names)}`,
-      detail: `A team of ${team.length} Pokémon · no healing before or after · a Rare relic pick`,
+      detail: `A team of ${team.length} Pokémon · Prize: a Rare relic pick`,
       speciesIds: team.map((m) => m.species),
       levelBand: [Math.min(...team.map((m) => m.level)), Math.max(...team.map((m) => m.level))],
       enemies: team,

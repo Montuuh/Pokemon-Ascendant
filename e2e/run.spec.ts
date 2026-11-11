@@ -842,7 +842,7 @@ test('the ledge names itself and a Mystery stays a mystery — §2.5.5, §2.10',
   const ledge = page.getByTestId('route-ledge');
   await expect(ledge).toHaveAttribute('aria-label', 'A ledge');
   await ledge.hover();
-  await expect(page.getByRole('tooltip')).toContainText('There is no climbing back');
+  await expect(page.getByRole('tooltip')).toContainText('No climbing back');
   await page.getByTestId(`node-${found!.landing}`).click();
   await expect(page.getByTestId('preview-ledge')).toBeVisible();
   await page.getByTestId('btn-cancel-node').click();

@@ -1540,6 +1540,19 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.114 — Route signs  ✅ 2026-11-11
+
+**Shipped.** The user (2026-11-11): "siguiente paquete: los textos del mapa y los nodos". Every word on the route
+map read where the player meets it — the node bubble, the preview card, the fork banner, the Region, Victory Road
+and League bubbles — and about 60 strings rewritten with the `slop-remover` skill. Five false facts: the Elite's hint said
+two Pokémon (it brings four; its first and last are two-phase), the Training Grounds bubble said "paid" (it is free),
+the merchant's bubble replaced its real stock with a vague line, and the trainer hint promised "a full team" (three), and the Gym hint promised a City after the third Gym (Victory Road follows it). The fork bubble no longer says two Gyms are drawn per run (it is per Region).
+The bubble now reads the preview's own detail for every node, so the bubble and the card never say two different
+things; the Mystery card no longer says the same sentence twice, a runner says its premium once, and the nurse and merchant
+shop bubbles read the same line as their nodes. Runner, guard, group, wild-pool, ledge and objective lines shortened. Two e2e assertions moved with the copy. `npm run check`, the map e2e, the strict audit of seven
+map screens and the UI review (Ship with fixes, all applied). The five `gym-guest` e2e fail on an evolved guest
+(Sandshrew where the spec expects Sandslash): they predate this package.
+
 ### v0.9.113 — Town talk  ✅ 2026-11-11
 
 **Shipped.** The user (2026-11-11): "siguiente paquete: los textos de las ciudades y tiendas". Every string of the

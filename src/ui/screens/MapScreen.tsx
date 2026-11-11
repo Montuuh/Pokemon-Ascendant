@@ -192,7 +192,7 @@ export function MapScreen() {
           </Tipped>
           {run.relics.length > 0 && (
             <Tipped
-              tip={<Tip title={`${run.relics.length} relic${run.relics.length === 1 ? '' : 's'}`} body={run.relics.map((r) => getContent().relic(r).name).join(' · ')} footer="Run-long passives. Open the bag to read each one." />}
+              tip={<Tip title={`${run.relics.length} relic${run.relics.length === 1 ? '' : 's'}`} body={run.relics.map((r) => getContent().relic(r).name).join(' · ')} />}
               className={styles.stat}
               data-testid="relic-count"
             >

@@ -5,7 +5,7 @@ import { NodeHover } from '@/ui/components/NodeHover';
 import { PixelSprite } from '@/ui/components/PixelSprite';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_HEAL_PCT, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, PARCEL, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_DETAIL, MERCHANT_DETAIL, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, PARCEL, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
@@ -51,15 +51,11 @@ export function routeNodeTip(node: MapNode, run: RunState, art: string, kind: st
   const access = status === 'reachable' ? 'Available now'
     : status === 'current' ? 'You are here'
     : status === 'visited' ? 'Cleared'
-    : ahead ? 'Ahead on your route · reach this column to choose'
+    : ahead ? 'Ahead on your route'
     : 'Off your route';
-  const detail = node.kind === 'aid' ? `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays.`
-    : node.kind === 'merchant' ? 'Supplies and equipment for the road.'
-    : node.kind === 'training' ? 'Paid training for the team before the final climb.'
-    : node.kind === 'mystery' ? null : p.detail;
   return <NodeHover heading={p.title} art={art} available={status === 'reachable'} access={access}
-    facts={[...(titleSays(p.title, kind) ? [] : [kind]), ...(visibleLevel ? [`Lv ${p.levelBand[0]}–${p.levelBand[1]}`] : []), ...(p.usualTypes?.length ? [`Usually ${p.usualTypes.map(typeName).join(' · ')}`] : []), ...(group ? [group] : []), ...battlefields(fields).map((id) => FIELD_LABEL[id]).filter((label): label is string => Boolean(label)), ...(fields.home ? [`Home field: ${typeName(String(fields.home))}`] : [])]}
-    detail={detail} hint={nodeHint(node)} pool={pool} chances={odds?.chances} />;
+    facts={[...(titleSays(p.title, kind) ? [] : [kind]), ...(visibleLevel ? [p.levelBand[0] === p.levelBand[1] ? `Lv ${p.levelBand[0]}` : `Lv ${p.levelBand[0]}–${p.levelBand[1]}`] : []), ...(p.usualTypes?.length ? [`Usually ${p.usualTypes.map(typeName).join(' · ')}`] : []), ...(group ? [group] : []), ...battlefields(fields).map((id) => FIELD_LABEL[id]).filter((label): label is string => Boolean(label)), ...(fields.home ? [`Home Field: ${typeName(String(fields.home))}`] : [])]}
+    detail={p.detail} hint={nodeHint(node)} pool={pool} chances={odds?.chances} />;
 }
 
 // ── Types and statuses ───────────────────────────────────────────────────────────────────────────────────
@@ -497,7 +493,7 @@ export function shieldTip(amount: number): ReactNode {
 
 /** §2.6.2 — a rarity row in a Wild Area's pool: its chance, split evenly between its Pokémon. */
 export function wildTierTip(tier: string, odds: number, count: number, lured: boolean): ReactNode {
-  return <Tip title={WILD_TIER_LABEL[tier]} meta={[WILD_TEXT.pct(odds), `${count} Pokémon`]} body={WILD_TIER_HINT[tier]} footer={lured ? `${WILD_TEXT.roll} ${WILD_TEXT.lure}` : WILD_TEXT.roll} />;
+  return <Tip title={WILD_TIER_LABEL[tier]} meta={[WILD_TEXT.pct(odds), `${count} Pokémon`]} body={WILD_TIER_HINT[tier]} footer={lured ? WILD_TEXT.lure : undefined} />;
 }
 
 /** §2.6.2 — one Pokémon in a Wild Area's pool: who it is, and the chance it is the one waiting. */
@@ -571,7 +567,7 @@ export function doubleActorTip(who: keyof typeof DOUBLE_ACTOR_LABEL): ReactNode 
 /** §5.6.5 — what a race pays, for its bubble: the runner's premium, or what the guard stands over. */
 export function objectiveMeta(objective: NodeObjective | undefined): string[] {
   if (!objective) return [];
-  return objective.kind === 'flee' ? [`Knock it out first: ${runnerRewardLine(runnerById(objective.runner).reward)}`] : [`Guarding ${holdPrizeLine(objective.prize)}`];
+  return objective.kind === 'flee' ? [runnerRewardLine(runnerById(objective.runner).reward)] : [`Guarding ${holdPrizeLine(objective.prize)}`];
 }
 
 /** §5.6.5 — a fight with another objective: the runner's race or the hold-out, with its turns. */
@@ -1021,7 +1017,7 @@ export function regionTip(regionIndex: number, greaterThreats: boolean): ReactNo
   const region = regionContent(regionIndex);
   const biomes = [...region.biomeWeights].sort((x, y) => y.weight - x.weight).slice(0, 4).map((b) => region.biomes[b.biome]?.name ?? b.biome);
   const name = regionName(regionIndex);
-  return <Tip title={name ? `Region ${regionIndex + 1} — ${name}` : `Region ${regionIndex + 1}`} meta={biomes} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies here also field the forms their levels warrant.' : undefined} />;
+  return <Tip title={name ? `Region ${regionIndex + 1} — ${name}` : `Region ${regionIndex + 1}`} meta={biomes} body={capitalise(regionAccent(regionIndex, greaterThreats))} footer={regionIndex >= STATUS_ACCENT_FROM ? 'Enemies evolve when their level allows.' : undefined} />;
 }
 
 /** §2.5.5 — a field move's obstacle on a step: what closes it, and which types in the Box clear it. */
@@ -1037,7 +1033,7 @@ export function ledgeTip(): ReactNode {
 
 /** §2.5 — the footer of a Gym's tooltip in the map header: where the route leans toward it, and where it commits. */
 export function forkFooter(yColumn: number, noReturnColumn: number): string {
-  return `Two of the four Gyms are drawn each run. The tracks lean toward them from column ${yColumn}; the step out of column ${noReturnColumn} is the point of no return, and its line wears the colour of the Gym it leads to.`;
+  return `From column ${yColumn} the tracks lean toward one Gym; the step out of column ${noReturnColumn} commits you, on a line in its colour.`;
 }
 
 /** §2.11.0 — the town itself: how a lobby works, and what waits past its gate. */
@@ -1198,17 +1194,17 @@ export function mapLabelsTip(on: boolean): ReactNode {
 
 /** §2.9.1 — the field nurse. */
 export function nurseTip(): ReactNode {
-  return <Tip title="Field nurse" body={`${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free.`} footer="Trauma stays." />;
+  return <Tip title="Field nurse" body={AID_DETAIL} />;
 }
 
 /** §8.4.2 — the Apex Pokémon Reveal: the Legendary the account's upgrade named for Victory Road. */
 export function apexRevealTip(name: string): ReactNode {
-  return <Tip title={`${name} waits on Victory Road`} meta={['Apex Pokémon Reveal']} body="Fought in its own arena at the top of the Road. Catch it and it joins you, two places in the team; beat it for a Legendary relic pick. Never both." />;
+  return <Tip title={`${name} waits on Victory Road`} meta={['Apex Pokémon Reveal']} body="Fought in its own arena at the top of the Road. Catch it (it takes two places in the team) or beat it for a Legendary relic pick. Never both." />;
 }
 
 /** §2.12 — Victory Road: what it is, and what waits at its top. */
 export function victoryRoadTip(): ReactNode {
-  return <Tip title="Victory Road" body="The last climb before the League: Region 3's strongest, a few levels up, the Gauntlets and the Training Grounds — and no healing until the Summit." footer="The Summit heals everyone and offers a Legendary relic; its gate is one way." />;
+  return <Tip title="Victory Road" body="Region 3's trainers and wild Pokémon, a few levels up, with Gauntlets and Training Grounds. No healing until the Summit." footer="The Summit heals everyone and offers a Legendary relic. Its gate is one way." />;
 }
 
 /** §9.5 — the sound settings. */
@@ -1218,7 +1214,7 @@ export function soundTip(): ReactNode {
 
 /** §2.1.6 — the League, on the map's heading. */
 export function leagueTip(): ReactNode {
-  return <Tip title={LEAGUE_TEXT.name} body="Five doors in a row — the Elite Four, then the Champion — one after another, with no path to choose. Nothing is sold and nobody joins; change your team between doors." footer="Beat the Champion and the run is won." />;
+  return <Tip title={LEAGUE_TEXT.name} body="Five doors: the Elite Four, then the Champion. Nothing is sold and nobody joins; change your team between doors." footer="Beat the Champion and the run is won." />;
 }
 
 /** §2.12.4 — the League ahead, on the Summit: five shapes and their types. */
@@ -1313,7 +1309,7 @@ export function tradeGiveTip(name: string, level: number, hp: number, max: numbe
 export function shopTip(title: string, inCity: boolean): ReactNode {
   return inCity
     ? <Tip title={title} body={`Picked for your team, a little dearer than the merchant. What you leave stays on the shelf until you leave town, and the counter buys held items back for ${Math.round(PRICES.sellShare * 100)} % of their price.`} />
-    : <Tip title={title} body={`The basics at route prices: cures, Poké Balls by ${PRICES.merchantBalls.qty}, and one thing worth a look. Once you walk on, the cart is gone.`} />;
+    : <Tip title={title} body={MERCHANT_DETAIL} footer="Once you walk on, the cart is gone." />;
 }
 
 /** §2.11.2.4 — the sell counter, and each item on it. */

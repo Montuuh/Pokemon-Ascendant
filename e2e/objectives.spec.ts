@@ -35,7 +35,7 @@ test.describe('Fights with another objective — §5.6.5', () => {
     await expect(page.getByTestId('foe-panel').first().getByTestId('catch-pill')).toHaveCount(0);
     // The bubble says what the race is.
     await chip.hover();
-    await expect(page.getByTestId('tooltip')).toContainText('not for catching', { timeout: 5_000 });
+    await expect(page.getByTestId('tooltip')).toContainText('It cannot be caught', { timeout: 5_000 });
     await page.getByTestId('combat-screen').screenshot({ path: 'playtest/objective-hold.png' });
   });
 });

@@ -222,7 +222,7 @@ export function NodePreviewCard({ node, active, canEnter, blockedReason, onEnter
         {!hiddenTeam && !node.preview.wild && node.preview.speciesIds.length > 0 && (
           <>
             <h3 className={styles.sectionTitle}>
-              {node.kind === 'wild' ? (objective ? 'Waiting there' : 'Could be waiting') : objective?.kind === 'hold' ? 'On guard' : 'Their team'}
+              {node.kind === 'wild' ? (objective ? 'Waiting there' : 'Could be waiting') : objective?.kind === 'hold' ? 'On guard' : node.kind === 'elite-wild' || node.kind === 'apex' ? 'Waiting there' : 'Their team'}
               <span className={styles.band}>
                 {node.preview.levelBand[0] === node.preview.levelBand[1] ? `Lv ${node.preview.levelBand[0]}` : `Lv ${node.preview.levelBand[0]}–${node.preview.levelBand[1]}`}
               </span>

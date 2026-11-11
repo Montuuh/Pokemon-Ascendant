@@ -321,7 +321,7 @@ export function buildTrainerScenario(node: MapNode, run: RunState, content: Cont
 }
 
 /**
- * §2.8.1 — the Elite Trainer. Two Pokémon, both two-phase: harder than a Trainer, softer than the Gym, and
+ * §2.8.1 — the Elite Trainer. Four Pokémon, its first and last two-phase: harder than a Trainer, softer than the Gym, and
  * the only fight before the Gym where a phase transition happens at all.
  */
 export function buildEliteScenario(node: MapNode, run: RunState, content: ContentRegistry, rng: GameRng): ScenarioDef {

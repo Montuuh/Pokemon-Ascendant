@@ -352,7 +352,7 @@ export const GATE_TEXT = {
   cut: { title: 'A small tree', body: 'It closes this step until one of these types in your Box cuts it down.' },
   smash: { title: 'A cracked rock', body: 'It closes this step until one of these types in your Box smashes it.' },
   surf: { title: 'Deep water', body: 'It closes this step until one of these types in your Box swims you across.' },
-  ledge: { title: 'A ledge', body: 'Jump down past the next column, skipping its fight and what it pays. There is no climbing back.' },
+  ledge: { title: 'A ledge', body: 'Jump down past the next column, its fight and its pay. No climbing back.' },
   /** The preview of a step an obstacle closes. */
   closed: (title: string) => `${title} closes this step: nothing in your Box can clear it.`,
   /** The preview of the ledge's landing. */
@@ -491,11 +491,11 @@ export function groupLabel(plan: { kind: string; size?: number }): string {
 
 /** §5.6.3 — what that shape means, for its bubble. */
 export const GROUP_HINT: Record<string, string> = {
-  pack: 'The wild Pokémon comes with company from its biome: it leads, the rest stand behind it as supports. Melee reaches only the one in front; a catch scatters the rest.',
-  caller: 'The wild Pokémon can Call for Help: a companion is waiting to join it. The call is telegraphed a turn ahead, with the name of who comes.',
-  pair: 'The trainer sends out two Pokémon at once. The first leads, the second supports it from behind.',
-  trio: 'The trainer sends out three Pokémon at once: one leads, two support it from behind. The rest wait to fill a place that falls.',
-  double: 'Two of the team fight at once, the rest waiting to step in. Melee reaches only the one in front.',
+  pack: 'The wild Pokémon leads; its company stands behind it. Melee reaches only the one in front; a catch scatters them.',
+  caller: 'The wild Pokémon can Call for Help. The call shows a turn ahead, with the name of who comes.',
+  pair: 'Two fight at once: one leads, one stands behind it.',
+  trio: 'Three fight at once: one leads, two stand behind it. The rest fill a place that falls.',
+  double: 'Two fight at once, the rest waiting to step in. Melee reaches only the one in front.',
 };
 
 /** §5.6.1 — who in a fight acts twice, as the node's preview card promises it (v0.9.12). */
@@ -557,11 +557,12 @@ export const OBJECTIVE_TEXT = {
   count: (left: number) => (left <= 1 ? 'last turn' : `${left} turns`),
   fleeTitle: "It won't stay long",
   fleeBody: (turns: number) =>
-    `It gets away at the end of turn ${turns}: no XP, no drop, no catch, and no toll. Knock it out first for its premium, or weaken it and throw a ball. Asleep or frozen when its last turn begins, it cannot run until it wakes.`,
+    `It gets away at the end of turn ${turns}, leaving no XP, no drop and no toll. Knock it out first for its premium, or catch it. Asleep or frozen, it cannot run until it wakes.`,
   holdTitle: 'Hold out',
   holdBody: (turns: number, rise: number) =>
-    `Keep a Pokémon standing to the end of turn ${turns} and the find is yours — or knock the guard out first. It grows angrier: its Attack rises ${rise === 1 ? 'a stage' : `${rise} stages`} at the end of every turn. A guard is not for catching.`,
+    `Keep a Pokémon standing to the end of turn ${turns}, or knock the guard out first, and the find is yours. Its Attack rises ${rise === 1 ? 'a stage' : `${rise} stages`} at the end of every turn. It cannot be caught.`,
   nodeHint: 'A fight: outlast the guard, or knock it out.',
+  fleeHint: 'Or catch it before it runs.',
   fled: (name: string) => `${name} fled`,
   fledBody: 'No XP, no drop, no catch, and no toll.',
   heldBody: 'You held out: the find is yours.',
@@ -573,6 +574,7 @@ export const OBJECTIVE_TEXT = {
 /** §2.5 / §5.6.5 — what a node is in one line, the same on the map's bubble and the preview card: a find with a guard is a fight. */
 export const nodeHint = (node: { kind: string; preview: { objective?: { kind: string }; rosterId?: string } }): string =>
   node.preview.objective?.kind === 'hold' ? OBJECTIVE_TEXT.nodeHint
+    : node.preview.objective?.kind === 'flee' ? OBJECTIVE_TEXT.fleeHint
     // §2.1.6 — the Champion's door is the last: there is no rest after it, only the run won.
     : node.kind === 'league' && node.preview.rosterId === 'champion' ? LEAGUE_TEXT.championHint
     : (NODE_HINT[node.kind] ?? '');
@@ -593,16 +595,16 @@ export const RUN_END_TEXT = {
 
 export const NODE_HINT: Record<string, string> = {
   wild: 'Beat them for XP, or throw a ball and take one with you.',
-  trainer: 'A trainer with a full team. More XP than a wild fight, and no catching.',
-  elite: 'Two Pokémon, both with a second phase. The hardest fight before the Gym — and a relic for winning it.',
-  'elite-wild': 'A boss-sized wild Pokémon. Catch it and it joins you; beat it and you take a relic. Never both.',
+  trainer: 'More XP than a wild fight. No catching.',
+  elite: 'Its first and last Pokémon have a second phase. The hardest fight before the Gym.',
+  'elite-wild': 'A boss-sized wild Pokémon.',
   aid: 'No fight, so you can walk in with nobody standing.',
   merchant: 'No fight. Once you walk on, the cart is gone.',
-  mystery: 'No fight. A choice, every outcome on its button.',
+  mystery: 'No fight.',
   cache: 'No fight.',
   trader: 'No fight.',
-  gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
-  apex: 'Catch it and it joins you, two places in the team; beat it for a Legendary relic pick. Never both.',
+  gym: 'Win the Badge.',
+  apex: 'Catch it (it takes two places in the team) or beat it for a Legendary relic pick. Never both.',
   league: 'No running, and nothing heals in the fight.',
 };
 
@@ -1217,14 +1219,13 @@ export const CHEAT_MENU = {
 // §2.6.2 — a Wild Area's pool by rarity (v0.9.7).
 export const WILD_TIER_LABEL: Record<string, string> = { common: 'Common', uncommon: 'Uncommon', rare: 'Rare' };
 export const WILD_TIER_HINT: Record<string, string> = {
-  common: 'What lives here. Most walks in meet one of these.',
+  common: 'Most walks in meet one of these.',
   uncommon: 'Here, but harder to find.',
   rare: 'Starters, fossils and the giants. From Region 2, a Rare acts twice.',
 };
 export const WILD_TEXT = {
   pool: 'Who lives here',
-  roll: 'Walking in rolls the rarity by these odds, then which Pokémon spawns from its row, each as likely as the next.',
-  lure: 'The Lure Module rolls the rarity twice and keeps the rarer, so the rare rows come up more often.',
+  lure: 'The Lure Module rolls the rarity twice and keeps the rarer.',
   spawn: (pct: string) => `${pct} to spawn`,
   /** §2.6.2 — the word the fight opens with (v0.9.8). */
   banner: (tier: 'common' | 'uncommon' | 'rare') => (tier === 'rare' ? `${WILD_TIER_LABEL.rare}!` : WILD_TIER_LABEL[tier]!),

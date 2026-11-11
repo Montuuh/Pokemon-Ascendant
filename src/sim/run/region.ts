@@ -275,7 +275,7 @@ export const TRAINERS: TrainerRoster[] = [
 export const rostersOf = (archetype: string): TrainerRoster[] => TRAINERS.filter((t) => t.archetype === archetype);
 
 /**
- * §2.8.1 — the Region 1 Elite Trainer. Two Pokémon, both two-phase, no type lock (that is the Gym's identity).
+ * §2.8.1 — the Region 1 Elite Trainer. Its own two, both two-phase (the Region lends the rest), no type lock (that is the Gym's identity).
  *
  * The catalogue's Rival counter-picks your starter and the Specialist is an Ace Trainer with Pidgeotto and
  * Ivysaur. The counter-pick needs a Rival who reappears across Regions to mean anything, so v0.4 ships the

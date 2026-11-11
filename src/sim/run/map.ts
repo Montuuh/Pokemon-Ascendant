@@ -265,29 +265,31 @@ function trainerPreview(rng: GameRng, content: ContentRegistry, used: Map<string
 const teamSizeLine = (n: number) => `A team of ${n} Pokémon`;
 
 /** §2.9.1 — the field nurse. */
+export const AID_DETAIL = `Everyone in the Box gets ${AID_HEAL_PCT} % of max HP back, fainted or not, and every status cured. Free; Trauma stays.`;
 const AID_PREVIEW: NodePreview = {
   title: 'Field nurse',
-  detail: `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays.`,
+  detail: AID_DETAIL,
   speciesIds: [],
   levelBand: [0, 0],
 };
 
 /** §2.9.2 — the travelling merchant. */
+export const MERCHANT_DETAIL = 'Three each of Potions, another supply and Poké Balls; a Held Item; sometimes a relic or an Evolution Item. One re-roll.';
 const MERCHANT_PREVIEW: NodePreview = {
   title: 'Travelling merchant',
-  detail: 'A cart with the basics: a couple of cures, Poké Balls, and one thing worth a look. One re-roll.',
+  detail: MERCHANT_DETAIL,
   speciesIds: [],
   levelBand: [0, 0],
 };
 
 const MYSTERY_PREVIEW: NodePreview = {
   title: 'Something off the path',
-  detail: 'A choice, every outcome on its button.',
+  detail: 'A choice.',
   speciesIds: [],
   levelBand: [0, 0],
 };
 
-/** §2.8.1 — the Elite Trainer: two Pokémon, both two-phase, a guaranteed relic. */
+/** §2.8.1 — the Elite Trainer: four Pokémon, its first and last two-phase, a guaranteed relic. */
 function elitePreview(content: ContentRegistry, layer: number, region: RegionContent): NodePreview {
   const team = evolveTeam(eliteTeamFor(layer, region.elite, region.wildBand), content);
   const levels = team.map((m) => m.level);
@@ -295,7 +297,7 @@ function elitePreview(content: ContentRegistry, layer: number, region: RegionCon
     title: region.elite.name,
     icon: 'elite',
     usualTypes: usualTypes(team.map((m) => m.species), content),
-    detail: `${teamSizeLine(team.length)} · reward: a relic pick`,
+    detail: `${teamSizeLine(team.length)} · Prize: a relic pick`,
     speciesIds: team.map((m) => m.species),
     levelBand: [Math.min(...levels), Math.max(...levels)],
     enemies: team,
@@ -309,7 +311,7 @@ function eliteWildPreview(content: ContentRegistry, layer: number, region: Regio
   return {
     title: `Wild ${content.species(team[0]!.species).name}`,
     icon: 'elite-wild',
-    detail: `${content.species(team[0]!.species).name} L${team[0]!.level} · catch it for the recruit, or beat it for a relic`,
+    detail: 'Catch it for your team, or beat it for a relic pick. Never both.',
     speciesIds: team.map((m) => m.species),
     levelBand: [Math.min(...levels), Math.max(...levels)],
     enemies: team,
@@ -345,7 +347,7 @@ function gymPreview(content: ContentRegistry, gym: GymDef): NodePreview {
 function cachePreview(find: GroundFind): NodePreview {
   return {
     title: 'Item ball',
-    detail: 'Seven prizes on a reel: it spins as you pick it up.',
+    detail: 'One of seven prizes, by the odds on its reel.',
     speciesIds: [],
     levelBand: [0, 0],
     icon: 'cache',

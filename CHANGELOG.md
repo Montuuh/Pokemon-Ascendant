@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.114 — Route signs · 2026-11-11
+
+Map bubbles and node previews: wrong lines fixed, repeats cut.
+
+- **Fixes.** The Elite has four Pokémon; Training is free.
+- **One voice.** A node's bubble and its card read the same words.
+- **Shorter.** Runner, guard, group and wild-pool lines cut.
+- **Signs.** Fork, Region, Victory Road and League bubbles trimmed.
+
 ### v0.9.113 — Town talk · 2026-11-11
 
 Every city door, shop, Center, Dojo and park says what it does in fewer words.
