@@ -9,15 +9,13 @@ playwright-report/
 .env
 .env.*
 !.env.example
-# AI agent files. Codex's stay local; Claude Code's — CLAUDE.md and .claude, the project's workshop of instructions,
-# skills, agents, rules, hooks and settings — are versioned so a cloud session has them (user, 2026-10-27).
-/AGENTS.md
+# AI agent files. Claude Code's — CLAUDE.md, .claude and .mcp.json, the project's workshop of instructions, skills,
+# agents, rules, hooks and settings — are versioned so a cloud session has them (user, 2026-10-27). The project is
+# set up for Claude Code only; the Codex pointers (AGENTS.md, .agents, .codex) were retired on 2026-11-11.
 # What a session leaves behind stays local: the review queue and stamps, handoff patches, and personal settings.
 /.claude/state/
 /.claude/patches/
 /.claude/settings.local.json
-/.agents/
-/.codex/
 /docs/ai/
 # OS / editor
 .DS_Store

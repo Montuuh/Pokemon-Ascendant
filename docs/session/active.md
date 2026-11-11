@@ -23,7 +23,7 @@ slower XP curve) R1 58 · R2|R1 46 · R3|R2 44 · League 71 · run 8 %; Region t
 
 **UI debt:** audit dead-CSS scan follows only modules imported as styles; Text over gradients/images is not measured by the audit. Shortlisted later: web-design-guidelines, break-ui, kill-ai-slop scanner. Every visual implementation still needs measured audit plus independent ui-reviewer, not just captures.
 **Motion:** D11/D12 in ui-doctrine.md; docs/design/ui/motion-review.md; System/Reduced/Full matrix, ui:motion, real-time ui:film. Ready-cue audio/impact synchronisation debt above remains.
-**Workshop:** CLAUDE.md/.claude are versioned (map: .claude/README.md); state, patches and local settings stay local. Added 2026-11-11: guard + post-edit hooks, agents sim-reviewer/canon-auditor/playtester, skills sim-rule/content-add/bugfix/session-close, context7 in .mcp.json. Codex shims (AGENTS.md, .agents, .codex) are local pointers only.
+**Workshop:** CLAUDE.md/.claude are versioned (map: .claude/README.md); state, patches and local settings stay local. Added 2026-11-11: guard + post-edit hooks, agents sim-reviewer/canon-auditor/playtester, skills sim-rule/content-add/bugfix/session-close, context7 in .mcp.json. Codex setup retired (AGENTS.md, .agents, .codex deleted): Claude Code only.
 **Shared server:** verify game identity, pin seed 7, default four Playwright workers; never stop another app on 5173. Wait for images before geometry.
 **Shipping:** release-doctrine R0 — player-informative design/art earns a version; documentation-only work is maintenance, committed/pushed to main without changing stamps. Keep verified, implemented and published states distinct.
 
