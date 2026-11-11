@@ -32,7 +32,7 @@ import { WildTierBanner } from '@/ui/components/WildTierBanner';
 import { ArenaFx } from '@/ui/components/ArenaFx';
 import { DROP_ON_FOE, ENCOUNTER_LABEL, HINT_ALLY_CARD, HINT_FOE_CARD, REJECT_TEXT, dropOnAlly } from '@/ui/strings';
 import { iconOf } from '@/ui/art';
-import { fightKindTip, fleeTip } from '@/ui/tips';
+import { deckTip, fightKindTip, fleeTip } from '@/ui/tips';
 import { Tip, Tipped } from '@/ui/tooltip';
 import { RESULT_MS } from './results/results';
 import styles from './CombatScreen.module.css';
@@ -527,7 +527,7 @@ export function CombatScreen() {
           </button>
           {/* §9.2.2.1 — one chip says what this fight is: its kind as an icon, then its name. A trainer fight is
               already named after the trainer, so the trainer is named once. */}
-          <Tipped tip={fightKindTip(state.kind, kindLabel)} className={`${styles.chip} ${styles.chipStrong}`} data-testid="fight-title">
+          <Tipped tip={fightKindTip(state.kind, kindLabel, !!state.gymRule && state.gymRule !== 'synergy')} className={`${styles.chip} ${styles.chipStrong}`} data-testid="fight-title">
             <KindIcon size={15} stroke={2.2} aria-label={kindLabel} />
             {title}
             {state.trainer && !title.includes(state.trainer.name) && <span className={styles.chipSub}>{state.trainer.name}</span>}
@@ -567,7 +567,7 @@ export function CombatScreen() {
           <span className={`${styles.chip} ${styles.turnChip}`} key={fx.turn} data-testid="turn-chip">
             Turn {fx.turn}
           </span>
-          <Tipped tip={<Tip title="Skill deck" meta={[`${state.player.deck.length} to draw`, `${state.player.discard.length} discarded`]} body="Your three active Pokémon's four moves each: twelve cards. You draw five a turn; when the deck runs out, the discard pile shuffles back in." />} className={styles.chip}>
+          <Tipped tip={deckTip(state.player.deck.length, state.player.discard.length, ctx.config.baseSkillCardsPerTurn)} className={styles.chip}>
             <IconCards size={14} /> {state.player.deck.length} · {state.player.discard.length}
           </Tipped>
         </div>
@@ -655,7 +655,7 @@ export function CombatScreen() {
         <div className={styles.apDock}>
           <ApMeter ap={state.player.ap} base={ctx.config.baseApPerTurn} cost={costPreview} debt={state.player.apDebt ?? 0} />
           {state.player.defensiveDiscount && (
-            <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn, so your next Defensive card costs 1 AP less. Spent the moment you play one." />} className={styles.discount}>
+            <Tipped tip={<Tip title="Defensive discount" body="You swapped this turn: your next Defensive card costs 1 AP less." />} className={styles.discount}>
               −1 Def
             </Tipped>
           )}
@@ -781,7 +781,7 @@ export function CombatScreen() {
       {/* §9.9.1 — the fallen Lead sinks and its ball comes home first; the pick waits for the beat, as the outcome does. */}
       {state.player.pendingLeadPick && !ended && !fx.busy && (
         <Modal title="Your Lead fainted" testId="lead-pick-modal">
-          <p className={styles.modalSub}>Choose who steps up. No AP cost. Its melee cards come online.</p>
+          <p className={styles.modalSub}>Choose who steps up. Free.</p>
           <div className={styles.pickRow}>
             {pickLeadOptions(state).map((i) => {
               const c = state.player.team[i]!;

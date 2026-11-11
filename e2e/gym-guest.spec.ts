@@ -31,10 +31,10 @@ async function imagesLoaded(page: Page, selector: string) {
 }
 
 const cases = [
-  { gym: 'rock-gym-r1', guest: 'Sandslash', job: 'Sand control', size: { width: 1920, height: 1080 } },
-  { gym: 'rock-gym-r1', guest: 'Sandslash', job: 'Sand control', size: { width: 1280, height: 720 } },
+  { gym: 'rock-gym-r1', guest: 'Sandshrew', job: 'Sand control', size: { width: 1920, height: 1080 } },
+  { gym: 'rock-gym-r1', guest: 'Sandshrew', job: 'Sand control', size: { width: 1280, height: 720 } },
   // Two types on the pill: the widest guest Region 1 has.
-  { gym: 'bug-gym-r1', guest: 'Gloom', job: 'Garden spores', size: { width: 1280, height: 720 } },
+  { gym: 'bug-gym-r1', guest: 'Oddish', job: 'Garden spores', size: { width: 1280, height: 720 } },
 ];
 
 for (const c of cases) {
@@ -70,7 +70,7 @@ for (const c of cases) {
 test("the fork banner's telegraph names the guest — §2.7.3", async ({ page }) => {
   await standAtGym(page, 'rock-gym-r1');
   await page.locator('[data-testid="fork-banner"] [data-type="rock"]').hover();
-  await expect(page.getByRole('tooltip')).toContainText('Guest: Sandslash (Ground)');
+  await expect(page.getByRole('tooltip')).toContainText('Guest: Sandshrew (Ground)');
 });
 
 test("the Team screen's matchup names the Gym's guest — §2.7.3", async ({ page }) => {
@@ -84,7 +84,7 @@ test("the Team screen's matchup names the Gym's guest — §2.7.3", async ({ pag
     await chips.nth(i).hover();
     const tip = page.getByRole('tooltip');
     if ((await tip.textContent())?.includes('Brock')) {
-      await expect(tip).toContainText('vs Sandslash ×');
+      await expect(tip).toContainText('vs Sandshrew ×');
       await expect(tip).toContainText('Ground on it ×');
       await imagesLoaded(page, '[data-testid="team-screen"]');
       await page.screenshot({ path: 'playtest/gym-guest-team.png' });

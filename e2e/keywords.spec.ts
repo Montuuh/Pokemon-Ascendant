@@ -114,7 +114,7 @@ test.describe('Move keywords on screen — §3.11', () => {
     await page.getByTestId('intent-chip').first().hover();
     const tip = page.getByRole('tooltip');
     await expect(tip).toContainText('Up now');
-    await expect(tip).not.toContainText('this is the turn to hit it');
+    await expect(tip).not.toContainText('It is not hitting you');
     await page.screenshot({ path: 'playtest/keywords-stance.png' });
   });
 });

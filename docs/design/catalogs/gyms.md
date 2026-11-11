@@ -17,7 +17,7 @@ job, not an extra support actor or an escalation buff. Levels and phase counts f
 
 ### `rock-gym-r1` — Brock · Rock Solid
 
-`rock-gym-r1` · `boulder-badge` · Entrenchment. Sandslash is the guest: sand disruption and Ground coverage.
+`rock-gym-r1` · `boulder-badge` · Entrenchment. Sandshrew is the guest: sand disruption and Ground coverage.
 Water and Grass remain good answers. v0.9.92: Kabuto, Omanyte and Sandshrew (their evolutions come at 40, 40 and
 22) and Onix as the ace, as in the series; Geodude opens.
 
@@ -44,7 +44,7 @@ Confusion, Sleep and smokescreen pressure planning; Riptide remains the central 
 
 ### `bug-gym-r1` — Aster · Swarm
 
-`bug-gym-r1` · `hive-badge` · Status Siege. Gloom is a forest-floor guest. There is no cocoon filler, and no
+`bug-gym-r1` · `hive-badge` · Status Siege. Oddish is a forest-floor guest. There is no cocoon filler, and no
 Scyther/Pinsir/Scizor stat jump: this early Gym tests condition management. Fire and Flying still answer all five.
 
 | Slot | Pokémon | Role | Scripted four moves |

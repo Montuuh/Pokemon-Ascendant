@@ -515,7 +515,7 @@ export function declareIntent(state: CombatState, enemy: EnemyCombatant, ctx: Co
     if (combo && !comboNow) {
       enemy.next = { intent: { ...combo.then, hidden: veiled }, phase: enemy.phase, combo: true };
       enemy.stagger = 0;
-      log(state, 'intent', `${enemy.name} is setting something up — watch its next move.`);
+      log(state, 'intent', `${enemy.name} is setting something up.`);
     }
     // §4.1.3.1 — a full critical rhythm is declared here, on the hit that will spend it.
     markRhythm(enemy, ctx);

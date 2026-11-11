@@ -1540,6 +1540,18 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.115 — Battle notes  ✅ 2026-11-11
+
+**Shipped.** The user (2026-11-11): "después sigue con la siguiente fase", after the map package. The fight screen's
+words read where the player meets them — intent bubbles, move cards, the swap ladder, AP, the deck, statuses, fields,
+hazards, Gym rules, disruption and the rejections — and about 45 strings rewritten with the `slop-remover` skill.
+Gym rules lose the advice sentences the rule already implies (Bloom keeps the one it does not: a Burn or Poison tick counts as damage); the quick-swap rule is said once on a
+bench portrait instead of twice; the status chips lose their implementation clauses. False lines fixed: the deck
+bubble promised "twelve cards" (a Mastery Move makes more), the AP bubble said 3 as a literal, a Poké Ball was
+"spent per catch" (it is per throw), Toxic and Toxic Spikes forgot Steel's immunity, Tremor forgot Levitate, and every boss fight's bubble and refusal named a Gym Leader (the League and the Legendaries too). With it, a fix: the Gym-guest e2e and the Gyms catalogue named Sandslash and
+Gloom as Brock's and Aster's guests, but the content rows (and the game, since v0.9.92) field Sandshrew and Oddish.
+`npm run check`, the combat e2e, the strict audit of nine combat screens and the UI review.
+
 ### v0.9.114 — Route signs  ✅ 2026-11-11
 
 **Shipped.** The user (2026-11-11): "siguiente paquete: los textos del mapa y los nodos". Every word on the route

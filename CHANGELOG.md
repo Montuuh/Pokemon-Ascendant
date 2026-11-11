@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.115 — Battle notes · 2026-11-11
+
+Fight bubbles state the rule, and the rule is right.
+
+- **Intents.** Attack, Cleave, buff and call bubbles cut to the fact.
+- **Swaps.** The quick-swap rule said once, on the bench portrait.
+- **Gym rules.** Advice lines cut where the rule already says it.
+- **Fixes.** Steel is immune to Poison; a Ball is spent per throw.
+
 ### v0.9.114 — Route signs · 2026-11-11
 
 Map bubbles and node previews: wrong lines fixed, repeats cut.

@@ -21,7 +21,7 @@ export function niceDate(iso: string | null): string | null {
 export const MAJOR_RELEASE_LABEL = 'Major release';
 
 export const REJECT_TEXT: Record<RejectReason, string> = {
-  'no-fleeing-a-gym': 'There is no running from a Gym Leader.',
+  'no-fleeing-a-gym': 'There is no running from this fight.',
   'not-action-phase': 'Not now.',
   'lead-pick-pending': 'Choose a new Lead first.',
   'card-not-in-hand': 'That card is not in your hand.',
@@ -38,19 +38,19 @@ export const REJECT_TEXT: Record<RejectReason, string> = {
   'lead-frozen': 'Your Lead cannot leave its place — frozen, recharging, rampaging or rooted.',
   'invalid-index': 'Invalid target.',
   'not-wild': 'You can only catch wild Pokémon.',
-  guard: 'A guard is not for catching.',
+  guard: 'A guard cannot be caught.',
   'no-balls': 'No Poké Balls left.',
-  'item-limit': 'No more items this turn; the next turn allows more.',
+  'item-limit': 'No more items this turn.',
   'nothing-to-cure': 'Nothing to cure.',
   'choice-locked': 'Its held item will not let it play that.',
-  'sealed': 'Mind Lock has sealed this card for the turn',
+  'sealed': 'Mind Lock has sealed this card for the turn.',
   'no-pp': 'No PP left for this move this fight.',
   'protect-again': 'Protect cannot go up two turns running.',
   'target-protected': 'It is protected this turn — nothing aimed at it lands. An area move still hits the others.',
   recharging: 'Recharging after its last move — its cards are offline this turn.',
   disabled: 'Disabled — this card cannot be played until its lock lifts.',
   taunted: 'Taunted — only its attacks can be played until the taunt wears off.',
-  'lead-trapped': 'Your Lead cannot get away — it cannot be swapped out by hand until the trap wears off.',
+  'lead-trapped': 'Your Lead is trapped: no swapping it out until the trap wears off.',
 };
 
 /** §5.9.5 Ice Armour — the enemy panel's chip for the shield it wears. */
@@ -79,7 +79,7 @@ export const RHYTHM_TEXT = {
       ? `${left} more AP spent on its cards and its next hit is a critical. Each AP a card costs fills the ring; a free card, or the AP of a swap, fills nothing.`
       : `${left} more ${left === 1 ? 'action' : 'actions'} and its next hit is a critical. Every action it takes fills the ring.`,
   readyBody: (side: 'ally' | 'foe') =>
-    side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
+    side === 'ally' ? 'Its next damaging card is a critical; the numbers on its cards count it.' : 'Its next hit is a critical; the number on its intent counts it.',
   /** The tooltip's lines: the species' own Speed (the card's number has its level in it), what is moving it now, and how long a full ring takes. */
   reads: (speed: number, level: number) => (level <= 1 ? `Pace from Speed ${speed}.` : `Pace from the species' Speed ${speed}, not the level's.`),
   pace: (acts: number, side: 'ally' | 'foe') => `A full ring takes ${acts.toFixed(1)} ${side === 'ally' ? 'AP' : 'actions'}`,
@@ -88,7 +88,7 @@ export const RHYTHM_TEXT = {
   /** A card's hover: what it feeds its owner's ring. */
   feeds: (owner: string, ap: number, pct: number, completes: boolean) =>
     completes ? `Its ${ap} AP fill ${owner}'s ring: the next damaging card is a critical.` : `Its ${ap} AP fill ${pct} % of ${owner}'s ring.`,
-  always: (owner: string) => `✦ Always a critical — and it never spends ${owner}'s rhythm, so a full one stays for another card.`,
+  always: (owner: string) => `✦ Always a critical, without spending ${owner}'s rhythm.`,
   card: (owner: string) => `Critical: ${owner}'s rhythm is full, so this hit is a critical. The first of its damaging cards you play spends it.`,
 };
 
@@ -151,9 +151,9 @@ export const STATUS_LABEL: Record<string, string> = {
 export const STATUS_HINT: Record<string, string> = {
   burn: '−25% Attack · loses HP each turn',
   poison: '−15% Defense · loses HP each turn',
-  paralysis: 'Its cards cost +1 AP · half Speed: the quick swap and the critical rhythm slow (3 turns)',
-  sleep: 'Cards offline for 1 turn · swapping allowed · curing or replacing it cannot reset the Sleep/Freeze limit',
-  freeze: 'Cards offline for 1 turn · position locked · ×1.5 Fire damage · curing or replacing it cannot reset the Sleep/Freeze limit',
+  paralysis: 'Its cards cost +1 AP · half Speed (3 turns)',
+  sleep: 'Cards offline for 1 turn · swapping allowed',
+  freeze: 'Cards offline for 1 turn · cannot swap · ×1.5 Fire damage',
   confusion: 'Fumbles 1 of its own skill cards per draw, if drawn (3 turns). A confused enemy picks its intent at random.',
 };
 
@@ -430,27 +430,27 @@ export function gymRuleText(rule: GymRuleId, g: GymRuleConfig): string {
     case 'rock-solid':
       return `No single hit takes more than ${pct(g.rockSolidCap)} of his Pokémon's Max HP — a multi-hit move is capped hit by hit. Chip the wall: multi-hits, Burn and Poison.`;
     case 'riptide':
-      return `At the end of ${every(g.riptideEvery)} the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down). It is her swap, not yours: it costs nothing and counts as none. Choose who stands on Bench 1.`;
+      return `At the end of ${every(g.riptideEvery)} the tide trades your Lead with Bench 1 (Bench 2 if Bench 1 is down). It costs you nothing, and your next swap does not cost more.`;
     case 'swarm':
-      return `Her Pokémon on the field hit ${pct(g.swarmPerWaiting)} harder for every one of hers still waiting to come out. Every one you knock out thins the swarm.`;
+      return `Her Pokémon on the field hit ${pct(g.swarmPerWaiting)} harder for every one of hers still waiting to come out.`;
     case 'rollout':
       return `Her Lead hits ${pct(g.rolloutPerTurn)} harder for every turn in a row your Lead has been the same Pokémon, up to ${pct(g.rolloutPerTurn * g.rolloutMaxTurns)}. A swap resets the roll.`;
     case 'meltdown':
-      return `Every attack his Pokémon land lowers its target's Defense one stage, down to ${g.meltdownFloor}. Spread the hits with swaps, or raise your Defense back.`;
+      return `Every attack his Pokémon land lowers its target's Defense one stage, down to ${g.meltdownFloor}.`;
     case 'bloom':
-      return `At the end of each turn, each of her Pokémon on the field that took no damage restores ${pct(g.bloomHeal)} of its Max HP. Touch them both: Ranged and area cards, a status that ticks.`;
+      return `At the end of each turn, each of her Pokémon on the field that took no damage restores ${pct(g.bloomHeal)} of its Max HP. A Burn or Poison tick counts as damage.`;
     case 'overcharge':
-      return `${every(g.overchargeEvery)[0]!.toUpperCase()}${every(g.overchargeEvery).slice(1)} the field is overcharged: the first card you play costs ${g.overchargeAp} more AP. Open those turns with a cheap card.`;
+      return `${every(g.overchargeEvery)[0]!.toUpperCase()}${every(g.overchargeEvery).slice(1)} the field is overcharged: the first card you play costs ${g.overchargeAp} more AP.`;
     case 'toxic':
-      return 'Every Poison his side inflicts is badly poisoned: its damage doubles each turn. Poison-types are immune; cure it early.';
+      return 'Every Poison his side inflicts is badly poisoned: its damage doubles each turn. Poison- and Steel-types are immune.';
     case 'mind-lock':
-      return `At the draw of ${every(g.mindLockEvery)} she seals the strongest attack in your hand: it cannot be played that turn. The seal is shown before you spend a point.`;
+      return `At the draw of ${every(g.mindLockEvery)} she seals the strongest attack in your hand: it cannot be played that turn.`;
     case 'tremor':
-      return `At the end of ${every(g.tremorEvery)} the ground shakes: each of your Pokémon on the ground loses ${pct(g.tremorPercent)} of its Max HP. Flying Pokémon stand above it.`;
+      return `At the end of ${every(g.tremorEvery)} the ground shakes: each of your grounded Pokémon loses ${pct(g.tremorPercent)} of its Max HP; Flying-types and Levitate are spared.`;
     case 'close-quarters':
-      return `Your Ranged cards deal ${pct(g.closeQuartersRanged)} against his Pokémon; your Melee cards ${pct(g.closeQuartersMelee)}. Fight at the front: put your hitter in the Lead.`;
+      return `Your Ranged cards deal ${pct(g.closeQuartersRanged)} against his Pokémon; your Melee cards ${pct(g.closeQuartersMelee)}.`;
     case 'ice-armour':
-      return `Every turn her Lead's ice armour is set to ${pct(g.iceArmour)} of its Max HP — it takes damage before HP does and never stacks. A Fire move shatters it whole.`;
+      return `Every turn her Lead's ice armour is set to ${pct(g.iceArmour)} of its Max HP: it takes damage before HP does and never stacks. A Fire move shatters it whole.`;
     case 'synergy':
       return `Each fallen ally empowers his teammates: his Pokémon hit ${pct(g.synergyPerFallen)} harder for every one of them you have beaten, up to +${pct(g.synergyCap)}. His last two take the field together.`;
   }
@@ -1386,7 +1386,7 @@ export const DISRUPT_TEXT = {
     forceSwap: 'On a foe: every stat it raised is blown away. An enemy’s Roar drags your Lead out instead.',
     trap: (t: number) => `Mean Look: the target cannot be swapped out by hand for ${t} turns.`,
     drowsy: 'Yawn: the target falls asleep at the end of next turn, if it still leads; a swap shakes it off.',
-    perish: (t: number, share: string) => `Perish Song: after ${t} more turns, whoever leads on each side loses ${share} of its max HP — yours too. Swap out before the last note.`,
+    perish: (t: number, share: string) => `Perish Song: after ${t} more turns, whoever leads on each side loses ${share} of its max HP.`,
     seed: (share: string) => `Leech Seed: ${share} of the target's max HP at each turn's end, to your Lead, while it leads; not a Grass-type.`,
     curse: (share: string) => `Curse: ${share} of the target's max HP at each turn's end while it leads.`,
     hazard: (name: string, effect: string) => `${name} on the foe's side: ${effect}.`,
@@ -1414,7 +1414,7 @@ export const DISRUPT_TEXT = {
   /** The footer, by what answers it: a swap for most — not for a trap, a hazard (a swap steps onto it) or a Roar. */
   footer: 'Most of these are answered by a swap.',
   trapFooter: 'A swap cannot answer this one: outlast it, or break the plan before it lands.',
-  hazardFooter: 'A swap steps onto it: swap less while it lies there; Spikes miss a Flying-type.',
+  hazardFooter: 'A swap steps onto it.',
   dragFooter: 'A rooted, frozen or recharging Lead stands its ground; it waits a turn before it roars again.',
 } as const;
 
@@ -1444,7 +1444,7 @@ export const COMBO_TEXT = {
 export const PERISH_TEXT = {
   label: 'Perish',
   title: 'Perish Song',
-  body: (left: number, percent: number) => `In ${left} turn${left === 1 ? '' : 's'}, whoever leads on each side loses ${frac(percent)} of its max HP. Swap your Lead out before the last note.`,
+  body: (left: number, percent: number) => `In ${left} turn${left === 1 ? '' : 's'}, whoever leads on each side loses ${frac(percent)} of its max HP.`,
 } as const;
 
 /** §3.11 — a keyword's whole rule, for a card's bubble and an enemy stance's intent card. */
@@ -1487,7 +1487,7 @@ export const STANCE_FOOTER = 'A stance is up the moment it is declared: your car
 /** §3.11.6 / §3.11.13 — a side's condition as a chip by its side: an icon and the turns, the rest in its bubble. */
 export const SIDE_CHIP_TEXT = {
   title: (name: string, side: 'player' | 'enemy') => `${side === 'player' ? 'Your' : 'The foe’s'} ${name}`,
-  turns: (n: number) => `${n} turn${n === 1 ? '' : 's'} left — it counts down at the end of each turn.`,
+  turns: (n: number) => `${n} turn${n === 1 ? '' : 's'} left`,
   wish: (amount: number, place: string, turnsLeft: number) => `${amount} HP to whoever stands at ${place} at the end of ${turnsLeft <= 1 ? 'this' : 'next'} turn.`,
   wishName: 'Wish',
   more: (n: number) => `+${n}`,

@@ -11,7 +11,7 @@ import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
 import { describeMoveDef, disruptRule } from '@/ui/moveText';
 import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
-import { JOURNEY_TEXT, COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { JOURNEY_TEXT, COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, UNIT_CHIPS_TEXT, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
 import { Tip } from '@/ui/tooltip';
 import { TypeChart } from '@/ui/components/TypeChart';
 
@@ -150,8 +150,8 @@ const ROLE_BODY = {
 } as const;
 
 const MODIFIER_BODY = {
-  'step-forward': 'Step-Forward: the Pokémon that owns this card steps up to Lead first, then the move resolves. That swap is free and does not count towards the swap ladder.',
-  'step-backward': 'Step-Backward: the move resolves, then the Pokémon retreats to a bench of your choice. Free, and off the ladder.',
+  'step-forward': 'Step-Forward: its owner steps up to Lead first, then the move resolves. Free, and your next swap does not cost more.',
+  'step-backward': 'Step-Backward: the move resolves, then its owner steps back to the bench place you choose. Free, and your next swap does not cost more.',
   none: null,
 } as const;
 
@@ -200,10 +200,10 @@ export function moveTip(play: CardPlayability): ReactNode {
   if (role) lines.push(role);
   const mod = MODIFIER_BODY[move.modifier];
   if (mod) lines.push(mod);
-  let footer: ReactNode = play.card.mastery ? `${owner.name}'s Mastery Move — a fifth card its line has earned.` : `${owner.name}'s card.`;
+  let footer: ReactNode = play.card.mastery ? `${owner.name}'s Mastery Move: a fifth card.` : `${owner.name}'s card.`;
   if (play.damage && play.targets.length > 1) {
     // §5.6 — against a group every enemy has its own number; one "each" figure would be wrong for all but one.
-    footer = play.hitsAll ? 'Lands on every enemy — each one\'s number is on its panel.' : 'Pick the enemy — each one\'s number is on its panel.';
+    footer = play.hitsAll ? 'Hits every enemy: each one\'s number is on its panel.' : 'Pick the enemy: each one\'s number is on its panel.';
   } else if (play.damage) {
     const eff = play.damage.typeMultiplier;
     const field = play.damage.fieldMultiplier ? `, field ×${play.damage.fieldMultiplier}` : '';
@@ -266,17 +266,17 @@ export function tmTip(tmId: string, footer?: string): ReactNode {
 // ── Intents ──────────────────────────────────────────────────────────────────────────────────────────────
 
 const INTENT_BODY: Record<string, string> = {
-  attack: 'A single hit on the slot named. Whoever is standing in that slot when the turn ends takes it — swap, and the newcomer takes it instead.',
-  cleave: 'Hits every one of your slots at once. Nobody can dodge it by swapping; a shield or a swap to a sturdier Lead is the answer.',
+  attack: 'Hits whoever stands in that slot when the turn ends: swap, and the newcomer takes it.',
+  cleave: 'Hits your whole team at once; a swap does not dodge it.',
   backstrike: 'Aims past your Lead at a bench slot. If that slot is empty when it lands, it fizzles.',
-  buff: 'Raising one of its own stats this turn. It is not hitting you — this is the turn to hit it.',
-  debuff: 'Lowering one of your stats. Usually aimed at the Lead.',
+  buff: 'Raising its own stats. It is not hitting you this turn.',
+  debuff: 'Lowering one of your stats.',
   disrupt: DISRUPT_TEXT.footer,
   stall: 'Recovering HP or setting up. A free turn for you.',
   status: 'Trying to inflict a status on your Lead. A swap moves the target.',
   unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
   incapacitated: 'Asleep, frozen, or caught off guard by your Time Spinner. It does nothing this turn.',
-  summon: 'Calling a companion into the fight. It spends its turn on it — a free turn for you, and the last one against fewer enemies.',
+  summon: 'Calling a companion into the fight. It spends its turn on it.',
   guard: 'Finish the Lead now, or switch to Ranged.',
   getaway: OBJECTIVE_TEXT.getawayBody,
 };
@@ -430,13 +430,13 @@ export function fieldBody(id: FieldId): string {
     'sunny-day': `Fire moves ${mult(c.weatherBoost)}, Water moves ${mult(c.weatherDamp)} — for both sides. Chlorophyll draws one more card on turn 1.`,
     'rain-dance': `Water moves ${mult(c.weatherBoost)}, Fire moves ${mult(c.weatherDamp)} — for both sides. Swift Swim draws one more card on turn 1.`,
     'electric-terrain': `Electric moves ${mult(c.electricTerrainBoost)} into a grounded Pokémon (not Flying), and a grounded Pokémon cannot be Paralysed.`,
-    sandstorm: `Everyone but Rock-, Ground- and Fighting-types loses ${Math.round(c.sandstormPercent * 100)}% of their HP at the end of every turn.`,
+    sandstorm: `Everyone but Rock-, Ground-, Fighting- and Steel-types loses ${Math.round(c.sandstormPercent * 100)}% of their HP at the end of every turn.`,
     hail: `Everyone but Ice-types loses ${Math.round(c.hailPercent * 100)}% of their HP at the end of every turn.`,
     'grassy-terrain': `Grass moves ${mult(c.typeTerrainBoost)} from a grounded Pokémon, and every grounded Pokémon gets ${Math.round(c.grassyHealPercent * 100)}% of its HP back at the end of every turn — on both sides.`,
     'psychic-terrain': `Psychic moves ${mult(c.typeTerrainBoost)} from a grounded Pokémon, and a grounded Pokémon cannot be put to Sleep.`,
     'misty-terrain': 'A grounded Pokémon cannot be given any status — no Burn, Poison, Paralysis, Sleep, Freeze or Confusion. On both sides.',
-    'toxic-spikes': 'Whoever steps into the Lead mid-fight — a swap, a step, a replacement, on either side — is Poisoned, unless it is a Poison-type or not on the ground.',
-    'sticky-web': `Whoever steps into the Lead mid-fight, on either side, loses ${c.stickyWebStages} Speed stage — unless it is not on the ground.`,
+    'toxic-spikes': 'Whoever steps into the Lead mid-fight, on either side, is Poisoned, unless it is a Poison- or Steel-type, or not grounded.',
+    'sticky-web': `Whoever steps into the Lead mid-fight, on either side, loses ${c.stickyWebStages} Speed stage, unless it is not grounded.`,
   };
   return body[id];
 }
@@ -450,7 +450,7 @@ export function homeFieldTip(type: PokemonType, suppressed = false): ReactNode {
   return (
     <Tip
       title={homeFieldLabel(type)}
-      body={`The enemy's ${typeName(type)} moves deal ${mult(DEFAULT_BATTLE_CONFIG.homeFieldBoost)} on its own turf. Yours of that type get nothing. Resist its type, and it has nothing to amplify.`}
+      body={`The enemy's ${typeName(type)} moves deal ${mult(DEFAULT_BATTLE_CONFIG.homeFieldBoost)} on its own turf; yours of that type get nothing.`}
       footer={suppressed ? 'Suppressed: a Cloud Nine Pokémon is leading.' : 'A Defog clears it for the rest of the fight.'}
     />
   );
@@ -464,7 +464,7 @@ export function gymRuleTip(rule: GymRuleId): ReactNode {
       title={GYM_RULE_LABEL[rule]}
       meta={gym ? [`${gym.name}'s rule`, 'The whole fight'] : rule === 'synergy' ? ['The Champion\'s signature', 'The whole fight'] : ['A Leader\'s rule']}
       body={gymRuleText(rule, DEFAULT_BATTLE_CONFIG.gymRules)}
-      footer="A rule is not a field: Defog does not clear it."
+      footer="Defog does not clear it."
     />
   );
 }
@@ -611,7 +611,7 @@ export function nextIntentTip(detail: string, combo?: { left: number }): ReactNo
 
 /** §3.2.2 — the AP pool. */
 export function apTip(ap: number, max = 3, debt = 0): ReactNode {
-  const body = 'Every card and every swap costs AP. You get 3 at the start of each turn; unspent AP is lost.';
+  const body = `Every card and every swap costs AP. You get ${max} each turn; unspent AP is lost.`;
   // §3.11.12 — what an overexerting card borrowed from next turn.
   return <Tip title={`${ap} of ${max} action points`} body={debt > 0 ? <>{body}<div><b>{AP_DEBT_TEXT.line(debt)}</b></div></> : body} />;
 }
@@ -636,7 +636,7 @@ export function trainerPartyTip(name: string, field: number, fainted: number, to
     <Tip
       title={`${name}'s team`}
       meta={[`${field} on the field`, `${fainted} beaten`, `${toCome} to come`]}
-      body={toCome > 0 ? 'The closed balls are the Pokémon still to come: who they are is a surprise until they are sent out, and one steps in the moment a place falls free.' : undefined}
+      body={toCome > 0 ? 'The closed balls are still to come; one steps in when a place falls free.' : undefined}
     />
   );
 }
@@ -644,17 +644,18 @@ export function trainerPartyTip(name: string, field: number, fainted: number, to
 /** §5.8 — what kind of fight this is: the header chip's icon, said in words. */
 const FIGHT_KIND_BODY: Record<string, string> = {
   wild: 'A wild Pokémon. It can be caught: weaken it, then throw a Poké Ball.',
-  trainer: 'A trainer and their team. Trainer Pokémon cannot be caught; they come out one after another.',
-  elite: 'An Elite Trainer: a stronger team, and a better reward for beating it.',
-  boss: 'The Gym Leader. Win and the Badge is yours — and the way on to the next Region.',
+  trainer: 'A trainer and their team. Trainer Pokémon cannot be caught.',
+  elite: 'A stronger team, and a relic pick for winning.',
+  boss: 'A boss fight. No running.',
 };
-export function fightKindTip(kind: string, label: string): ReactNode {
-  return <Tip title={`${label} fight`} body={FIGHT_KIND_BODY[kind] ?? ''} />;
+/** `gym`: a Gym Leader's fight, whose prize is the Badge. */
+export function fightKindTip(kind: string, label: string, gym = false): ReactNode {
+  return <Tip title={`${label} fight`} body={gym ? 'The Gym Leader. Win and the Badge is yours. No running.' : FIGHT_KIND_BODY[kind] ?? ''} />;
 }
 
-/** §3.3.1 — the swap ladder. */
-export function swapTip(nextCost: number, swapsSoFar: number): ReactNode {
-  return <Tip title={`Next swap: ${nextCost} AP`} meta={['1st swap 1 AP', '2nd 2 AP', '3rd 3 AP']} body={`Swapping your Lead costs more each time you do it in a turn — ${swapsSoFar} so far this turn. The ladder resets every turn. Step-Forward and Step-Backward cards swap for free and do not climb it.`} footer="After a manual swap, your first Defensive card that turn is cheaper." />;
+/** §3.2.2 — the skill deck: what is in it, and how a hand is drawn. */
+export function deckTip(toDraw: number, discarded: number, draws: number): ReactNode {
+  return <Tip title="Skill deck" meta={[`${toDraw} to draw`, `${discarded} discarded`]} body={`Every move of your three active Pokémon is a card. You draw ${draws} a turn, more with some relics and abilities; when the deck runs out, the discard pile shuffles back in.`} />;
 }
 
 // ── Abilities, items, relics, badges, modifiers ──────────────────────────────────────────────────────────
@@ -668,7 +669,7 @@ export function abilityTip(abilityId: string): ReactNode {
 /** §7.2 — a consumable card. */
 export function consumableTip(c: ConsumableDef, playable = true, reason: string | null = null): ReactNode {
   const meta: ReactNode[] = [c.apCost === 0 ? 'Free' : `${c.apCost} AP`, 'Single use'];
-  return <Tip icon={<img src={itemIcon(c.id)} alt="" width={22} height={22} />} title={c.name} meta={meta} body={c.description} footer={!playable && reason ? `Locked — ${reason}` : 'Used up when played. Buy more at a Poké Mart.'} />;
+  return <Tip icon={<img src={itemIcon(c.id)} alt="" width={22} height={22} />} title={c.name} meta={meta} body={c.description} footer={!playable && reason ? `Locked: ${reason}` : undefined} />;
 }
 
 // ── Catching, money, balls ───────────────────────────────────────────────────────────────────────────────
@@ -681,7 +682,7 @@ export function moneyTip(amount: number): ReactNode {
 
 /** §2.6.4 — balls as a counted resource. */
 export function ballsTip(count: number): ReactNode {
-  return <Tip title={`${count} Poké Ball${count === 1 ? '' : 's'}`} body="One is spent per catch. With none, wild fights offer no catch card. Buy more at a Poké Mart for 50 ₽." />;
+  return <Tip title={`${count} Poké Ball${count === 1 ? '' : 's'}`} body="One is spent per throw. With none, wild fights offer no catch card. Sold by the merchant and the Poké Mart." />;
 }
 
 /** §8.2 — Trauma. */
@@ -708,7 +709,7 @@ export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boo
   if (c.traumaStacks > 0) lines.push(<div key="t"><b>Trauma ×{c.traumaStacks}</b> — max HP is lowered until treated.</div>);
   if (c.shiny) lines.push(shinyLine(true));
   // §7.3.7 Battle Hardened — the shield it opened the fight behind: what it takes before HP, gone once spent.
-  if (c.shield > 0) lines.push(<div key="sh"><b>{SHIELD_LABEL} {c.shield}</b> — takes the next {c.shield} damage before HP does. It does not come back.</div>);
+  if (c.shield > 0) lines.push(<div key="sh"><b>{SHIELD_LABEL} {c.shield}</b> — {UNIT_CHIPS_TEXT.shieldBody(c.shield)}</div>);
   // §9.2.5 — what lands on it this turn, one line per enemy, the same numbers as the chips beside it; a hit wasted on
   // it being down already, struck through.
   for (const h of extra?.incoming ?? []) if (!h.moot) lines.push(<div key={`i-${h.name}-${h.move}`}><b>−{h.amount}</b> from {h.name}'s {h.move} this turn.</div>);
@@ -719,7 +720,7 @@ export function combatantTip(c: Combatant, extra?: { turn?: number; isLead?: boo
   // §5.2.3 — what of it the hazards on your side take on the way in.
   for (const h of extra?.asLead?.entry ?? []) lines.push(<div key={`en-${h.id}`}>{SIDE_CHIP_TEXT.entry(h.amount, SIDE_NAME[h.id].name)}</div>);
   // §5.2.3 — a swap that cannot be made says why, not what it would cost.
-  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapBlocked ? extra.swapBlocked : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' — a quick swap: it is faster than the enemy Lead, so it costs 1 less' : ''}. Each swap this turn costs 1 more (1, 2, 3); the ladder resets every turn, and Step cards swap for free. A Pokémon faster than the enemy Lead swaps in for 1 less.` : undefined;
+  const footer = extra?.isLead ? 'Your Lead: takes single-target hits, plays Melee.' : extra?.swapBlocked ? extra.swapBlocked : extra?.swapCost !== undefined ? `Swap in for ${extra.swapCost} AP${extra.swapQuick ? ' (1 less: it is faster than the enemy Lead)' : ''}. Each swap this turn costs 1 more; Step-Forward and Step-Backward cards swap for free.` : undefined;
   return <Tip title={c.name} meta={meta} body={lines.length ? lines : undefined} footer={footer} />;
 }
 
