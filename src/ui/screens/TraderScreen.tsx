@@ -16,7 +16,7 @@ import { traderTip, tradeGiveTip, tradeOfferTip } from '@/ui/tips';
 import { InfoDot, Tipped, useTip } from '@/ui/tooltip';
 import styles from './TraderScreen.module.css';
 
-// §2.9.6 — the roadside trader. Two choices and a reveal: who you give (anyone but your last one standing), then one
+// §2.9.6 — the roadside trader. Two choices and a reveal: who you give (anyone but your last Pokémon standing), then one
 // of three face-down offers — a type and the level it arrives at — and the newcomer, out of its ball. The way on is the
 // corner arrow every stop shares; walking on without trading is always open.
 
@@ -107,7 +107,7 @@ export function TraderScreen() {
 }
 
 /**
- * One of your Box, as a choice to give: locked when it is your last one standing (the lock beside its level, the reason
+ * One of your Box, as a choice to give: locked when it is your last Pokémon standing (the lock beside its level, the reason
  * in its bubble). Picked, it says the level the newcomer will arrive at — said once, here, where it varies.
  */
 function Giveable({ mon, active, picked, locked, onPick }: { mon: PartyMon; active: boolean; picked: boolean; locked: boolean; onPick: () => void }) {

@@ -48,14 +48,13 @@ export function routeNodeTip(node: MapNode, run: RunState, art: string, kind: st
   const odds = wildChancesFor(node, run, content);
   const pool = node.kind === 'wild' && p.objective?.kind !== 'flee' ? wildFor(node, run, content)?.pool : undefined;
   const visibleLevel = p.levelBand[1] > 0 && (node.kind === 'wild' || node.kind === 'elite-wild' || p.objective?.kind === 'hold');
-  const access = status === 'reachable' ? 'Available now · click to inspect before choosing'
+  const access = status === 'reachable' ? 'Available now'
     : status === 'current' ? 'You are here'
     : status === 'visited' ? 'Cleared'
     : ahead ? 'Ahead on your route · reach this column to choose'
     : 'Off your route';
   const detail = node.kind === 'aid' ? `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays.`
     : node.kind === 'merchant' ? 'Supplies and equipment for the road.'
-    : node.kind === 'trader' ? 'Trade one Pokémon for one of the offers, at the level of the one you give. Its held item returns to your bag.'
     : node.kind === 'training' ? 'Paid training for the team before the final climb.'
     : node.kind === 'mystery' ? null : p.detail;
   return <NodeHover heading={p.title} art={art} available={status === 'reachable'} access={access}
@@ -1280,8 +1279,8 @@ export function traderTip(): ReactNode {
   return (
     <Tip
       title={TRADER_TEXT.title}
-      body={`Give one of your Box, then pick one of three face-down offers: each shows one of its types and the level it arrives at — ${TRADER.levelBonus} above the one you gave, at full HP and with no Trauma. The species is the surprise.`}
-      footer="The one you give is gone for good; what it held comes back to the bag. You may walk on without trading."
+      body={`Give one of your Box, then pick one of three face-down offers. Each shows one of its types and arrives ${TRADER.levelBonus} levels above the one you gave, at full HP, with no Trauma.`}
+      footer="The one you give is gone for good; its held item comes back to the bag."
     />
   );
 }
@@ -1328,7 +1327,7 @@ export function heldItemSellTip(itemId: string): ReactNode {
 
 /** §2.9.4 — the Dojo, beside its one-line lede. */
 export function dojoTip(): ReactNode {
-  return <Tip title="The Dojo" body="The master teaches a Pokémon a move it would never learn by levelling, an egg move from the line's own scrolls, or swaps its passive ability. As many as you can pay for; the price is on every offer." />;
+  return <Tip title="The Dojo" body="A move off the learnset, an egg move from the line's scrolls, or a swap of its passive ability: as many as you can pay for." />;
 }
 /** §2.9.4 — a Dojo tab's count: what this Pokémon has not bought there yet. */
 export function counterTabTip(name: string, left: number, price: number): ReactNode {
@@ -1344,7 +1343,7 @@ export function passiveTip(): ReactNode {
 }
 /** §2.9.4.2 — the master's scrolls. */
 export function eggMovesTip(): ReactNode {
-  return <Tip title="Egg moves" body="Moves this line is born knowing in the games, and never learns any other way — up to three a line. Every stage of the line is offered the same scrolls." footer="Dearer than a tutor move." />;
+  return <Tip title="Egg moves" body="Moves the line is born knowing in the games and learns no other way, up to three a line. Every stage is offered the same scrolls." footer="Dearer than a tutor move." />;
 }
 
 /** §5.10 — a Badge: permanent, so what it does is the whole tip. */
@@ -1409,7 +1408,7 @@ export function slotsBankTip(): ReactNode {
 }
 export function rouletteTableTip(): ReactNode {
   const { pays } = CASINO.wheel;
-  return <Tip title="Roulette" meta={[`Stake ${CASINO.wheel.minStake}–${CASINO.wheel.maxStake} ₽`]} body={`The classic wheel: thirty-seven pockets. Bet on red or black for ×${pays.red}, or on the one green zero for ×${pays.green}. Play and the odds are on the table.`} />;
+  return <Tip title="Roulette" meta={[`Stake ${CASINO.wheel.minStake}–${CASINO.wheel.maxStake} ₽`]} body={`Thirty-seven pockets. Bet on red or black for ×${pays.red}, or on the one green zero for ×${pays.green}.`} />;
 }
 
 /** §2.11.6 — the market's heading bubble: four counters, and a door that locks behind you. */
@@ -1525,15 +1524,15 @@ export function ringPrizeTip(banked: number, allRare: boolean): ReactNode {
 
 /** §2.11.1 — the Center: what is free, and what the three counters are for. */
 export function centerTip(): ReactNode {
-  return <Tip title="The Center" body="Ask the nurse for free whole-Box healing and status cures. The beds treat Trauma one stack at a time; the lounge grooms a Pokémon for Friendship; the PC Box picks the team. Entering does not heal." />;
+  return <Tip title="The Center" body="The nurse heals and cures the whole Box, free. Therapy treats Trauma, the lounge grooms for Friendship, the PC Box picks the team." />;
 }
 /** §2.11.1 — manual treatment is requested from the nurse, separate from the beds. */
 export function centerHealTip(): ReactNode {
-  return <Tip title="Nurse Joy" body="Free: restores HP and cures conditions across the whole Box. Entering does not heal." footer="Trauma is treated at the Therapy beds." />;
+  return <Tip title="Nurse Joy" body="Free: restores HP and cures conditions across the whole Box. Entering does not heal." footer="Trauma is treated in Therapy." />;
 }
 /** §8.2.4 — Therapy's price and why Trauma is worth paying for. */
 export function therapyTip(): ReactNode {
-  return <Tip title="Therapy" meta={['100 ₽ × (1 + stacks)']} body="Each Trauma stack costs 5 % of max HP up to five, then 10 % each. It never heals on its own — Therapy is the only place it comes off, one stack at a time, dearer the worse the count." />;
+  return <Tip title="Therapy" meta={['100 ₽ × (1 + stacks)']} body="Each Trauma stack costs 5 % of max HP up to five, then 10 % each. Only Therapy takes it off, one stack at a time, dearer the more there are." />;
 }
 
 /** §6.3.9 — the Center's grooming corner; `scale` is the Soothe Bell's, so the gain it names is the one it gives. */
@@ -1573,7 +1572,7 @@ export function floorTip(label: string, count: number): ReactNode {
 
 /** §2.11.6 — the ticket: what it buys. */
 export function safariTicketTip(fee: number, balls: number, clock: number): ReactNode {
-  return <Tip title="Safari ticket" meta={[`${fee} ₽`, `${balls} Safari Balls`, `${clock} turns`]} body="Your first catch earns a useful Held Item, even if you decline the recruit. If none remain, the Ranger gives you its resale value instead. Once per visit." footer="Balls and turns are shared by every stalk. What is left when you leave stays behind." />;
+  return <Tip title="Safari ticket" meta={[`${fee} ₽`, `${balls} Safari Balls`, `${clock} turns`]} body={`Your first catch earns a Held Item, even if you let the Pokémon go; if you own every one, ${sellPrice()} ₽ instead. Once per visit.`} footer="Balls and turns are shared by every stalk. What is left when you leave stays behind." />;
 }
 
 /** §2.11.6 — the Safari Balls left. */
@@ -1583,12 +1582,12 @@ export function safariBallsTip(balls: number): ReactNode {
 
 /** §2.11.6 — the park clock. */
 export function safariClockTip(turns: number): ReactNode {
-  return <Tip title="Park clock" meta={[`${turns} turns left`]} body="Every turn of every stalk comes off it. When it stops, the park closes — with whatever you were stalking still out there." />;
+  return <Tip title="Park clock" meta={[`${turns} turns left`]} body="Every turn of every stalk comes off it. When it runs out, the park closes, mid-stalk or not." />;
 }
 
 /** §2.11.6 — the Pokémon's temper: alarms taken of how many it will take. */
 export function safariAlarmTip(alarms: number, temper: number): ReactNode {
-  return <Tip title="Temper" meta={[`${alarms} of ${temper} alarms`]} body={temper === 1 ? 'One alarm and it is gone — so is one missed ball.' : 'Seeing you is an alarm; so is a ball it breaks out of. The last one sends it off.'} />;
+  return <Tip title="Temper" meta={[`${alarms} of ${temper} alarms`]} body={temper === 1 ? 'One alarm and it is gone: being seen, or a missed ball.' : 'Seeing you is an alarm; so is a ball it breaks out of. The last one sends it off.'} />;
 }
 
 /** §2.11.6 — what makes this Pokémon's board the harder one. */
@@ -1603,7 +1602,7 @@ export function safariThrowTip(o: { chance: number; range: number; unseen: boole
   if (o.unseen) meta.push('Never saw you');
   if (o.behind) meta.push('From behind');
   if (o.eating) meta.push('Eating');
-  return <Tip title="Throw" meta={meta} body={apShort ? 'A throw takes the whole turn — end this one where you stand and throw next turn.' : 'The only roll in the Safari. A miss is an alarm.'} />;
+  return <Tip title="Throw" meta={meta} body={apShort ? 'A throw takes a whole turn: end this one here and throw next turn.' : 'The only roll in the Safari. A miss is an alarm.'} />;
 }
 
 /** §2.11.6 — the board's marks, on the InfoDot beside it. */
@@ -1624,19 +1623,19 @@ export function safariApTip(ap: number): ReactNode {
 
 /** §2.11.6 — the bait, and why it cannot be thrown now. */
 export function safariBaitTip(why: string | null): ReactNode {
-  return <Tip title="Bait" meta={['1 action', 'Up to 3 tiles']} body="It walks to the bait and eats for two turns. Eating, it looks only at the tile in front of it and hears nothing — and a ball thrown then is better." footer={why ?? undefined} />;
+  return <Tip title="Bait" meta={['1 action', 'Up to 3 tiles']} body="It walks to the bait and eats for two turns. Eating, it looks only at the tile in front of it, hears nothing, and is easier to catch." footer={why ?? undefined} />;
 }
 
 /** §2.11.6 — the rock, and why it cannot be thrown now. */
 export function safariRockTip(why: string | null): ReactNode {
-  return <Tip title="Rock" meta={['1 action', 'Up to 3 tiles']} body="It stops where it stands this turn and turns to face the noise — put it at its back and walk in behind. Never two turns running." footer={why ?? undefined} />;
+  return <Tip title="Rock" meta={['1 action', 'Up to 3 tiles']} body="It stops for the turn and faces the noise, so you can walk in behind it. Never two turns running." footer={why ?? undefined} />;
 }
 
 /** §2.11.6 — the lineup's tier badge: how that board behaves. */
 export function safariTierTip(label: string, t: { sight: number; speed: number; temper: number; ears: number }): ReactNode {
   const meta: ReactNode[] = [`Sees ${t.sight} ahead`, t.speed > 1 ? `Walks ${t.speed} a turn` : 'Walks 1 a turn', `${t.temper} alarm${t.temper === 1 ? '' : 's'}`];
   if (t.ears) meta.push(`Hears ${t.ears} tile${t.ears === 1 ? '' : 's'} away`);
-  return <Tip title={label} meta={meta} body="Rarer means a bigger board and a harder Pokémon — and a lower chance on every throw." />;
+  return <Tip title={label} meta={meta} body="Rarer: a bigger board, a warier Pokémon and lower odds on every throw." />;
 }
 
 /** §2.11.6 — what the Pokémon is doing right now, on its tile. */

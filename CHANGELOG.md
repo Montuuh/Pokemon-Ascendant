@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.113 — Town talk · 2026-11-11
+
+Every city door, shop, Center, Dojo and park says what it does in fewer words.
+
+- **Doors.** Each building's bubble is one or two lines.
+- **Guides.** Ring and Safari guides trimmed; no coaching.
+- **Shops.** Shelf, Trader and Mart texts cut to price and rule.
+- **Fixes.** Eevee's four evolutions; the Trader's +3 levels on the map.
+
 ### v0.9.112 — Trainers speak · 2026-11-11
 
 Trainers say their line as the fight opens, in the series' voice.

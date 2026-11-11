@@ -30,7 +30,7 @@ export interface TradeOffer {
 
 export const TRADER_PREVIEW: NodePreview = {
   title: 'Roadside trader',
-  detail: `Give one of your Box for one of three face-down offers, each showing a type: the species is a surprise, and it arrives ${TRADER.levelBonus} levels above the one you gave.`,
+  detail: `Give one of your Box for one of three face-down offers, each showing a type: the newcomer arrives ${TRADER.levelBonus} levels above the one you give.`,
   speciesIds: [],
   levelBand: [0, 0],
   icon: 'trader',

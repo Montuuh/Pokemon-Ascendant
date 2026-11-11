@@ -53,7 +53,7 @@ test.describe('The roadside trader — §2.9.6', () => {
     await page.evaluate(() => window.__ascendant!.run.patch((d) => { d.box[1]!.hp = 0; d.box[2]!.hp = 0; }));
     const lead = page.locator('[data-testid^="trade-give-"]').first();
     await expect(lead).toHaveAttribute('aria-disabled', 'true');
-    await expect(lead).toHaveAccessibleName(/last one standing/);
+    await expect(lead).toHaveAccessibleName(/last Pokémon standing/);
     await page.getByTestId('btn-leave-trader').click();
     await expect(page.getByTestId('trader-screen')).toBeHidden();
   });

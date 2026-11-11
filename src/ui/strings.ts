@@ -337,7 +337,7 @@ export const TRADER_TEXT = {
   title: 'Roadside trader',
   pickGive: 'Who will you give?',
   pickOffer: 'Pick one.',
-  lastStanding: 'Your last one standing — it cannot go.',
+  lastStanding: 'Your last Pokémon standing cannot go.',
   give: 'Give',
   trade: (name: string) => `Give ${name}`,
   offersLabel: 'Three face-down offers',
@@ -889,8 +889,8 @@ export const SAFARI_TIER_LABEL: Record<string, string> = { common: 'Easy', uncom
 export const SAFARI_TRAIT: Record<string, { label: string; hint: string }> = {
   'keen-eyed': { label: 'Keen-eyed', hint: 'Looks four tiles ahead, not three.' },
   quick: { label: 'Quick', hint: 'Walks two tiles a turn.' },
-  alert: { label: 'Alert', hint: 'Hears you on the tiles right beside it, grass or not — unless it is eating.' },
-  'sharp-eared': { label: 'Sharp-eared', hint: 'Hears you within two tiles, grass or not — unless it is eating.' },
+  alert: { label: 'Alert', hint: 'Hears you on the tiles beside it, even in grass, unless it is eating.' },
+  'sharp-eared': { label: 'Sharp-eared', hint: 'Hears you within two tiles, even in grass, unless it is eating.' },
   water: { label: 'In its pond', hint: 'It never leaves the water. Reach it from the open shore.' },
 };
 /** §2.11.6 — the stalk's own words. */
@@ -936,15 +936,15 @@ export const SHELF_LABEL: Record<'clerk' | 'medicine' | 'rare-medicine' | 'tms' 
 /** What each shelf is for, in a line, for its bubble. */
 export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
   clerk: 'Everything on sale. The clerk buys held items back.',
-  medicine: 'Potions, status cures and battle items for the fights ahead.',
-  'rare-medicine': 'The strongest medicine the store stocks.',
+  medicine: 'Potions, status cures and battle items.',
+  'rare-medicine': 'The strongest medicine on sale.',
   tms: 'TMs someone in your Box can learn. Single use.',
   held: 'Items a Pokémon wears into every fight.',
   stones: 'A stone someone in your Box can use to evolve.',
   relics: 'Relics for the whole run, from Common to Rare.',
-  'relics-common': 'Common relics, for the whole run.',
-  'relics-uncommon': 'Uncommon relics, for the whole run.',
-  'relics-rare': 'Rare relics, for the whole run.',
+  'relics-common': 'Last the whole run; nothing to equip.',
+  'relics-uncommon': 'Last the whole run; nothing to equip.',
+  'relics-rare': 'Last the whole run; nothing to equip.',
 };
 export const SHOP_TEXT = {
   backToTown: BACK_TO_TOWN,
@@ -1084,13 +1084,13 @@ export const CITY_DOOR_LABEL: Record<CityBuildingDoor, string> = {
 };
 
 export const CITY_DOOR_HINT: Record<CityDoor, string> & { gatePlain: string } = {
-  center: 'Ask the nurse for free whole-Box healing and status cures. The beds treat Trauma; the PC Box picks the team.',
+  center: 'Free healing and cures for the whole Box. Therapy treats Trauma; the PC Box picks the team.',
   mart: 'A shelf picked for your team, and Poké Balls. Dearer than the merchant; buys held items back.',
   'department-store': 'The biggest shelf of the run, and Poké Balls. Dearer than the merchant; buys held items back.',
   dojo: 'Tutor moves off the learnset, the line’s egg moves and passive abilities, as many as you can pay for.',
-  ring: 'A ladder of rivals for a fee. See the next one, then fight or cash out — nothing heals between rungs, and a lost rung loses what the ladder paid. However it ends, your team walks out healed. Once per visit.',
-  safari: 'A park of Pokémon the routes rarely show. Buy a ticket, stalk one through the grass, and throw when the odds are yours. Once per visit.',
-  'game-corner': 'Slot machines and roulette tables, every outcome and its odds printed on the machine you play.',
+  ring: 'Rivals one after another, for a fee. Cash out after any win; lose a rung and you lose the winnings. You leave healed. Once per visit.',
+  safari: 'Pokémon the routes rarely show. Stalk one through the grass, then throw. Once per visit.',
+  'game-corner': 'Slots and roulette, with the odds printed on every machine.',
   gate: 'Choose one rule for the next Region, then set off. The town stays behind.',
   /** §2.11.3 — the gate while Region Modifiers are off (v0.9.9). */
   gatePlain: 'The road to the next Region. The town stays behind once you set off.',
@@ -1113,7 +1113,7 @@ export const SAFARI_GUIDE = {
     },
     {
       title: 'Hide in the tall grass',
-      body: () => 'It notices you on open ground, or on the tile right in front of it. Anywhere else in the tall grass you are hidden — even while it looks your way.',
+      body: () => 'It notices you on open ground, or on the tile right in front of it. Anywhere else in the tall grass you are hidden, even while it looks your way.',
     },
     {
       title: 'Read its next move',
@@ -1121,7 +1121,7 @@ export const SAFARI_GUIDE = {
     },
     {
       title: 'Bait and rocks',
-      body: () => 'Bait draws it over to eat for two turns, head down — it looks one tile ahead and hears nothing. A rock stops it for a turn, facing the noise, so you can walk in behind.',
+      body: () => 'Bait draws it over to eat for two turns: it looks one tile ahead and hears nothing. A rock stops it for a turn, facing the noise, so you can walk in behind.',
     },
     {
       title: 'One throw, the whole turn',
@@ -1154,19 +1154,19 @@ export const RING_GUIDE = {
     },
     {
       title: 'See them before you fight',
-      body: () => 'The next rival and their whole team are always on show — before you pay, and before every rung.',
+      body: () => 'The next rival and their whole team are on show before you pay, and before every rung.',
     },
     {
       title: 'Nothing heals between rungs',
-      body: () => 'Your team walks into each rung as the last one left it: the HP, the statuses, the fainted. Pick who fights next with that in mind.',
+      body: () => 'Your team walks into each rung as the last one left it: the HP, the statuses, the fainted.',
     },
     {
       title: 'Cash out, or climb',
-      body: () => 'After every rung you win, take what the ladder has banked and leave — or fight on for more. Lose a rung and the bank is lost with it.',
+      body: () => 'After every rung you win, take what the ladder has banked and leave, or fight on for more. Lose a rung and the bank goes with it.',
     },
     {
       title: 'The run never ends here',
-      body: (n: RingNumbers) => `Even if your whole team faints, the run goes on: the fallen only take their Trauma. However the ladder ends — won, lost or cashed out — the ${n.name}'s medics heal your whole team to full.`,
+      body: (n: RingNumbers) => `The fallen only take their Trauma. However the ladder ends, the ${n.name}'s medics heal your whole team.`,
     },
   ] as { title: string; body: (n: RingNumbers) => string }[],
 };

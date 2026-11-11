@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.112 — Trainers speak** (Beta). Every trainer, Elite and Leader says its line as the fight opens, in the series' voice, and the Mystery events say plainly what each choice does. Before it, v0.9.111 cut every string in the game to what a player needs, and v0.9.110 rebuilt the account: a Field Report, Oak's Parcels, nine Trainer Ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
+**v0.9.113 — Town talk** (Beta). Every city door, shop, Center, Dojo and park says what it does in fewer words. Before it, v0.9.112 gave every trainer its opening line, v0.9.111 cut every string in the game to what a player needs, and v0.9.110 rebuilt the account: a Field Report, Oak's Parcels, nine Trainer Ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
 
 ## Run it locally
 

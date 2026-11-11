@@ -28,7 +28,7 @@ test.describe('The Ring and the Coliseum — §2.9.4.1', () => {
     await expect(page.getByTestId('ring-guide')).toBeVisible();
     await expect(page.getByTestId('ring-guide-page-0')).toContainText('2 rungs');
     for (let i = 0; i < 4; i++) await page.getByTestId('btn-ring-guide-next').click();
-    await expect(page.getByTestId('ring-guide-page-4')).toContainText('heal your whole team to full');
+    await expect(page.getByTestId('ring-guide-page-4')).toContainText('heal your whole team');
     await expect(page.getByTestId('ring-guide-page-4')).toContainText('Trauma');
     await page.screenshot({ path: 'playtest/ring-guide.png' });
     await page.getByTestId('btn-ring-guide-next').click();

@@ -30,7 +30,7 @@ const SHELF_ICON: Record<ShelfId, ReactNode> = {
 /** §8.5.2 — the design slot of each meta-starter, in the player's words. */
 const STARTER_BLURB: Record<string, string> = {
   magikarp: 'Water → Water/Flying. Weak until it evolves into Gyarados.',
-  eevee: 'Normal. Its evolution is its type choice — Vaporeon, Jolteon or Flareon.',
+  eevee: 'Normal. Its evolution picks its type: Vaporeon, Jolteon, Flareon or Umbreon.',
   pikachu: 'Electric, ranged-leaning. Starts holding a Light Ball.',
 };
 
@@ -70,7 +70,7 @@ export function PokeMart() {
       : err === 'locked' ? { text: `The ${shelfDef.name} shelf opens at ${rankRow(shelfDef.level).name} (rank ${shelfDef.level}).`, tone: 'warn' }
       : err === 'owned' ? { text: `${name} is already yours.`, tone: 'warn' }
       : err === 'pending' ? { text: `${name} is not sold yet.`, tone: 'warn' }
-      : err === 'cannot-afford' ? { text: `${name} is ${price} Tokens — you have ${account.tokens}. Every run's end pays some, and so do ranks and Journal entries.`, tone: 'warn' }
+      : err === 'cannot-afford' ? { text: `${name} is ${price} Tokens; you have ${account.tokens}.`, tone: 'warn' }
       : { text: `The Mart does not sell that.`, tone: 'warn' },
     );
   }
@@ -135,7 +135,7 @@ function Shelf({ id, account, notice, onBuy, onWear }: {
           </span>
           <span className={styles.martBannerText}>{def.sells}</span>
           {!open && (
-            <Tipped tip={<Tip title={`${rankRow(def.level).name} · Rank ${def.level}`} body={`You are ${rankRow(level).name} (rank ${level}). The shelf is priced already; Tokens keep until it opens.`} footer={`${xpToOpen} XP to go.`} />} className={styles.martUnlockRow}>
+            <Tipped tip={<Tip title={`${rankRow(def.level).name} · Rank ${def.level}`} body={`You are ${rankRow(level).name} (rank ${level}). Tokens keep until it opens.`} footer={`${xpToOpen} XP to go.`} />} className={styles.martUnlockRow}>
               <Progress.Root className={styles.martUnlockBar} value={pctToOpen} aria-label={`${pctToOpen}% of the way to rank ${def.level}`}>
                 <Progress.Indicator className={styles.martUnlockFill} style={{ width: `${pctToOpen}%` }} />
               </Progress.Root>

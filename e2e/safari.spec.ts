@@ -84,7 +84,7 @@ test.describe('The Safari Zone — §2.11.6', () => {
     await expect(page.getByTestId('btn-stalk-0')).toHaveCount(0);
     await expect(page.getByTestId('btn-safari-ticket')).toContainText('First catch: Ranger gift');
     await page.getByTestId('btn-safari-ticket').hover();
-    await expect(page.getByRole('tooltip')).toContainText('first catch earns a useful Held Item');
+    await expect(page.getByRole('tooltip')).toContainText('first catch earns a Held Item');
     await page.mouse.move(0, 0);
     await page.screenshot({ path: 'playtest/safari.png' });
 

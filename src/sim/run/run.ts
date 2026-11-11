@@ -2138,7 +2138,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
       // §2.11.1 — the nurse restores HP and conditions when asked, without changing Trauma.
       case 'heal-center': {
         draft.lastHeal = healBox(draft, (_mon, max) => max, ctx.content);
-        say(draft, 'Nurse Joy restored your whole Box. Trauma is treated at the Therapy beds.');
+        say(draft, 'Nurse Joy restored your whole Box.');
         break;
       }
 

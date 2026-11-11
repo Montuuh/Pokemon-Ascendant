@@ -1540,6 +1540,16 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.113 — Town talk  ✅ 2026-11-11
+
+**Shipped.** The user (2026-11-11): "siguiente paquete: los textos de las ciudades y tiendas". Every string of the
+Cities, their buildings and the shops read (482 strings, about 3 400 words, after v0.9.111 had already cut the worst)
+and 39 rewritten with the `slop-remover` skill: the six door bubbles to one or two lines, the Ring and Safari guides
+without coaching or stacked dashes, the shelf, Trader, Center, Dojo, Game Corner and Safari tooltips cut to price and
+rule, the Hub Mart's cannot-afford message to the number. Two bugs: the map's Trader bubble said the newcomer comes at the given Pokémon's level (it is 3 above), and Eevee's Mart card named three evolutions, and Eevee
+has had four since v0.9.84. Three e2e assertions moved with the copy. `npm run check`, the city and shop e2e (103),
+the strict audit of fourteen screens and the UI review.
+
 ### v0.9.112 — Trainers speak  ✅ 2026-11-11
 
 **Shipped.** The user (2026-11-11): "siguiente paquete: los textos de entrenadores y eventos". Reading them showed the
