@@ -28,7 +28,7 @@ standard the reviewers hold it to.
 | For | Skills |
 |---|---|
 | Doing the work | `sim-rule` a rule from its § · `content-add` a row from catalogue to JSON · `art-add` an asset · `bugfix` repro, failing test, fix, proof · `port-from-unity` |
-| Judging it | `verify` the whole loop · `ui-review` after any visual change · `playtest` feel · `balance-check` numbers · `pillar-check` the five pillars |
+| Judging it | `verify` the whole loop · `ui-review` after any visual change · `slop-remover` text the player does not need (scanner: `slop-scan.mjs`) · `playtest` feel · `balance-check` numbers · `pillar-check` the five pillars |
 | Deciding and shipping | `design-change` a direction call · `session-close` commit and push a finished unit · `ship-version` a change that earns a number |
 
 ## Subagents (`agents/`)
