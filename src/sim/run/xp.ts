@@ -397,7 +397,7 @@ export interface BranchPayload {
   stones: string[];
   archetype: EvolutionBranch['archetype'];
   label: string;
-  /** Upgrades as the branch names them: the slot's first move → the new one. The old card is forgotten. */
+  /** Upgrades as the branch names them: the slot's first move → the new one. The old card leaves the pool; the Move Reminder gives it back (§6.9.2). */
   upgrades: { from: string; to: string }[];
   adds: string[];
   abilityId: string | null;

@@ -5986,7 +5986,7 @@
           "id": "graveler-support",
           "archetype": "support",
           "label": "Bedrock",
-          "description": "Becomes the wall: super-effective hits stop being the problem they were.",
+          "description": "Becomes the wall: Solid Rock takes the edge off super-effective hits.",
           "to": "graveler",
           "upgrades": [
             {

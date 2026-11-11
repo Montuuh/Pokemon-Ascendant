@@ -108,7 +108,7 @@ weights up when the Box carries stacks. The offer never contains a modifier whos
 | `trauma-surge` | Trauma Surge | Trauma costs 2 pp more per stack in each zone (−7 % / −12 %; cap unchanged) | 1.20 | Ladder rung 7 | ✅ |
 | `greater-threats` | Greater Threats | Every enemy hits 25 % harder (v0.9.95: the one Attack term left, §2.2.1) | 1.40 | Ladder rung 9 | ✅ |
 | `faint-echo` | Faint Echo | A fainted Pokémon's discarded cards stay in the discard pile until the end of next turn (jamming draws) | 1.20 | Ladder rung 8 | ✅ |
-| `one-path` | One Path | Both Gym fork routes show the same Gym type — no counter-pick | 1.10 | Ladder rung 2 | ✅ |
+| `one-path` | One Path | Both fork lanes lead to the same Gym: no counter-pick | 1.10 | Ladder rung 2 | ✅ |
 | `masters-challenge` | Master's Challenge | Every boss gains one extra phase (Phase 3 universal; aces get Phase 4) | 1.50 | Ladder rung 10 | ✅ |
 
 **Stacking**: `iron-will` ×1.15 + `trauma-surge` ×1.20 → ×1.38 XP; the mechanical effects apply independently.

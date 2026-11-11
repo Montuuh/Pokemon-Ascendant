@@ -1540,6 +1540,22 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.116 — Team and bag  ✅ 2026-11-11
+
+**Shipped.** The user (2026-11-11): "lanza TODOS los paquetes restantes". The Team screen, the Box panel, the Move
+Manager, the evolution sheet, the bag and the item, relic and modifier content read with the `slop-remover` skill.
+The team texts were mostly clean already; the pass found false lines instead. Speed's bubble said it "breaks ties"
+(it paces the critical rhythm and gives the quick swap, §3.3.1.1); the evolution bubble said an upgraded card is
+"forgotten" (the Move Reminder keeps it); the Team
+screen's Speed said "who acts first"; the Legendary relic bubble named Gyms as the only source (the Apex and the
+Summit give them too); the first Gym's pick is a Common and two Uncommons, not a Rare, and the capped pick now gets its
+own bubble; One Path said the two Gyms share a type (both lanes lead to the same Gym); Defog does not hold a field off
+for the rest of the fight; the empty bag gave a Held Item drop rate of one in five (it is one in two). With it, the
+Move Manager's close button no longer covers Auto. Open: a Defog does not clear a field's timer, so a timed field's
+restore brings the starting ground back (a sim bug, filed apart). Three stale e2e fixed: Jolteon's pre-v0.9.93 Speed gain (+112, now +26), and the level-up reveal, whose
+"one XP short" formula predated the v0.9.95 XP curve and whose short fill now plays .
+`npm run check`, the team and bag e2e, the strict audit of six screens and the UI review.
+
 ### v0.9.115 — Battle notes  ✅ 2026-11-11
 
 **Shipped.** The user (2026-11-11): "después sigue con la siguiente fase", after the map package. The fight screen's

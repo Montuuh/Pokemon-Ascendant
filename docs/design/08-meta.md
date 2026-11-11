@@ -588,7 +588,7 @@ Difficulty Modifier Slot service.
 | Rung | Modifier | Effect | XP × |
 |---|---|---|---|
 | 1 | **Iron Will** | Wild encounters have +20 % HP | 1.15 |
-| 2 | **One Path** | **Both Gym fork routes show the same type** — no counter-pick | 1.10 |
+| 2 | **One Path** | **Both fork lanes lead to the same Gym** — no counter-pick | 1.10 |
 | 3 | **Tight Schedule** | League micro-rest heals 20 % instead of 30 % | 1.15 |
 | 4 | **Dense Fog** | Every non-boss enemy starts with one Unknown intent | 1.15 |
 | 5 | **Lean Pack** | Fights drop no consumables and no Poké Balls — supplies come only from shops, events and gifts | 1.30 |

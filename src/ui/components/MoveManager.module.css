@@ -35,6 +35,10 @@
   background: var(--surface-2);
   color: var(--ink-primary);
 }
+/* D8 — the header leaves the close button its own corner, so Auto is never under it. */
+.panel .who {
+  padding-right: calc(34px + var(--sp-3));
+}
 .close:hover {
   background: var(--surface-3);
 }

@@ -148,7 +148,7 @@ test.describe('The Team screen — §2.3, §9.12', () => {
     expect((await state(page)).activeUids).toEqual([lead]);
     // Dragged onto the Box, it stays too, and the header says why.
     await page.getByTestId(`team-card-${lead}`).dragTo(page.getByTestId('team-box'));
-    await expect(page.getByTestId('team-screen').getByRole('status')).toContainText('Somebody has to be in the formation');
+    await expect(page.getByTestId('team-screen').getByRole('status')).toContainText('The last one in the formation stays');
     expect((await state(page)).activeUids).toEqual([lead]);
     // The next free place's "+" puts a Box Pokémon there, from the keyboard too.
     await page.getByTestId(`team-tile-${second}`).click();

@@ -6,7 +6,7 @@ import { autoPickMoves, masteryMoveFor, reminderOptions, stoneUse, type PartyMon
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeBadge } from '@/ui/components/TypeBadge';
 import { itemIcon, tmIcon } from '@/ui/art';
-import { ARCHETYPE_LABEL, MOVE_MANAGER_TEXT, RUN_REJECT_TEXT } from '@/ui/strings';
+import { ARCHETYPE_LABEL, MOVE_MANAGER_TEXT, RUN_REJECT_TEXT, TEAM_TEXT } from '@/ui/strings';
 import { masteryCardTip, moveDefTip, reminderTip, tmTip } from '@/ui/tips';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
 import styles from './MoveManager.module.css';
@@ -146,7 +146,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           </h3>
           <p className={styles.sub}>
             {mon.archetype ? `${ARCHETYPE_LABEL[mon.archetype]} · ` : ''}
-            {mon.abilityId ? content.ability(mon.abilityId).name : 'no passive yet'}
+            {mon.abilityId ? content.ability(mon.abilityId).name : TEAM_TEXT.noAbility}
             {mon.abilityId && content.ability(mon.abilityId).hook === 'none' && ' (not yet)'}
           </p>
         </div>
@@ -156,7 +156,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           tip={
             <Tip
               title="Auto-pick"
-              body="Keeps the two strongest attacks, always one Ranged card, and fills the rest with the newest moves. The same rule the game uses when you do not choose."
+              body="Keeps the two strongest attacks and at least one Ranged card, then the newest moves. The game picks this way when you do not."
             />
           }
           className={styles.auto}
@@ -198,7 +198,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           <ul className={styles.list}>{benched.map((m) => row(m, false, mon))}</ul>
         ) : (
           <p className={styles.empty}>
-            Everything it knows is in the deck. Level up, evolve, teach a TM or visit the Dojo.
+            Nothing waiting. Levels, evolutions, TMs and the Dojo add moves.
           </p>
         )}
       </section>

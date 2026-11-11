@@ -250,7 +250,7 @@
       "effect": {
         "kind": "clear-fields"
       },
-      "description": "Clear every field — Weather, Terrain, Sandstorm and a Home Field — for the rest of the fight.",
+      "description": "Clear every field standing, a Home Field included.",
       "gdd": "§4.3.6"
     }
   ]

@@ -74,7 +74,7 @@ test('Evolution stats and four branch headers have intrinsic room at 720p and 15
     await page.getByTestId('branch-eevee-specialist').click();
     const stats = page.getByRole('list', { name: 'Stats', exact: true });
     // The widest Speed gain on the sheet (Jolteon's), at Lv 16.
-    await expect(stats.getByRole('listitem').last()).toContainText('+112');
+    await expect(stats.getByRole('listitem').last()).toContainText('+26'); // Jolteon's Speed gain at Lv 16, the widest on the sheet (stats halved in v0.9.93).
     const overlaps = await stats.evaluate((list) => {
       const failures: string[] = [];
       for (const row of Array.from(list.children)) {

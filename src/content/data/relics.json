@@ -864,7 +864,7 @@
       "categories": [
         "combat"
       ],
-      "description": "Super-effective moves hit 30 % harder still.",
+      "description": "Your super-effective hits deal 30 % more.",
       "hook": "damage-dealt",
       "params": {
         "superEffective": true,

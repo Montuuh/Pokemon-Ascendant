@@ -112,7 +112,7 @@ export const MODIFIERS: DifficultyModifier[] = [
   {
     id: 'one-path',
     name: 'One Path',
-    effect: 'Both Gym fork routes show the same Gym type — no counter-pick.',
+    effect: 'Both fork lanes lead to the same Gym: no counter-pick.',
     xpMultiplier: 1.1,
     unlock: 'League Ladder rung 2',
     rung: 2,

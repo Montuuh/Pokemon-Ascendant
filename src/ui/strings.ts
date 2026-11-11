@@ -764,7 +764,7 @@ export const TEAM_TEXT = {
   allOut: 'Everyone you have is in the formation.',
   locked: 'Locked for this node',
   refused: 'Not now.',
-  lastOne: 'Somebody has to be in the formation: this is the last one there.',
+  lastOne: 'The last one in the formation stays.',
   /** §9.12 — the route's side panel is the team at a glance; the Team screen is where it changes. */
   panelHint: 'Change the team, its order and its moves on the Team screen (T).',
   waiting: (n: number) => `${n} waiting`,

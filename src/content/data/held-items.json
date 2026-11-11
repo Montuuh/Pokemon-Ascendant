@@ -136,7 +136,7 @@
     {
       "id": "macho-brace",
       "name": "Macho Brace",
-      "description": "The wearer takes half again the XP, and starts every fight a Speed stage down. A Machoke holding it evolves at its next level-up, and the brace is spent.",
+      "description": "The wearer earns 50 % more XP, and starts every fight a Speed stage down. A Machoke holding it evolves at its next level-up, and the brace is spent.",
       "hook": "xp-multiplier",
       "params": {
         "multiplier": 1.5,

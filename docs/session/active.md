@@ -1,9 +1,9 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-11 · **Version:** v0.9.115 (*Battle notes*).
+**Date:** 2026-11-12 · **Version:** v0.9.116 (*Team and bag*).
+**Shipped 2026-11-12 (v0.9.116):** team, bag and item texts; Speed, One Path, Gym pick, Defog lines fixed. Open: Defog leaves a field timer running (sim bug). **Waiting on the user's look.**
 **Shipped 2026-11-11 (v0.9.115):** combat texts: ~45 rewrites (intents, swaps, AP, deck, statuses, Gym rules without coaching); gym-guest e2e fixed (Sandshrew/Oddish are the guests). **Waiting on the user's look.**
 **Shipped 2026-11-11 (v0.9.114):** map and node texts: ~60 rewrites; five false facts fixed (Elite size, free Training, merchant stock, trainer team, last Gym); bubble reads the preview. **Waiting on the user's look.**
-**Shipped 2026-11-11 (v0.9.113):** city and shop texts: 39 rewrites (doors, guides, shelves, Trader, Center, Dojo, Safari, Hub Mart); Eevee blurb fixed. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.110):** the meta-progression rework, all four phases (§8, §6.8; proposal claude.ai/artifact/PWynspTEvWfyvYbDTESPcW): Field Report, vault + Oak's Parcels, Journal, Bond ×6 + Ribbons, nine Ranks, the lobby that fills, Badge Case, Trainer Kit, League Ladder, Hall of Fame. **Account v4 resets.** Not built: Leaders' challenges, lobby decorations. **After it (no version):** two ui-reviewer passes fixed (Field Report never scrolls or outgrows 720p, Journal tiles, Kit desk, Ladder pips, lobby people; `victory-full` audit preset); the Kit's ceiling measured on first-Gym clear rate (§8.4.5, `balance/kitCeiling.test.ts`): Head Start 2 → 1 level, all within +3 / +8. Five stale e2e fixed after it (ring plates, catch pill, TM bubble icon now on its 30 px grid); `ring-art:43` is flaky under load (reads sprites before they load). Changelog regrouped by theme; "Beta" beside the version. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.108):** seven-row map (level tracks, density 2/3), each Gym's field over all its ground and
 fought on its leaning track, cleared obstacles gone, Mysteries a "?" again; landmark pixel a step under the tiles (D9, left). R1 22 %.

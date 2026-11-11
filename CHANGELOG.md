@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.116 — Team and bag · 2026-11-11
+
+The Team screen, the bag and the item texts, checked against the rules.
+
+- **Speed.** Its bubble names what it does: rhythm and quick swap.
+- **Evolution.** The Move Reminder gives an upgraded card back.
+- **Relics.** The Gym pick and the empty bag say what they pay.
+- **Items.** Defog, Macho Brace and Type Mastery said plainly.
+
 ### v0.9.115 — Battle notes · 2026-11-11
 
 Fight bubbles state the rule, and the rule is right.

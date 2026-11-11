@@ -58,7 +58,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
         {/* §7.4.1 in the player's words. A section number is how *we* find the rule; it tells a player
             nothing, and this is the only string in the UI that was leaking one. */}
         <p className={styles.lede}>
-          <IconBackpack size={16} /> Move Held Items and use heals between nodes — the loadout locks when you step in.
+          <IconBackpack size={16} /> Move Held Items and use heals between nodes; the loadout locks when you step in.
         </p>
 
         <div className={styles.tabs} role="tablist" aria-label="Inventory sections">
@@ -81,8 +81,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
           {tab === 'relics' && (
             run.relics.length === 0 ? (
               <p className={styles.empty}>
-                No relics yet. Trainers drop them, Elites and the Gym hand one over outright, and the Poké Mart
-                always has two on the shelf.
+                No relics yet. Trainers drop them, Elites and Gyms offer a pick, and every Poké Mart sells two.
               </p>
             ) : (
               <div className={styles.grid}>
@@ -140,7 +139,7 @@ export function InventoryDrawer({ onClose }: { onClose: () => void }) {
               <h3 className={styles.sub}>In the bag</h3>
               {run.bag.length === 0 ? (
                 <p className={styles.empty}>
-                  Nothing spare. A Trainer drops a Held Item one time in five, and the Mart sometimes stocks one.
+                  Nothing spare. Trainers sometimes drop one; shops stock them.
                 </p>
               ) : (
                 <div className={styles.grid}>

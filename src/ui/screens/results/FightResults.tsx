@@ -220,7 +220,8 @@ export function FightResults() {
   const pickTip = gymPick
     ? gymRelicTip(
         offer.some((id) => content.relic(id).rarity === 'legendary'),
-        false,
+        // §7.3.7 — the capped pick is the only Gym pick with a Rare in it.
+        !offer.some((id) => content.relic(id).rarity === 'legendary') && offer.some((id) => content.relic(id).rarity === 'rare'),
       )
     : rec?.kind === 'gauntlet'
       ? gauntletPrizeTip()

@@ -5,7 +5,7 @@ import { NodeHover } from '@/ui/components/NodeHover';
 import { PixelSprite } from '@/ui/components/PixelSprite';
 import { titleSays } from '@/ui/components/nodeArt';
 import type { CatchOdds } from '@/sim/combat/catch';
-import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_DETAIL, MERCHANT_DETAIL, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, PARCEL, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
+import { visibleMoot, bossArchetype, forcedSwapTarget, REGION_MODIFIERS_ON, AID_DETAIL, MERCHANT_DETAIL, RELIC_PREMIUM, BLACK_MARKET, CASINO, LEGENDARY_CAP, SLOT_LABEL, LEGENDARY_ARENAS, type ArenaRuleId, type LegendaryId, intentRecipient, summonedBy, DEFAULT_BATTLE_CONFIG, effectiveSpeed, rhythmFillOf, regionContent, regionName, slotOccupant, STATUS_ACCENT_FROM, statTierFor, BOND, BOND_TIER, BOND_RANK_NAME, MAX_BOND_RANK, SHINY, bondProgress, POKEMON_TYPES, PRICES, SHELVES, describeToll, sellPrice, typeMultiplier, type FleeTier, type FleeToll, type CardPlayability, type Combatant, type CombatState, type ConsumableDef, type EnemyCombatant, type MoveDef, type PokemonType, type RelicDef, type TurnForecast, type GroupPlan, type FieldId, TOKENS, rankRow, PARCEL, KIT_SLOT_RANKS, XP, achievementById, comboBreakLeft, ALL_GYMS, RELIC_REWARD, holdPrizeLine, runnerById, runnerRewardLine, TRADER, type GymDef, type GymRuleId, type CombatCtx, type NodeObjective, LEAGUE, leagueMemberOf, type MapNode, LEAGUE_MEMBERS, prizeLabel, REEL_SHAPE, WILD_TIERS, WILD_TIER_ODDS, type FindPrize, type FindGot, type WildTier } from '@/sim';
 import { getContent } from '@/content/registry';
 import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
@@ -534,7 +534,7 @@ export function lockedModifierTip(m: DifficultyModifier, effect: ReactNode): Rea
 
 /** §6.3 — the Pokédex's evolution paths. */
 export function evoPathsTip(): ReactNode {
-  return <Tip title="Evolution paths" body="Each path an evolution can take: the stats at the threshold on that path's lean, every card it turns into a better one (the old one is forgotten), the card it adds, and the ability it grants." footer="Chosen on the Evolution screen when the Pokémon gets there." />;
+  return <Tip title="Evolution paths" body="Each path an evolution can take: its stats, the cards it upgrades (the Move Reminder gives the old ones back), the card it adds and the ability it grants." footer="Chosen on the Evolution screen when the Pokémon gets there." />;
 }
 
 /** §6.9 — a form's own learnset in the Pokédex: a base form's four, an evolved form's signature moves (v0.9.11). */
@@ -663,7 +663,7 @@ export function deckTip(toDraw: number, discarded: number, draws: number): React
 /** §6.5 — a passive ability, from the content row. */
 export function abilityTip(abilityId: string): ReactNode {
   const a = getContent().ability(abilityId);
-  return <Tip title={a.name} meta={['Ability']} body={a.description} footer="Always on. Granted at the first evolution or swapped in at the Dojo." />;
+  return <Tip title={a.name} meta={['Ability']} body={a.description} footer="Always on. Comes with the first evolution; the Dojo can set or swap it." />;
 }
 
 /** §7.2 — a consumable card. */
@@ -1078,24 +1078,24 @@ export function teamStatTip(stat: 'hp' | 'attack' | 'defense' | 'speed', value: 
     hp: 'Its HP as its next fight starts it full: its level, its path, any Training, less what Trauma has taken off the top.',
     attack: 'How hard its cards hit: its level, its path and any Training.',
     defense: 'How much less it takes from every hit.',
-    speed: 'Who acts first when a turn has both sides moving at once.',
+    speed: STAT_BODY.speed,
   }[stat];
   return <Tip title={`${STAT_LONG[stat] ?? stat} ${value}`} body={body} />;
 }
 
-/** §4.1.2 — how a Pokémon meets a Gym's type: its best card against it, and that type against it. */
 /** §2.7.3 — a Gym's declared guest on its preview: its types and its job, the exception to the hidden team. */
 export function guestTip(name: string, types: readonly PokemonType[], job: string, others: number): ReactNode {
   return <Tip title={PREVIEW_TEXT.guestTitle(name)} meta={[types.map(typeName).join(' / ')]} body={job} footer={PREVIEW_TEXT.guestFooter(others)} />;
 }
 
+/** §4.1.2 — how a Pokémon meets a Gym's type: its best card against it, and that type against it. */
 export function matchupTip(leader: string, type: PokemonType, attack: number, defend: number, guest?: { name: string; types: readonly PokemonType[]; attack: number; defend: number }): ReactNode {
   const hit = attack > 1 ? 'hits it hard' : attack < 1 ? 'is resisted' : 'hits it evenly';
   const take = defend > 1 ? 'is hit hard' : defend < 1 ? 'shrugs it off' : 'takes it evenly';
   // §2.7.3 — the Gym's declared guest is the one member off its type: its matchup is named too.
   const meta = [`Its best card ×${fmtMult(attack)}`, `${typeName(type)} on it ×${fmtMult(defend)}`];
   if (guest) meta.push(`vs ${guest.name} ×${fmtMult(guest.attack)}`, `${guest.types.map(typeName).join('/')} on it ×${fmtMult(guest.defend)}`);
-  return <Tip title={`vs ${leader} · ${typeName(type)}`} meta={meta} body={`Its best damaging card ${hit}; ${typeName(type)} attacks: it ${take}.`} footer="Build the answer before the fork: a Gym's own lane offers its type's friends, not its counter." />;
+  return <Tip title={`vs ${leader} · ${typeName(type)}`} meta={meta} body={`Its best damaging card ${hit}; ${typeName(type)} attacks: it ${take}.`} footer="Build the counter in the trunk: a Gym's own lane offers mostly its type's friends." />;
 }
 
 /** §2.3 — a place on the sheet that is refused, and why. */
@@ -1163,7 +1163,7 @@ export function heldItemTip(item: { name: string; description: string }): ReactN
 export function findTip(): ReactNode {
   const n = WILD_TIERS.reduce((a, t) => a + REEL_SHAPE[t], 0);
   const rows = WILD_TIERS.map((t) => `${WILD_TIER_LABEL[t]} ${WILD_TEXT.pct(WILD_TIER_ODDS[t])}`).join(', ');
-  return <Tip title="Item ball" body={`${n} prizes on a reel, by row: ${rows}, each row's share split evenly between its prizes. The reel spun as you picked it up, and what it stops on is already yours.`} footer="A held item or a relic shows only its kind until the reel stops on it: then it is one you do not have yet." />;
+  return <Tip title="Item ball" body={`${n} prizes on a reel, by row: ${rows}, each row's share split evenly between its prizes.`} footer="A held item or a relic shows only its kind until the reel stops on it: then it is one you do not have yet." />;
 }
 
 /** §2.9.5 — one prize on the reel: what it is and its chance (and, once landed, what it turned out to be). */
@@ -1657,17 +1657,26 @@ export function relicPremiumLine(bought: number, listPrice: number): string {
   return `Collector's premium: +${Math.round(RELIC_PREMIUM * 100)} % of the list price (${listPrice.toLocaleString('en-GB')} ₽) for each relic bought this run — ${bought} so far.`;
 }
 
-/** §7.3.7 — the Gym's pick: a Rare and two Uncommons at the first Gym, Legendaries from the second until the cap. */
+/** A pick's rarities in words: ['common', 'uncommon', 'uncommon'] → 'a Common and two Uncommons'. */
+function rarityList(rarities: readonly string[]): string {
+  const counts = new Map<string, number>();
+  for (const r of rarities) counts.set(r, (counts.get(r) ?? 0) + 1);
+  const NUM = ['', 'a', 'two', 'three'];
+  const parts = [...counts].map(([r, n]) => `${NUM[n] ?? n} ${cap(r)}${n > 1 ? 's' : ''}`.replace(/^a (U)/, 'an $1'));
+  return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0] ?? '';
+}
+
+/** §7.3.7 — the Gym's pick: RELIC_REWARD.gymFirstPick at the first Gym, Legendaries from the second until the cap. */
 export function gymRelicTip(legendary: boolean, atCap: boolean): ReactNode {
   return (
     <Tip
       title={legendary ? 'Legendary relics' : atCap ? 'Rare relics' : 'The first Gym’s relics'}
       body={
         legendary
-          ? 'Never on a shop shelf and never dropped — a pick like this, at a Gym victory, is the way to one.'
+          ? 'Never sold or dropped: won at a Gym, from the Legendary on Victory Road, or at the Summit.'
           : atCap
-            ? `You already hold ${LEGENDARY_CAP} Legendaries, the most anyone carries, so this pick is the tier below.`
-            : 'The first Gym pays a Rare and two Uncommons. From the second Gym on, the pick is Legendary.'
+            ? `You already hold ${LEGENDARY_CAP} Legendaries, so this pick is the tier below.`
+            : `The first Gym pays ${rarityList(RELIC_REWARD.gymFirstPick)}. From the second Gym on, the pick is Legendary.`
       }
       footer={`Legendary picks stop at ${LEGENDARY_CAP} a run.`}
     />
@@ -1717,13 +1726,13 @@ const STAT_BODY: Record<string, string> = {
   hp: 'How much it takes before fainting.',
   attack: 'Every move it plays hits this much harder.',
   defense: 'Every hit it takes lands this much softer.',
-  speed: 'Breaks ties: who acts first when both could.',
+  speed: `Paces its critical rhythm. Faster than the enemy Lead, it swaps in for ${DEFAULT_BATTLE_CONFIG.quickSwapDiscount} AP less.`,
 };
 
 /** One stat bar: what it does, and the number before and after, at the Pokémon's level. */
 export function evoStatTip(stat: string, label: string, from: { name: string; value: number }, to: { name: string; value: number } | null, level: number): ReactNode {
   // No path pointed at: the stat as it stands, nothing to compare it with.
-  if (!to) return <Tip title={label} meta={[`Lv ${level}`, `${from.value}`]} body={STAT_BODY[stat] ?? ''} footer={`${from.name} now. Each path's number shows when it is chosen or pointed at.`} />;
+  if (!to) return <Tip title={label} meta={[`Lv ${level}`, `${from.value}`]} body={STAT_BODY[stat] ?? ''} footer={`${from.name} now.`} />;
   const d = to.value - from.value;
   return <Tip title={label} meta={[`Lv ${level}`, `${d >= 0 ? '+' : ''}${d}`]} body={STAT_BODY[stat] ?? ''} footer={`${from.name} ${from.value} → ${to.name} ${to.value}`} />;
 }

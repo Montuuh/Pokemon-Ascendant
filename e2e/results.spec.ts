@@ -18,8 +18,8 @@ async function finish(page: Page, f: Fight): Promise<void> {
     a.run.new(f.starter, f.seed);
     a.run.fill(3);
     if (f.level) for (const m of a.run.state()!.box) a.run.levelTo(f.level, m.uid);
-    // One XP short of the next level (§6.2.1: 12 + 4 a level), so any win levels the team.
-    if (f.xpShare) a.run.patch((d) => { for (const m of d.box) m.xp = 12 + (m.level - 1) * 4 - 1; });
+    // One XP short of the next level (§6.2.1, xpToNext: 32 + 1.2 a level since v0.9.95), so any win levels the team.
+    if (f.xpShare) a.run.patch((d) => { for (const m of d.box) m.xp = Math.round(32 + (m.level - 1) * 1.2) - 1; });
     a.run.heal();
     a.run.dispatch({ type: 'set-active', uids: a.run.state()!.box.slice(0, 3).map((m) => m.uid) });
     a.goTo('map');
@@ -39,7 +39,7 @@ test.describe('The fight\'s end — §9.4.5', () => {
     test.use({ reducedMotion: 'no-preference' });
 
     test('a level gained stops on its panel beside the card, with the fanfare; Skip goes to the end', async ({ page }) => {
-      await finish(page, { starter: 'charmander', seed: 11, level: 8, kind: 'trainer', outcome: 'victory', hp: [14, 30, 22] });
+      await finish(page, { starter: 'charmander', seed: 11, level: 8, xpShare: 1, kind: 'trainer', outcome: 'victory', hp: [14, 30, 22] });
       const results = page.getByTestId('fight-results');
       // The reveal plays: the way on is Skip until it ends.
       await expect(page.getByTestId('btn-skip-results')).toBeVisible();
@@ -52,7 +52,7 @@ test.describe('The fight\'s end — §9.4.5', () => {
       await page.screenshot({ path: 'playtest/results-levelup.png' });
       // The bars and the level were heard.
       const heard = await page.evaluate(() => window.__ascendant!.audio.recent());
-      expect(heard).toContain('exp-fill');
+      expect(heard.some((s) => s.startsWith('exp-fill'))).toBe(true); // a short fill plays 'exp-fill-short'
       expect(heard).toContain('level-up');
       // Escape skips to the end: Continue takes the focus, the panel is gone, the level tag's door shows it again.
       await page.keyboard.press('Escape');

@@ -54,7 +54,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
   const Row = readOnly ? 'div' : 'button';
   const held = mon.heldItem ? content.heldItem(mon.heldItem) : null;
   // The row's bubble is the Pokémon: ability, item, what clicking does. It replaced three native titles.
-  const movesTip = useTip(<Tip title={readOnly ? TEAM_TEXT.waiting(waiting) : 'Move Manager'} meta={[`${mon.pool.length} known`, `${mon.moveIds.length} active`]} body={[pooled > 0 ? `${species.name} knows ${pooled} move${pooled === 1 ? '' : 's'} that ${pooled === 1 ? 'is' : 'are'} not in its four cards.` : null, ready > 0 ? `A stone in the bag can evolve it now.` : null].filter(Boolean).join(' ') || `Choose which four of ${species.name}'s moves go in the deck.`} footer={readOnly ? TEAM_TEXT.panelHint : "A Pokémon's four active moves are its four cards. The pool never shrinks."} />);
+  const movesTip = useTip(<Tip title={readOnly ? TEAM_TEXT.waiting(waiting) : 'Move Manager'} meta={[`${mon.pool.length} known`, `${mon.moveIds.length} active`]} body={[pooled > 0 ? `${species.name} knows ${pooled} move${pooled === 1 ? '' : 's'} that ${pooled === 1 ? 'is' : 'are'} not in its four cards.` : null, ready > 0 ? `A stone in the bag can evolve it now.` : null].filter(Boolean).join(' ') || `Choose which four of ${species.name}'s moves go in the deck.`} footer={readOnly ? TEAM_TEXT.panelHint : "A Pokémon's four active moves are its four cards."} />);
   const rowTip = useTip(
     <Tip
       title={species.name}
@@ -109,7 +109,7 @@ function BoxRow({ mon, active, index, locked, onToggleActive, onSetLead, onOpenM
             <span className="tabular">
               {mon.hp}/{max}
             </span>
-            <Tipped tip={<Tip title={`${mon.xp} / ${xpToNext(mon.level)} XP`} body="To the next level. Every Pokémon on the Active Team earns XP from a fight; the bench earns a share too." />} className={styles.xp} tabIndex={-1}>
+            <Tipped tip={<Tip title={`${mon.xp} / ${xpToNext(mon.level)} XP`} body="XP to level up. The Active Team earns it from every fight; the rest of the Box earns a share." />} className={styles.xp} tabIndex={-1}>
               <span className={styles.xpFill} style={{ width: `${Math.min(100, (mon.xp / xpToNext(mon.level)) * 100)}%` }} />
             </Tipped>
           </span>
@@ -204,7 +204,7 @@ export function BoxPanel({ box, activeUids, onToggleActive, onSetLead, onOpenMov
           <BoxRow key={m.uid} mon={m} active={false} index={-1} locked={locked} onToggleActive={onToggleActive} onSetLead={onSetLead} onOpenMoves={onOpenMoves} stones={stones} readOnly={readOnly} />
         ))}
       </ul>
-      {benched.length === 0 && <p className={styles.empty}>Everyone you have is out front.</p>}
+      {benched.length === 0 && <p className={styles.empty}>{TEAM_TEXT.allOut}</p>}
 
       {locked && <p className={styles.lockNote}>Locked for this node.</p>}
     </div>
