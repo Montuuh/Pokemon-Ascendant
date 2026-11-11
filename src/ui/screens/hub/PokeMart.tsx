@@ -29,9 +29,9 @@ const SHELF_ICON: Record<ShelfId, ReactNode> = {
 
 /** §8.5.2 — the design slot of each meta-starter, in the player's words. */
 const STARTER_BLURB: Record<string, string> = {
-  magikarp: 'Water → Water/Flying. Three cards and a prayer until Gyarados; a monster after.',
+  magikarp: 'Water → Water/Flying. Weak until it evolves into Gyarados.',
   eevee: 'Normal. Its evolution is its type choice — Vaporeon, Jolteon or Flareon.',
-  pikachu: 'Electric. The iconic pick, ranged-leaning. Starts holding a Light Ball.',
+  pikachu: 'Electric, ranged-leaning. Starts holding a Light Ball.',
 };
 
 /** The shelf the Mart opens on: the newest one open (the highest rank's), so a new rank lands you in front of what it opened. */
@@ -69,7 +69,7 @@ export function PokeMart() {
       err === null ? { text: bought[item.kind], tone: 'ok' }
       : err === 'locked' ? { text: `The ${shelfDef.name} shelf opens at ${rankRow(shelfDef.level).name} (rank ${shelfDef.level}).`, tone: 'warn' }
       : err === 'owned' ? { text: `${name} is already yours.`, tone: 'warn' }
-      : err === 'pending' ? { text: `${name} is not sold yet: ${martPending(item, content)}.`, tone: 'warn' }
+      : err === 'pending' ? { text: `${name} is not sold yet.`, tone: 'warn' }
       : err === 'cannot-afford' ? { text: `${name} is ${price} Tokens — you have ${account.tokens}. Every run's end pays some, and so do ranks and Journal entries.`, tone: 'warn' }
       : { text: `The Mart does not sell that.`, tone: 'warn' },
     );
@@ -235,7 +235,7 @@ function MartCard({ item, account, open, onBuy, onWear }: {
       <span className={styles.shelfBody}>
         <span className={`${styles.shelfName} display`}>{name}</span>
         <span className={styles.shelfDesc}>{desc}</span>
-        {pending && <span className={styles.shelfPending}>Not sold yet: {pending}</span>}
+        {pending && <span className={styles.shelfPending}>Not sold yet</span>}
       </span>
       <span className={styles.shelfAction}>
         {owned ? (

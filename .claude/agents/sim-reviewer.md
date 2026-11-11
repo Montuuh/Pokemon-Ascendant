@@ -40,6 +40,9 @@ rule it cites.
 - **Tests.** Colocated, named `Method_Scenario_Expected`, headed by their §, seeded. For a fix: would the test
   fail with the old line back? If you can tell it would not, that is a finding. Goldens regenerated without a
   reason in the diff.
+- **Words the player reads.** Log lines, content descriptions, intent and counterplay text the diff wrote:
+  `node .claude/skills/slop-remover/slop-scan.mjs --changed`, judged against `.claude/skills/slop-remover/SKILL.md`
+  (no implementation talk, no defensive clauses, no § or version on screen).
 - **Derived docs.** A system whose state changed without its `docs/design/implementation-status.md` row; a
   content row in JSON with no catalogue row.
 

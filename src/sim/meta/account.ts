@@ -159,7 +159,7 @@ export const SHELF_ORDER: readonly ShelfId[] = ['starters', 'hub', 'kit', 'corne
 /** §8.4.1 — what each shelf sells and the rank that opens it. */
 export const SHELVES: Record<ShelfId, { name: string; level: number; sells: string }> = {
   starters: { name: 'Starters', level: 3, sells: 'Three more Pokémon to start a run with — each one a secret until you meet it.' },
-  hub: { name: 'Services', level: 3, sells: 'A bigger Box, a second modifier slot, a second starter. Yours for every run, no slot needed.' },
+  hub: { name: 'Services', level: 3, sells: 'A bigger Box, a second modifier slot, a second starter: for every run.' },
   kit: { name: 'Trainer Kit', level: 4, sells: 'Perks you pack before a run: one slot at Challenger, two at Ace, three at Expert.' },
   corner: { name: "Trainer's Corner", level: 3, sells: 'Titles, avatars and frames for the card.' },
 };

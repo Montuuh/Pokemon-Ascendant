@@ -267,7 +267,7 @@ const teamSizeLine = (n: number) => `A team of ${n} Pokémon`;
 /** §2.9.1 — the field nurse. */
 const AID_PREVIEW: NodePreview = {
   title: 'Field nurse',
-  detail: `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays — only a Pokémon Center's Therapy takes it off.`,
+  detail: `${AID_HEAL_PCT} % of max HP back for everyone in the Box, fainted or not, and every status cured. Free. Trauma stays.`,
   speciesIds: [],
   levelBand: [0, 0],
 };
@@ -282,7 +282,7 @@ const MERCHANT_PREVIEW: NodePreview = {
 
 const MYSTERY_PREVIEW: NodePreview = {
   title: 'Something off the path',
-  detail: 'A choice with its outcome stated up front — unless it is a gamble, and then it says that too.',
+  detail: 'A choice, every outcome on its button.',
   speciesIds: [],
   levelBand: [0, 0],
 };

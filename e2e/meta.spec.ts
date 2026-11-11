@@ -375,7 +375,7 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.screenshot({ path: 'playtest/hub-parcel.png' });
     const taken = (await cards.first().getAttribute('data-testid'))!.replace('parcel-card-', '');
     await cards.first().click();
-    await expect(page.getByTestId('parcel-notice')).toContainText('joins the world');
+    await expect(page.getByTestId('parcel-notice')).toContainText('can now turn up in a run');
     await expect(page.getByTestId('vault-count')).toContainText('1 / 55');
     expect(await page.evaluate(() => window.__ascendant!.meta.account().unlocks)).toEqual([taken]);
     // The card just taken has the screen until the player asks for the next parcel: a new offer, without it.
@@ -441,7 +441,7 @@ test.describe('The Field Report — §8.3.6', () => {
     await page.getByTestId('btn-open-parcel').click();
     await expect(page.getByTestId('parcel-sheet')).toBeVisible();
     await page.locator('[data-testid^="parcel-card-"]').first().click();
-    await expect(page.getByTestId('parcel-notice')).toContainText('joins the world');
+    await expect(page.getByTestId('parcel-notice')).toContainText('can now turn up in a run');
     await page.screenshot({ path: 'playtest/run-end-parcel.png' });
     await page.getByTestId('btn-parcel-later').click();
     await expect(page.getByTestId('parcel-sheet')).toHaveCount(0);

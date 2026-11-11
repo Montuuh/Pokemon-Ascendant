@@ -4,10 +4,10 @@ import { TEXT_SCALES, useSettingsStore, VOLUMES, type MotionMode, type TextScale
 import { playSfx } from '@/ui/audio/sfx';
 import { SOUND_TEXT } from '@/ui/strings';
 import { soundTip } from '@/ui/tips';
-import { InfoDot, Tip } from '@/ui/tooltip';
+import { InfoDot } from '@/ui/tooltip';
 import styles from './SettingsScreen.module.css';
 
-// §9.6 — the settings screen. Two rows, both accessibility, both scheduled for v0.5 by name.
+// §9.6 — the settings screen: text size, motion and sound.
 //
 // Each option says what it does in the player's terms rather than in the setting's terms: "Larger" beats
 // "125 %" for the person who needs it and the percentage is there for the person who wants it.
@@ -49,7 +49,6 @@ export function SettingsScreen() {
       <section className={styles.group}>
         <h2 className={styles.groupTitle}>
           Text size
-          <InfoDot tip={<Tip title="Text size" body="Every screen is built to hold together at the largest setting. If something clips at 150 %, that is a bug worth reporting." />} />
         </h2>
         <div className={styles.options} role="group" aria-label="Text size">
           {TEXT_SCALES.map((scale) => (

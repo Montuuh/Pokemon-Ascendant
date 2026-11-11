@@ -431,7 +431,7 @@ export const GYMS: GymDef[] = [
       { species: 'omanyte', phaseCount: 1, moves: ['bubble-beam', 'horn-attack', 'withdraw', 'rock-slide'] },
       { species: 'sandshrew', phaseCount: 1, moves: ['slash', 'sand-attack', 'dig', 'defense-curl'], guest: 'Sand control: Ground coverage and accuracy drops.' },
       // §5.5.2 — Brock's combo: the rocks go down, then Roar drags your Lead out onto them.
-      { species: 'onix', phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'bind', 'screech'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' }, combo: ['stealth-rock', 'roar'] },
+      { species: 'onix', phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'bind', 'screech'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; lower its Attack or finish the ace first.' }, combo: ['stealth-rock', 'roar'] },
     ],
   },
   {
@@ -521,17 +521,17 @@ export const GYM_ROSTER = 2;
 
 /** The v0.9.87 rows, frozen: what a pre-v0.9.88 map's Gym fields. Not content — do not author here. */
 const LEGACY_GYM_TEAMS: Record<string, { species: string; level: number; phaseCount: 1 | 2 | 3; moves?: string[]; signature?: { move: string; response: string } }[]> = {
-  'rock-gym-r1': [{ species: 'geodude', level: 19, phaseCount: 2 }, { species: 'graveler', level: 22, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; reduce its Attack or finish the ace before Resolution.' } }],
-  'water-gym-r1': [{ species: 'krabby', level: 19, phaseCount: 2 }, { species: 'kingler', level: 22, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defence or a KO before its claws land.' } }],
+  'rock-gym-r1': [{ species: 'geodude', level: 19, phaseCount: 2 }, { species: 'graveler', level: 22, phaseCount: 3, moves: ['rock-slide', 'rock-throw', 'harden', 'dig'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead; lower its Attack or finish the ace first.' } }],
+  'water-gym-r1': [{ species: 'krabby', level: 19, phaseCount: 2 }, { species: 'kingler', level: 22, phaseCount: 3, moves: ['crabhammer', 'bubble-beam', 'stomp', 'harden'], signature: { move: 'crabhammer', response: 'Water/Grass resistance, Defense or a KO before its claws land.' } }],
   'bug-gym-r1': [{ species: 'metapod', level: 19, phaseCount: 2 }, { species: 'butterfree', level: 22, phaseCount: 3, moves: ['sleep-powder', 'confusion', 'gust', 'harden'], signature: { move: 'confusion', response: 'Psychic resistance or Dark immunity; reduce the forecast rather than relying on a late Sleep.' } }],
   'normal-gym-r1': [{ species: 'pidgeotto', level: 19, phaseCount: 2 }, { species: 'raticate', level: 22, phaseCount: 3, moves: ['hyper-fang', 'quick-attack-plus', 'dig', 'tail-whip'], signature: { move: 'hyper-fang', response: 'Rock/Steel resistance or Ghost immunity; a defensive swap also answers it.' } }],
   'fire-gym-r2': [{ species: 'growlithe', level: 28, phaseCount: 2 }, { species: 'arcanine', level: 30, phaseCount: 3, moves: ['flamethrower', 'take-down', 'bite-plus', 'roar'], signature: { move: 'flamethrower', response: 'Fire/Water/Rock resistance or damage reduction; remove it before the hit.' } }],
-  'grass-gym-r2': [{ species: 'weepinbell', level: 28, phaseCount: 2 }, { species: 'vileplume', level: 30, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' } }],
-  'electric-gym-r2': [{ species: 'voltorb', level: 28, phaseCount: 2 }, { species: 'electrode', level: 30, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' } }],
-  'poison-gym-r2': [{ species: 'koffing', level: 28, phaseCount: 2 }, { species: 'weezing', level: 30, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance; its recoil follows the damage, not an automatic self-KO.' } }],
-  'psychic-gym-r3': [{ species: 'kadabra', level: 46, phaseCount: 2 }, { species: 'alakazam', level: 49, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' } }],
-  'ground-gym-r3': [{ species: 'nidoqueen', level: 47, phaseCount: 2 }, { species: 'rhydon', level: 50, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' } }],
-  'fighting-gym-r3': [{ species: 'machoke', level: 47, phaseCount: 2 }, { species: 'machamp', level: 50, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' } }],
+  'grass-gym-r2': [{ species: 'weepinbell', level: 28, phaseCount: 2 }, { species: 'vileplume', level: 30, phaseCount: 3, signature: { move: 'petal-dance', response: 'Grass-resistant Lead.' } }],
+  'electric-gym-r2': [{ species: 'voltorb', level: 28, phaseCount: 2 }, { species: 'electrode', level: 30, phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance.' } }],
+  'poison-gym-r2': [{ species: 'koffing', level: 28, phaseCount: 2 }, { species: 'weezing', level: 30, phaseCount: 3, signature: { move: 'self-destruct', response: 'Ghost immunity or Rock/Steel resistance.' } }],
+  'psychic-gym-r3': [{ species: 'kadabra', level: 46, phaseCount: 2 }, { species: 'alakazam', level: 49, phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance.' } }],
+  'ground-gym-r3': [{ species: 'nidoqueen', level: 47, phaseCount: 2 }, { species: 'rhydon', level: 50, phaseCount: 3, signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defense; Water or Grass can KO it first.' } }],
+  'fighting-gym-r3': [{ species: 'machoke', level: 47, phaseCount: 2 }, { species: 'machamp', level: 50, phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance.' } }],
   'ice-gym-r3': [{ species: 'dewgong', level: 47, phaseCount: 2 }, { species: 'cloyster', level: 50, phaseCount: 3, moves: ['ice-beam', 'clamp-plus', 'spike-cannon', 'withdraw-plus'], signature: { move: 'ice-beam', response: 'Water/Fire/Ice/Steel resistance or damage reduction; Fire can also shatter Ice Armour.' } }],
 };
 
@@ -701,7 +701,7 @@ export const TRAINERS_R2: TrainerRoster[] = [
     team: [{ species: 'kadabra', level: 23 }, { species: 'charmeleon', level: 25 }] },
   { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'I have been training since Pallet. Look how big they got!',
     team: [{ species: 'raticate', level: 21 }, { species: 'pidgeotto', level: 22 }] },
-  { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: 'Only one Pokémon. It is the only one I need.',
+  { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: 'One Pokémon. Watch it work.',
     team: [{ species: 'raichu', level: 23 }] },
   { id: 'lass-r2-a', archetype: 'lass', name: 'Lass Dana', sprite: 'lass', line: 'The sea breeze is lovely. So is a good Sleep Powder.',
     team: [{ species: 'gloom', level: 22 }, { species: 'starmie', level: 23 }] },
@@ -722,7 +722,7 @@ export const TRAINERS_R2: TrainerRoster[] = [
     team: [{ species: 'seadra', level: 22 }, { species: 'cloyster', level: 23 }] },
   { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'engineer', line: 'Give me two turns and I will show you a real current.',
     team: [{ species: 'magneton', level: 23 }, { species: 'electrode', level: 25 }] },
-  { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'The plant never sleeps. Neither do I.',
+  { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'Mind the cables. Mine bite.',
     team: [{ species: 'electrode', level: 23 }, { species: 'electabuzz', level: 25 }] },
   { id: 'rocket-grunt-r2-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Hand over anything rare and nobody gets poisoned.',
     team: [{ species: 'weezing', level: 25 }, { species: 'golbat', level: 25 }] },
@@ -793,7 +793,7 @@ export const GYMS_R2: GymDef[] = [
       { species: 'exeggutor', phaseCount: 1, moves: ['razor-leaf', 'psychic', 'leech-seed', 'stomp'] },
       { species: 'victreebel', phaseCount: 1, moves: ['razor-leaf', 'vine-whip-plus', 'slam-plus', 'swords-dance'] },
       // §5.5.2 — the Sun, then a Solar Beam with no charge.
-      { species: 'vileplume', phaseCount: 3, moves: ['petal-dance', 'mega-drain', 'toxic-plus', 'sludge'], signature: { move: 'petal-dance', response: 'Grass-resistant Lead; the move keeps its own self-Confusion drawback.' }, combo: ['sunny-day', 'solar-beam'] },
+      { species: 'vileplume', phaseCount: 3, moves: ['petal-dance', 'mega-drain', 'toxic-plus', 'sludge'], signature: { move: 'petal-dance', response: 'Grass-resistant Lead.' }, combo: ['sunny-day', 'solar-beam'] },
     ],
   },
   {
@@ -807,7 +807,7 @@ export const GYMS_R2: GymDef[] = [
       { species: 'electabuzz', phaseCount: 1, moves: ['thunderbolt', 'quick-attack', 'leer', 'screech'] },
       { species: 'jolteon', phaseCount: 1, moves: ['thunderbolt', 'pin-missile', 'swift', 'sand-attack'] },
       // §5.5.2 — the rain, then a Thunder it makes cheaper.
-      { species: 'electrode', phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance; the signature overrides neither.' }, combo: ['rain-dance', 'thunder'] },
+      { species: 'electrode', phaseCount: 3, moves: ['thunderbolt', 'thunder-wave', 'sonic-boom-plus', 'self-destruct'], signature: { move: 'thunderbolt', response: 'Ground immunity or Electric resistance.' }, combo: ['rain-dance', 'thunder'] },
     ],
   },
   {
@@ -904,13 +904,13 @@ export const REGION3_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
  * intent. Swimmers stay on for the Ice lane, whose cave is the Seafoam kind.
  */
 export const TRAINERS_R3: TrainerRoster[] = [
-  { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: 'Two Pokémon, both at their best. That is all an Ace needs.',
+  { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: 'Two Pokémon at their best. Ready?',
     team: [{ species: 'pidgeot', level: 42 }, { species: 'arcanine', level: 44 }] },
   { id: 'ace-trainer-r3-b', archetype: 'ace-trainer', name: 'Ace Trainer Dario', sprite: 'acetrainerm', line: 'Mind or muscle? I brought both.',
     team: [{ species: 'alakazam', level: 43 }, { species: 'machamp', level: 44 }] },
   { id: 'hex-maniac-r3-a', archetype: 'hex-maniac', name: 'Hex Maniac Vera', sprite: 'hexmaniac', line: 'You cannot see what they are planning. That is the point.', veiled: true,
     team: [{ species: 'hypno', level: 42 }, { species: 'gengar', level: 43 }] },
-  { id: 'hex-maniac-r3-b', archetype: 'hex-maniac', name: 'Hex Maniac Mona', sprite: 'hexmaniac', line: 'The tower tells me your moves. It tells you nothing.', veiled: true,
+  { id: 'hex-maniac-r3-b', archetype: 'hex-maniac', name: 'Hex Maniac Mona', sprite: 'hexmaniac', line: 'The tower whispers your moves to me…', veiled: true,
     team: [{ species: 'mr-mime', level: 42 }, { species: 'slowbro', level: 43 }] },
   { id: 'rocket-grunt-r3-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'The Boss wants this mountain. You are standing on it.',
     team: [{ species: 'weezing', level: 42 }, { species: 'arbok', level: 43 }] },
@@ -920,9 +920,9 @@ export const TRAINERS_R3: TrainerRoster[] = [
     team: [{ species: 'electrode', level: 42 }, { species: 'electabuzz', level: 43 }] },
   { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: 'Porygon was built at Silph. I rebuilt it better.',
     team: [{ species: 'porygon', level: 42 }, { species: 'raichu', level: 43 }] },
-  { id: 'hiker-r3-a', archetype: 'hiker', name: 'Hiker Ernesto', sprite: 'hiker', line: 'This mountain was here before you. So were we.',
+  { id: 'hiker-r3-a', archetype: 'hiker', name: 'Hiker Ernesto', sprite: 'hiker', line: 'Hup! Hup! Mind the loose rocks!',
     team: [{ species: 'rhyhorn', level: 43 }, { species: 'golem', level: 44 }] },
-  { id: 'hiker-r3-b', archetype: 'hiker', name: 'Hiker Ivan', sprite: 'hiker', line: 'I carried Machamp up here. Then it carried me.',
+  { id: 'hiker-r3-b', archetype: 'hiker', name: 'Hiker Ivan', sprite: 'hiker', line: 'I carried Machamp up here myself!',
     team: [{ species: 'rhydon', level: 42 }, { species: 'machamp', level: 44 }] },
   // §2.7.1 (v0.9.107) — sibling classes: the Fighting lane's cave is Kiyo's dojo road, so a Black Belt and a Battle Girl
   // climb it with the Hikers.
@@ -986,7 +986,7 @@ export const GYMS_R3: GymDef[] = [
       { species: 'slowbro', phaseCount: 1, moves: ['surf', 'psychic', 'disable', 'growl'] },
       { species: 'exeggutor', phaseCount: 1, moves: ['razor-leaf', 'stomp', 'leech-seed', 'psychic'] },
       // §5.5.2 — Calm Mind, then the Psychic it sharpens.
-      { species: 'alakazam', phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance; keep its Attack drops in place.' }, combo: ['calm-mind', 'psychic'] },
+      { species: 'alakazam', phaseCount: 3, moves: ['psychic', 'psybeam', 'reflect', 'seismic-toss'], signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance.' }, combo: ['calm-mind', 'psychic'] },
     ],
   },
   {
@@ -1000,7 +1000,7 @@ export const GYMS_R3: GymDef[] = [
       { species: 'dugtrio', phaseCount: 1, moves: ['earthquake', 'slash', 'sand-attack', 'growl'] },
       { species: 'marowak', phaseCount: 1, moves: ['bone-club-plus', 'earthquake', 'headbutt', 'leer'] },
       // §5.5.2 — Rock Polish, then Earthquake on everyone.
-      { species: 'rhydon', phaseCount: 3, moves: ['rock-slide', 'dig', 'stomp-plus', 'tail-whip'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defence; Water or Grass burst can KO it before Resolution.' }, combo: ['rock-polish', 'earthquake'] },
+      { species: 'rhydon', phaseCount: 3, moves: ['rock-slide', 'dig', 'stomp-plus', 'tail-whip'], signature: { move: 'rock-slide', response: 'Rock-resistant Lead and Defense; Water or Grass can KO it first.' }, combo: ['rock-polish', 'earthquake'] },
     ],
   },
   {
@@ -1014,7 +1014,7 @@ export const GYMS_R3: GymDef[] = [
       { species: 'hitmonlee', phaseCount: 1, moves: ['double-kick', 'rolling-kick', 'meditate', 'swift'] },
       { species: 'hitmonchan', phaseCount: 1, moves: ['submission', 'mega-punch', 'fire-punch', 'ice-punch'] },
       // §5.5.2 — Bulk Up, then Submission.
-      { species: 'machamp', phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance; the move keeps its recoil.' }, combo: ['bulk-up', 'submission'] },
+      { species: 'machamp', phaseCount: 3, moves: ['karate-chop', 'submission', 'seismic-toss', 'thunder-punch'], signature: { move: 'submission', response: 'Ghost immunity or Fighting resistance.' }, combo: ['bulk-up', 'submission'] },
     ],
   },
   {

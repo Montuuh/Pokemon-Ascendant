@@ -81,7 +81,7 @@ export const RHYTHM_TEXT = {
   readyBody: (side: 'ally' | 'foe') =>
     side === 'ally' ? 'Its next damaging card is a critical — its cards in your hand wear the ✦ and a gold edge, and their numbers count it.' : 'Its next hit is a critical: CRIT on its intent, and the number there counts it.',
   /** The tooltip's lines: the species' own Speed (the card's number has its level in it), what is moving it now, and how long a full ring takes. */
-  reads: (speed: number, level: number) => (level <= 1 ? `Pace from Speed ${speed}.` : `Pace from the species' Speed ${speed} — the level on the card does not count.`),
+  reads: (speed: number, level: number) => (level <= 1 ? `Pace from Speed ${speed}.` : `Pace from the species' Speed ${speed}, not the level's.`),
   pace: (acts: number, side: 'ally' | 'foe') => `A full ring takes ${acts.toFixed(1)} ${side === 'ally' ? 'AP' : 'actions'}`,
   stage: (stage: number, mult: number) => `Speed ${stage > 0 ? '+' : '−'}${Math.abs(stage)}: × ${mult.toFixed(1)}`,
   paralysed: (mult: number) => `Paralysed: × ${mult.toFixed(1)}`,
@@ -154,7 +154,7 @@ export const STATUS_HINT: Record<string, string> = {
   paralysis: 'Its cards cost +1 AP · half Speed: the quick swap and the critical rhythm slow (3 turns)',
   sleep: 'Cards offline for 1 turn · swapping allowed · curing or replacing it cannot reset the Sleep/Freeze limit',
   freeze: 'Cards offline for 1 turn · position locked · ×1.5 Fire damage · curing or replacing it cannot reset the Sleep/Freeze limit',
-  confusion: 'Fumbles 1 of its own skill cards per draw, if drawn (3 turns). Enemies choose uniformly among legal intents.',
+  confusion: 'Fumbles 1 of its own skill cards per draw, if drawn (3 turns). A confused enemy picks its intent at random.',
 };
 
 export const INTENT_LABEL: Record<string, string> = {
@@ -436,7 +436,7 @@ export function gymRuleText(rule: GymRuleId, g: GymRuleConfig): string {
     case 'rollout':
       return `Her Lead hits ${pct(g.rolloutPerTurn)} harder for every turn in a row your Lead has been the same Pokémon, up to ${pct(g.rolloutPerTurn * g.rolloutMaxTurns)}. A swap resets the roll.`;
     case 'meltdown':
-      return `Every attack his Pokémon land lowers its target's Defence one stage, down to ${g.meltdownFloor}. Spread the hits with swaps, or raise your Defence back.`;
+      return `Every attack his Pokémon land lowers its target's Defense one stage, down to ${g.meltdownFloor}. Spread the hits with swaps, or raise your Defense back.`;
     case 'bloom':
       return `At the end of each turn, each of her Pokémon on the field that took no damage restores ${pct(g.bloomHeal)} of its Max HP. Touch them both: Ranged and area cards, a status that ticks.`;
     case 'overcharge':
@@ -450,7 +450,7 @@ export function gymRuleText(rule: GymRuleId, g: GymRuleConfig): string {
     case 'close-quarters':
       return `Your Ranged cards deal ${pct(g.closeQuartersRanged)} against his Pokémon; your Melee cards ${pct(g.closeQuartersMelee)}. Fight at the front: put your hitter in the Lead.`;
     case 'ice-armour':
-      return `At each Intent phase her Lead's ice armour is set to ${pct(g.iceArmour)} of its Max HP — it takes damage before HP does and never stacks. A Fire move shatters it whole.`;
+      return `Every turn her Lead's ice armour is set to ${pct(g.iceArmour)} of its Max HP — it takes damage before HP does and never stacks. A Fire move shatters it whole.`;
     case 'synergy':
       return `Each fallen ally empowers his teammates: his Pokémon hit ${pct(g.synergyPerFallen)} harder for every one of them you have beaten, up to +${pct(g.synergyCap)}. His last two take the field together.`;
   }
@@ -520,13 +520,13 @@ export const PHASE_TEXT = {
   title: (phase: number, of: number) => `Phase ${phase} of ${of}`,
   /** One line per archetype: what entering Phase 2 changes. */
   phase2: {
-    entrenchment: (def: number) => `Dug in: +${def} Defence, once. It presses the attack.`,
+    entrenchment: (def: number) => `Dug in: +${def} Defense, once. It presses the attack.`,
     onslaught: () => 'Attacks only, and presses them.',
     'status-siege': () => 'Inflicts status wherever it can.',
     'tempo-control': (tax: number) => `Your AP −${tax} each turn while it stands.`,
   },
   phase3: (move: string | null) => (move ? `Last stand: presses the attack and declares ${move} at its next action.` : 'Last stand: presses the attack.'),
-  phase1: 'Its opening phase: no phase effect yet.',
+  phase1: 'No phase effect yet.',
   next: (phase: number, pct: number) => `Phase ${phase} at ${pct} % HP — it starts the turn after the bar crosses the notch.`,
   enters: 'A crossed notch is entered at the next turn’s start; healing never takes it back.',
   answer: (response: string) => `Answer: ${response}`,
@@ -557,13 +557,13 @@ export const OBJECTIVE_TEXT = {
   count: (left: number) => (left <= 1 ? 'last turn' : `${left} turns`),
   fleeTitle: "It won't stay long",
   fleeBody: (turns: number) =>
-    `It gets away at the end of turn ${turns}: no XP, no drop, no catch — and no toll, nothing lost but the chance. Knock it out first for its premium, or weaken it and throw a ball. Asleep or frozen when its last turn begins, it cannot run until it wakes.`,
+    `It gets away at the end of turn ${turns}: no XP, no drop, no catch, and no toll. Knock it out first for its premium, or weaken it and throw a ball. Asleep or frozen when its last turn begins, it cannot run until it wakes.`,
   holdTitle: 'Hold out',
   holdBody: (turns: number, rise: number) =>
     `Keep a Pokémon standing to the end of turn ${turns} and the find is yours — or knock the guard out first. It grows angrier: its Attack rises ${rise === 1 ? 'a stage' : `${rise} stages`} at the end of every turn. A guard is not for catching.`,
   nodeHint: 'A fight: outlast the guard, or knock it out.',
   fled: (name: string) => `${name} fled`,
-  fledBody: 'No XP, no drop, no catch — and no toll. Nothing was lost but the chance.',
+  fledBody: 'No XP, no drop, no catch, and no toll.',
   heldBody: 'You held out: the find is yours.',
   getawayBody: "Its last action: nothing happens to you, and at the end of this turn it is gone. Knock it out or catch it before then.",
   guardMeta: 'On guard — its Attack rises every turn',
@@ -579,7 +579,7 @@ export const nodeHint = (node: { kind: string; preview: { objective?: { kind: st
 
 export const RUN_END_TEXT = {
   victoryTitle: 'Run complete!', defeatTitle: 'Run over',
-  victoryLine: 'Your team made it to the top.', defeatLine: 'Your team, and everything you learned.',
+  victoryLine: 'Your team made it to the top.', defeatLine: 'The team that got you here.',
   team: 'The team you finished with', badges: 'Badges earned', progress: 'Run record',
   closeRecord: 'Back to the team', mainMenu: 'Main menu', runAgain: 'Run again',
   metrics: { regions: 'Regions cleared', nodes: 'Nodes cleared', fights: 'Fights won', turns: 'Turns played', catches: 'Pokémon caught', faints: 'Faints', depth: 'Depth reached' },
@@ -598,7 +598,7 @@ export const NODE_HINT: Record<string, string> = {
   'elite-wild': 'A boss-sized wild Pokémon. Catch it and it joins you; beat it and you take a relic. Never both.',
   aid: 'No fight, so you can walk in with nobody standing.',
   merchant: 'No fight. Once you walk on, the cart is gone.',
-  mystery: 'No fight. A scene and a choice, with every outcome written on the button before you press it.',
+  mystery: 'No fight. A choice, every outcome on its button.',
   cache: 'No fight.',
   trader: 'No fight.',
   gym: 'The Gym Leader. Beat it and the next town is yours to rest in.',
@@ -734,7 +734,7 @@ export const CENTER_TEXT = {
   full: 'As fond as it gets',
   gained: (n: number) => `+${n}`,
   fullLabel: (name: string) => `${name} is as fond of you as it gets`,
-  noTrauma: 'Nobody is carrying Trauma. Your Box is in better shape than most that get this far.',
+  noTrauma: 'Nobody is carrying Trauma.',
   cannotAfford: 'Not enough money',
 };
 
@@ -935,16 +935,16 @@ export const SHELF_LABEL: Record<'clerk' | 'medicine' | 'rare-medicine' | 'tms' 
 };
 /** What each shelf is for, in a line, for its bubble. */
 export const SHELF_HINT: Record<keyof typeof SHELF_LABEL, string> = {
-  clerk: 'Everything on sale here in one list, the Poké Balls with it — and the clerk buys held items back.',
+  clerk: 'Everything on sale. The clerk buys held items back.',
   medicine: 'Potions, status cures and battle items for the fights ahead.',
   'rare-medicine': 'The strongest medicine the store stocks.',
   tms: 'TMs someone in your Box can learn. Single use.',
   held: 'Items a Pokémon wears into every fight.',
-  stones: 'A stone someone in your Box can use to evolve — when there is one.',
+  stones: 'A stone someone in your Box can use to evolve.',
   relics: 'Relics for the whole run, from Common to Rare.',
-  'relics-common': 'The cheapest relics: small, steady edges for the whole run.',
-  'relics-uncommon': 'Dearer relics that bend a rule or reward a plan.',
-  'relics-rare': 'Rare relics — the best the store sells.',
+  'relics-common': 'Common relics, for the whole run.',
+  'relics-uncommon': 'Uncommon relics, for the whole run.',
+  'relics-rare': 'Rare relics, for the whole run.',
 };
 export const SHOP_TEXT = {
   backToTown: BACK_TO_TOWN,
@@ -1097,7 +1097,7 @@ export const CITY_DOOR_HINT: Record<CityDoor, string> & { gatePlain: string } = 
 };
 
 /** §2.11.0 — what a door in development says when you walk in anyway. */
-export const CITY_DOOR_SOON = 'Not open yet — this door is in development.';
+export const CITY_DOOR_SOON = 'Not open yet.';
 
 /** §2.11.6 — the Safari's How to play: one idea a page, in the order a first stalk meets them. */
 type GuideNumbers = { balls: number; clock: number; ap: number };
@@ -1109,7 +1109,7 @@ export const SAFARI_GUIDE = {
   pages: [
     {
       title: 'Pick one to stalk',
-      body: () => 'Today’s Pokémon are on show before you pay. The rings are how many alarms each will take: an Easy one forgives a mistake or two, a Rare bolts at its first — but it is one no route will ever offer you.',
+      body: () => 'Today’s Pokémon are on show before you pay. The rings are how many alarms each will take: an Easy one forgives a mistake or two, a Rare bolts at its first.',
     },
     {
       title: 'Hide in the tall grass',
@@ -1130,7 +1130,7 @@ export const SAFARI_GUIDE = {
     {
       title: 'Mind the balls and the clock',
       body: (n: GuideNumbers) =>
-        `This ticket buys ${n.balls} Safari Balls and ${n.clock} turns for the whole visit, shared by every stalk. You have ${n.ap} actions a turn: a step, a bait or a rock costs one. One or two catches is a good day.`,
+        `This ticket buys ${n.balls} Safari Balls and ${n.clock} turns for the whole visit, shared by every stalk. You have ${n.ap} actions a turn: a step, a bait or a rock costs one.`,
     },
   ] as { title: string; body: (n: GuideNumbers) => string }[],
 };
@@ -1219,7 +1219,7 @@ export const WILD_TIER_LABEL: Record<string, string> = { common: 'Common', uncom
 export const WILD_TIER_HINT: Record<string, string> = {
   common: 'What lives here. Most walks in meet one of these.',
   uncommon: 'Here, but harder to find.',
-  rare: 'A real find. The starters, the fossils and the giants hide in this row. From Region 2, a Rare acts twice.',
+  rare: 'Starters, fossils and the giants. From Region 2, a Rare acts twice.',
 };
 export const WILD_TEXT = {
   pool: 'Who lives here',
@@ -1323,7 +1323,7 @@ export const GUIDE_TEXT = {
   notSold: 'Never sold.',
   // A non-breaking space keeps each amount whole when the line wraps.
   prices: (route: number, city: number) => `${route}\u00a0₽ from the merchant, ${city}\u00a0₽ in a City`,
-  pending: (why: string) => `Not working yet: ${why}`,
+  pending: 'Not yet.',
 };
 
 // ---- Playing a card onto its target (§5.6, v0.9.16) -----------------------------------------------------------------
@@ -1515,7 +1515,7 @@ export const JOURNEY_TEXT = {
     take: 'Take it',
     more: (n: number) => `${n} more waiting`,
     next: (n: number) => (n === 1 ? 'Next parcel' : `Next parcel (${n})`),
-    added: (name: string) => `${name} joins the world: your next run can find it.`,
+    added: (name: string) => `${name} can now turn up in a run.`,
     none: 'No parcel waiting. The next one arrives when Research fills.',
     vaultEmpty: 'The vault is empty: everything is open. A full Research bar pays Tokens now.',
   },
@@ -1572,8 +1572,8 @@ export const JOURNEY_TEXT = {
     more: (n: number) => `${n} more`,
     rank: (name: string, arrives: string) => `${name}: ${arrives}`,
     badge: (name: string) => `${name}, in your Badge Case`,
-    badgeDetail: "The first time you have beaten this Leader. Their TM is in the world now, and they have come to stand in your lobby.",
-    opened: (name: string) => `${name} joins the world`,
+    badgeDetail: "The first time you have beaten this Leader. Their TM can now turn up in a run, and they stand in your lobby.",
+    opened: (name: string) => `${name} unlocked`,
     note: (name: string) => `Field Note: ${name}`,
     parcels: (n: number) => (n === 1 ? "an Oak's Parcel" : `${n} Oak's Parcels`),
     aide: (owned: number, prize: string) => `${owned} species owned: ${prize}`,
@@ -1589,11 +1589,11 @@ export const JOURNEY_TEXT = {
     stars: 'Stars',
     star: (earned: string, got: boolean) => (got ? 'Earned.' : `${earned} to earn it.`),
     badgeCase: 'Badge Case',
-    badgeCaseTip: "Every Badge you have ever won, across every run: a row a Region. A Leader's first Badge brings their TM into the world, and the Leader to your lobby.",
-    badgeGot: (tm: string) => `Won. ${tm} is in the world.`,
+    badgeCaseTip: "Every Badge you have ever won, across every run: a row a Region. A Leader's first Badge unlocks their TM, and brings the Leader to your lobby.",
+    badgeGot: (tm: string) => `Won. ${tm} unlocked.`,
     badgeNot: (tm: string) => `Not won yet. Its Leader holds ${tm}.`,
     road: 'The road ahead',
-    roadTip: "Every Trainer Rank brings someone or something to the lobby — Professor Oak's aide, the Poké Mart clerk, a Kit slot, fuller parcels — and a purse of Tokens with it. Click a stop to read it.",
+    roadTip: "Every Trainer Rank brings someone or something to the lobby — Professor Oak's aide, the Poké Mart clerk, a Kit slot, fuller parcels — and a purse of Tokens with it.",
     roadTotal: (tokens: number, last: string) => `${tokens} Tokens by ${last}.`,
     ladder: (rung: number, top: number) => `Rung ${rung} / ${top}`,
     /** §8.4.3 — the record's tiles: a short label on the card, what counts in its bubble. */

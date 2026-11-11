@@ -67,6 +67,15 @@ A red case is a bug until proven otherwise, and the proof is cheap:
    existing assertion fail for the right reason, restore. An `>` redirect empties a file Vite then serves: restore
    with `cp`/`mv`, never by writing it in place mid-run.
 
+## 4b. Slop — any change that wrote player-facing words
+
+```bash
+node .claude/skills/slop-remover/slop-scan.mjs --changed
+```
+
+Judge each candidate with `.claude/skills/slop-remover/SKILL.md` and fix the Cuts and Shortens before reporting.
+Nothing listed is not a pass on its own: the scanner finds patterns; read the new strings too.
+
 ## 5. Report
 
 - What was verified, with the command output lines that prove it (test counts, screenshot names).

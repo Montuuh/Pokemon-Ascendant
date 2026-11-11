@@ -242,7 +242,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               Make it harder, if you want to
-              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting — the baseline is the floor. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={rung === null && account.ladder === 0 ? JOURNEY_TEXT.ladder.locked : 'A modifier is free for a custom run once its League Ladder rung is won.'} />} />
+              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={rung === null && account.ladder === 0 ? JOURNEY_TEXT.ladder.locked : 'A modifier is free for a custom run once its League Ladder rung is won.'} />} />
             </h2>
             {(openRows.length > 0 || rung !== null) && (
               <p className={styles.xpTally} data-testid="difficulty-xp">
@@ -321,7 +321,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               One relic to start with
-              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only, drawn from your account's pool: it sets a direction, it does not decide the build. Works from the first fight and never comes off." footer={offer.length === 4 ? 'Four offers — the Curated Starting Relic +1 upgrade. You can take none.' : 'You can take none.'} />} />
+              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only, drawn from your account's pool." footer={offer.length === 4 ? 'Four offers — the Curated Starting Relic +1 upgrade. You can take none.' : 'You can take none.'} />} />
             </h2>
             <p className={styles.stepLede}>Works from the first fight. Never comes off.</p>
           </div>
@@ -494,7 +494,7 @@ export function StarterSelect() {
                     <img className={`${styles.moveArt} pixel`} src={moveArt(move.id)} alt="" onError={(e) => (e.currentTarget.style.visibility = 'hidden')} />
                     <span className={styles.moveText}>
                       <b>{move.name}</b>
-                      <small>{describeMoveDef(move) || STARTER_TEXT.noEffect}</small>
+                      <small>{describeMoveDef(move) || (move.power > 0 ? null : STARTER_TEXT.noEffect)}</small>
                     </span>
                     <span className={styles.moveMeta}>
                       <Range size={14} stroke={2.4} aria-label={move.range} />

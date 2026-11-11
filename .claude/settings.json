@@ -17,6 +17,7 @@
       "Bash(node .claude/hooks/ui-review-start.mjs*)",
       "Bash(node --test .claude/hooks/*)",
       "Bash(node scripts/check-*)",
+      "Bash(node .claude/skills/slop-remover/slop-scan.mjs*)",
       "Bash(npx vitest*)",
       "Bash(npx tsc*)",
       "Bash(npx eslint*)",
@@ -68,7 +69,10 @@
     "Stop": [
       {
         "matcher": "",
-        "hooks": [{ "type": "command", "command": "node .claude/hooks/ui-stop.mjs" }]
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/ui-stop.mjs" },
+          { "type": "command", "command": "node .claude/hooks/slop-stop.mjs" }
+        ]
       }
     ]
   }

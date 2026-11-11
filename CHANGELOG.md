@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.111 — Plain words · 2026-11-11
+
+Every string in the game read and cut to what a player needs.
+
+- **Cards.** No more "Deals damage."; a plate says what power cannot.
+- **Tooltips.** One rule said once, not in every bubble; no developer notes.
+- **Bosses.** Each answer line is the counterplay, nothing more.
+- **Fixes.** "an ice", honest words on hidden intents, one Defense, one Center.
+
 ### v0.9.110 — The trainer's journey · 2026-11-10
 
 The account rebuilt, and reset: every run now ends with something new.

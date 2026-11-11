@@ -285,6 +285,14 @@ html[data-motion='reduced'] .crit::after {
   line-height: 1.35;
   min-height: calc(2 * 1.35em + 8px);
 }
+/* A plain attack has nothing to add to its power, type and range: no plate, and the art takes its height
+   (plate + its gap), so every card in the fanned hand keeps one height and the feet stay in line. */
+.plate:empty {
+  display: none;
+}
+.card:has(> .plate:empty) .art {
+  height: calc(90px + 3px + 8px + 2 * 1.35 * var(--type-micro));
+}
 /* Foot: a dark strip, so the glyphs and the "was N" read on every type's frame (D5). */
 .foot {
   display: flex;

@@ -356,7 +356,7 @@
           ],
           "signature": {
             "move": "rock-slide",
-            "response": "Rock-resistant Lead or damage reduction; natural Sturdy is shown on its own."
+            "response": "Rock-resistant Lead or damage reduction."
           }
         }
       ]
@@ -411,7 +411,7 @@
           ],
           "signature": {
             "move": "rock-slide",
-            "response": "Rock-resistant Lead or damage reduction; natural Sturdy is shown on its own."
+            "response": "Rock-resistant Lead or damage reduction."
           }
         }
       ]
@@ -916,7 +916,7 @@
           "phaseCount": 3,
           "signature": {
             "move": "psychic",
-            "response": "Dark immunity or Psychic/Steel resistance; keep its Attack drops in place."
+            "response": "Dark immunity or Psychic/Steel resistance."
           }
         }
       ],
@@ -925,7 +925,7 @@
     {
       "id": "flee-abra",
       "name": "Objective — An Abra that won’t stay",
-      "description": "A flee race (§5.6.5): the Abra teleports away at the end of turn 2. Knock it out first for its premium, or weaken it and throw a ball; put it to sleep and it cannot run.",
+      "description": "A flee race: the Abra teleports away at the end of turn 2. Knock it out first for its premium, or weaken it and throw a ball; put it to sleep and it cannot run.",
       "kind": "wild",
       "stage": "meadow",
       "seed": 1807,
@@ -968,7 +968,7 @@
     {
       "id": "hold-primeape",
       "name": "Objective — A Primeape on guard",
-      "description": "A hold-out (§5.6.5): keep a Pokémon standing to the end of turn 3 against a Primeape that grows angrier every turn — or knock it out first. Not for catching.",
+      "description": "A hold-out: keep a Pokémon standing to the end of turn 3 against a Primeape that grows angrier every turn — or knock it out first. Not for catching.",
       "kind": "wild",
       "stage": "forest",
       "seed": 1808,
@@ -1016,7 +1016,7 @@
     {
       "id": "legendary-mewtwo-barrier",
       "name": "Legendary — Mewtwo in Cerulean Cave",
-      "description": "Victory Road's Apex (§2.12.2): Mewtwo in its arena — Psychic Terrain, and its Barrier every third turn, counted on the top bar. Your Zapdos takes two of the three places (§2.3), so it goes in with one partner.",
+      "description": "Victory Road's Apex: Mewtwo in its arena — Psychic Terrain, and its Barrier every third turn, counted on the top bar. Your Zapdos takes two of the three places, so it goes in with one partner.",
       "kind": "wild",
       "stage": "apex-mewtwo",
       "seed": 2121,
@@ -1061,7 +1061,7 @@
     {
       "id": "legendary-mew-metronome",
       "name": "Legendary — Mew on Faraway Island",
-      "description": "Victory Road's Apex (§2.12.2): Mew in its arena — Metronome redraws the field every turn, the next one shown a turn ahead, and Playful makes it the type of whatever hit it last.",
+      "description": "Victory Road's Apex: Mew in its arena — Metronome redraws the field every turn, the next one shown a turn ahead, and Playful makes it the type of whatever hit it last.",
       "kind": "wild",
       "stage": "apex-mew",
       "seed": 2222,
@@ -1107,7 +1107,7 @@
     {
       "id": "league-champion",
       "name": "League — Champion Blue",
-      "description": "The last door (§5.12): five Pokémon, the first three one after another and the last two together; Full Team Synergy lifts his hits 5 % for every one that falls, up to 20 %, counted on the top bar.",
+      "description": "The last door: five Pokémon, the first three one after another and the last two together; Full Team Synergy lifts his hits 5 % for every one that falls, up to 20 %, counted on the top bar.",
       "kind": "boss",
       "stage": "league-champion",
       "seed": 2323,
@@ -1177,7 +1177,7 @@
           "phaseCount": 3,
           "signature": {
             "move": "petal-dance",
-            "response": "Grass resistance; its own self-Confusion still follows."
+            "response": "Grass resistance."
           }
         }
       ]
@@ -1185,7 +1185,7 @@
     {
       "id": "trainer-gengar-perish",
       "name": "Trainer — Gengar's Perish Song",
-      "description": "A Gengar that holds your Lead with Mean Look, then sings Perish Song: its finisher is shown as next turn's Combo (§5.5.2).",
+      "description": "A Gengar that holds your Lead with Mean Look, then sings Perish Song: its finisher is shown as next turn's Combo.",
       "kind": "trainer",
       "stage": "cave",
       "seed": 1192,
@@ -1239,7 +1239,7 @@
     {
       "id": "trainer-onix-rocks",
       "name": "Trainer — Onix's rocks and Roar",
-      "description": "An Onix that acts twice: Stealth Rock on your side and a Roar that drags your Lead out onto it (§5.2.3).",
+      "description": "An Onix that acts twice: Stealth Rock on your side and a Roar that drags your Lead out onto it.",
       "kind": "trainer",
       "stage": "cave",
       "seed": 1193,

@@ -49,6 +49,10 @@ you read in this session.
    evidence, not a finding: a `motion-ok` reason that holds (gravity, a beat §9.9 times) is not one; a reason
    that does not hold is. When the right fix is to delete the motion, say so — that is the first remedy, not
    the last.
+9. **Hunt the slop** (D1, D10): run `node .claude/skills/slop-remover/slop-scan.mjs --changed` and read every
+   new or changed string the change shows, tooltips included, against `.claude/skills/slop-remover/SKILL.md`:
+   dev leaks, narration of the screen, design or implementation talk, aphorisms, reassurance, a rule repeated in
+   every bubble. Each is a finding with its proposed text.
 
 ## Never
 

@@ -270,7 +270,7 @@ test.describe('Mystery Events — §2.10', () => {
     await expect(page.getByTestId('event-screen')).toBeVisible();
 
     // §2.10.4 — the risk band the map promised is repeated on the page.
-    await expect(page.getByTestId('event-risk')).toContainText(/Safe|Tradeoff|Gamble/);
+    await expect(page.getByTestId('event-risk')).toContainText(/Safe|Trade-off|Gamble/);
 
     // Pillar 1: the button says what it does *before* it is pressed. Every choice carries a detail line.
     const choices = page.locator('[data-testid^="event-choice-"]');

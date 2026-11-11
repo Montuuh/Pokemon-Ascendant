@@ -160,7 +160,7 @@
         "mewtwo",
         "mew"
       ],
-      "description": "A Fire beam that reaches any slot and leaves a Burn behind it more often than it looks."
+      "description": "Teaches Flamethrower: a fire ranged hit of 95 power for 3 AP."
     },
     {
       "id": "tm05-surf",
@@ -212,7 +212,7 @@
         "dragonite",
         "mew"
       ],
-      "description": "A wave across the whole enemy line. The only Cleave most Water types will ever hold."
+      "description": "Teaches Surf: a water ranged hit on every enemy, 70 power for 2 AP."
     },
     {
       "id": "tm06-toxic",
@@ -418,7 +418,7 @@
         "mew",
         "steelix"
       ],
-      "description": "Hits every occupied slot for full damage. Expensive, and worth it against a wide team."
+      "description": "Teaches Earthquake: a ground melee hit on every enemy, 90 power for 3 AP."
     },
     {
       "id": "tm08-body-slam",
@@ -1015,7 +1015,7 @@
         "mewtwo",
         "mew"
       ],
-      "description": "Teaches Ice Beam: a ice ranged hit of 95 power for 3 AP."
+      "description": "Teaches Ice Beam: an ice ranged hit of 95 power for 3 AP."
     },
     {
       "id": "tm14-blizzard",
@@ -1065,7 +1065,7 @@
         "mewtwo",
         "mew"
       ],
-      "description": "Teaches Blizzard: a ice ranged hit of 120 power for 3 AP."
+      "description": "Teaches Blizzard: an ice ranged hit of 120 power for 3 AP."
     },
     {
       "id": "tm15-hyper-beam",
@@ -1619,7 +1619,7 @@
         "mew",
         "magnezone"
       ],
-      "description": "Teaches Thunderbolt: a electric ranged hit of 95 power for 3 AP."
+      "description": "Teaches Thunderbolt: an electric ranged hit of 95 power for 3 AP."
     },
     {
       "id": "tm25-thunder",
@@ -1653,7 +1653,7 @@
         "mew",
         "magnezone"
       ],
-      "description": "Teaches Thunder: a electric ranged hit of 120 power for 3 AP."
+      "description": "Teaches Thunder: an electric ranged hit of 120 power for 3 AP."
     },
     {
       "id": "tm27-fissure",
@@ -2546,7 +2546,7 @@
         "mew",
         "magnezone"
       ],
-      "description": "Teaches Thunder Wave: a electric technique for 1 AP."
+      "description": "Teaches Thunder Wave: an electric technique for 1 AP."
     },
     {
       "id": "tm46-psywave",
@@ -3174,7 +3174,7 @@
         "articuno",
         "mew"
       ],
-      "description": "Teaches Hail: a ice technique for 1 AP."
+      "description": "Teaches Hail: an ice technique for 1 AP."
     },
     {
       "id": "tm61-safeguard",

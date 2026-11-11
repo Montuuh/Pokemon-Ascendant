@@ -52,7 +52,7 @@ export function commitPhases(state: CombatState, ctx: RunCtx): void {
     delete enemy.pendingPhase;
     emit(state, { t: 'phase', enemyUid: enemy.uid, phase: to, from });
     log(state, 'enemy', to >= 3 ? `${enemy.name} makes its last stand!` : `${enemy.name} enters Phase 2!`);
-    if (from < 2 && bossArchetype(enemy) === 'entrenchment') log(state, 'enemy', `${enemy.name} entrenches — race the wall.`);
+    if (from < 2 && bossArchetype(enemy) === 'entrenchment') log(state, 'enemy', `${enemy.name} digs in!`);
   }
 }
 

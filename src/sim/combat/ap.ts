@@ -21,7 +21,7 @@ export function bankAp(state: CombatState, entries: readonly ApSource[]): void {
     const before = state.player.bankedAp;
     state.player.bankedAp += entry.amount;
     (state.player.bankedApSources ??= []).push(entry);
-    log(state, 'ap', `Next turn: +${entry.amount} AP — ${entry.source} (stored ${before} → ${state.player.bankedAp}; current AP unchanged).`);
+    log(state, 'ap', `Next turn: +${entry.amount} AP (${entry.source}).`);
     state.log[state.log.length - 1]!.ap = { kind: 'bank', source: entry.source, requested: entry.amount, before, after: state.player.bankedAp };
   }
 }

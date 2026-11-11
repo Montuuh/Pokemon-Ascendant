@@ -7,7 +7,8 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** `guard`: the sim's Guard for this card's owner (`CardPlayability.guard`); without one the card names the hit it stops. */
 export function describeMoveDef(move: MoveDef, opts: { guard?: number | null } = {}): string {
   const parts: string[] = [];
-  if (move.power > 0) parts.push(move.targeting === 'cleave' ? 'Hits every enemy.' : 'Deals damage.');
+  // A damaging card prints its power, type and range already; the plate carries only what they do not say.
+  if (move.power > 0 && move.targeting === 'cleave') parts.push('Hits every enemy.');
   for (const fx of move.effects) {
     if (fx.kind === 'status') parts.push(`${fx.chance >= 1 ? '' : `${Math.round(fx.chance * 100)}% `}${cap(fx.status)}${fx.self ? ' (self)' : ''}.`);
     if (fx.kind === 'stage') parts.push(`${fx.stages > 0 ? '+' : ''}${fx.stages} ${cap(fx.stat)} (${fx.target === 'self' ? 'self' : fx.target === 'foe-side' ? 'all foes' : fx.target === 'bench' ? 'your bench' : 'foe'}).`);

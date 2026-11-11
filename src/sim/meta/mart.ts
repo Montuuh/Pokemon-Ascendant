@@ -88,7 +88,7 @@ export function martOwned(account: AccountState, item: MartItem, content: Conten
 export function martPending(item: MartItem, content: ContentRegistry): string | null {
   if (item.kind === 'hub') return HUB_UPGRADE_LABEL[item.id]?.pending ?? null;
   // §8.5.2 — a starter priced before its kit ships is on the shelf, and not sold, until the kit is there.
-  if (item.kind === 'starter' && !content.hasSpecies(item.id)) return 'its move kit is not written yet';
+  if (item.kind === 'starter' && !content.hasSpecies(item.id)) return 'not yet';
   return null;
 }
 

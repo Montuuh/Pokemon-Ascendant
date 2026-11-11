@@ -55,7 +55,11 @@ Tiebreaker: when Pokémon faithfulness conflicts with pacing or a pillar, pacing
 1. `npm run check` — must be green; paste failures, never summarise them away.
 2. UI change → `npm run shot` then **Read** the PNG(s) in `playtest/`, or open the dev server in the browser tool and screenshot. Hover/drag/animation: Playwright actions or the browser tool, then screenshot.
 3. UI change → **the UI review** (`.claude/skills/ui-review`): `npm run ui:audit` measures the changed screens, the `ui-reviewer` agent judges them against `docs/design/ui-doctrine.md`, you fix, then `node .claude/hooks/ui-clear.mjs`. A hook queues every edit under `src/ui`/`src/app` and the Stop hook will not end the turn while the queue is unreviewed (defer on purpose: `.claude/state/ui-skip`).
-4. State questions → `window.__ascendant.dump()` in the browser console / `javascript_tool`.
+4. **Text change → the slop pass** (`.claude/skills/slop-remover`), every agent, at the end of every change that
+   writes a word the player reads (screens, tooltips, strings, card and log text, content prose, CHANGELOG):
+   `node .claude/skills/slop-remover/slop-scan.mjs --changed`, then judge each candidate Cut / Shorten / Move /
+   Keep. The `slop-stop` Stop hook blocks once on the strong patterns (dev leaks, narration, AI vocabulary).
+5. State questions → `window.__ascendant.dump()` in the browser console / `javascript_tool`.
 Never claim "tests pass" or "looks right" without the output or the image in this session.
 
 ## Design canon lives in `docs/design/` (Notion is retired)
@@ -76,18 +80,20 @@ state, and any place the build still disagrees with canon.
 
 - Small, reversible change: do it, verify, report.
 - Feature / multi-file: state the plan in a few lines (files, approach, § touched), then build unless the user objects. Ask only when different readings would produce materially different work.
-- **Commit and push every finished unit to `main`** — the user's standing instruction. Conventional commits
-  (`feat(sim): …`, `feat(ui): …`, `content: …`, `design: …`, `docs: …`), no attribution lines, never force.
-  **Only a big, player-informative change is a version** (design and large art changes — `docs/release-doctrine.md`
-  R0); a small one is committed and pushed without a number, a changelog line or any stamp.
+- **Work ships in packages** (the user's call, 2026-11-11; `docs/release-doctrine.md` R0): a themed set of
+  improvements and features, built and verified step by step, then **one commit and one push to `main`** when the
+  whole package is done — fewer commits, each large and focused, each read like a big update of the game. A package
+  a player can see ships as a version (the next patch, its changelog entry, every stamp); a workshop/docs-only
+  package is one commit with no number. Small fixes ride in the package in progress; only a hotfix (lost run or
+  save, soft-lock, wrong result) ships alone. Conventional commits, no attribution lines, never force.
   **Other agents work in this folder too**: stage only your own files (`docs/session/standing-facts.md`, *Working in
   a shared folder*).
 - **Reply to the user in Spanish**; code, docs, commits and game text stay in English (en-GB). How the user works
   — delegated taste calls, art permissions, playtest findings — is `docs/session/standing-facts.md`, *Working
   with the user*: read it before your first reply.
-- End of a task: update `docs/session/active.md` (≤ 30 lines) and, if scope moved, `docs/roadmap.md`.
+- End of a package: update `docs/session/active.md` (≤ 30 lines) and, if scope moved, `docs/roadmap.md`.
 - **Every version ships with its changelog and is stamped everywhere** — `docs/release-doctrine.md`, walked by
-  `.claude/skills/ship-version`; a version is for a change that earns one (R0), not for every commit: the `CHANGELOG.md` entry (the game's What's new screen reads it; brief and technical — the main
+  `.claude/skills/ship-version`; a version is for a package a player can see (R0), not for every commit: the `CHANGELOG.md` entry (the game's What's new screen reads it; brief and technical — the main
   points, no roleplay; a release takes the next patch, there is no `## Next`), `npm version X.Y.Z --no-git-tag-version`, the roadmap mark, the
   README Status line, the session header. `npm run check:version` fails the check until all of them agree.
 - Subagents (`.claude/agents/`): `designer` for pillar/balance review, `sim-reviewer` for a sim or content diff before it is committed, `qa` for edge-case hunts, `ui-reviewer` for every visual change (doctrine in `docs/design/ui-doctrine.md`), `canon-auditor` for drift between canon, catalogues, JSON and code, `playtester` to play a fight or a run and bring back the report. Use them for review, not for writing code in parallel on the same files.

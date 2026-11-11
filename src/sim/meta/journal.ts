@@ -56,7 +56,7 @@ export function journalReward(a: Pick<AchievementDef, 'id' | 'tier'>): JournalRe
 
 export type JournalShelf = 'notes' | 'challenges' | 'milestones';
 export const JOURNAL_SHELVES: readonly { id: JournalShelf; name: string; about: string }[] = [
-  { id: 'notes', name: 'Field Notes', about: 'Do a thing once. The relic that carries the deed is yours.' },
+  { id: 'notes', name: 'Field Notes', about: 'One deed, one relic.' },
   { id: 'challenges', name: 'Challenges', about: 'Win under a constraint.' },
   { id: 'milestones', name: 'Milestones', about: 'The totals, across every run.' },
 ];
@@ -101,7 +101,7 @@ export function journalEntries(account: AccountState, content: ContentRegistry, 
     return {
       id: noteId(r.id), shelf: 'notes' as const, name: r.name, description: r.discovery!.text, tier: null,
       have: done ? r.discovery!.goal : Math.min(r.discovery!.goal, account.counters[r.discovery!.counter] ?? 0), goal: r.discovery!.goal,
-      done, hidden: false, prize: locked ? `${r.name} joins the world` : "An Oak's Parcel", pinned: account.pins.includes(noteId(r.id)),
+      done, hidden: false, prize: locked ? `${r.name} unlocked` : "An Oak's Parcel", pinned: account.pins.includes(noteId(r.id)),
     };
   });
   const medals: JournalEntry[] = ACHIEVEMENTS.map((a) => {

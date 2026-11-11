@@ -11,7 +11,11 @@
 //        node .claude/skills/slop-remover/slop-scan.mjs --surface tooltip --all
 //        node .claude/skills/slop-remover/slop-scan.mjs --json playtest/slop/candidates.json   every string, for an audit
 //        node .claude/skills/slop-remover/slop-scan.mjs --code                 code slop in the scope as well
+//        node .claude/skills/slop-remover/slop-scan.mjs --changed              only what this change wrote (vs HEAD)
+//        --min 3   only strings that trip a weight-3 pattern (leaks, narration, AI vocabulary, reassurance, D1)
+//        --hook    one line per finding and nothing else (used by .claude/hooks/slop-stop.mjs)
 //        --dev  include the dev-only screens (cheats, scenario picker)
+import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import ts from 'typescript';
@@ -26,6 +30,7 @@ const jsonOut = opt('--json');
 const showAll = flag('--all');
 const withCode = flag('--code');
 const withDev = flag('--dev');
+const changedOnly = flag('--changed');
 const rel = (p) => relative(ROOT, p).split(sep).join('/');
 
 // ── Where a string is shown ─────────────────────────────────────────────────────────────────────────────────
@@ -50,6 +55,11 @@ const PATTERNS = [
   [
     /§\s?\d|\bv\d+\.\d+(\.\d+)?\b|\b(TODO|FIXME|XXX|lorem|placeholder|fixture|reducer|payload|the sim|config|undefined|NaN|null)\b/i,
     'internal leak (D10)',
+    3,
+  ],
+  [
+    /\b(not working yet|in this build|(a|until a) later version|in development|not written yet|not in the game yet|coming soon|work in progress|stub|uniformly|legal (intents|moves|options))\b/i,
+    'dev or roadmap leak (D10)',
     3,
   ],
   [/\b(the player'?s?|players|the user)\b/i, 'talks about the player in third person', 2],
@@ -366,8 +376,54 @@ for (const s of strings) {
   if (dupes && new Set(dupes).size >= 2) s.tags.push([`repeated in ${new Set(dupes).size} places`, 1]);
   s.score = s.tags.reduce((a, [, w]) => a + w, 0);
 }
-const pool = surfaceFilter ? strings.filter((s) => s.surface.startsWith(surfaceFilter)) : strings;
+// ── --changed: only the strings this change wrote (vs HEAD, untracked files included) ───────────────────────
+// A TS string counts when its line is an added line of `git diff -U0 HEAD`; a JSON or changelog string when its
+// text is not in the HEAD copy of the file. Pre-existing slop in a touched file is not this change's to answer.
+function changedFilter() {
+  const git = (...a) => {
+    const r = spawnSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    return r.status === 0 ? r.stdout : '';
+  };
+  const added = new Map();
+  let file = null;
+  for (const line of git('diff', '-U0', '--no-color', 'HEAD').split('\n')) {
+    const f = /^\+\+\+ b\/(.+)$/.exec(line);
+    if (f) {
+      file = f[1];
+      added.set(file, new Set());
+      continue;
+    }
+    const h = /^@@ -\S+ \+(\d+)(?:,(\d+))? @@/.exec(line);
+    if (h && file) for (let i = 0; i < Number(h[2] ?? 1); i++) added.get(file).add(Number(h[1]) + i);
+  }
+  const untracked = new Set(git('ls-files', '--others', '--exclude-standard').split('\n').filter(Boolean));
+  const headCopy = new Map();
+  const head = (f) => {
+    if (!headCopy.has(f)) headCopy.set(f, git('show', `HEAD:${f}`));
+    return headCopy.get(f);
+  };
+  return (s) => {
+    const m = /^(.+?)(?::(\d+))?$/.exec(s.at);
+    const f = m[1];
+    if (untracked.has(f)) return true;
+    if (!added.has(f)) return false;
+    if (m[2] && /\.tsx?$/.test(f)) return added.get(f).has(Number(m[2]));
+    const before = f === 'CHANGELOG.md' ? head(f).replaceAll('**', '') : head(f);
+    return !before.includes(f.endsWith('.json') ? JSON.stringify(s.text).slice(1, -1) : s.text);
+  };
+}
+const minWeight = Number(opt('--min', '0'));
+let pool = surfaceFilter ? strings.filter((s) => s.surface.startsWith(surfaceFilter)) : strings;
+if (changedOnly) pool = pool.filter(changedFilter());
+if (minWeight) pool = pool.filter((s) => s.tags.some(([, w]) => w >= minWeight));
 const flagged = pool.filter((s) => s.score > 0).sort((a, b) => b.score - a.score || b.words - a.words);
+
+// --hook: one line per finding, nothing else (the Stop hook reads it).
+if (flag('--hook')) {
+  for (const s of flagged)
+    console.log(`${s.at} [${s.tags.map(([t]) => t).join('; ')}] "${s.text.slice(0, 140)}"`);
+  process.exit(0);
+}
 
 // ── Code slop (opt-in) ──────────────────────────────────────────────────────────────────────────────────────
 const code = [];

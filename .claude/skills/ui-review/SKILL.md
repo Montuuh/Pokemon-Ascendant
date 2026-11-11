@@ -58,6 +58,8 @@ launching the agent, and for every round after a fix:
   painted before a node's transparent hit box loses its clicks.
 - **Both motion switches** for anything that moves: Settings → Reduced and the system preference.
 - **The test that fails without the fix** — written and seen red.
+- **The words.** `node .claude/skills/slop-remover/slop-scan.mjs --changed`, and every new string read against the
+  `slop-remover` skill: the copy is fixed before the agent spends a round on it.
 
 Then say in the brief what you already measured, so the agent spends its round on what you could not.
 

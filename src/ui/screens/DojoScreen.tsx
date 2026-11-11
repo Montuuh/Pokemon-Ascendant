@@ -334,7 +334,7 @@ export function DojoScreen() {
                             locked
                               ? RUN_REJECT_TEXT['ability-locked']
                               : def.hook === 'none'
-                                ? 'No effect until a later version.'
+                                ? 'Not yet.'
                                 : equipped
                                   ? 'Already equipped.'
                                   : 'Replaces the current passive. One slot per Pokémon.'

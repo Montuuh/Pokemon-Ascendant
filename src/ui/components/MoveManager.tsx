@@ -147,7 +147,7 @@ export function MoveManager({ uid, onClose, embedded = false }: Props) {
           <p className={styles.sub}>
             {mon.archetype ? `${ARCHETYPE_LABEL[mon.archetype]} · ` : ''}
             {mon.abilityId ? content.ability(mon.abilityId).name : 'no passive yet'}
-            {mon.abilityId && content.ability(mon.abilityId).hook === 'none' && ' (inert in this build)'}
+            {mon.abilityId && content.ability(mon.abilityId).hook === 'none' && ' (not yet)'}
           </p>
         </div>
         <Tipped

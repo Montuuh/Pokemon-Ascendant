@@ -76,7 +76,7 @@ export function ItemCard(props: ItemCardProps) {
   // The card's own face stays short; this is where the sentence lives.
   const tip = useTip(
     kind === 'tm' ? (
-      tmTip(id, pending ? `Not working yet: ${pending}` : tipNote)
+      tmTip(id, pending ? 'Not yet.' : tipNote)
     ) : (
       <Tip
         icon={
@@ -95,7 +95,7 @@ export function ItemCard(props: ItemCardProps) {
         body={description}
         footer={
           pending
-            ? `Not working yet: ${pending}`
+            ? 'Not yet.'
             : (tipNote ??
               (kind === 'stone' ? "Used from a Pokémon's Move Manager, between nodes." : undefined))
         }
@@ -150,7 +150,7 @@ export function ItemCard(props: ItemCardProps) {
         <span className={styles.desc}>{description}</span>
         {pending && (
           <span className={styles.pending}>
-            <IconAlertTriangle size={13} /> {pending}
+            <IconAlertTriangle size={13} /> Not yet
           </span>
         )}
       </span>

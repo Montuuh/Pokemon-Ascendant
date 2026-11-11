@@ -5,7 +5,7 @@
       "id": "overgrow",
       "name": "Overgrow",
       "category": "combat",
-      "description": "Grass moves deal +20% damage while HP is below 30%.",
+      "description": "Grass moves deal +20 % damage while HP is below 30 %.",
       "hook": "low-hp-type-boost",
       "params": {
         "type": "grass"
@@ -16,7 +16,7 @@
       "id": "blaze",
       "name": "Blaze",
       "category": "combat",
-      "description": "Fire moves deal +20% damage while HP is below 30%.",
+      "description": "Fire moves deal +20 % damage while HP is below 30 %.",
       "hook": "low-hp-type-boost",
       "params": {
         "type": "fire"
@@ -27,7 +27,7 @@
       "id": "torrent",
       "name": "Torrent",
       "category": "combat",
-      "description": "Water moves deal +20% damage while HP is below 30%.",
+      "description": "Water moves deal +20 % damage while HP is below 30 %.",
       "hook": "low-hp-type-boost",
       "params": {
         "type": "water"
@@ -38,7 +38,7 @@
       "id": "tough-claws",
       "name": "Tough Claws",
       "category": "combat",
-      "description": "Melee moves deal +15% damage.",
+      "description": "Melee moves deal +15 % damage.",
       "hook": "range-boost",
       "params": {
         "range": "melee",
@@ -50,7 +50,7 @@
       "id": "snipe",
       "name": "Snipe",
       "category": "combat",
-      "description": "Ranged moves deal +15% damage.",
+      "description": "Ranged moves deal +15 % damage.",
       "hook": "range-boost",
       "params": {
         "range": "ranged",
@@ -513,7 +513,7 @@
       "id": "infiltrator",
       "name": "Infiltrator",
       "category": "Positional",
-      "description": "Its moves ignore a target's raised Defence.",
+      "description": "Its moves ignore a target's raised Defense.",
       "hook": "ignore-defence-stages",
       "gdd": "§6.8.3"
     },
@@ -532,7 +532,7 @@
       "id": "weak-armor",
       "name": "Weak Armor",
       "category": "Survival",
-      "description": "When a hit lands on it: Defence −1, Attack +1.",
+      "description": "When a hit lands on it: Defense −1, Attack +1.",
       "hook": "on-damaged-stages",
       "params": {
         "defense": -1,

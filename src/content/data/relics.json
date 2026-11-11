@@ -329,7 +329,7 @@
       "categories": [
         "combat"
       ],
-      "description": "Every second manual swap, the incoming Lead gains Defence +1.",
+      "description": "Every second manual swap, the incoming Lead gains Defense +1.",
       "hook": "reactive-stage",
       "params": {
         "on": "swap-count",
@@ -617,7 +617,7 @@
       "categories": [
         "combat"
       ],
-      "description": "The first time your Lead drops below half HP, the whole bench gains Defence +1.",
+      "description": "The first time your Lead drops below half HP, the whole bench gains Defense +1.",
       "hook": "reactive-stage",
       "params": {
         "on": "lead-low",
@@ -755,7 +755,7 @@
       "categories": [
         "combat"
       ],
-      "description": "Once per Region, the first Pokémon that would faint survives at 1 HP. The feather regrows with each new Region.",
+      "description": "Once per Region, the first Pokémon that would faint survives at 1 HP.",
       "hook": "endure",
       "params": {
         "scope": "team",
@@ -878,7 +878,7 @@
       "categories": [
         "combat"
       ],
-      "description": "No enemy intent is ever hidden from you, and you see each one a turn ahead. It commits to it unless it can no longer play it.",
+      "description": "No enemy intent is ever hidden from you, and you see each one a turn ahead.",
       "hook": "reveal-intents",
       "also": {
         "hook": "intent-queue"
@@ -1008,7 +1008,7 @@
       "categories": [
         "combat"
       ],
-      "description": "See each enemy's next intent a turn ahead. It commits to it unless it can no longer play it.",
+      "description": "See each enemy's next intent a turn ahead.",
       "hook": "intent-queue",
       "tier": 3
     },

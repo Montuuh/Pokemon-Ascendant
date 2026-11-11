@@ -4,12 +4,12 @@ import { motion } from 'motion/react';
 import { Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
 import { getContent } from '@/content/registry';
-import { BOND_RANKS, MAX_BOND_RANK, UNMET_NAME, bondRank, normalizeDexEntry, speciesMet } from '@/sim';
+import { MAX_BOND_RANK, UNMET_NAME, bondRank, normalizeDexEntry, speciesMet } from '@/sim';
 import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { bondRulesText, dexCardTip, hallRunTip } from '@/ui/tips';
+import { dexCardTip, hallRunTip } from '@/ui/tips';
 import { JOURNEY_TEXT } from '@/ui/strings';
 import journey from './Journey.module.css';
 import { ShinyMark } from '@/ui/components/ShinyMark';
@@ -69,7 +69,7 @@ export function PcTerminal() {
         <div className={styles.dexHead}>
           <p className={styles.lede} data-testid="dex-legend">
             {met} of {species.length} met · {linesPlayed} of {linesTotal} lines played{shinies > 0 ? ` · ${shinies} shin${shinies === 1 ? 'y' : 'ies'}` : ''}.
-            <InfoDot tip={<Tip title="The Pokédex" body={`Every species there is. A silhouette is one you have not met yet — its name, types and kit stay unknown until it takes the field against you or with you; the pips are its line's Bond rank. Each sheet keeps the record — faced, knocked out, caught, what your own copies did — the kit, and the line: stages, Bond and what each rank opens. A sparkle marks a species you have caught shiny. ${bondRulesText()} Ranks at ${BOND_RANKS.join(' · ')}.`} />} />
+            <InfoDot tip={<Tip title="The Pokédex" body="Every species there is. A silhouette: not met yet. The pips: its line's Bond rank. A sparkle: caught shiny." />} />
           </p>
           <div className={styles.order} role="group" aria-label="Order">
             <button type="button" className={`${styles.orderBtn} ${order === 'dex' ? styles.orderOn : ''}`} onClick={() => setOrder('dex')} aria-pressed={order === 'dex'} data-testid="dex-order-dex">By number</button>

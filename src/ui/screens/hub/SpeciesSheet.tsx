@@ -69,14 +69,14 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
             {met && (
               <>
                 <Tipped tip={<Tip title={`${cap(s.rarity)} species`} body={`Familiar after ${familiarAt} knock-out${familiarAt === 1 ? '' : 's'}. Catch ceiling with a Poké Ball at ~0 HP: ${Math.round(catchRateOf(s.id, content) * 100)} %.`} />} className={styles.heroChip}>{cap(s.rarity)}</Tipped>
-                <Tipped tip={<Tip title={s.stage === 'basic' ? 'Basic form' : s.stage === 'stage1' ? 'First evolution' : 'Final evolution'} body={s.evolvesTo.length ? `${evolveSentence(s.id, content)} The Kit tab has where.` : 'This line goes no further.'} />} className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</Tipped>
+                <Tipped tip={<Tip title={s.stage === 'basic' ? 'Basic form' : s.stage === 'stage1' ? 'First evolution' : 'Final evolution'} body={s.evolvesTo.length ? evolveSentence(s.id, content) : 'This line goes no further.'} />} className={styles.heroChip}>{s.stage === 'basic' ? 'Basic' : s.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}</Tipped>
               </>
             )}
             <button type="button" className={styles.heroChip} onClick={() => setTab('line')} data-testid="dex-sheet-line">
               {lineName} line · {rank > 0 ? BOND_RANK_NAME[rank] : 'no Bond yet'}
             </button>
           </div>
-          <Tipped tip={<Tip title={`${lineName} line — ${rank > 0 ? BOND_RANK_NAME[rank] : 'no Bond yet'}`} meta={[`${points} Bond`]} body={bondProgress(points).next === null ? 'Every rank open.' : `${bondProgress(points).next! - points} more Bond to ${BOND_RANK_NAME[rank + 1]}.`} footer={`Ranks at ${BOND_RANKS.join(' · ')}. The line tab has what each one opens.`} />}>
+          <Tipped tip={<Tip title={`${lineName} line — ${rank > 0 ? BOND_RANK_NAME[rank] : 'no Bond yet'}`} meta={[`${points} Bond`]} body={bondProgress(points).next === null ? 'Every rank open.' : `${bondProgress(points).next! - points} more Bond to ${BOND_RANK_NAME[rank + 1]}.`} footer={`Ranks at ${BOND_RANKS.join(' · ')}.`} />}>
             <BondBar points={points} compact />
           </Tipped>
         </div>
@@ -105,8 +105,8 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
                   ? <><b>Familiar.</b> Its hidden intents are shown from turn one, every fight.</>
                   : !met
                     // §8.9.2 — the count would give its rarity away, so an unmet species gets no number.
-                    ? <>Knock it out to start toward Familiar — then its hidden intents show from turn one.</>
-                    : <><b>{Math.max(0, familiarAt - entry.defeats)}</b> more knock-out{familiarAt - entry.defeats === 1 ? '' : 's'} to Familiar — then its hidden intents show from turn one.</>}
+                    ? <>Knock it out to start toward Familiar.</>
+                    : <><b>{Math.max(0, familiarAt - entry.defeats)}</b> more knock-out{familiarAt - entry.defeats === 1 ? '' : 's'} to Familiar.</>}
               </span>
               <InfoDot tip={<Tip title="Familiar" body="Knock a species out — wild or on a trainer's team, with any of your Pokémon — enough times and you know it: its hidden intents are shown from the first turn of every fight after. Catching it does not count." footer={`${DEX_FAMILIAR.common} knock-outs for a common species, ${DEX_FAMILIAR.uncommon} for an uncommon one, ${DEX_FAMILIAR.rare} for a rare one.${met ? ` ${name} is ${s.rarity}: ${familiarAt}.` : ''}`} />} />
             </div>
@@ -135,17 +135,17 @@ export function SpeciesSheet({ speciesId, account, initialTab = 'record', onSpec
 function Record({ entry, leadTurns }: { entry: ReturnType<typeof normalizeDexEntry>; leadTurns: number }) {
   const tiles: { key: string; icon: ReactNode; label: string; value: number; tip: string }[] = [
     { key: 'met', icon: <IconEye size={18} />, label: 'Faced', value: entry.encounters, tip: 'Fights it took the field against you.' },
-    { key: 'ko', icon: <IconSwords size={18} />, label: 'Knocked out', value: entry.defeats, tip: 'Times your side knocked one out. This is what makes it Familiar.' },
+    { key: 'ko', icon: <IconSwords size={18} />, label: 'Knocked out', value: entry.defeats, tip: 'Times your side knocked one out.' },
     { key: 'caught', icon: <IconPokeball size={18} />, label: 'Caught', value: entry.caught, tip: 'Times one went into a Poké Ball.' },
     { key: 'recruits', icon: <IconUsers size={18} />, label: 'Recruited', value: entry.recruits, tip: 'Times one joined your Box — caught or offered.' },
     { key: 'wins', icon: <IconTrophy size={18} />, label: 'Fights won with', value: entry.winsWith, tip: 'Fights won while it was on your Active Team.' },
     { key: 'runs', icon: <IconFlag size={18} />, label: 'Runs finished', value: entry.runsFinishedWith, tip: 'Runs that ended, won or lost, with it on your Active Team.' },
-    { key: 'kos', icon: <IconTargetArrow size={18} />, label: 'KOs landed', value: entry.knockouts, tip: 'Enemies your copies finished — the blow, not the burn.' },
+    { key: 'kos', icon: <IconTargetArrow size={18} />, label: 'KOs landed', value: entry.knockouts, tip: 'Enemies your copies knocked out with a hit.' },
     { key: 'dmg', icon: <IconWand size={18} />, label: 'Damage dealt', value: entry.damageDealt, tip: 'Every point your copies dealt to an enemy.' },
     { key: 'faints', icon: <IconHeartBroken size={18} />, label: 'Fainted', value: entry.faints, tip: 'Times a copy of yours went down.' },
     { key: 'lead', icon: <IconCrown size={18} />, label: 'Turns as Lead', value: leadTurns, tip: 'Turns a copy of yours spent in the Lead slot.' },
     { key: 'evo', icon: <IconArrowsShuffle size={18} />, label: 'Evolved', value: entry.evolutions, tip: 'Times a copy of yours evolved from this form.' },
-    { key: 'shiny', icon: <IconSparkles size={18} />, label: 'Shinies caught', value: entry.shinyCaught, tip: `Shinies of it that joined your Box — your collection; one is enough to show its palette here. Met ${entry.shinySeen} time${entry.shinySeen === 1 ? '' : 's'}: they are rare, and the line's Shiny Charm makes them less so.` },
+    { key: 'shiny', icon: <IconSparkles size={18} />, label: 'Shinies caught', value: entry.shinyCaught, tip: `Shinies of it that joined your Box. Met ${entry.shinySeen} time${entry.shinySeen === 1 ? '' : 's'}.` },
   ];
   return (
     <dl className={styles.record}>

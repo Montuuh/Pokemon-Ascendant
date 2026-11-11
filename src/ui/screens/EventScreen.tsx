@@ -4,6 +4,8 @@ import { useRunStore } from '@/app/runStore';
 import { mysteryEvent, RISK_LABEL, type EventRisk } from '@/sim';
 import { Money, Price } from '@/ui/components/Money';
 import { RUN_REJECT_TEXT } from '@/ui/strings';
+import { eventRiskTip } from '@/ui/tips';
+import { useTip } from '@/ui/tooltip';
 import { EventVignette } from './events/EventVignette';
 import { EventChoiceLoot } from './events/EventChoiceLoot';
 import styles from './EventScreen.module.css';
@@ -21,12 +23,6 @@ const RISK_ICON: Record<EventRisk, typeof IconDice> = {
   gamble: IconDice,
 };
 
-const RISK_BLURB: Record<EventRisk, string> = {
-  safe: 'Nothing here can hurt you.',
-  tradeoff: 'Something is given up for something gained.',
-  gamble: 'A stated chance, both sides shown.',
-};
-
 export function EventScreen() {
   const run = useRunStore((s) => s.run)!;
   const dispatch = useRunStore((s) => s.dispatch);
@@ -35,6 +31,7 @@ export function EventScreen() {
   const event = mysteryEvent(run.pendingEvent!);
   const result = run.eventResult;
   const RiskIcon = RISK_ICON[event.risk];
+  const riskTip = useTip(eventRiskTip(event.risk));
 
   function choose(option: number) {
     if (!dispatch({ type: 'choose-event', option })) {
@@ -46,9 +43,9 @@ export function EventScreen() {
   return (
     <main className={styles.root} data-testid="event-screen" data-risk={event.risk}>
       <header className={styles.topBar}>
-        <span className={styles.risk} data-testid="event-risk">
+        <span className={styles.risk} data-testid="event-risk" {...riskTip}>
           <RiskIcon size={18} />
-          {RISK_LABEL[event.risk]} · {RISK_BLURB[event.risk]}
+          {RISK_LABEL[event.risk]}
         </span>
         <span className={styles.wallet}>
           <Money amount={run.money} size={18} />

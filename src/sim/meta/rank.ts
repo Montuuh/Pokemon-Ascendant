@@ -23,8 +23,8 @@ export interface RankRow {
  * after about runs 1 · 2 · 4 · 7, the last after about forty (`balance/accountCareer.test.ts`).
  */
 export const RANKS: readonly RankRow[] = [
-  { rank: 1, name: 'Newcomer', xp: 0, tokens: 0, arrives: 'The nurse, the PC and the League door', why: 'The lobby as you find it.' },
-  { rank: 2, name: 'Rookie', xp: 300, tokens: 5, arrives: "Professor Oak's aide", why: "Oak's Parcels and the Trainer Journal: new things for the world, and deeds to chase." },
+  { rank: 1, name: 'Newcomer', xp: 0, tokens: 0, arrives: 'The nurse, the PC and the League door', why: 'Where every trainer starts.' },
+  { rank: 2, name: 'Rookie', xp: 300, tokens: 5, arrives: "Professor Oak's aide", why: "Oak's Parcels and the Trainer Journal: things to unlock, and deeds to chase." },
   { rank: 3, name: 'Trainer', xp: 1000, tokens: 10, arrives: 'The Poké Mart clerk', why: 'The Mart opens: starters, services, and things to wear and hang.' },
   { rank: 4, name: 'Challenger', xp: 2200, tokens: 10, arrives: 'The Trainer Kit desk', why: 'One Kit slot: a perk you pack before every run.' },
   { rank: 5, name: 'Ace', xp: 3800, tokens: 15, arrives: 'A second Kit slot', why: 'Two perks a run.' },

@@ -91,7 +91,7 @@
           "id": "ivysaur-support",
           "archetype": "support",
           "label": "Grove Keeper",
-          "description": "The bulb is a supply line, not a weapon. Softens whoever your Lead has to face.",
+          "description": "Softens whoever your Lead has to face.",
           "to": "ivysaur",
           "upgrades": [
             {
@@ -163,7 +163,7 @@
           "id": "venusaur-vanguard",
           "archetype": "vanguard",
           "label": "Titanvine",
-          "description": "The flower is a siege engine. Everything is heavy and everything is close.",
+          "description": "Heavy, and up close.",
           "to": "venusaur",
           "upgrades": [
             {
@@ -182,7 +182,7 @@
           "id": "venusaur-specialist",
           "archetype": "specialist",
           "label": "Sporelord",
-          "description": "Reach, and then more reach — up to the four-AP one nothing survives.",
+          "description": "Works from the bench, and poisons.",
           "to": "venusaur",
           "upgrades": [
             {
@@ -440,7 +440,7 @@
           "id": "charizard-vanguard",
           "archetype": "vanguard",
           "label": "Drakewing",
-          "description": "Stops being a Fire type in a fight and starts being a dragon.",
+          "description": "Fights in the air, up close.",
           "to": "charizard",
           "upgrades": [
             {
@@ -738,7 +738,7 @@
           "id": "blastoise-specialist",
           "archetype": "specialist",
           "label": "Hydrocannon",
-          "description": "Never moves. Never has to — the whole enemy line is in range.",
+          "description": "Heavy water and ice, from the bench.",
           "to": "blastoise",
           "upgrades": [
             {
@@ -1525,7 +1525,7 @@
           "id": "pidgeot-specialist",
           "archetype": "specialist",
           "label": "Galecaller",
-          "description": "Owns the air.",
+          "description": "Every hit from the bench.",
           "to": "pidgeot",
           "upgrades": [
             {
@@ -1673,7 +1673,7 @@
           "id": "raticate-vanguard",
           "archetype": "vanguard",
           "label": "Fangrunner",
-          "description": "Bites once, hard.",
+          "description": "Sets up, then bites hard.",
           "to": "raticate",
           "upgrades": [
             {
@@ -1694,7 +1694,7 @@
           "id": "raticate-specialist",
           "archetype": "specialist",
           "label": "Scavenger",
-          "description": "Fights dirty and never where you expect.",
+          "description": "Chips from the bench, and slams when it leads.",
           "to": "raticate",
           "upgrades": [
             {
@@ -3335,7 +3335,7 @@
           "id": "golbat-vanguard",
           "archetype": "vanguard",
           "label": "Nightfang",
-          "description": "Feeds on the fight.",
+          "description": "Drains with every bite, and wipes the enemy's set-up.",
           "to": "golbat",
           "upgrades": [
             {
@@ -3508,7 +3508,7 @@
           "id": "gloom-specialist",
           "archetype": "specialist",
           "label": "Toxicbloom",
-          "description": "Stops pretending to be a Grass type.",
+          "description": "Poison first, then sleep.",
           "to": "gloom",
           "upgrades": [
             {
@@ -5345,7 +5345,7 @@
           "id": "machoke-vanguard",
           "archetype": "vanguard",
           "label": "Ironfist",
-          "description": "Pure forward pressure — and it hits harder for every scrape it is carrying.",
+          "description": "Breaks the enemy's Defense, then submits it.",
           "to": "machoke",
           "upgrades": [
             {
@@ -5440,7 +5440,7 @@
           "id": "machamp-vanguard",
           "archetype": "vanguard",
           "label": "Colossus",
-          "description": "Four arms, one plan.",
+          "description": "All Melee, all power.",
           "to": "machamp",
           "upgrades": [
             {
@@ -6101,7 +6101,7 @@
           "id": "golem-support",
           "archetype": "support",
           "label": "Bastion",
-          "description": "Sits down in the Lead slot and refuses to be a problem the team has to solve.",
+          "description": "A Lead that guards and keeps hitting.",
           "to": "golem",
           "upgrades": [
             {
@@ -10444,7 +10444,7 @@
           "id": "gyarados-vanguard",
           "archetype": "vanguard",
           "label": "Seaserpent",
-          "description": "The joke ends here. Everything that was flailing becomes a bite.",
+          "description": "Every flail becomes a bite, and it rampages.",
           "to": "gyarados",
           "upgrades": [
             {
@@ -10465,7 +10465,7 @@
           "id": "gyarados-specialist",
           "archetype": "specialist",
           "label": "Stormbringer",
-          "description": "Rises as weather, and opens with a Dragon the chart has no answer to.",
+          "description": "Dragon and water from range.",
           "to": "gyarados",
           "upgrades": [
             {
@@ -10811,7 +10811,7 @@
           "id": "eevee-dark",
           "archetype": "support",
           "label": "Umbreon",
-          "description": "Dark. The deepest Defence of the four, and it bites back.",
+          "description": "Dark. The deepest Defense of the four, and it bites back.",
           "to": "umbreon",
           "upgrades": [
             {

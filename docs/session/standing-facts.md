@@ -11,8 +11,10 @@
 
 - **Reply in Spanish.** The user writes in Spanish; code, docs, commits and every string in the game stay in
   English (en-GB), because the game's localisation is its own version (v1.1).
-- **Commit and push every finished unit to `main`** — the user's standing instruction, which is the
-  authorisation `CLAUDE.md`'s workflow refers to. Conventional commits, **no attribution lines**, never force.
+- **Work ships in packages, one commit and one push each** (the user's call, 2026-11-11, replacing "commit and
+  push every finished unit"): a themed package of improvements and features is built and verified in steps, then
+  committed and pushed to `main` once, like a big update of the game (`docs/release-doctrine.md` R0). That standing
+  authorisation is what `CLAUDE.md`'s workflow refers to. Conventional commits, **no attribution lines**, never force.
 - **Taste calls are delegated.** "Lo que mejor quede", "deja las que mejor creas": decide, record the rationale
   where the rule lives, say what you chose. **The written design is mutable** (2026-09-24): a better name, idea
   or item is written in directly. Only a change of the game's direction goes to the user; an idea the user likes
@@ -20,9 +22,9 @@
 - **Art:** permission to download and to generate images is standing. Fetch every real object (Pokémon,
   items, badges, trainers, battle backdrops); generate only invented scenes. Never generate a Pokémon.
 - **Every version ships by `docs/release-doctrine.md`** (the `ship-version` skill): a `CHANGELOG.md` entry the
-  game shows as What's new, and the version stamped everywhere; `npm run check:version` guards it. **Only a big,
-  player-informative change is a version** (design, large art; R0, the user's call 2026-10-28): small changes are
-  committed and pushed with no version suffix, no changelog line and no stamp.
+  game shows as What's new, and the version stamped everywhere; `npm run check:version` guards it. **A package a
+  player can see is a version** (R0, 2026-11-11): its changelog entry is named after the package. A package nobody
+  plays (workshop, tooling, docs) is one commit with no version; small fixes wait for the next package.
 - **Playtest findings arrive in chat** ("I found that…"); they go to the roadmap — a fix into the next
   subversion, an idea into the backlog — never only into the reply.
 - **The user runs other agents in this same folder** (other Claude sessions; the Codex setup was retired on

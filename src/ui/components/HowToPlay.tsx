@@ -37,7 +37,7 @@ const RULES = [
   {
     icon: IconEye,
     title: 'The enemy tells you first',
-    body: 'Every turn the enemy shows what it will do, to which slot, and for how much. Nothing is hidden and nothing is random about it. Read the chip, then decide who should be standing there.',
+    body: 'Every turn the enemy shows what it will do, to which slot, and for how much. Some intents start hidden until you know the species. Read the chip, then decide who should be standing there.',
   },
   {
     icon: IconTargetArrow,
@@ -47,7 +47,7 @@ const RULES = [
   {
     icon: IconSparkles,
     title: 'Four cards, a growing pool',
-    body: 'Levelling, evolving and the Dojo all add moves, but a Pokémon still contributes exactly four. The rest wait in its pool — open the Move Manager from any Box row to change which four. Evolution asks you to pick an archetype, and that choice is what makes the run yours.',
+    body: 'Levelling, evolving and the Dojo all add moves, but a Pokémon still contributes exactly four. The rest wait in its pool — open the Move Manager from any Box row to change which four. Evolution asks you to pick an archetype.',
   },
 ] as const;
 
@@ -61,17 +61,17 @@ const ROUTE_RULES = [
   {
     icon: IconCoins,
     title: 'Money buys three things',
-    body: 'Fights pay Poké Dollars. The Poké Mart sells a shelf you get one visit at, the Dojo sells tutor moves and passive abilities for as long as you can pay, and the Pokémon Centre sells Therapy. Your balance is on the map, next to the route, because that is where you decide whether a stop is worth it.',
+    body: 'Fights pay Poké Dollars. The Poké Mart sells a shelf you get one visit at, the Dojo sells tutor moves and passive abilities for as long as you can pay, and the Pokémon Center sells Therapy. Your balance is on the map, next to the route.',
   },
   {
     icon: IconVaccineBottle,
     title: 'Relics are free, items are worn',
-    body: 'A relic works from the moment you pick it up, for the rest of the run, and there is nothing to equip. A Held Item is one per Pokémon and does nothing in the bag — put it on someone from the bag button on the map. The loadout locks when you enter a node, so it is the map or nowhere.',
+    body: 'A relic works from the moment you pick it up, for the rest of the run, and there is nothing to equip. A Held Item is one per Pokémon and does nothing in the bag — put it on someone from the bag button on the map. The loadout locks when you enter a node.',
   },
   {
     icon: IconHeartBroken,
     title: 'Fainting leaves a mark',
-    body: 'A Pokémon that faints carries a Trauma stack for the rest of the run, and each stack costs it Max HP permanently. Nothing heals it back — not levelling, not a Centre’s free restore. Only the Centre’s Therapy takes a stack off, and it charges more the worse it already is.',
+    body: 'A Pokémon that faints carries a Trauma stack for the rest of the run, and each stack costs it Max HP permanently. Nothing heals it back — not levelling, not a Center’s free restore. Only the Center’s Therapy takes a stack off, and it charges more the worse it already is.',
   },
 ] as const;
 
@@ -102,8 +102,7 @@ export function HowToPlay({ onClose }: { onClose: () => void }) {
   return (
     <Modal title="How to play" testId="how-to-play" size="reading">
       <p className={styles.intro}>
-        A roguelike deckbuilder where the party is the deck. Six rules and you can start; the four after them
-        are about the route between the fights, and they keep until your first Poké Mart.
+        A roguelike deckbuilder where the party is the deck. Six rules to start; four more for the route.
       </p>
 
       <h2 className={styles.group}>In a fight</h2>

@@ -349,7 +349,7 @@ function applyConsumable(state: CombatState, cardId: string, targetIndex: number
         return;
       }
       player.tally.catchFails += 1;
-      log(state, 'player', `${enemy.name} broke free! (${Math.round(odds.chance * 100)}% — weaken it, or status it, and try again)`);
+      log(state, 'player', `${enemy.name} broke free!`);
       break;
     }
   }

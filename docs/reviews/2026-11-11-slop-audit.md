@@ -1,7 +1,11 @@
 # Slop audit — the whole game — 2026-11-11
 
 > Skill: `.claude/skills/slop-remover` (audit mode, read-only). Build: `e61a65d0` + working tree, v0.9.110.
-> Nothing was edited. Every proposal below is a candidate for `slop-remover apply`.
+> **Applied in v0.9.111 (*Plain words*)**, every section, the same day: ~930 words gone, 135 rewrites plus the
+> card template, the spellings and the dev leaks. Two species-path lines turned out to be wrong, not just wordy
+> (Gyarados sets no Rain; Machoke does not scale with Trauma), and the event risk pill had become "Safe · Safe" once
+> its blurb was cut, so the blurb went. Left as they were, on purpose: trainer dialogue except six two-beat lines,
+> Mystery scenes, the About disclaimer, and the changelog's minor summaries (a minor sums its patches by design, R2).
 
 ## Scope and method
 

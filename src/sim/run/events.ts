@@ -307,7 +307,7 @@ export function assertEventContent(content: ContentRegistry): void {
 /** The risk badge the map shows before you commit (§2.10.4). */
 export const RISK_LABEL: Record<EventRisk, string> = {
   safe: 'Safe',
-  tradeoff: 'Tradeoff',
+  tradeoff: 'Trade-off',
   gamble: 'Gamble',
 };
 

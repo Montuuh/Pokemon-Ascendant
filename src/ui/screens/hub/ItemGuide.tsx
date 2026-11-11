@@ -223,7 +223,7 @@ function Detail({ kind, id, icon }: { kind: PricedKind; id: string; icon: string
         </div>
       </header>
       <p className={styles.description}>{body}</p>
-      {pending && <p className={styles.pending}>{GUIDE_TEXT.pending(pending)}</p>}
+      {pending && <p className={styles.pending}>{GUIDE_TEXT.pending}</p>}
       <dl className={styles.facts}>
         {facts.map(([k, v]) => (
           <div key={k} className={styles.fact}>

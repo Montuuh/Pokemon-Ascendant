@@ -144,7 +144,7 @@
         "kind": "catch",
         "ballMultiplier": 1
       },
-      "description": "A catch attempt at the chance shown on the wild Pokémon. Costs the ball whether it works or not.",
+      "description": "A catch attempt at the chance shown on the wild Pokémon.",
       "gdd": "§2.6.4 (CL-014)"
     },
     {
@@ -157,7 +157,7 @@
         "kind": "catch",
         "ballMultiplier": 1.5
       },
-      "description": "A catch attempt at 1.5× the Poké Ball's chance. Costs the ball whether it works or not.",
+      "description": "A catch attempt at 1.5× the Poké Ball's chance.",
       "gdd": "§2.6.4.2 (v0.8.6)"
     },
     {
@@ -170,7 +170,7 @@
         "kind": "catch",
         "ballMultiplier": 2
       },
-      "description": "A catch attempt at twice the Poké Ball's chance. Costs the ball whether it works or not.",
+      "description": "A catch attempt at twice the Poké Ball's chance.",
       "gdd": "§2.6.4.2 (v0.8.6)"
     },
     {
@@ -184,7 +184,7 @@
         "ballMultiplier": 1,
         "sure": true
       },
-      "description": "A catch attempt that cannot fail: the ball holds whatever it is thrown at.",
+      "description": "A catch attempt that cannot fail.",
       "gdd": "§2.6.4.2 (v0.9.9)"
     },
     {
@@ -224,7 +224,7 @@
         "kind": "revive",
         "percent": 50
       },
-      "description": "Bring a fainted Pokémon back at half HP. The only revival there is inside a fight.",
+      "description": "Bring a fainted Pokémon back at half HP.",
       "gdd": "§2.4.3"
     },
     {

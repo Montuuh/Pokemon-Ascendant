@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.110 — The trainer's journey** (Beta). The account is rebuilt, and older accounts start again: a run's end is a Field Report that pays on screen; part of the game's relics, held items and TMs starts locked and comes back in Oak's Parcels, one of three; nine Trainer Ranks bring people to a lobby that fills, with a Badge Case for every Leader beaten; Bond has six ranks and Ribbons; a Trainer Kit packs perks before a run, and a League Ladder waits after the first win. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
+**v0.9.111 — Plain words** (Beta). Every string in the game read and cut to what a player needs: cards say only what their power and type do not, each rule is said once, boss answers are the counterplay and nothing more. Before it, v0.9.110 rebuilt the account: a Field Report at a run's end, Oak's Parcels, nine Trainer Ranks and a lobby that fills, Bond in six ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
 
 ## Run it locally
 

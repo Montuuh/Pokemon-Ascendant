@@ -1540,6 +1540,19 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.111 — Plain words  ✅ 2026-11-11
+
+**Shipped.** The first package under the package doctrine (release-doctrine R0, the user's call 2026-11-11: one
+commit per themed package, like a big update). A full read of every player-facing string — 3 538 strings, about
+30 000 words, and all 101 screens measured — with the new `slop-remover` skill
+(`docs/reviews/2026-11-11-slop-audit.md`), then every finding applied: "Deals damage." off the cards (118 moves
+said nothing else), the Trauma and Familiar rules said once instead of in every bubble, boss answer lines without
+their defensive clauses, dev and roadmap wording out of the game, aphorisms out of the evolution paths (two of
+which were wrong: Gyarados sets no Rain, Machoke does not scale with Trauma), TM articles ("an ice"), the two
+"nothing is hidden" claims made true, "Defense" and "Pokémon Center" everywhere. About 930 words gone. The slop
+pass is now part of every agent's verification loop, with a Stop hook (`slop-stop.mjs`) that blocks once on the
+strong patterns. `npm run check`, the screens and touched e2e (56), the UI audit and the UI review.
+
 ### v0.9.110 — The trainer's journey  ✅ 2026-11-10
 
 **Shipped.** The user (2026-11-10): "noto que un jugador no progresa mucho cuando termina una partida, y es lo que

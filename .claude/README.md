@@ -53,6 +53,7 @@ Reviewers, not parallel writers. Each returns findings; the main session does th
 | PostToolUse (edits) | `ui-change.mjs` | queues an edited UI file for review |
 | PostToolUse (edits) | `post-edit.mjs` | content JSON parses · sim stays pure · § citations and catalogue ids resolve · `active.md` within 30 lines |
 | Stop | `ui-stop.mjs` | holds the turn open while UI edits are unreviewed |
+| Stop | `slop-stop.mjs` | blocks once when the change wrote player-facing text with a strong slop pattern (dev leak, narration, AI vocabulary, reassurance); passes on the retry |
 | (called by the ui-review skill) | `ui-review-start.mjs`, `ui-clear.mjs` | mark a review in flight; stamp it done and empty the queue |
 
 A hook must be fast (well under a second), silent when it has nothing to say, and exit 0 on anything it does not

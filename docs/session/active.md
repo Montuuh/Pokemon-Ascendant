@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-10 · **Version:** v0.9.110 (*The trainer's journey*).
+**Date:** 2026-11-11 · **Version:** v0.9.111 (*Plain words*).
+**Shipped 2026-11-11 (v0.9.111):** the slop pass, the first package under the package doctrine (R0: one commit a package): ~150 strings cut across the game (docs/reviews/2026-11-11-slop-audit.md); slop-remover now in every agent's loop + slop-stop hook. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.110):** the meta-progression rework, all four phases (§8, §6.8; proposal claude.ai/artifact/PWynspTEvWfyvYbDTESPcW): Field Report, vault + Oak's Parcels, Journal, Bond ×6 + Ribbons, nine Ranks, the lobby that fills, Badge Case, Trainer Kit, League Ladder, Hall of Fame. **Account v4 resets.** Not built: Leaders' challenges, lobby decorations. **After it (no version):** two ui-reviewer passes fixed (Field Report never scrolls or outgrows 720p, Journal tiles, Kit desk, Ladder pips, lobby people; `victory-full` audit preset); the Kit's ceiling measured on first-Gym clear rate (§8.4.5, `balance/kitCeiling.test.ts`): Head Start 2 → 1 level, all within +3 / +8. Five stale e2e fixed after it (ring plates, catch pill, TM bubble icon now on its 30 px grid); `ring-art:43` is flaky under load (reads sprites before they load). Changelog regrouped by theme; "Beta" beside the version. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.109):** route people face the viewer at 4/3 of the tiles (`personScale`, hit box × `--person-k`);
 the Gym is the only building (no houses, pond, Center or Mart). UI review Ship with fixes, fixed. **Waiting on the user's look.**
@@ -8,7 +9,6 @@ the Gym is the only building (no houses, pond, Center or Mart). UI review Ship w
 fought on its leaning track, cleared obstacles gone, Mysteries a "?" again; landmark pixel a step under the tiles (D9, left). R1 22 %.
 **Shipped 2026-11-09 (v0.9.107):** the route review's three phases (report claude.ai/artifact/XW2ciawxqoNer3HW7eKySU): a FRLG route — one pixel density, frame, chapters, buildings and set pieces from pret, FRLG weather, §2.5.5 obstacles/ledge (`run/routeFeatures.ts`). 26 e2e failures predate it.
 **Shipped 2026-11-07 (v0.9.106):** FRLG visual tasks on a Pokémon play on its sprite (`MON_TASKS`, `mons` in useCombatFx, `.fx-mon-*` in motion.css, §9.9.2). All five causes of the move review are now addressed (report artifact claude.ai/artifact/MB5SLkZH3qHyK2LT85KZVa). **Waiting on the user's look.**
-**Shipped 2026-11-04 (v0.9.99–v0.9.97):** Common-heavy sources, relic unlocks off (`RELIC_UNLOCKS_ON`), rarities re-tiered by power, a relic balance pass (§7.3.1). **Waiting on verdict.**
 **Shipped 2026-11-04 (v0.9.96 / v0.9.95):** Gen III stat and damage formulas, starters' 3rd move, sure first catch;
 enemies ×1, lower levels, less XP. Harness R1 9 % (floors). **Waiting on verdict**; if Gyms wall, cut structure.
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
@@ -23,8 +23,8 @@ slower XP curve) R1 58 · R2|R1 46 · R3|R2 44 · League 71 · run 8 %; Region t
 
 **UI debt:** audit dead-CSS scan follows only modules imported as styles; Text over gradients/images is not measured by the audit. Shortlisted later: web-design-guidelines, break-ui, kill-ai-slop scanner. Every visual implementation still needs measured audit plus independent ui-reviewer, not just captures.
 **Motion:** D11/D12 in ui-doctrine.md; docs/design/ui/motion-review.md; System/Reduced/Full matrix, ui:motion, real-time ui:film. Ready-cue audio/impact synchronisation debt above remains.
-**Workshop:** CLAUDE.md/.claude are versioned (map: .claude/README.md); state, patches and local settings stay local. Added 2026-11-11: guard + post-edit hooks, agents sim-reviewer/canon-auditor/playtester, skills sim-rule/content-add/bugfix/session-close, context7 in .mcp.json. Codex setup retired (AGENTS.md, .agents, .codex deleted): Claude Code only. Skill slop-remover + full-game audit (docs/reviews/2026-11-11-slop-audit.md, ~150 strings, nothing applied yet).
+**Workshop:** CLAUDE.md/.claude versioned (map: .claude/README.md); state, patches, local settings stay local. Claude Code only (Codex retired 2026-11-11). Hooks: guard, post-edit, ui-stop, slop-stop. **Packages** (R0, 2026-11-11): one commit+push per themed package; a version when players see it.
 **Shared server:** verify game identity, pin seed 7, default four Playwright workers; never stop another app on 5173. Wait for images before geometry.
-**Shipping:** release-doctrine R0 — player-informative design/art earns a version; documentation-only work is maintenance, committed/pushed to main without changing stamps. Keep verified, implemented and published states distinct.
+**Shipping:** release-doctrine R0 — work ships in packages, one commit each; a package players see is a version, a docs/workshop one is not. Keep verified, implemented and published states distinct.
 
 Earlier release details and evidence pointers: [roadmap](../roadmap.md), [implementation status](../design/implementation-status.md), [standing facts](standing-facts.md). Art review history (closed) remains under playtest/art-review-2026-10-24/.
