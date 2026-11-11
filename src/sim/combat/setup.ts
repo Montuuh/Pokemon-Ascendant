@@ -116,6 +116,7 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
     insight: [...(scenario.player.insight ?? [])],
     stage: scenario.stage,
     trainer: scenario.trainer ? { ...scenario.trainer } : null,
+    ...(scenario.opening ? { opening: scenario.opening } : {}),
     ...(scenario.wildTier ? { wildTier: scenario.wildTier } : {}),
     // §5.9.5 — the Leader's rule rides in with its Gym, and only with it.
     ...(scenario.gymRule ? { gymRule: scenario.gymRule } : {}),
@@ -246,10 +247,15 @@ export function createCombat(scenario: ScenarioDef, ctx: CombatCtx, seedOverride
   }
 
   emit(state, { t: 'combat-start' });
+  // Per §2.7 — the series' opening: a trainer challenges, then speaks; an Elite Wild or a Legendary is narrated, then appears.
+  if (scenario.opening && !scenario.trainer) log(state, 'system', scenario.opening);
   log(state, 'system', scenario.trainer ? `${scenario.trainer.name} wants to battle!` : `A wild ${listNames(state.enemies.map((e) => e.name))} appeared!`);
+  if (scenario.opening && scenario.trainer) log(state, 'system', `${scenario.trainer.name}: “${scenario.opening}”`);
   for (const e of state.enemies) emit(state, { t: 'enemy-enter', enemyUid: e.uid });
 
   beginTurn(state, { ...ctx, rng });
+  // Per §2.7 — the opening stands until the log grows past this: the first thing the player does.
+  if (state.opening) state.openingUntil = state.log.length;
   state.rngCursor = rng.cursor;
   return state;
 }

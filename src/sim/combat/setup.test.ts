@@ -38,7 +38,12 @@ describe('createCombat — §3.2.1 Combat Start', () => {
   });
 
   it('Start_HpPercentAndStatus_SeedMidFightState', () => {
-    const s = start(scenario({ team: [{ species: 'charmander', level: 11, hpPercent: 50, status: 'poison' }], enemies: [PIDGEY] }));
+    const s = start(
+      scenario({
+        team: [{ species: 'charmander', level: 11, hpPercent: 50, status: 'poison' }],
+        enemies: [PIDGEY],
+      }),
+    );
     const c = s.player.team[0]!;
     expect(c.hp).toBe(Math.round(c.maxHp / 2));
     expect(c.status?.kind).toBe('poison');
@@ -46,7 +51,12 @@ describe('createCombat — §3.2.1 Combat Start', () => {
 
   it('Start_CarriedStatus_KeepsItsClock_§4.2.7.1', () => {
     // A status carried in from the run's last fight resumes with what was left of it, not a fresh duration.
-    const s = start(scenario({ team: [{ species: 'charmander', level: 11, status: 'sleep', statusTurnsLeft: 1, confusionTurns: 2 }], enemies: [PIDGEY] }));
+    const s = start(
+      scenario({
+        team: [{ species: 'charmander', level: 11, status: 'sleep', statusTurnsLeft: 1, confusionTurns: 2 }],
+        enemies: [PIDGEY],
+      }),
+    );
     const c = s.player.team[0]!;
     expect(c.status?.kind).toBe('sleep');
     expect(c.status?.turnsLeft).toBe(1);
@@ -63,12 +73,18 @@ describe('createCombat — §3.2.1 Combat Start', () => {
     expect(effectiveMaxHp(100, 6, ctx.config)).toBe(65);
     expect(effectiveMaxHp(100, 10, ctx.config)).toBe(25);
     expect(effectiveMaxHp(100, 14, ctx.config)).toBe(25); // capped
-    const s = start(scenario({ team: [{ species: 'charmander', level: 11, traumaStacks: 2 }], enemies: [PIDGEY] }));
-    expect(s.player.team[0]!.maxHp).toBe(Math.floor(statAtLevel(ctx.content.species('charmander'), 'hp', 11) * 0.9));
+    const s = start(
+      scenario({ team: [{ species: 'charmander', level: 11, traumaStacks: 2 }], enemies: [PIDGEY] }),
+    );
+    expect(s.player.team[0]!.maxHp).toBe(
+      Math.floor(statAtLevel(ctx.content.species('charmander'), 'hp', 11) * 0.9),
+    );
   });
 
   it('Start_TheWholeBagIsOpen_TwoItemsATurn_§3.5', () => {
-    const s = start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['potion', 'potion', 'antidote', 'ether'] }));
+    const s = start(
+      scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['potion', 'potion', 'antidote', 'ether'] }),
+    );
     expect(s.player.consumables.hand).toHaveLength(4);
     expect(s.player.consumables.pool).toHaveLength(0);
     expect(s.player.itemCap).toBe(ctx.config.baseConsumableCardsPerTurn);
@@ -76,8 +92,12 @@ describe('createCombat — §3.2.1 Combat Start', () => {
 
   it('Start_PokeBall_OnlyInWildFights_TheBagsAndTheFixturesExtra_§7.2.5', () => {
     const wild = start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 2 }));
-    const trainer = start(scenario({ kind: 'trainer', team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 2 }));
-    const noBalls = start(scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 0 }));
+    const trainer = start(
+      scenario({ kind: 'trainer', team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 2 }),
+    );
+    const noBalls = start(
+      scenario({ team: STARTERS, enemies: [PIDGEY], consumables: ['poke-ball'], balls: 0 }),
+    );
     const all = (s: typeof wild) => [...s.player.consumables.hand, ...s.player.consumables.pool];
     // The bag's ball plus the fixture's two; a trainer fight carries none; a bag ball alone is still a ball.
     expect(all(wild)).toHaveLength(3);
@@ -111,5 +131,53 @@ describe('createCombat — §3.2.1 Combat Start', () => {
       expect(s.outcome).toBe('in-progress');
       expect(s.player.hand.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('createCombat — §2.7 the opening line', () => {
+  const texts = (s: ReturnType<typeof start>) => s.log.map((l) => l.text);
+
+  it('Start_TrainerWithOpening_ChallengesThenSpeaks', () => {
+    const def = {
+      ...scenario({ kind: 'trainer', team: STARTERS, enemies: [PIDGEY] }),
+      trainer: { name: 'Lass Ana', sprite: 'lass' },
+      opening: "Don't underestimate my Oddish!",
+    };
+    const log = texts(start(def));
+    const challenge = log.indexOf('Lass Ana wants to battle!');
+    expect(challenge).toBeGreaterThanOrEqual(0);
+    expect(log[challenge + 1]).toBe("Lass Ana: “Don't underestimate my Oddish!”");
+  });
+
+  it('Start_WildWithOpening_NarratesBeforeItAppears', () => {
+    const def = {
+      ...scenario({ team: STARTERS, enemies: [PIDGEY] }),
+      opening: 'Something enormous is asleep across the path.',
+    };
+    const log = texts(start(def));
+    const appeared = log.findIndex((t) => t.startsWith('A wild '));
+    expect(log[appeared - 1]).toBe('Something enormous is asleep across the path.');
+  });
+
+  it('Start_NoOpening_LogsTheChallengeAlone', () => {
+    const log = texts(start(scenario({ team: STARTERS, enemies: [PIDGEY] })));
+    expect(log.filter((t) => t.includes('“'))).toHaveLength(0);
+  });
+});
+
+describe('createCombat — §2.7 the opening stands until the first thing you do', () => {
+  it('Start_WithOpening_MarksTheLogLengthItStandsUntil', () => {
+    const s = start({
+      ...scenario({ team: STARTERS, enemies: [PIDGEY] }),
+      opening: 'A small pink shape darts between the trees.',
+    });
+    expect(s.opening).toBe('A small pink shape darts between the trees.');
+    expect(s.openingUntil).toBe(s.log.length);
+  });
+
+  it('Start_NoOpening_MarksNothing', () => {
+    const s = start(scenario({ team: STARTERS, enemies: [PIDGEY] }));
+    expect(s.opening).toBeUndefined();
+    expect(s.openingUntil).toBeUndefined();
   });
 });

@@ -333,6 +333,7 @@ export const ScenarioSchema = z.object({
   stage: z.string(),
   seed: z.number().int().nonnegative(),
   trainer: z.object({ name: z.string(), sprite: z.string() }).optional(),
+  opening: z.string().min(1).optional(),
   player: z.object({
     team: z.array(TeamMemberSetupSchema).min(1).max(3),
     leadIndex: z.number().int().min(0).max(2),

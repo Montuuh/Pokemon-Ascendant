@@ -886,7 +886,7 @@ function resolveEventOutcome(draft: RunState, outcome: EventOutcome, ctx: RunCtx
         worst.traumaStacks = 0;
         say(draft, `${ctx.content.species(worst.speciesId).name} came back rested.`);
       } else {
-        say(draft, 'Nobody needed the rest, but it was a kind offer.');
+        say(draft, 'Nobody needed the rest.');
       }
       break;
     }

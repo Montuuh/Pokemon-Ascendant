@@ -937,6 +937,13 @@ then more of its archetype's from the same Region, **four levels under** the ros
 fight rather than doubling it. It fields them one after another, **two at a time** (50 / 60 / 70 % of trainers by
 Region) or **three at once** (a quarter / 40 % / half of those), §5.6.3. Distinct from Elites (§2.8) and Gyms (§5.8).
 
+**A trainer speaks first.** Every roster, Elite, Gym Leader, League member and Ring rival has a line, said as the
+fight opens: "{name} wants to battle!", then the line in quotes. An Elite Wild's or a Legendary's line is narration,
+said before "A wild … appeared!". The battle ticker holds the line on turn 1 until the first thing the player does.
+It is the series' opening, and the lines are written in the series' voice: short, exclaimed, spoken (contractions
+are fine in dialogue). **A line is 48 characters at most**, so it fits the narrowest ticker whole (a Gym at 1280×720
+with three rule chips); `voices.test.ts` holds every line to it.
+
 ## §2.7.1 Archetypes
 
 | Archetype | Identity | Regions |

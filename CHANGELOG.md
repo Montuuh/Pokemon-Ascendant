@@ -19,6 +19,14 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.112 — Trainers speak · 2026-11-11
+
+Trainers say their line as the fight opens, in the series' voice.
+
+- **Opening line.** A trainer's quote holds the battle bar until you act.
+- **New voices.** Forty trainer and Elite lines rewritten: short, loud, spoken.
+- **Mystery events.** Plainer scenes; every button says what happens.
+
 ### v0.9.111 — Plain words · 2026-11-11
 
 Every string in the game read and cut to what a player needs.

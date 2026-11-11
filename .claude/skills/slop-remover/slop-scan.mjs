@@ -372,6 +372,9 @@ for (const s of strings) {
 for (const s of strings) {
   s.words = words(s.text);
   s.tags = judge(s.text, s.surface, s.field);
+  // Spoken lines (trainers, Leaders, NPCs) are the series' voice: an exclamation there is canon, not slop.
+  if (/(^|\.)line$/.test(s.key ?? '') || s.field === 'line')
+    s.tags = s.tags.filter(([t]) => t !== 'exclamation');
   const dupes = seen.get(norm(s.text));
   if (dupes && new Set(dupes).size >= 2) s.tags.push([`repeated in ${new Set(dupes).size} places`, 1]);
   s.score = s.tags.reduce((a, [, w]) => a + w, 0);

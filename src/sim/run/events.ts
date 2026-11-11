@@ -90,7 +90,7 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     choices: [
       { label: 'Take the supplies', detail: 'A Super Potion, an Antidote and an Ether.', outcomes: [{ kind: 'consumables', ids: ['super-potion', 'antidote', 'ether'] }] },
       { label: 'Take the cash', detail: '200 ₽.', outcomes: [{ kind: 'money', amount: 200 }] },
-      { label: 'Leave it', detail: 'Someone may come back for it.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Leave it', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
@@ -100,16 +100,16 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     scene: 'Half-buried, scuffed, and still humming faintly when you pick it up.',
     choices: [
       { label: 'Keep it', detail: 'Two Poké Balls.', outcomes: [{ kind: 'balls', amount: 2 }] },
-      { label: 'Prise it open', detail: 'Whatever was stored inside: an Ether.', outcomes: [{ kind: 'consumables', ids: ['ether'] }] },
+      { label: 'Prise it open', detail: 'An Ether, stored inside.', outcomes: [{ kind: 'consumables', ids: ['ether'] }] },
     ],
   },
   {
     id: 'daycare-recovery',
     risk: 'tradeoff',
     title: 'An old couple with a spare pen',
-    scene: 'They will not take money. They would just like something to look after for an afternoon.',
+    scene: "They won't take money. They'd just like something to look after for an afternoon.",
     choices: [
-      { label: 'Leave one to rest', detail: 'Clears the Trauma off your most worn-out Pokémon.', outcomes: [{ kind: 'clear-trauma' }] },
+      { label: 'Leave one to rest', detail: 'Clears the Trauma off your most worn Pokémon.', outcomes: [{ kind: 'clear-trauma' }] },
       { label: 'Thank them and go', detail: 'They send you off with 150 ₽ and a packed lunch.', outcomes: [{ kind: 'money', amount: 150 }] },
     ],
   },
@@ -117,10 +117,10 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     id: 'moving-truck',
     risk: 'tradeoff',
     title: 'A courier, short-handed',
-    scene: 'The cargo is heavy and the next town is uphill. He is offering well over the going rate.',
+    scene: "The cargo's heavy and the next town is uphill. He's offering well over the going rate.",
     choices: [
       { label: 'Carry the cargo', detail: '250 ₽, but the whole team ends the day tired: −15 % HP.', outcomes: [{ kind: 'money', amount: 250 }, { kind: 'hurt-box', percent: 15 }] },
-      { label: 'Decline', detail: 'Keep your legs for the route.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Decline', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
@@ -128,22 +128,22 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     risk: 'tradeoff',
     weight: RELIC_EVENT_WEIGHT,
     title: 'A trader with one crate left',
-    scene: 'Everything else sold at the last town. What is left is the good stuff, and he knows it.',
+    scene: "Everything else sold at the last town. What's left is the good stuff, and he knows it.",
     choices: [
       { label: 'Buy the charm', detail: 'A Common relic.', cost: 250, outcomes: [{ kind: 'relic', rarity: 'common' }] },
       { label: 'Buy the good one', detail: 'An Uncommon relic.', cost: 450, outcomes: [{ kind: 'relic', rarity: 'uncommon' }] },
-      { label: 'Browse and leave', detail: 'Nothing today.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Browse and leave', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
     id: 'hot-spring',
     risk: 'tradeoff',
     title: 'Steam rising off a pool',
-    scene: 'It smells of minerals and it is very, very warm. Nobody is going to want to leave.',
+    scene: "It smells of minerals, and it's warm right through. Your team is already wading in.",
     choices: [
       {
         label: 'Pay for the bathhouse',
-        detail: 'The whole Box heals to full and one Trauma stack comes off your worst-worn Pokémon.',
+        detail: 'The whole Box heals to full and one Trauma stack comes off your most worn Pokémon.',
         cost: 200,
         outcomes: [{ kind: 'heal-box', percent: 100 }, { kind: 'clear-trauma' }],
       },
@@ -155,7 +155,7 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     id: 'field-medic',
     risk: 'safe',
     title: 'A Ranger with a full medkit',
-    scene: 'She has just finished a patrol and is carrying far more than she needs. She would rather it went to use.',
+    scene: "She's just back from patrol, carrying far more than she needs.",
     choices: [
       { label: 'Take the kit', detail: 'Two Super Potions and a Full Heal.', outcomes: [{ kind: 'consumables', ids: ['super-potion', 'super-potion', 'full-heal'] }] },
       { label: 'Let her patch the team', detail: 'Every Pokémon in the Box recovers 25 % of its HP.', outcomes: [{ kind: 'heal-box', percent: 25 }] },
@@ -175,11 +175,11 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     id: 'traveling-apothecary',
     risk: 'tradeoff',
     title: 'An apothecary closing up shop',
-    scene: 'Everything must go before the next town. The prices are good; the stock is not getting any fresher.',
+    scene: "Everything must go before the next town. The prices are good, and the stock isn't getting any fresher.",
     choices: [
       { label: 'Buy the lot', detail: 'Six supplies from the shelves.', cost: 150, outcomes: [{ kind: 'supplies', count: 6 }] },
       { label: 'Just the Ethers', detail: 'Two Ethers.', cost: 100, outcomes: [{ kind: 'consumables', ids: ['ether', 'ether'] }] },
-      { label: 'Walk on', detail: 'Nothing today.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Walk on', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
@@ -187,32 +187,32 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     risk: 'gamble',
     weight: RELIC_EVENT_WEIGHT,
     title: 'A trinket on a shrine',
-    scene: 'Old, heavy, and very obviously valuable. The shrine around it has not been tended in years.',
+    scene: 'Old, heavy and plainly valuable. Nobody has tended the shrine in years.',
     choices: [
       {
         label: 'Take it',
-        detail: 'A Rare relic. Seven times in ten that is all; three times in ten the team is shaken, 2 Trauma stacks on your worst-worn.',
+        detail: 'A Rare relic. Three times in ten, your most worn Pokémon also takes 2 Trauma.',
         outcomes: [
           { kind: 'relic', rarity: 'rare' },
           { kind: 'gamble', chance: 0.7, win: [{ kind: 'nothing' }], lose: [{ kind: 'add-trauma', stacks: 2 }] },
         ],
       },
-      { label: 'Leave it be', detail: 'Nothing gained, nothing lost.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Leave it be', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
     id: 'slot-booth',
     risk: 'gamble',
     title: 'A carny with a coin',
-    scene: 'Heads you double it, tails it is his. He lets you inspect the coin. It is a normal coin.',
+    scene: "Heads you win, tails he does. He lets you check the coin. It's a normal coin.",
     choices: [
       {
         label: 'Wager 100 ₽',
-        detail: 'A true coin flip. Half the time you take 250 ₽, half the time the 100 ₽ is gone.',
+        detail: 'A fair flip. Heads: 250 ₽. Tails: the 100 ₽ is gone.',
         cost: 100,
         outcomes: [{ kind: 'gamble', chance: 0.5, win: [{ kind: 'money', amount: 250 }], lose: [{ kind: 'nothing' }] }],
       },
-      { label: 'Walk on', detail: 'Nothing gained, nothing lost.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Walk on', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
@@ -223,24 +223,24 @@ export const MYSTERY_EVENTS: MysteryEvent[] = [
     title: 'A mossy stone hums faintly',
     scene: 'Half-buried at the edge of the path, warm to the touch, and humming at a pitch only your Pokémon seem to hear.',
     choices: [
-      { label: 'Take it', detail: 'An Evolution Item — one somebody in your Box can use, if anyone can.', outcomes: [{ kind: 'stone' }] },
-      { label: 'Leave it be', detail: 'Nothing gained, nothing lost.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Take it', detail: 'An Evolution Item, one your Box can use when there is one.', outcomes: [{ kind: 'stone' }] },
+      { label: 'Leave it be', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
   {
     id: 'unmarked-cave',
     risk: 'gamble',
     title: 'A crack in the rock face',
-    scene: 'Cold air is coming out of it. Something in there is either a stash or a very bad afternoon.',
+    scene: 'Cold air is coming out of it, and something inside is moving.',
     choices: [
       {
         label: 'Squeeze inside',
-        detail: 'Two thirds of the time: a Held Item. One third: the team takes a beating, −25 % HP and a Trauma stack.',
+        detail: 'Twice in three: a Held Item. Otherwise the team loses 25 % HP and takes a Trauma stack.',
         outcomes: [
           { kind: 'gamble', chance: 0.66, win: [{ kind: 'held-item' }], lose: [{ kind: 'hurt-box', percent: 25 }, { kind: 'add-trauma', stacks: 1 }] },
         ],
       },
-      { label: 'Mark it on the map and go', detail: 'Nothing now.', outcomes: [{ kind: 'nothing' }] },
+      { label: 'Mark it on the map and go', detail: 'Nothing.', outcomes: [{ kind: 'nothing' }] },
     ],
   },
 ];
@@ -256,9 +256,9 @@ const STONE_CACHE_EVENT: MysteryEvent = {
   title: 'A cache of evolution stones',
   scene: 'Three stones sit in a mossy hollow, each humming at a different pitch. Eevee cannot take its eyes off them.',
   choices: [
-    { label: 'The Fire Stone', detail: 'Take the Fire Stone — Eevee into Flareon, from level 8.', outcomes: [{ kind: 'stone', id: 'fire-stone' }] },
-    { label: 'The Water Stone', detail: 'Take the Water Stone — Eevee into Vaporeon, from level 8.', outcomes: [{ kind: 'stone', id: 'water-stone' }] },
-    { label: 'The Thunder Stone', detail: 'Take the Thunder Stone — Eevee into Jolteon, from level 8.', outcomes: [{ kind: 'stone', id: 'thunder-stone' }] },
+    { label: 'The Fire Stone', detail: 'Eevee into Flareon, from level 8.', outcomes: [{ kind: 'stone', id: 'fire-stone' }] },
+    { label: 'The Water Stone', detail: 'Eevee into Vaporeon, from level 8.', outcomes: [{ kind: 'stone', id: 'water-stone' }] },
+    { label: 'The Thunder Stone', detail: 'Eevee into Jolteon, from level 8.', outcomes: [{ kind: 'stone', id: 'thunder-stone' }] },
   ],
 };
 

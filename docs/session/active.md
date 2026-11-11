@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-11 · **Version:** v0.9.111 (*Plain words*).
+**Date:** 2026-11-11 · **Version:** v0.9.112 (*Trainers speak*).
+**Shipped 2026-11-11 (v0.9.112):** trainer/Elite/Leader lines shown at last (§2.7 opening line: log + battle ticker on turn 1), 40 lines in the series' voice, Mystery texts plain. **Waiting on the user's look.**
 **Shipped 2026-11-11 (v0.9.111):** the slop pass, the first package under the package doctrine (R0: one commit a package): ~150 strings cut across the game (docs/reviews/2026-11-11-slop-audit.md); slop-remover now in every agent's loop + slop-stop hook. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.110):** the meta-progression rework, all four phases (§8, §6.8; proposal claude.ai/artifact/PWynspTEvWfyvYbDTESPcW): Field Report, vault + Oak's Parcels, Journal, Bond ×6 + Ribbons, nine Ranks, the lobby that fills, Badge Case, Trainer Kit, League Ladder, Hall of Fame. **Account v4 resets.** Not built: Leaders' challenges, lobby decorations. **After it (no version):** two ui-reviewer passes fixed (Field Report never scrolls or outgrows 720p, Journal tiles, Kit desk, Ladder pips, lobby people; `victory-full` audit preset); the Kit's ceiling measured on first-Gym clear rate (§8.4.5, `balance/kitCeiling.test.ts`): Head Start 2 → 1 level, all within +3 / +8. Five stale e2e fixed after it (ring plates, catch pill, TM bubble icon now on its 30 px grid); `ring-art:43` is flaky under load (reads sprites before they load). Changelog regrouped by theme; "Beta" beside the version. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.109):** route people face the viewer at 4/3 of the tiles (`personScale`, hit box × `--person-k`);
@@ -9,7 +10,6 @@ the Gym is the only building (no houses, pond, Center or Mart). UI review Ship w
 fought on its leaning track, cleared obstacles gone, Mysteries a "?" again; landmark pixel a step under the tiles (D9, left). R1 22 %.
 **Shipped 2026-11-09 (v0.9.107):** the route review's three phases (report claude.ai/artifact/XW2ciawxqoNer3HW7eKySU): a FRLG route — one pixel density, frame, chapters, buildings and set pieces from pret, FRLG weather, §2.5.5 obstacles/ledge (`run/routeFeatures.ts`). 26 e2e failures predate it.
 **Shipped 2026-11-07 (v0.9.106):** FRLG visual tasks on a Pokémon play on its sprite (`MON_TASKS`, `mons` in useCombatFx, `.fx-mon-*` in motion.css, §9.9.2). All five causes of the move review are now addressed (report artifact claude.ai/artifact/MB5SLkZH3qHyK2LT85KZVa). **Waiting on the user's look.**
-**Shipped 2026-11-04 (v0.9.96 / v0.9.95):** Gen III stat and damage formulas, starters' 3rd move, sure first catch;
 enemies ×1, lower levels, less XP. Harness R1 9 % (floors). **Waiting on verdict**; if Gyms wall, cut structure.
 **First:** [standing-facts.md](standing-facts.md), especially shared-folder ownership and standing commit/push authority.
 **Rework in progress (user, 2026-11-03; plan approved):** four versions. ✅ v0.9.89 move keywords. ✅ v0.9.90 real

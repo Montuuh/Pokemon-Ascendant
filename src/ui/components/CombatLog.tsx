@@ -11,9 +11,10 @@ function withNumbers(text: string) {
 
 /**
  * §9.2.2.1 — the combat log, in the top bar: the last thing that happened on one line, the whole fight one click
- * away. The arena is for the fight; the sr-only announcer still says every line aloud.
+ * away. The arena is for the fight; the sr-only announcer still says every line aloud. `pinned` is a line the ticker
+ * holds over the latest one: the fight's opening (§2.7), until the first thing you do.
  */
-export function CombatLog({ log, max = Infinity }: { log: LogEntry[]; max?: number }) {
+export function CombatLog({ log, max = Infinity, pinned = null }: { log: LogEntry[]; max?: number; pinned?: string | null }) {
   const ref = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -42,8 +43,8 @@ export function CombatLog({ log, max = Infinity }: { log: LogEntry[]; max?: numb
     <div className={styles.wrap} ref={wrapRef}>
       <button type="button" className={styles.ticker} onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label="Battle log" data-testid="log-ticker">
         <IconListDetails size={15} className={styles.tickerIcon} />
-        <span key={last ? `${last.turn}-${last.text}-${lines.length}` : 'none'} className={`${styles.last} ${last ? styles[last.category] : ''}`}>
-          {last?.text ?? 'The battle begins.'}
+        <span key={pinned ?? (last ? `${last.turn}-${last.text}-${lines.length}` : 'none')} className={`${styles.last} ${pinned ? styles.system : last ? styles[last.category] : ''}`} data-pinned={pinned ? true : undefined}>
+          {pinned ?? last?.text ?? 'The battle begins.'}
         </span>
         <IconChevronDown size={15} className={styles.chevron} data-open={open || undefined} />
       </button>

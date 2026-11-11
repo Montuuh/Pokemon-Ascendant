@@ -610,6 +610,8 @@ export interface ScenarioDef {
   stage: string;
   seed: number;
   trainer?: { name: string; sprite: string };
+  /** §2.7 — said when the fight opens: a trainer's line, or the narration before an Elite Wild or a Legendary appears. */
+  opening?: string;
   player: {
     team: TeamMemberSetup[];
     leadIndex: number;

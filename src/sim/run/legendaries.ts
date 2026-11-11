@@ -87,7 +87,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
     fields: { weather: 'hail' },
     rule: 'mist',
     moves: ['blizzard', 'ice-beam', 'peck', 'agility'],
-    line: 'The cold deepens. Something pale settles on the ice above you.',
+    line: 'The cold deepens. Something pale settles above.',
   },
   zapdos: {
     place: 'the Power Plant',
@@ -95,7 +95,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
     fields: { terrain: 'electric-terrain' },
     rule: 'thundercloud',
     moves: ['thunder', 'drill-peck', 'thunder-shock', 'agility'],
-    line: 'The lights flicker and the air crackles. Zapdos lands among the generators.',
+    line: 'Lights flicker. Zapdos lands on the generators.',
   },
   moltres: {
     place: 'Mt. Ember',
@@ -103,7 +103,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
     fields: { weather: 'sunny-day' },
     rule: 'rekindle',
     moves: ['fire-blast', 'flamethrower', 'sky-attack', 'agility'],
-    line: 'The rock is hot underfoot. Wings of fire spread over the crater.',
+    line: 'Wings of fire spread over the crater.',
   },
   mewtwo: {
     place: 'Cerulean Cave',
@@ -111,7 +111,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
     fields: { terrain: 'psychic-terrain' },
     rule: 'barrier',
     moves: ['psychic', 'swift', 'recover', 'barrier'],
-    line: 'At the bottom of the cave, something is waiting. It already knows you are here.',
+    line: 'At the bottom of the cave, something waits.',
   },
   mew: {
     place: 'Faraway Island',
@@ -120,7 +120,7 @@ export const LEGENDARY_ARENAS: Record<LegendaryId, LegendaryArena> = {
     metronome: true,
     rule: 'playful',
     moves: ['psychic', 'mega-punch', 'transform', 'recover'],
-    line: 'A small pink shape darts between the trees, laughing.',
+    line: 'A small pink shape darts between the trees.',
   },
 };
 

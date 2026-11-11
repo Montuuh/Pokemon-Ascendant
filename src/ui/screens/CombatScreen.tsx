@@ -351,6 +351,11 @@ export function CombatScreen() {
   // played; a Pokémon coming out never does. While a ball rocks, the log keeps its result back too.
   const interactive = !ended && !state.player.pendingLeadPick && !fx.busy;
   const shownLog = fx.logHold === null ? state.log : state.log.slice(0, fx.logHold);
+  // §2.7 — the fight's opening (a trainer's line in quotes, an arrival as narration) holds the ticker until the log
+  // first grows past where it stood when the fight opened: a card, a swap, an item, anything you do.
+  const opening = state.opening && state.log.length === state.openingUntil
+    ? (state.trainer ? `“${state.opening}”` : state.opening)
+    : null;
   /** §9.9.2 — a Pokémon as the screen shows it: with the HP it had until the move on its way lands. */
   const shownHp = <T extends { uid: string; hp: number }>(m: T): T => (m.uid in fx.hp ? { ...m, hp: fx.hp[m.uid]! } : m);
   // §4.1.3.1 — your dial, as the HP: what it showed until the card that changed it lands.
@@ -554,7 +559,7 @@ export function CombatScreen() {
               </button>
             </div>
           ) : (
-            <CombatLog log={shownLog} />
+            <CombatLog log={shownLog} pinned={opening} />
           )}
         </div>
         <div className={styles.chips}>

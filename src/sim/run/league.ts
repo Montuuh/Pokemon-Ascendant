@@ -51,32 +51,32 @@ export interface LeagueMember {
 export const LEAGUE_MEMBERS: readonly LeagueMember[] = [
   {
     id: 'elite-four-1', name: 'Bruno', title: 'Elite Four', sprite: 'bruno', type: 'fighting', battlefield: { hazard: 'sandstorm' }, stage: 'league-bruno',
-    line: 'We will grind you down with our superior power! Hoo hah!',
+    line: 'We will grind you down! Hoo hah!',
     team: [{ species: 'steelix', over: 6, phaseCount: 2 }, { species: 'machamp', over: 7, phaseCount: 3, signature: { move: 'submission', response: 'Ghost immunity or a Fighting-resistant Lead.' }, combo: ['bulk-up', 'cross-chop'] }],
     repertoire: ['bulk-up', 'detect', 'revenge'],
   },
   {
     id: 'elite-four-2', name: 'Agatha', title: 'Elite Four', sprite: 'agatha', type: 'ghost', battlefield: { hazard: 'toxic-spikes' }, stage: 'league-agatha',
-    line: 'Pokémon are for battling, child. I will show you how a real Trainer fights.',
+    line: 'Pokémon are for battling, child!',
     // §5.5.2 — the classic: Mean Look holds your Lead, then Perish Song starts the count.
     team: [{ species: 'arbok', over: 8, phaseCount: 2 }, { species: 'gengar', over: 10, phaseCount: 3, signature: { move: 'night-shade-plus', response: 'Normal immunity or a Ghost-resistant Lead.' }, combo: ['mean-look', 'perish-song'] }],
     repertoire: ['curse', 'hypnosis', 'dream-eater'],
   },
   {
     id: 'elite-four-3', name: 'Will', title: 'Elite Four', sprite: 'will', type: 'psychic', battlefield: { terrain: 'psychic-terrain' }, stage: 'league-will',
-    line: 'I have trained all over the world to make my Psychic Pokémon powerful. I cannot lose now.',
+    line: "I've trained all over the world. I can't lose!",
     team: [{ species: 'jynx', over: 10, phaseCount: 2, combo: ['lovely-kiss', 'dream-eater'] }, { species: 'slowbro', over: 11, phaseCount: 2, combo: ['yawn', 'surf'] }, { species: 'alakazam', over: 13, phaseCount: 3, signature: { move: 'psychic', response: 'Dark immunity or Psychic/Steel resistance.' }, combo: ['calm-mind', 'psychic'] }],
     repertoire: ['reflect', 'light-screen', 'disable'],
   },
   {
     id: 'elite-four-4', name: 'Lance', title: 'Elite Four', sprite: 'lance', type: 'dragon', battlefield: { weather: 'rain-dance' }, stage: 'league-lance',
-    line: 'Dragons are mythical Pokémon. They are hard to catch and raise, but their power is superior.',
+    line: 'Dragons are mythical Pokémon!',
     team: [{ species: 'gyarados', over: 13, phaseCount: 2, combo: ['dragon-dance', 'waterfall'] }, { species: 'aerodactyl', over: 14, phaseCount: 2 }, { species: 'dragonite', over: 15, phaseCount: 3, signature: { move: 'fly', response: 'A Flying-resistant Lead or damage reduction.' }, combo: ['dragon-dance', 'outrage'] }],
     repertoire: ['dragon-dance', 'roar', 'protect'],
   },
   {
     id: 'champion', name: 'Blue', title: 'Champion', sprite: 'blue', type: null, stage: 'league-champion',
-    line: 'I hate to say it, but I was waiting for you. Now I get to beat you in front of everyone.',
+    line: 'I was waiting for you! Now I get to beat you!',
     // The fifth is the counter-pick (`championAce`); the fourth is the support that stands beside it, buffing it.
     team: [
       { species: 'pidgeot', over: 14, phaseCount: 2 },

@@ -411,6 +411,10 @@ export interface CombatState {
   insight: string[];
   stage: string;
   trainer: { name: string; sprite: string } | null;
+  /** §2.7 — said as the fight opens: the trainer's line, or the narration before an Elite Wild or a Legendary. */
+  opening?: string;
+  /** §2.7 — the log's length when the first turn was dealt: the opening is said until the log grows past it. */
+  openingUntil?: number;
   seed: number;
   /** Live xorshift32 cursor of the CombatRNG stream (§10.7 / §10.8.6). The reducer is pure over this. */
   rngCursor: number;

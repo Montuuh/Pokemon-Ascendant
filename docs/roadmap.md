@@ -1540,6 +1540,18 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.112 — Trainers speak  ✅ 2026-11-11
+
+**Shipped.** The user (2026-11-11): "siguiente paquete: los textos de entrenadores y eventos". Reading them showed the
+bigger problem: about 80 trainer, Elite, Leader, League and Ring lines were written and never shown — they lived in
+a scenario field only the dev picker read. Now every encounter carries its line as `opening` (§2.7, "A trainer speaks
+first"): the log says "{name} wants to battle!" then the quote (an Elite Wild or a Legendary is narrated before it
+appears), and the battle ticker holds it until the first thing the player does — a card, a swap, an item (a bubble over the sprite was
+tried first and collided with the enemy panel). Forty generic lines rewritten in the series' voice and every line held to 48 characters (`voices.test.ts`) — short,
+exclaimed, contracted — in place of two-beat aphorisms; the FRLG Leader and Elite Four quotes kept. Mystery events:
+scenes in plain speech, every "leave it" button says "Nothing.", the gambles' odds stated plainly. Tests:
+`setup.test.ts` (three, one seen red without the fix) and `e2e/trainer-opening.spec.ts`.
+
 ### v0.9.111 — Plain words  ✅ 2026-11-11
 
 **Shipped.** The first package under the package doctrine (release-doctrine R0, the user's call 2026-11-11: one

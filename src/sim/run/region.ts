@@ -244,30 +244,30 @@ export interface TrainerRoster {
 export const TRAINERS: TrainerRoster[] = [
   { id: 'bug-catcher-a', archetype: 'bug-catcher', name: 'Bug Catcher Rick', sprite: 'bug-catcher', line: 'My bugs are stronger than they look!',
     team: [{ species: 'caterpie', level: 11 }, { species: 'weedle', level: 12 }] },
-  { id: 'bug-catcher-b', archetype: 'bug-catcher', name: 'Bug Catcher Doug', sprite: 'bug-catcher', line: 'I caught these myself, you know.',
+  { id: 'bug-catcher-b', archetype: 'bug-catcher', name: 'Bug Catcher Doug', sprite: 'bug-catcher', line: "I caught these myself, you know!",
     team: [{ species: 'metapod', level: 14 }, { species: 'kakuna', level: 14 }] },
   { id: 'youngster-a', archetype: 'youngster', name: 'Youngster Joey', sprite: 'youngster', line: 'My Rattata is in the top percentage!',
     team: [{ species: 'rattata', level: 14 }] },
   { id: 'youngster-b', archetype: 'youngster', name: 'Youngster Ben', sprite: 'youngster', line: 'Shorts are comfy and easy to wear!',
     team: [{ species: 'pidgey', level: 14 }, { species: 'rattata', level: 15 }] },
-  { id: 'lass-a', archetype: 'lass', name: 'Lass Iris', sprite: 'lass', line: 'Let me show you what I have been growing.',
+  { id: 'lass-a', archetype: 'lass', name: 'Lass Iris', sprite: 'lass', line: "Let me show you what I've been growing!",
     team: [{ species: 'oddish', level: 14 }, { species: 'pidgey', level: 15 }] },
-  { id: 'lass-b', archetype: 'lass', name: 'Lass Nina', sprite: 'lass', line: 'Do not underestimate an Oddish.',
+  { id: 'lass-b', archetype: 'lass', name: 'Lass Nina', sprite: 'lass', line: "Don't underestimate my Oddish!",
     team: [{ species: 'weedle', level: 14 }, { species: 'oddish', level: 15 }] },
-  { id: 'hiker-a', archetype: 'hiker', name: 'Hiker Marcos', sprite: 'hiker', line: 'This whole ridge is my training ground.',
+  { id: 'hiker-a', archetype: 'hiker', name: 'Hiker Marcos', sprite: 'hiker', line: "This whole ridge is my training ground!",
     team: [{ species: 'geodude', level: 15 }, { species: 'onix', level: 15 }] },
-  { id: 'hiker-b', archetype: 'hiker', name: 'Hiker Dov', sprite: 'hiker', line: 'You will not get past a wall of rock.',
+  { id: 'hiker-b', archetype: 'hiker', name: 'Hiker Dov', sprite: 'hiker', line: "You won't get past my wall of rock!",
     team: [{ species: 'diglett', level: 14 }, { species: 'geodude', level: 16 }] },
-  { id: 'swimmer-a', archetype: 'swimmer', name: 'Swimmer Cass', sprite: 'swimmer', line: 'The water is warmer than it looks. Come in.',
+  { id: 'swimmer-a', archetype: 'swimmer', name: 'Swimmer Cass', sprite: 'swimmer', line: "The water's warmer than it looks! Come on in!",
     team: [{ species: 'poliwag', level: 14 }, { species: 'magikarp', level: 12 }] },
-  { id: 'swimmer-b', archetype: 'swimmer', name: 'Swimmer Tomas', sprite: 'swimmerm', line: 'I train out past the shelf. You would not last.',
+  { id: 'swimmer-b', archetype: 'swimmer', name: 'Swimmer Tomas', sprite: 'swimmerm', line: 'I train way out past the shelf! Keep up!',
     team: [{ species: 'psyduck', level: 15 }, { species: 'krabby', level: 15 }] },
   // §2.7.1 (v0.9.107) — an archetype fields sibling classes, so a lane of one archetype is not one figure eight times
   // (the user, 2026-11-09: "los nodos se ven repetitivos"): a Camper walks with the Hikers, a Picnicker with the Bug
   // Catchers. Same identity, same band, a face of their own.
-  { id: 'hiker-c', archetype: 'hiker', name: 'Camper Liam', sprite: 'camper', line: 'I pitched my tent by the cave. These two keep watch.',
+  { id: 'hiker-c', archetype: 'hiker', name: 'Camper Liam', sprite: 'camper', line: "My tent's by the cave. These two keep watch!",
     team: [{ species: 'geodude', level: 14 }, { species: 'zubat', level: 15 }] },
-  { id: 'bug-catcher-c', archetype: 'bug-catcher', name: 'Picnicker Kelsey', sprite: 'picnicker', line: 'I came for the flowers and stayed for the bugs.',
+  { id: 'bug-catcher-c', archetype: 'bug-catcher', name: 'Picnicker Kelsey', sprite: 'picnicker', line: 'I came for the flowers and stayed for the bugs!',
     team: [{ species: 'caterpie', level: 12 }, { species: 'oddish', level: 13 }] },
 ];
 
@@ -293,7 +293,7 @@ export const ELITE: EliteDef = {
   id: 'elite-ace-trainer-r1',
   name: 'Ace Trainer Nadia',
   sprite: 'acetrainer',
-  line: 'I only battle people who are going somewhere. Show me.',
+  line: 'I only battle Trainers who are going places!',
   team: [
     { species: 'pidgeotto', level: 16, phaseCount: 2 },
     { species: 'ivysaur', level: 18, phaseCount: 2 },
@@ -346,7 +346,7 @@ export const ELITE_WILD: EliteWildDef = {
   /** §2.8.2 — boss-tier HP, two phases, no evolution: it is a wild, not an ace. */
   phaseCount: 2,
   stage: 'elite-snorlax',
-  line: 'Something enormous is asleep across the path. It has not noticed you yet.',
+  line: 'Something enormous is asleep across the path.',
 };
 
 /** §2.8.2 — the Elite Wild sits with the Elite Trainer's premium: it is the other hardest fight but one. */
@@ -421,7 +421,7 @@ export const GYMS: GymDef[] = [
     // whole team at its real level (2026-10-20) Brock ended two runs in three at the Region's Attack.
     // §2.5 — each Gym Leader fights in their own dedicated Gym arena backdrop.
     stage: 'gym-rock',
-    line: 'My rock-hard willpower is evident even in my Pokémon!',
+    line: 'My rock-hard willpower shows in my Pokémon!',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Fighting.',
     // Tuned on the whole-run harness: a route team arrives around Lv 14 having evolved once, so the Region 1
     // climax is the line's mid-stage at a level premium, not its final form. Golem is a Region 3 problem.
@@ -443,7 +443,7 @@ export const GYMS: GymDef[] = [
     badgeId: 'cascade-badge', rule: 'riptide',
     // §5.9.3 — the tide's turns hit the whole team at once; at its real levels Misty lost one run in four.
     stage: 'gym-water',
-    line: 'My policy is an all-out offensive with Water-type Pokémon!',
+    line: 'My policy is an all-out Water-type offensive!',
     telegraph: 'Taxes your AP and muddles your hand. Bring Grass or Electric, and cards you can afford.',
     // §5.9.3 forbids fielding a starter line: a Gym Leader should not hold a Pokémon the player may own.
     // That is why the Water Gym is Krabby and Kingler rather than Squirtle and Wartortle.
@@ -465,7 +465,7 @@ export const GYMS: GymDef[] = [
     type: 'bug',
     badgeId: 'hive-badge', rule: 'swarm',
     stage: 'gym-bug',
-    line: 'Bug Pokémon are tougher than you think. Let me show you.',
+    line: 'Bug Pokémon are tougher than you think!',
     telegraph: 'Floods you with Sleep and Confusion. Bring cures, Fire or Flying.',
     team: [
       { species: 'venonat', phaseCount: 2, moves: ['psybeam', 'leech-life', 'disable', 'supersonic'] },
@@ -484,7 +484,7 @@ export const GYMS: GymDef[] = [
     type: 'normal',
     badgeId: 'plain-badge', rule: 'rollout',
     stage: 'gym-normal',
-    line: 'Nothing fancy. Just everything, all at once.',
+    line: 'Everyone was into Pokémon, so I got into it too!',
     telegraph: 'No weakness to exploit and a Home Field that makes every hit land harder. Bring Fighting, or bring more HP.',
     team: [
       { species: 'pidgeotto', phaseCount: 2, moves: ['wing-attack', 'gust', 'sand-attack', 'quick-attack-plus'] },
@@ -695,38 +695,38 @@ export const REGION2_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
  */
 export const TRAINERS_R2: TrainerRoster[] = [
   // §5.6.1 — an Ace Trainer's Lead acts twice from Region 2 (v0.9.12): two Pokémon at their best, one of them fast.
-  { id: 'ace-trainer-r2-a', archetype: 'ace-trainer', name: 'Ace Trainer Iris', sprite: 'acetrainer', line: 'I train for the turn nobody sees coming.',
+  { id: 'ace-trainer-r2-a', archetype: 'ace-trainer', name: 'Ace Trainer Iris', sprite: 'acetrainer', line: "I can read every move you make! Go!",
     team: [{ species: 'pidgeotto', level: 23 }, { species: 'wartortle', level: 25 }] },
-  { id: 'ace-trainer-r2-b', archetype: 'ace-trainer', name: 'Ace Trainer Marco', sprite: 'acetrainerm', line: 'Two moves a turn. Keep up.',
+  { id: 'ace-trainer-r2-b', archetype: 'ace-trainer', name: 'Ace Trainer Marco', sprite: 'acetrainerm', line: 'My Pokémon move twice a turn! Keep up!',
     team: [{ species: 'kadabra', level: 23 }, { species: 'charmeleon', level: 25 }] },
-  { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'I have been training since Pallet. Look how big they got!',
+  { id: 'youngster-r2-a', archetype: 'youngster', name: 'Youngster Calvin', sprite: 'youngster', line: 'Look how big my Pokémon got since Pallet!',
     team: [{ species: 'raticate', level: 21 }, { species: 'pidgeotto', level: 22 }] },
-  { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: 'One Pokémon. Watch it work.',
+  { id: 'youngster-r2-b', archetype: 'youngster', name: 'Youngster Otis', sprite: 'youngster', line: "Just one Pokémon, but it's the best one!",
     team: [{ species: 'raichu', level: 23 }] },
-  { id: 'lass-r2-a', archetype: 'lass', name: 'Lass Dana', sprite: 'lass', line: 'The sea breeze is lovely. So is a good Sleep Powder.',
+  { id: 'lass-r2-a', archetype: 'lass', name: 'Lass Dana', sprite: 'lass', line: "Isn't the sea breeze nice? So sleepy…",
     team: [{ species: 'gloom', level: 22 }, { species: 'starmie', level: 23 }] },
-  { id: 'lass-r2-b', archetype: 'lass', name: 'Lass Mei', sprite: 'lass', line: 'Careful — mine sting.',
+  { id: 'lass-r2-b', archetype: 'lass', name: 'Lass Mei', sprite: 'lass', line: "Careful! My Pokémon sting!",
     team: [{ species: 'weepinbell', level: 22 }, { species: 'raichu', level: 23 }] },
   // §2.7.1 (v0.9.107) — sibling classes: a Camper with the Youngsters, a Picnicker with the Lasses (Erika's Gym has both).
-  { id: 'youngster-r2-c', archetype: 'youngster', name: 'Camper Ryan', sprite: 'camper', line: 'Nothing beats a campfire. Except my Growlithe.',
+  { id: 'youngster-r2-c', archetype: 'youngster', name: 'Camper Ryan', sprite: 'camper', line: "My Growlithe is warmer than any campfire!",
     team: [{ species: 'growlithe', level: 22 }, { species: 'raticate', level: 22 }] },
-  { id: 'lass-r2-c', archetype: 'lass', name: 'Picnicker Alicia', sprite: 'picnicker', line: 'Lunch in the meadow, then a nap. Yours.',
+  { id: 'lass-r2-c', archetype: 'lass', name: 'Picnicker Alicia', sprite: 'picnicker', line: "I just finished lunch! Now it's time to battle!",
     team: [{ species: 'gloom', level: 22 }, { species: 'weepinbell', level: 23 }] },
-  { id: 'hiker-r2-a', archetype: 'hiker', name: 'Hiker Bruno', sprite: 'hiker', line: 'These cliffs are softer than my Pokémon.',
+  { id: 'hiker-r2-a', archetype: 'hiker', name: 'Hiker Bruno', sprite: 'hiker', line: "My Pokémon are tougher than these cliffs!",
     team: [{ species: 'graveler', level: 23 }, { species: 'machoke', level: 23 }] },
-  { id: 'hiker-r2-b', archetype: 'hiker', name: 'Hiker Alan', sprite: 'hiker', line: 'The tide cannot move a mountain.',
+  { id: 'hiker-r2-b', archetype: 'hiker', name: 'Hiker Alan', sprite: 'hiker', line: "Hup! The tide can't budge my Pokémon!",
     team: [{ species: 'onix', level: 23 }, { species: 'graveler', level: 25 }] },
-  { id: 'swimmer-r2-a', archetype: 'swimmer', name: 'Swimmer Luis', sprite: 'swimmerm', line: 'Out here the water bites back.',
+  { id: 'swimmer-r2-a', archetype: 'swimmer', name: 'Swimmer Luis', sprite: 'swimmerm', line: "Watch out! The current out here is strong!",
     team: [{ species: 'dewgong', level: 22 }, { species: 'tentacruel', level: 23 }] },
-  { id: 'swimmer-r2-b', archetype: 'swimmer', name: 'Swimmer Paula', sprite: 'swimmer', line: 'I race the Seadra to the point every morning.',
+  { id: 'swimmer-r2-b', archetype: 'swimmer', name: 'Swimmer Paula', sprite: 'swimmer', line: "I race the Seadra to the point every morning!",
     team: [{ species: 'seadra', level: 22 }, { species: 'cloyster', level: 23 }] },
-  { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'engineer', line: 'Give me two turns and I will show you a real current.',
+  { id: 'engineer-r2-a', archetype: 'engineer', name: 'Engineer Hugo', sprite: 'engineer', line: "Give me two turns and I'll show you a current!",
     team: [{ species: 'magneton', level: 23 }, { species: 'electrode', level: 25 }] },
-  { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'Mind the cables. Mine bite.',
+  { id: 'engineer-r2-b', archetype: 'engineer', name: 'Engineer Ines', sprite: 'scientist', line: 'Mind the cables! My Pokémon are full of sparks!',
     team: [{ species: 'electrode', level: 23 }, { species: 'electabuzz', level: 25 }] },
-  { id: 'rocket-grunt-r2-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Hand over anything rare and nobody gets poisoned.',
+  { id: 'rocket-grunt-r2-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'Hand over anything rare, or else!',
     team: [{ species: 'weezing', level: 25 }, { species: 'golbat', level: 25 }] },
-  { id: 'rocket-grunt-r2-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgruntf', line: 'You picked the wrong pier, kid.',
+  { id: 'rocket-grunt-r2-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgruntf', line: "You picked the wrong pier, kid!",
     team: [{ species: 'raticate', level: 23 }, { species: 'weezing', level: 25 }] },
 ];
 
@@ -740,7 +740,7 @@ export const ELITE_R2: EliteDef = {
   id: 'elite-karate-king-r2',
   name: 'Karate King Koichi',
   sprite: 'blackbelt',
-  line: 'I trained on these cliffs until the sea gave up first. Come.',
+  line: "Hwa! I've trained through every storm! Come on!",
   team: [
     { species: 'machoke', level: 30, phaseCount: 2 },
     { species: 'hitmonchan', level: 32, phaseCount: 2 },
@@ -758,7 +758,7 @@ export const ELITE_WILD_R2: EliteWildDef = {
   phaseCount: 2,
   stage: 'elite-lapras',
   moves: ['sing', 'body-slam', 'ice-beam', 'surf'],
-  line: 'A song carries over the water. Something large is riding the swell toward you.',
+  line: 'Something large is riding the swell toward you.',
 };
 
 /**
@@ -770,7 +770,7 @@ export const GYMS_R2: GymDef[] = [
     id: 'fire-gym-r2', region: 2, name: 'Leader Blaine', sprite: 'blaine', type: 'fire', badgeId: 'volcano-badge', rule: 'meltdown',
     // §5.9.3 — five Fire attackers on a Home Field, not one: its authored team lost 17 % of 29 arrivals at the Region's Attack (v0.9.88).
     stage: 'gym-fire',
-    line: 'Hah! I hope you brought Burn Heal. My Pokémon burn hotter than this whole coast.',
+    line: 'Hah! I hope you brought Burn Heal!',
     telegraph: 'A burst race on a Home Field that makes every Fire hit land harder. Bring Water or Rock, or bring more HP.',
     team: [
       { species: 'ninetales', phaseCount: 2, moves: ['flamethrower', 'quick-attack', 'fire-spin', 'tail-whip-plus'] },
@@ -785,7 +785,7 @@ export const GYMS_R2: GymDef[] = [
     id: 'grass-gym-r2', region: 2, name: 'Leader Erika', sprite: 'erika', type: 'grass', badgeId: 'rainbow-badge', rule: 'bloom',
     // §5.9.3 — five members each untouched by a hit bloom back: its authored team lost 14 % of 28 arrivals (v0.9.88).
     stage: 'gym-grass',
-    line: 'Oh… I was dozing among the flowers. Shall we? I do not intend to lose.',
+    line: 'Oh… I was dozing among the flowers. Shall we?',
     telegraph: 'Floods your Lead with Sleep and Poison. Bring cures, Fire or Flying.',
     team: [
       { species: 'tangela', phaseCount: 2, moves: ['mega-drain', 'constrict', 'poison-powder', 'bind'] },
@@ -799,7 +799,7 @@ export const GYMS_R2: GymDef[] = [
   {
     id: 'electric-gym-r2', region: 2, name: 'Leader Surge', sprite: 'ltsurge', type: 'electric', badgeId: 'thunder-badge', rule: 'overcharge',
     stage: 'gym-electric',
-    line: 'Hey, kid! Electric Pokémon saved me in the war. They will shock you just the same!',
+    line: 'Hey, kid! Electric Pokémon saved me in the war!',
     telegraph: 'Taxes your AP and locks your Lead with Paralysis. Bring Ground, and cards you can afford.',
     team: [
       { species: 'raichu', phaseCount: 2, moves: ['thunderbolt', 'thunder-wave', 'quick-attack-plus', 'slam'] },
@@ -814,7 +814,7 @@ export const GYMS_R2: GymDef[] = [
     id: 'poison-gym-r2', region: 2, name: 'Leader Koga', sprite: 'koga', type: 'poison', badgeId: 'soul-badge', rule: 'toxic',
     // §5.9.3 — Toxic doubling on five Poison carriers, not two: 25 % of 64 arrivals lost at the Region's Attack (v0.9.88).
     stage: 'gym-poison',
-    line: 'Fwahahaha! A ninja does not strike. He waits for the poison to do it.',
+    line: 'Fwahahaha! A ninja waits for the poison to work!',
     telegraph: 'Poisons everything and waits you out. Bring cures, Psychic or Ground.',
     team: [
       { species: 'arbok', phaseCount: 2, moves: ['wrap-plus', 'glare', 'bite-plus', 'sludge'] },
@@ -904,21 +904,21 @@ export const REGION3_BIOME_WEIGHTS: { biome: BiomeId; weight: number }[] = [
  * intent. Swimmers stay on for the Ice lane, whose cave is the Seafoam kind.
  */
 export const TRAINERS_R3: TrainerRoster[] = [
-  { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: 'Two Pokémon at their best. Ready?',
+  { id: 'ace-trainer-r3-a', archetype: 'ace-trainer', name: 'Ace Trainer Rhea', sprite: 'acetrainer', line: "My two Pokémon are at their best! Are yours?",
     team: [{ species: 'pidgeot', level: 42 }, { species: 'arcanine', level: 44 }] },
   { id: 'ace-trainer-r3-b', archetype: 'ace-trainer', name: 'Ace Trainer Dario', sprite: 'acetrainerm', line: 'Mind or muscle? I brought both.',
     team: [{ species: 'alakazam', level: 43 }, { species: 'machamp', level: 44 }] },
-  { id: 'hex-maniac-r3-a', archetype: 'hex-maniac', name: 'Hex Maniac Vera', sprite: 'hexmaniac', line: 'You cannot see what they are planning. That is the point.', veiled: true,
+  { id: 'hex-maniac-r3-a', archetype: 'hex-maniac', name: 'Hex Maniac Vera', sprite: 'hexmaniac', line: "Hehehe… Can you see what they're planning?", veiled: true,
     team: [{ species: 'hypno', level: 42 }, { species: 'gengar', level: 43 }] },
   { id: 'hex-maniac-r3-b', archetype: 'hex-maniac', name: 'Hex Maniac Mona', sprite: 'hexmaniac', line: 'The tower whispers your moves to me…', veiled: true,
     team: [{ species: 'mr-mime', level: 42 }, { species: 'slowbro', level: 43 }] },
-  { id: 'rocket-grunt-r3-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: 'The Boss wants this mountain. You are standing on it.',
+  { id: 'rocket-grunt-r3-a', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgrunt', line: "The Boss wants this mountain! Get off it, kid!",
     team: [{ species: 'weezing', level: 42 }, { species: 'arbok', level: 43 }] },
-  { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgruntf', line: 'Team Rocket never loses twice. Well — never three times.',
+  { id: 'rocket-grunt-r3-b', archetype: 'rocket-grunt', name: 'Rocket Grunt', sprite: 'rocketgruntf', line: 'Team Rocket never loses twice! Hardly ever!',
     team: [{ species: 'golbat', level: 42 }, { species: 'muk', level: 43 }] },
-  { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'engineer', line: 'The geothermal plant runs on these two. So do I.',
+  { id: 'engineer-r3-a', archetype: 'engineer', name: 'Engineer Otto', sprite: 'engineer', line: "These two power the whole geothermal plant!",
     team: [{ species: 'electrode', level: 42 }, { species: 'electabuzz', level: 43 }] },
-  { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: 'Porygon was built at Silph. I rebuilt it better.',
+  { id: 'engineer-r3-b', archetype: 'engineer', name: 'Engineer Silvia', sprite: 'scientist', line: "Silph built Porygon. I made it better!",
     team: [{ species: 'porygon', level: 42 }, { species: 'raichu', level: 43 }] },
   { id: 'hiker-r3-a', archetype: 'hiker', name: 'Hiker Ernesto', sprite: 'hiker', line: 'Hup! Hup! Mind the loose rocks!',
     team: [{ species: 'rhyhorn', level: 43 }, { species: 'golem', level: 44 }] },
@@ -926,13 +926,13 @@ export const TRAINERS_R3: TrainerRoster[] = [
     team: [{ species: 'rhydon', level: 42 }, { species: 'machamp', level: 44 }] },
   // §2.7.1 (v0.9.107) — sibling classes: the Fighting lane's cave is Kiyo's dojo road, so a Black Belt and a Battle Girl
   // climb it with the Hikers.
-  { id: 'hiker-r3-c', archetype: 'hiker', name: 'Black Belt Kenji', sprite: 'blackbelt', line: 'Ten thousand punches a day. You are the next one.',
+  { id: 'hiker-r3-c', archetype: 'hiker', name: 'Black Belt Kenji', sprite: 'blackbelt', line: "Ten thousand punches a day! You're next!",
     team: [{ species: 'primeape', level: 42 }, { species: 'machamp', level: 44 }] },
-  { id: 'hiker-r3-d', archetype: 'hiker', name: 'Battle Girl Mika', sprite: 'battlegirl', line: 'I trained under the Karate King. Now I train past him.',
+  { id: 'hiker-r3-d', archetype: 'hiker', name: 'Battle Girl Mika', sprite: 'battlegirl', line: "I trained under the Karate King himself! Hiyah!",
     team: [{ species: 'hitmonchan', level: 43 }, { species: 'primeape', level: 43 }] },
-  { id: 'swimmer-r3-a', archetype: 'swimmer', name: 'Swimmer Nerea', sprite: 'swimmer', line: 'The water under the ice is freezing. You get used to it.',
+  { id: 'swimmer-r3-a', archetype: 'swimmer', name: 'Swimmer Nerea', sprite: 'swimmer', line: 'Brr! The water under the ice is freezing!',
     team: [{ species: 'dewgong', level: 42 }, { species: 'seaking', level: 43 }] },
-  { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmerm', line: 'Swim the ice caves long enough and nothing scares you.',
+  { id: 'swimmer-r3-b', archetype: 'swimmer', name: 'Swimmer Marco', sprite: 'swimmerm', line: 'I swim the ice caves! Nothing scares me now!',
     team: [{ species: 'cloyster', level: 42 }, { species: 'starmie', level: 43 }] },
 ];
 
@@ -946,7 +946,7 @@ export const ELITE_R3: EliteDef = {
   name: 'Boss Giovanni',
   // The Team Rocket boss, in its suit (the user's note, 2026-10-19) — apart from the Ground Gym's Leader Giovanni.
   sprite: 'giovanni-rocket',
-  line: 'So you are the one who keeps getting in Team Rocket’s way. I will end that here.',
+  line: 'So you are the one who keeps foiling us.',
   team: [
     { species: 'dugtrio', level: 44, phaseCount: 2 },
     { species: 'persian', level: 47, phaseCount: 2 },
@@ -964,7 +964,7 @@ export const ELITE_WILD_R3: EliteWildDef = {
   phaseCount: 2,
   stage: 'elite-aerodactyl',
   moves: ['agility', 'bite', 'fly', 'rock-slide'],
-  line: 'A shriek from the crags. Something ancient is circling overhead, and it has seen you.',
+  line: 'A shriek from the crags. Something is circling.',
 };
 
 /**
@@ -976,7 +976,7 @@ export const GYMS_R3: GymDef[] = [
   {
     id: 'psychic-gym-r3', region: 3, name: 'Leader Sabrina', sprite: 'sabrina', type: 'psychic', badgeId: 'marsh-badge', rule: 'mind-lock',
     stage: 'gym-psychic',
-    line: 'I foresaw your arrival. I also foresaw how this ends.',
+    line: 'I had a vision of your arrival!',
     telegraph: 'Taxes your AP and locks your hand. Bring Bug or Ghost, and cards you can afford.',
     // §5.9.3 — Reflect, not Recover (2026-10-20): at its real level a Lv 34 Alakazam healing 40 % every other turn
     // through three phases outlasted the team — 160-turn fights, seven in ten lost. Mind Lock is the fight.
@@ -992,7 +992,7 @@ export const GYMS_R3: GymDef[] = [
   {
     id: 'ground-gym-r3', region: 3, name: 'Leader Giovanni', sprite: 'giovanni', type: 'ground', badgeId: 'earth-badge', rule: 'tremor',
     stage: 'gym-ground',
-    line: 'This Gym is the last thing between you and the League. It does not move.',
+    line: 'This Gym is the last step before the League!',
     telegraph: 'A wall that braces harder the more you hit it. Bring Water, Grass or Ice.',
     team: [
       { species: 'nidoqueen', phaseCount: 2, moves: ['earthquake', 'body-slam', 'sludge', 'toxic-plus'] },
@@ -1006,7 +1006,7 @@ export const GYMS_R3: GymDef[] = [
   {
     id: 'fighting-gym-r3', region: 3, name: 'Leader Kiyo', sprite: 'kiyo', type: 'fighting', badgeId: 'knuckle-badge', rule: 'close-quarters',
     stage: 'gym-fighting',
-    line: 'A hundred days on this mountain, training. Show me your hundred.',
+    line: 'Hwaaah! A hundred days on this mountain! Fight!',
     telegraph: 'A burst race on a Home Field that makes every Fighting hit land harder. Bring Psychic or Flying, or more HP.',
     team: [
       { species: 'primeape', phaseCount: 2, moves: ['karate-chop-plus', 'thrash', 'rock-slide', 'leer'] },
@@ -1020,7 +1020,7 @@ export const GYMS_R3: GymDef[] = [
   {
     id: 'ice-gym-r3', region: 3, name: 'Leader Lorelei', sprite: 'lorelei', type: 'ice', badgeId: 'glacier-badge', rule: 'ice-armour',
     stage: 'gym-ice',
-    line: 'Your Pokémon will freeze before they reach me. Let us see how long you last.',
+    line: 'No one can best me with icy Pokémon!',
     telegraph: 'Freezes your Lead and taxes your AP. Bring Fighting, Electric or Rock.',
     team: [
       { species: 'dewgong', phaseCount: 2, moves: ['aurora-beam', 'surf', 'take-down', 'growl'] },

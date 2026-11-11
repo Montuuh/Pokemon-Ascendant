@@ -49,7 +49,7 @@ A roguelike deckbuilder where **your party is your deck**.
 
 ## Status
 
-**v0.9.111 — Plain words** (Beta). Every string in the game read and cut to what a player needs: cards say only what their power and type do not, each rule is said once, boss answers are the counterplay and nothing more. Before it, v0.9.110 rebuilt the account: a Field Report at a run's end, Oak's Parcels, nine Trainer Ranks and a lobby that fills, Bond in six ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
+**v0.9.112 — Trainers speak** (Beta). Every trainer, Elite and Leader says its line as the fight opens, in the series' voice, and the Mystery events say plainly what each choice does. Before it, v0.9.111 cut every string in the game to what a player needs, and v0.9.110 rebuilt the account: a Field Report, Oak's Parcels, nine Trainer Ranks, the Trainer Kit and the League Ladder. The game is in **Beta until v1.0**; what each version added is in [`CHANGELOG.md`](CHANGELOG.md), one entry per theme, and on the game's *What's new* screen.
 
 ## Run it locally
 
