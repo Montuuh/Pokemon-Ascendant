@@ -31,7 +31,7 @@ export function eventRiskTip(risk: EventRisk): ReactNode {
 }
 /** §9.4 — the final team keeps its condition in the run record. */
 export function runEndTeamTip(name: string, level: number, hp: number, max: number, trauma: number): ReactNode {
-  return <Tip title={name} meta={[`Lv ${level}`, `${hp} / ${max} HP`]} body={trauma ? `Trauma ×${trauma}` : undefined} footer="Final condition at the end of this run." />;
+  return <Tip title={name} meta={[`Lv ${level}`, `${hp} / ${max} HP`]} body={trauma ? `Trauma ×${trauma}` : undefined} />;
 }
 /** §9.4 — results remain accessible behind the final team's record door. */
 export function runEndProgressTip(): ReactNode {
@@ -274,7 +274,7 @@ const INTENT_BODY: Record<string, string> = {
   disrupt: DISRUPT_TEXT.footer,
   stall: 'Recovering HP or setting up. A free turn for you.',
   status: 'Trying to inflict a status on your Lead. A swap moves the target.',
-  unknown: 'Hidden. You can see what kind of thing is coming, not how hard or where. Some abilities and relics reveal it.',
+  unknown: 'Hidden: its kind shows, but not how hard or where. Some abilities and relics reveal it.',
   incapacitated: 'Asleep, frozen, or caught off guard by your Time Spinner. It does nothing this turn.',
   summon: 'Calling a companion into the fight. It spends its turn on it.',
   guard: 'Finish the Lead now, or switch to Ranged.',
@@ -677,7 +677,7 @@ export function consumableTip(c: ConsumableDef, playable = true, reason: string 
 
 /** §2.14 — Poké Dollars. */
 export function moneyTip(amount: number): ReactNode {
-  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent at the Poké Mart, the Dojo and the Center's Therapy. What you do not spend carries into the next Region." footer={`When the run ends, every ${TOKENS.moneyPer} ₽ left becomes a Token, up to ${TOKENS.moneyCap}.`} />;
+  return <Tip title={`${amount} ₽`} body="Poké Dollars. Earned from fights, spent in shops, at the Dojo and in the Center's Therapy. What you do not spend carries into the next Region." footer={`When the run ends, every ${TOKENS.moneyPer} ₽ left becomes a Token, up to ${TOKENS.moneyCap}.`} />;
 }
 
 /** §2.6.4 — balls as a counted resource. */
@@ -764,7 +764,7 @@ export function trainerXpTip(footer?: string): ReactNode {
 
 /** §8.4.5 — the Trainer Kit. */
 export function kitTip(slots: number): ReactNode {
-  return <Tip title="Trainer Kit" meta={[`${slots} slot${slots === 1 ? '' : 's'}`]} body={`Perks you pack before a run. Each changes what the run starts with — ₽, Potions, a TM, a peek — and none touches damage or HP. One slot at ${rankRow(KIT_SLOT_RANKS[0]).name}, two at ${rankRow(KIT_SLOT_RANKS[1]).name}, three at ${rankRow(KIT_SLOT_RANKS[2]).name}.`} footer="Bought at the Poké Mart, or handed over by Professor Oak's aide as your Pokédex fills." />;
+  return <Tip title="Trainer Kit" meta={[`${slots} slot${slots === 1 ? '' : 's'}`]} body={`Perks you pack before a run. One slot at ${rankRow(KIT_SLOT_RANKS[0]).name}, two at ${rankRow(KIT_SLOT_RANKS[1]).name}, three at ${rankRow(KIT_SLOT_RANKS[2]).name}.`} footer="Bought at the Poké Mart, or handed over by Professor Oak's aide as your Pokédex fills." />;
 }
 
 /** §8.4.5 — one of the Kit's three places. */
@@ -896,7 +896,7 @@ export function starterTip(name: string, blurb: string | null, price: number, st
 export function dexCardTip(name: string, dex: number, types: readonly string[], met: boolean, encounters: number, lineName: string, rank: number, shiniesCaught = 0): ReactNode {
   const lines: ReactNode[] = [
     ...(shiniesCaught > 0 ? [<div key="sh"><b>Shiny</b> — caught {shiniesCaught === 1 ? 'once' : `${shiniesCaught} times`}: it is in your collection.</div>] : []),
-    <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not met yet — its name, types and kit are unknown until it takes the field.'}</div>,
+    <div key="m">{met ? `Faced ${encounters} time${encounters === 1 ? '' : 's'}.` : 'Not met yet: its name, types and kit show once you meet it.'}</div>,
     <div key="b">{rank > 0 ? `${lineName} line: ${BOND_RANK_NAME[rank]} (rank ${rank}).` : `${lineName} line: not yet played.`}</div>,
   ];
   return <Tip title={`#${String(dex).padStart(3, '0')} ${name}`} meta={types.map(cap)} body={lines} footer="Open for its record, its kit and its line." />;
@@ -914,11 +914,11 @@ export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aid
     case 'guide':
       return <Tip title="Item Guide" body="Every relic, item, held item, Evolution Item and TM in the game: what it does, what it costs and where it turns up — and what you have yet to open." />;
     case 'run':
-      return <Tip title="New run" body="Through the door to the Elite Four: choose a starter, a Starting Relic and the run's options, and set out." />;
+      return <Tip title="New run" body="Choose a starter, a Starting Relic and the run's options, and set out." />;
     case 'aide':
       return <Tip title={JOURNEY_TEXT.aide} meta={extra?.parcels ? [`${extra.parcels} parcel${extra.parcels === 1 ? '' : 's'} waiting`] : undefined} body="Oak's Parcels unlock new relics, items, TMs and Mysteries, one of three each. The Trainer Journal holds your deeds and their prizes." />;
     case 'kit':
-      return <Tip title="Trainer Kit" meta={[`${extra?.slots ?? 0} slot${extra?.slots === 1 ? '' : 's'}`]} body="Pack the perks you own before a run. Each changes what the run starts with, never how hard it hits." />;
+      return <Tip title="Trainer Kit" meta={[`${extra?.slots ?? 0} slot${extra?.slots === 1 ? '' : 's'}`]} body="Pack the perks you own before a run." />;
   }
 }
 
@@ -976,13 +976,13 @@ export function vaultTip(name: string, kind: string, description: string, source
 
 /** §3.1.2 — the Run button: what it costs here, or why it cannot be pressed. */
 export function fleeTip(tier: FleeTier | null, toll: FleeToll | null): ReactNode {
-  if (!tier || !toll) return <Tip title="No running from a Gym" body="The fork was the choice. A Gym Leader is fought to the end." />;
+  if (!tier || !toll) return <Tip title="No running" body="This fight is fought to the end." />;
   const WHO: Record<FleeTier, string> = { wild: 'A wild fight', trainer: 'A trainer', elite: 'An Elite' };
   return (
     <Tip
       title="Run"
       meta={[WHO[tier], describeToll(toll)]}
-      body="The enemy takes the action it has telegraphed first — the parting shot — then the fight ends. No XP, no drop, no catch; the node is behind you."
+      body="The enemy takes its telegraphed action first, then the fight ends: no XP, no drop, no catch."
       footer={toll.loot === 'relic' ? 'The relic is picked at random, never a Legendary.' : toll.loot === 'consumable' ? 'The consumable is picked at random.' : undefined}
     />
   );
@@ -1247,7 +1247,7 @@ export function summitTip(): ReactNode {
 
 /** §2.12.1 — the Gauntlet's prize. */
 export function gauntletPrizeTip(): ReactNode {
-  return <Tip title={VICTORY_TEXT.gauntletPrize} body="Three Rare relics. A Gauntlet gives back no HP, so this is all it pays." />;
+  return <Tip title={VICTORY_TEXT.gauntletPrize} body={`${cap(rarityList(RELIC_REWARD.gymFirstPick))}. A Gauntlet gives back no HP.`} />;
 }
 
 /** §2.12.6 — the Perfect Clear: the Badge a Gauntlet won with nobody fainting would pay. */
@@ -1649,7 +1649,7 @@ export function ballsFoundTip(n: number): ReactNode {
 
 /** §2.8.1 — the Elite Trainer's relic pick. */
 export function elitePrizeTip(): ReactNode {
-  return <Tip title="Relics are scarce" body="An Elite Trainer is one of the few places a relic is guaranteed: two Uncommons and a Rare on the table." footer="Until your account has discovered a Rare, an Uncommon takes its place." />;
+  return <Tip title="Relic pick" body={`${cap(rarityList(RELIC_REWARD.elitePick))}: pick one.`} />;
 }
 
 /** §2.11.2.3 — the collector's premium, as the line a relic card's tooltip adds. */
@@ -1825,7 +1825,7 @@ export function bondUnlockTip(rank: number, lineName: string): ReactNode {
 
 /** The money a fight paid, and the wallet it went into. */
 export function rewardMoneyTip(gain: number, total: number): ReactNode {
-  return <Tip title={`+${gain} ₽`} meta={[`${total.toLocaleString('en-GB')} ₽ in the wallet`]} body="Spend it at the Poké Mart, the Dojo and the Center's Therapy." footer={`When the run ends, every ${TOKENS.moneyPer} ₽ left becomes a Token, up to ${TOKENS.moneyCap}.`} />;
+  return <Tip title={`+${gain} ₽`} meta={[`${total.toLocaleString('en-GB')} ₽ in the wallet`]} body="Spend it in shops, at the Dojo and in the Center's Therapy." footer={`When the run ends, every ${TOKENS.moneyPer} ₽ left becomes a Token, up to ${TOKENS.moneyCap}.`} />;
 }
 
 /** A medal's or a discovery's progress line: what it is for. */

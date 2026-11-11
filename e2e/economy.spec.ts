@@ -570,7 +570,7 @@ test.describe('Running from a fight — §3.1.2', () => {
     await run.hover();
     await page.waitForTimeout(700);
     await expect(page.getByTestId('tooltip')).toContainText('−20 % ₽');
-    await expect(page.getByTestId('tooltip')).toContainText('parting shot');
+    await expect(page.getByTestId('tooltip')).toContainText('telegraphed action first');
     await page.screenshot({ path: 'playtest/combat-run-button.png' });
 
     await run.click();
@@ -594,5 +594,24 @@ test.describe('Running from a fight — §3.1.2', () => {
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     // A practice fixture is not a run, so the button is not there at all; inside a run the Gym disables it.
     await expect(page.getByTestId('btn-flee')).toHaveCount(0);
+  });
+
+  test('a Gym fight greys its Run out, and the grey button still says why', async ({ page }) => {
+    await freshRun(page, { seed: 7 });
+    await page.evaluate(() => {
+      const dev = window.__ascendant!;
+      dev.run.jump('gym');
+      dev.run.dispatch({ type: 'enter-node', nodeId: dev.run.state()!.reachable[0]! });
+      dev.goTo('map');
+    });
+    await page.getByTestId('btn-enter-node').click();
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
+    const run = page.getByTestId('btn-flee');
+    await expect(run).toHaveAttribute('aria-disabled', 'true');
+    await run.hover();
+    await expect(page.getByTestId('tooltip')).toContainText('No running');
+    // Pressing it does nothing: the fight goes on.
+    await run.click({ force: true });
+    await expect(page.getByTestId('combat-screen')).toBeVisible();
   });
 });

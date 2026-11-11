@@ -521,11 +521,12 @@ html[data-motion='reduced'] .banner {
   font-size: var(--type-small);
   cursor: pointer;
 }
-.flee:hover:not(:disabled) {
+.flee:hover:not(:disabled):not([aria-disabled="true"]) {
   border-color: var(--accent-warning);
   color: var(--ink-primary);
 }
-.flee:disabled {
+.flee:disabled,
+.flee[aria-disabled="true"] {
   opacity: 0.5;
   cursor: default;
 }

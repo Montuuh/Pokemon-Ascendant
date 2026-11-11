@@ -242,7 +242,7 @@ function Kit({ s, account, onSpecies }: { s: SpeciesDef; account: AccountState; 
       </section>
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Abilities <InfoDot tip={<Tip title="Abilities" body={`The pool this form can carry. The first is granted at the first evolution; the Dojo swaps among the rest. The hidden one opens at Bond rank ${BOND_TIER.hiddenAbility} (${BOND_RANK_NAME[BOND_TIER.hiddenAbility]}).`} />} /></h3>
+        <h3 className={styles.sectionTitle}>Abilities <InfoDot tip={<Tip title="Abilities" body={`The pool this form can carry; the Dojo swaps among them. The hidden one opens at Bond rank ${BOND_TIER.hiddenAbility} (${BOND_RANK_NAME[BOND_TIER.hiddenAbility]}).`} />} /></h3>
         <div className={styles.chips}>
           {abilities.map((id) => (
             <Tipped key={id} tip={abilityTip(id)} className={styles.chip}>{content.ability(id).name}</Tipped>

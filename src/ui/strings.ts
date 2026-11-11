@@ -1023,7 +1023,7 @@ export const RESULT_TEXT = {
   stillThere: 'Still there',
   newCatch: 'New',
   boxFull: 'Box full',
-  prize: 'Prize money',
+  prize: 'Prize',
   wallet: (n: number) => `Now ${n.toLocaleString('en-GB')} ₽`,
   toll: 'Toll',
   tollShare: (pct: number) => `${pct} %`,

@@ -1730,7 +1730,7 @@ export function runReducer(state: RunState, action: RunAction, ctx: RunCtx): Run
         draft.reachable = [...draft.map.entry];
         draft.visited = [];
         draft.phase = 'map';
-        say(draft, 'Through the gate: the Pokémon League. Four of the Elite Four, then the Champion.');
+        say(draft, 'Through the gate: the Pokémon League. The Elite Four, then the Champion.');
         break;
       }
 

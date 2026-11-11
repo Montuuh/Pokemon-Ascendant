@@ -748,7 +748,7 @@ export function CombatScreen() {
               tip={fleeTip(fleeTier, fleeToll)}
               className={styles.flee}
               onClick={() => fleeTier && dispatch({ type: 'flee' })}
-              disabled={!interactive || !fleeTier}
+              disabled={!interactive}
               aria-disabled={!fleeTier}
               data-testid="btn-flee"
             >

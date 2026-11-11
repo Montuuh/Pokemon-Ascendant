@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.117 — Home and after · 2026-11-12
+
+The last text pass: results, the run's end, the Hub and the menus.
+
+- **Run.** A greyed Run button now says why it cannot be pressed.
+- **Relics.** Elite and Gauntlet picks show what they really pay.
+- **How to play.** AP, types, Ranged and Trauma match the game.
+- **Hub.** Mart, Kit, Pokédex and new-run bubbles trimmed.
+
 ### v0.9.116 — Team and bag · 2026-11-11
 
 The Team screen, the bag and the item texts, checked against the rules.

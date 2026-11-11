@@ -69,7 +69,7 @@ export function SettingsScreen() {
 
       {/* What the text size looks like, beside the control it previews. */}
       <p className={styles.sample} data-testid="settings-sample">
-        A Pidgey appeared! Gust is coming for your Lead — 6 damage, and it will not be the last.
+        A Pidgey appeared! Gust is coming for your Lead: 6 damage.
       </p>
 
       <section className={styles.group}>

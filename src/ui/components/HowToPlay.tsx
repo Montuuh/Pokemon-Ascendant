@@ -27,12 +27,12 @@ const RULES = [
   {
     icon: IconBolt,
     title: 'Three AP a turn',
-    body: 'Cards cost Action Points, shown as dots on the card and as pips beside End Turn. Unspent AP does not carry over. Most turns are one big card or two small ones.',
+    body: 'Cards cost Action Points: the number in the card’s corner. Unspent AP does not carry over.',
   },
   {
     icon: IconArrowsLeftRight,
     title: 'The Lead takes the hits',
-    body: 'Your front Pokémon absorbs every single-target attack, and Melee cards can only be played from there. Ranged cards work from the bench at three-quarters damage. Swapping costs 1 AP, then 2, then 3 within the same turn.',
+    body: 'Your front Pokémon takes most attacks, and Melee cards can only be played from there. Ranged cards play from anywhere, at three-quarters damage. Swapping costs 1 AP, then 2, then 3 within the same turn.',
   },
   {
     icon: IconEye,
@@ -42,7 +42,7 @@ const RULES = [
   {
     icon: IconTargetArrow,
     title: 'Types decide the number',
-    body: 'A card shows the damage it would actually deal right now, not its raw power. A ×2 or ×¼ chip in the corner is why. Hover the enemy with a card selected to see the full breakdown.',
+    body: 'The number on a card is its power. A ×2 or ×0.5 chip says how its type lands on the enemy Lead; aim the card at an enemy for the damage it will deal.',
   },
   {
     icon: IconSparkles,
@@ -71,7 +71,7 @@ const ROUTE_RULES = [
   {
     icon: IconHeartBroken,
     title: 'Fainting leaves a mark',
-    body: 'A Pokémon that faints carries a Trauma stack for the rest of the run, and each stack costs it Max HP permanently. Nothing heals it back — not levelling, not a Center’s free restore. Only the Center’s Therapy takes a stack off, and it charges more the worse it already is.',
+    body: 'A Pokémon that faints takes a Trauma stack, and each stack lowers its Max HP. Levelling and healing do not touch it; the Center’s Therapy takes a stack off, dearer the more there are.',
   },
 ] as const;
 

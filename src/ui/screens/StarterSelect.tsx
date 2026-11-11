@@ -242,7 +242,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               Make it harder, if you want to
-              <InfoDot tip={<Tip title="Difficulty modifiers" body={`There is no easier setting. Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={rung === null && account.ladder === 0 ? JOURNEY_TEXT.ladder.locked : 'A modifier is free for a custom run once its League Ladder rung is won.'} />} />
+              <InfoDot tip={<Tip title="Difficulty modifiers" body={`Each modifier makes the run harder and pays for it in Trainer XP. You may take ${MODIFIER_SLOTS === 1 ? 'one' : MODIFIER_SLOTS}.`} footer={rung === null && account.ladder === 0 ? JOURNEY_TEXT.ladder.locked : 'A modifier is free for a custom run once its League Ladder rung is won.'} />} />
             </h2>
             {(openRows.length > 0 || rung !== null) && (
               <p className={styles.xpTally} data-testid="difficulty-xp">
@@ -321,7 +321,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               One relic to start with
-              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only, drawn from your account's pool." footer={offer.length === 4 ? 'Four offers — the Curated Starting Relic +1 upgrade. You can take none.' : 'You can take none.'} />} />
+              <InfoDot tip={<Tip title="Starting Relic" body="Common and Uncommon only, drawn from your account's pool." footer={offer.length === 4 ? 'Four offers, from the Curated Starting Relic. You can take none.' : 'You can take none.'} />} />
             </h2>
             <p className={styles.stepLede}>Works from the first fight. Never comes off.</p>
           </div>
@@ -353,7 +353,7 @@ export function StarterSelect() {
           <div className={styles.diffIntro}>
             <h2 className={`${styles.stepTitle} display`}>
               One rule for the whole Region
-              <InfoDot tip={<Tip title="Region Modifier" body="In force from the first node to the Gym, then gone. You hold exactly one; they never stack, and this is the only offer." footer="You can take none." />} />
+              <InfoDot tip={<Tip title="Region Modifier" body="In force from the first node to the Gym, then gone. One at a time, and this is the only offer." footer="You can take none." />} />
             </h2>
             <p className={styles.stepLede}>From the first node to the Gym, then gone.</p>
           </div>

@@ -225,7 +225,9 @@ export function FightResults() {
       )
     : rec?.kind === 'gauntlet'
       ? gauntletPrizeTip()
-      : elitePrizeTip();
+      : rec?.kind === 'apex'
+        ? gymRelicTip(true, false)
+        : elitePrizeTip();
   const pickHead = gymPick
     ? RESULT_TEXT.gymPrize
     : rec?.kind === 'gauntlet'

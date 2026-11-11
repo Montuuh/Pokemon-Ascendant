@@ -25,7 +25,7 @@ loop layer and re-tests the core inside it.
 | v0.6 | Meta | Trainer XP/tokens, hub kiosks, Pokédex tiers + Mastery moves, unlocks, meta starters, relic tiers | ✅ 2026-09-21 · ◐ playtest |
 | v0.7 | Cities & Regions 2–3 | The run continues past Gym 1: two Cities as lobbies, routes stripped to a nurse and a pedlar, Regions 2 and 3 with their own accents, then the Safari Zone, the Ring and the Coliseum as their own buildings, Team Rocket's secret Black Market — the Game Corner played, every City door open. **Twelve subversions** | ✅ 2026-09-28 |
 | v0.8 | Multi-enemy & the route | Fights against two or three enemies at once across the whole run — cards dragged onto a target, enemies that act twice or call for help — field effects, the route reworked, then the whole run balanced | ✅ 2026-10-05 |
-| v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, Gym Leaders with rules of their own, the map, the combat screen and the title redrawn, new fight objectives and the route Trader, then Victory Road, the League, the Champion and sound | ☐ |
+| v0.9 | The long game | Bond, Shiny, the Trainer level and the Poké Mart reworked, the catch animated, Gym Leaders with rules of their own, the map, the combat screen and the title redrawn, new fight objectives and the route Trader, then Victory Road, the League, the Champion and sound | ◐ in progress |
 | v1.0 | Release | Single-player. Desktop build (Tauri), itch.io web + Windows, balance pass, trailer | ☐ |
 | v1.1 | Polish | Accessibility tier, localisation (es-ES/en-US), generated backdrops, VFX pass | ☐ |
 | v1.2 | The world, wider | Fossils and the Laboratory, role events, Ditto's Transform, HMs | ☐ |
@@ -1540,6 +1540,23 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.117 — Home and after  ✅ 2026-11-12
+
+**Shipped.** The last package of "lanza TODOS los paquetes restantes": the fight results, the run's end, the Hub
+(Mart, Trainer Card, Pokédex, Journal, Kit, Hall of Fame), How to Play, the starter screen, Settings and About, read
+with the `slop-remover` skill, with a last sweep of every string the scanner still flagged across the game. The run's
+end and the Hub were mostly clean (most flags were game terms: "not very effective", "next level"). False lines fixed:
+How to Play said Ranged cards lose a quarter only from the bench (it is everywhere, `rangedModifier`) and that Trauma
+is permanent (Therapy removes it); the no-Run bubble called every boss a Gym; the League gate's log said "four of the
+Elite Four"; the Elite's and the Gauntlet's relic bubbles promised Rares the rewards table does not pay (both now
+read RELIC_REWARD); How to Play put AP pips beside End Turn, said a card shows its damage (it shows its power) and that
+the Lead takes every single-target hit (Backstrike); the Kit bubbles said no perk touches damage or HP (Head Start and
+Exp. Share do). A greyed Run button opened no bubble at all: it now says why (new e2e, failing without the fix). About
+shows v0.9 as being built, and the result's "Prize money" label no longer clips. Left open: the Trauma chip on a fainted
+result card inherits its 0.8 opacity (D5, 4.3:1), and canon §3.1.2 names only the Gym as un-runnable while the code
+also closes the League and the Ring (for the canon-auditor). With this package the text pass that began at v0.9.111 has covered every surface of the game.
+`npm run check`, the meta, results, run-end and League e2e, the strict audit of thirteen screens and the UI review.
+
 ### v0.9.116 — Team and bag  ✅ 2026-11-11
 
 **Shipped.** The user (2026-11-11): "lanza TODOS los paquetes restantes". The Team screen, the Box panel, the Move
@@ -1553,7 +1570,7 @@ own bubble; One Path said the two Gyms share a type (both lanes lead to the same
 for the rest of the fight; the empty bag gave a Held Item drop rate of one in five (it is one in two). With it, the
 Move Manager's close button no longer covers Auto. Open: a Defog does not clear a field's timer, so a timed field's
 restore brings the starting ground back (a sim bug, filed apart). Three stale e2e fixed: Jolteon's pre-v0.9.93 Speed gain (+112, now +26), and the level-up reveal, whose
-"one XP short" formula predated the v0.9.95 XP curve and whose short fill now plays .
+"one XP short" formula predated the v0.9.95 XP curve and whose short fill now plays `exp-fill-short`.
 `npm run check`, the team and bag e2e, the strict audit of six screens and the UI review.
 
 ### v0.9.115 — Battle notes  ✅ 2026-11-11
