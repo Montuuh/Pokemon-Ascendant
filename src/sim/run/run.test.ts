@@ -1205,6 +1205,16 @@ describe('Running from a fight — §3.1.2', () => {
     expect(fleeTierFor('elite-wild')).toBe('elite');
     expect(fleeTierFor('gym')).toBeNull();
   });
+
+  it('FleeTierFor_EveryNodeKind_MatchesTheCanonTable_§3.1.2', () => {
+    // §3.1.2 — the table row by row: a guarded find runs as a wild fight, the Gauntlet and the Apex as an Elite, and
+    // the Gym and the League cannot be run from (a Ring rung has no node at all, so it has no tier either).
+    expect(fleeTierFor('wild')).toBe('wild');
+    expect(fleeTierFor('cache')).toBe('wild');
+    expect(fleeTierFor('trainer')).toBe('trainer');
+    for (const kind of ['elite', 'elite-wild', 'gauntlet', 'apex'] as const) expect(fleeTierFor(kind)).toBe('elite');
+    for (const kind of ['gym', 'league'] as const) expect(fleeTierFor(kind)).toBeNull();
+  });
 });
 
 describe('Evolution Items — §6.3.2', () => {

@@ -1,8 +1,8 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-12 · **Version:** v0.9.118 (*Clear skies*).
-**Shipped 2026-11-12 (v0.9.118):** Defog also clears a move-set field's timer (§4.3.6/§4.3.15); test in fields.test.ts.
-**Shipped 2026-11-12 (v0.9.117):** the last text package (results, run end, Hub, menus); the text pass v0.9.111–117 has covered every surface. Open: a fainted card fades its Trauma chip (D5), §3.1.2 vs League/Ring Run. **Waiting on the user's look.**
+**Date:** 2026-11-12 · **Version:** v0.9.119 (*Clear skies*).
+**Shipped 2026-11-12 (v0.9.118–119):** Defog clears a move-set field's timer; a fainted result card dims only its sprite (D5); §3.1.2 lists the League and the Ring as un-runnable.
+**Shipped 2026-11-12 (v0.9.117):** the last text package (results, run end, Hub, menus); the text pass v0.9.111–117 has covered every surface. **Waiting on the user's look.**
 **Shipped 2026-11-12 (v0.9.116):** team, bag and item texts; Speed, One Path, Gym pick, Defog lines fixed. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.110):** the meta-progression rework, all four phases (§8, §6.8; proposal claude.ai/artifact/PWynspTEvWfyvYbDTESPcW): Field Report, vault + Oak's Parcels, Journal, Bond ×6 + Ribbons, nine Ranks, the lobby that fills, Badge Case, Trainer Kit, League Ladder, Hall of Fame. **Account v4 resets.** Not built: Leaders' challenges, lobby decorations. **After it (no version):** two ui-reviewer passes fixed (Field Report never scrolls or outgrows 720p, Journal tiles, Kit desk, Ladder pips, lobby people; `victory-full` audit preset); the Kit's ceiling measured on first-Gym clear rate (§8.4.5, `balance/kitCeiling.test.ts`): Head Start 2 → 1 level, all within +3 / +8. Five stale e2e fixed after it (ring plates, catch pill, TM bubble icon now on its 30 px grid); `ring-art:43` is flaky under load (reads sprites before they load). Changelog regrouped by theme; "Beta" beside the version. **Waiting on the user's look.**
 **Shipped 2026-11-10 (v0.9.108):** seven-row map (level tracks, density 2/3), each Gym's field over all its ground and

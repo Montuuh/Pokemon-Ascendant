@@ -1540,6 +1540,16 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.119 — Clear skies, closed  ✅ 2026-11-12
+
+**Shipped.** The user (2026-11-12): "arregla también los dos detalles abiertos". A fainted Pokémon's result card dimmed as a
+whole (`opacity: 0.8`), so its Trauma chip, the line a player plans Therapy by, fell to 4.3:1 (D5): now only the
+sprite greys and dims, on the result card and on the fight's own card alike, and a fainted sprite no longer idles. Canon §3.1.2 named only the Gym as un-runnable while the code also closes the League (its gate
+is one way) and a Challenge Ring rung (the cash-out is its exit), and the toll table left out the guarded find, the
+Gauntlet and the Apex: the table now says what `fleeTierFor` does, with its rationale, and a test walks it row by row.
+The changelog folds v0.9.118 into this entry. `npm run check`, the results and economy e2e, the audit of three result
+screens and the UI review.
+
 ### v0.9.118 — Clear skies  ✅ 2026-11-12
 
 **Shipped.** The user (2026-11-12): "sí, arréglalo", on the bug the v0.9.116 review found. Defog (§4.3.6) cleared the

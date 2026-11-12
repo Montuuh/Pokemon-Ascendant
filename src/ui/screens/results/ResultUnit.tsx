@@ -31,7 +31,7 @@ interface Props {
   xp?: { was: number; fill: number; gain: number; tip: ReactNode } | null;
   /** Trauma stacks, as the fight's card shows them. */
   trauma?: number;
-  /** Down: greyed, as on the field. */
+  /** Down: its picture greyed, as on the field; the chips stay readable. */
   fainted?: boolean;
   /** A beaten foe left standing as a ghost of itself; one that is still there, faded; a catch, new. */
   look?: 'ghost' | 'faded' | 'new';
@@ -71,9 +71,9 @@ export function ResultUnit({ side, speciesId, name, types, shiny, level, grew, l
         )}
       </span>
       <span className={card.window}>
-        <span className={card.stand}>
+        <span className={`${card.stand} ${styles.stand}`}>
           <span className={`${card.sprite} ${side === 'ours' ? styles.facing : ''}`}>
-            <ArenaSprite src={spriteOf({ speciesId }, 'front', !!shiny)} shiny={!!shiny} imgClassName={look === 'ghost' ? undefined : card.breathe} />
+            <ArenaSprite src={spriteOf({ speciesId }, 'front', !!shiny)} shiny={!!shiny} imgClassName={look === 'ghost' || fainted ? undefined : card.breathe} />
           </span>
         </span>
         <UnitChips

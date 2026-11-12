@@ -38,8 +38,11 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-positive) 45%, transparent);
   animation: global(glowPulse) var(--motion-loop-pulse) ease-out infinite;
 }
+/* Down: its picture greys and dims; its name, HP and Trauma chip stay at full contrast (D5). */
 .unit.fainted {
   cursor: default;
+}
+.unit.fainted .stand {
   filter: saturate(0.2) brightness(0.8);
   opacity: 0.8;
 }

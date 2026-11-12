@@ -39,16 +39,18 @@ opens. Then the run collects the toll, which climbs with the stakes of the fight
 
 | Fight | Money | Trauma | And |
 |---|---|---|---|
-| Wild | −20 % of the wallet | +1 on the Lead | — |
+| Wild · a guarded find (§5.6.5) | −20 % of the wallet | +1 on the Lead | — |
 | Trainer | −30 % | +1 on every Active member | one random consumable is dropped |
-| Elite Trainer · Elite Wild | −50 % | +1 on every Active member | one random relic is left behind (never a Legendary; a consumable if you hold no relic) |
-| **Gym** | **cannot run** | | |
+| Elite Trainer · Elite Wild · Gauntlet · Apex | −50 % | +1 on every Active member | one random relic is left behind (never a Legendary; a consumable if you hold no relic) |
+| **Gym · League · Challenge Ring** | **cannot run** | | |
 
 The toll is printed on the button before it is pressed (Pillar 1), and the parting shot is the intent you can
 already see. What running buys is the rest of the run; what it costs is set so that it is cheaper than a wipe
 and dearer than the win you gave up — a free exit would have devalued the swap decision Pillar 2 is built on,
 and this is what makes it a decision instead of an undo. The Gym is exempt because the fork was the choice and
-it was made (§2.5). Losing a *Pokémon* was considered for the Elite tier and rejected: a Pokémon carries its
+it was made (§2.5); the League because its gate is one way and its doors are the end of the run (§2.1.6); a Challenge
+Ring rung because the ladder has its own exit, the cash-out between rungs (§2.9.4.1). *(2026-11-12: the League and the
+Ring had been closed in code since they were built; the table now says so.)* Losing a *Pokémon* was considered for the Elite tier and rejected: a Pokémon carries its
 levels and its Bond, and losing one reads as losing the run.
 
 ---

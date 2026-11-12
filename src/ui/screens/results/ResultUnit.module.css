@@ -24,7 +24,9 @@
   background: var(--brand-red-deep);
   color: var(--brand-cream);
 }
-.unit.fainted {
+/* A fainted Pokémon: its picture greys and dims; its Trauma chip, its name and "Fainted" stay at full contrast (D5) —
+   the chip is what the player plans Therapy by. */
+.unit.fainted .stand {
   filter: saturate(0.2) brightness(0.8);
   opacity: 0.8;
 }

@@ -19,11 +19,13 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
-### v0.9.118 — Clear skies · 2026-11-12
+### v0.9.119 — Clear skies · 2026-11-12
 
-A fix to Defog.
+Defog holds, a fainted card stays readable, and running is written down.
 
 - **Defog.** A cleared field no longer comes back when a move's turns end.
+- **Results.** A fainted Pokémon greys its picture, not its Trauma chip.
+- **Running.** League and Ring fights cannot be run from, as the rules say.
 
 ### v0.9.117 — Home and after · 2026-11-12
 

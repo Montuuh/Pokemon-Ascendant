@@ -139,9 +139,9 @@ export function Portrait({ turn, mon, variant, slotLabel, slotId, allyIndex, fxS
       <span className={card.window}>
         {/* §4.1.3.1 — the critical rhythm, on the card's outer edge at the window's middle. */}
         {!fainted && <RhythmDial c={mon} config={DEFAULT_BATTLE_CONFIG} side="ally" lead={variant === 'lead'} ghost={rhythmGhost ?? null} />}
-        <span className={card.stand} data-fx-slot={fxSlot} data-arrow-to={slotId}>
+        <span className={`${card.stand} ${styles.stand}`} data-fx-slot={fxSlot} data-arrow-to={slotId}>
           <span className={`${card.sprite} ${fxClass ?? ''} ${spriteClass ?? ''}`}>
-            <ArenaSprite src={spriteOf(mon, 'back', !!mon.shiny)} shiny={!!mon.shiny} concealed={fainted} imgClassName={card.breathe} />
+            <ArenaSprite src={spriteOf(mon, 'back', !!mon.shiny)} shiny={!!mon.shiny} concealed={fainted} imgClassName={fainted ? undefined : card.breathe} />
           </span>
         </span>
         {/* Its stages, Shield and Trauma on the window's corner, only when it has any: the card keeps one size. */}

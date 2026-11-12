@@ -15,7 +15,7 @@
 |---|---|---|---|---|
 | Combat loop, five phases | §3.2 | `sim/combat/turn.ts`, `reducer.ts`, `state.ts` | `setup`, `cards`, `faint` | ✅ |
 | Lead and swap | §3.3 | `reducer.ts`, `slots.ts`, `preview.ts` (`swapOptions` per bench, the quick swap — `outspeeds`, `effectiveSpeed` in `stats.ts`) | `swap`, `faint` | ✅ quick swap v0.9.58 |
-| Running (Escaped) | §3.1.2 | `combat/turn.ts` (`flee`), `run/flee.ts`, `run/run.ts` | `flee`, `run` | ✅ parting shot, then the toll by fight tier; never from a Gym |
+| Running (Escaped) | §3.1.2 | `combat/turn.ts` (`flee`), `run/flee.ts`, `run/run.ts` | `flee`, `run` | ✅ parting shot, then the toll by fight tier; never from a Gym, the League or a Ring rung |
 | Deck, hand, consumables | §3.4, §3.5 | `sim/combat/deck.ts`, `run/run.ts` (spent at `finish-combat`) | `cards`, `status`, `rewards` | ✅ 15 of 28 consumables, the §7.2.6 healing chain complete; spent when played since v0.8.6 |
 | Damage and type chart | §4.1 | `damage.ts`, `typeChart.ts`, `damageFlow.ts`, `stats.ts` | `damage`, `typeChart`, `statStages` | ✅ 17 types since v0.9.84 (Dark, Steel; the 289 cells held by an independent matrix test) |
 | Critical rhythm | §4.1.3.1 | `combat/rhythm.ts` (`rhythmActs`, `rhythmPace`, `rhythmLeft`, `stepRhythm`, `markRhythm`: a curve, v0.9.80), `Combatant.rhythm`, `Intent.crit` (declared in `intents.ts`, spent in `enemyTurn.ts`), `reducer.ts`/`preview.ts` (the player's); UI `RhythmDial.tsx` (the dial), `RhythmPace.tsx` (its hover), `MoveCard.tsx` (✦ CRIT in hand), `IntentChip.tsx` (CRIT) | `rhythm` | ✅ v0.9.59 · dial v0.9.60 |
