@@ -772,6 +772,15 @@ Bottom utility bar (Inventory · Pokédex · Settings · Save & Quit).
 **Components.** `Pokémon card/portrait tile` · `drag-and-drop list` (Box) · `node marker` (per §9.4.1
 icons, biome-tinted wild) · `HP bar` (mini) · `Trauma badge` · `icon button` · `confirm modal`.
 
+**Habitats (v0.9.120).** A **Habitats** button in the board's corner (beside Labels; key `H`) opens a legend panel over the
+board's lower right: one section for the shared trunk and one for each Gym's lane (a leaning track of the Y belongs to its
+Gym), each row a habitat still ahead with its landmark, the count of its Wild Areas ahead and the three types its pool
+leans on. Hover or focus a row to ring its nodes on the board in blue; press it to bring the nearest into view; its
+bubble holds the whole pool by rarity (the pool is public by canon, §2.6.2). The fork banner's bubble per Gym names the
+lane's habitats and lean, so the Y can be chosen by what the lane lets a team recruit. *Why a panel and not names on the
+route:* nothing that is not a stop may draw the eye on the board (the user, 2026-11-10), and the habitat was already in each
+node's bubble, one hover at a time — what was missing was the comparison, which a list gives and a caption cannot.
+
 **Data bindings.**
 | UI element | Channel / source |
 |-----------|------------------|
@@ -932,19 +941,19 @@ Menu. **Components.** logo lockup, `loading curtain`. **Bindings.** save-load re
 
 ---
 
-## 3.2 Main Menu  (base panel · FrontEnd scene)
+## 3.2 Main Menu  (`src/ui/screens/MainMenu.tsx`)
 
-**Purpose.** Front door. Routes to Continue / New Run / Trainer Hub / Pokédex / Settings / Quit.
-**Zones.** Title lockup (Poké-Ball-red brand mark, `--brand-red`) · vertical button stack (centered/
-left) · build-version + save-status footer · warm illustrated backdrop (Region-1 vista, parallax —
-off in reduced-motion). **Components.** `button --primary` (New Run), `button --secondary` (rest),
-`Continue` shows a **run-summary chip** (Region, team portraits, depth) when a save exists.
-**Bindings.** `SaveSystem.HasResumableRun`, `RunStateDTO` summary, `MetaProgressionSO` (Trainer Lv on
-a small card). **Interactions.** Continue (disabled-but-visible when no save) → resumes (§10.8); New
-Run → Difficulty Select; others push overlays/panels. **States.** no-save (Continue disabled, not
-hidden) · save present (Continue primary, New Run warns "abandons current run?" via confirm modal).
-**Accessibility.** full kbd/pad vertical nav, focus ring; backdrop is decorative (`aria-hidden`).
-**Loc:** `ui.menu.*`.
+**Purpose.** Front door. Routes to Continue / New run / Trainer Hub / Settings / About, and to What's new.
+**Zones.** The summit at dawn across the whole screen (§9.13.1, `TitleScene`, decorative and `aria-hidden`) · one
+column on its night side, left: the title mark (§9.13.2), the line *Your party is your deck.*, the button stack, the
+version pill (the door to What's new, a dot while unread), the fan-project line. **Components.** `button --primary`
+(gold: Continue when a save exists, else New run), `button --secondary` (dark glass: the rest); Continue carries the
+save's one-line summary under its label. **Bindings.** `runStore.saveSummary` / `loadSave` (§10.8),
+`changelogUnread`, the build's version. **Interactions.** Continue → resumes on the map; New run → the new-run
+steps; the others open their screens. Tab and the arrow keys walk the stack; the entry under the pointer or the keys
+wears the menu cursor. **States.** no save (Continue absent, New run primary) · save present (Continue primary) ·
+What's new unread (dot). **Accessibility.** The fan-project line stays reachable at every supported size and text
+scale — the column scrolls over the fixed scene (`e2e/a11y`); motion off gives a still scene (§9.6).
 
 ---
 
@@ -1281,21 +1290,29 @@ ability explanations. **Loc:** `DOJO_TEXT` and shared tooltips.
 
 ## 5.1 Trainer Hub  (base panel · FrontEnd · §8.4)
 
-**Purpose.** Between-run home: review your trainer identity and the meta you've earned. A clean **2D
-warm kiosk menu**, not a 3D scene (§8.4). Replaces the temp `HubPanelUI`. VS ships two live kiosks —
-**Trainer Card** and **PC Terminal** — plus greyed post-launch kiosks (Daycare, Mystery Door).
-**Zones.** title · two kiosk cards side-by-side · post-launch greyed kiosks row · `Back`. **Components.**
-`kiosk card`, `Trainer-Level bar` (segmented, milestone ticks CL-019), `metric tiles`, `button`.
-**Bindings.** `MetaProgressionSO` (Trainer Level/XP/Tokens, runs won/lost), `MetaProgressionConfigSO`
-(`CumulativeXPForLevel`), `AchievementService` (count). **Interactions.** Trainer Card = view stats;
-PC Terminal → Achievements (5.2) and Pokédex (4.3); greyed kiosks show "Post-launch". Back → Main
-Menu. **States.** level-up-available glow on the track · Token balance highlight · empty history
-("Epic 13" → real run-history list, now in scope). **Accessibility.** kiosks are focusable; track has
-a numeric readout; greyed kiosks are visible+labeled, not hidden. **Loc:** `ui.hub.*`.
-
-> The temp Hub also hosts the **Token-spend / Mastery-relic lane** (CL-019 Tier-3) and **meta-starter
-> unlocks** — add these as a third "Trainer Shop" kiosk (Tokens → permanent unlocks). `↻ flag` confirm
-> the Token-spend catalog with `game-designer`/`systems-designer` (CL-019 §8.6).
+**Purpose.** Between-run home, and the career drawn as a place: the Road to the Plateau (§8.4). One screen
+(`HubScreen`), four rooms and the Hall of Fame; which room is the sim's (`hubState`).
+**Zones.** header — `Menu` / `Lobby` · title · the place chip (its bubble: the next stop and what opens it) · rank
+dial and XP to the next rank · Tokens — and under it either **the room** (`PixelRoom`, the real FRLG interior at a
+whole or half-step pixel scale, never under ×2) or **one kiosk** open in its place.
+**Components.** `PixelRoom` · a **door** (a spot: furniture with a name plate; opens a kiosk or the run's start
+screen) · a **silhouette** (§8.4.6: a feature not earned, its own pixels dimmed; `role="img"`, named "*X*, locked.
+*What brings it*.", focusable, a bubble with the same, opens nothing) · a **career prop** (Badge Case, Journal
+trophy, Pokédex award, League banner, Ladder board: a sprite with a bubble that reads the account) · Leaders and Partner lines as
+named sprites · the **arrival box** (the series' text box in the header, where the title was, `role="status"`) and the **warp** (the room out of black, in steps).
+**Bindings.** `hubState(account)` (place, features, what is fresh) · `places.json` (boxes, written by
+`npm run art:hub` from the table that draws the rooms) · `accountStore.seeHub`.
+**Interactions.** A door opens its kiosk; `Lobby` or Escape closes it and returns focus to the door. The way out
+(the bed, a doormat) and `Menu` go to the title. The PC links to the Hall of Fame once it is open; the Hall's book
+is a list of buttons, and pressing a run stands its team in the room.
+**States.** *Arrival at a new place* — the warp, the text box, then the lift and pulse of what the move brought; once, non-blocking, ended by any key or press or after about
+three seconds. *A new feature* — its silhouette lifts, its plate pulses, focus lands on it, once. *Reduced motion* —
+both instant. *Locked* — the silhouette. **Accessibility.** Tab visits the doors in the order the road brings them,
+then the way out, then the silhouettes, props and people; every one has a name; nothing is conveyed by the
+silhouette's darkness alone (the bubble and the accessible name say "locked" and why).
+**Test hooks.** `hub-screen[data-place][data-fresh]`, `hub-place`, `kiosk-<id>`, `locked-<id>`, `prop-<id>`,
+`lifting-<id>`, `hub-arrival`, `hall-room[data-run]`, `hall-mon-<n>`, `pc-link-hall`; dev hook
+`__ascendant.meta.hub(place, { fresh })`. **Loc:** `HUB_TEXT`.
 
 ---
 

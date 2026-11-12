@@ -21,14 +21,14 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1920, height: 108
     await page.screenshot({ path: `playtest/a04-a06/stages/final-arena-${viewport.height}.png` });
 
     await page.goto('/?screen=menu');
-    const image = page.locator('[data-testid="title-battle"] img[src*="/art/stages/"]').first();
+    // §9.13.1 — the title's vista is on the stages' grid, at a whole or half step, covering the screen.
+    const image = page.getByTestId('title-vista');
     await expect(image).toBeVisible();
     await expect.poll(() => image.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBe(640);
     const title = await image.evaluate((el) => {
       const img = el as HTMLImageElement;
       const r = img.getBoundingClientRect();
-      const parent = img.closest('[data-testid="title-battle"]')!.getBoundingClientRect();
-      // Chrome rounds top:62% to 1/64px before translate:-62%; a same-height image can differ by <0.01px.
+      const parent = img.closest('[data-testid="title-scene"]')!.getBoundingClientRect();
       const epsilon = 0.02;
       return { scaleX: r.width / img.naturalWidth, scaleY: r.height / img.naturalHeight, rendering: getComputedStyle(img).imageRendering, covers: r.left <= parent.left + epsilon && r.right >= parent.right - epsilon && r.top <= parent.top + epsilon && r.bottom >= parent.bottom - epsilon };
     });
@@ -36,8 +36,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 1920, height: 108
     expect(title.scaleX).toBeCloseTo(title.scaleY, 5);
     expect(title.scaleX * 2).toBeCloseTo(Math.round(title.scaleX * 2), 5);
     expect(title.covers).toBe(true);
-    for (const side of ['near', 'far']) {
-      await expect.poll(() => page.locator(`[data-testid="title-fighter"][data-side="${side}"] img`).first().evaluate((el) => el.getBoundingClientRect().width)).toBeGreaterThan(80);
+    await expect(page.getByTestId('title-member')).toHaveCount(3);
+    for (const form of await page.locator('[data-testid="title-member"] img[data-species]').all()) {
+      await expect.poll(() => form.evaluate((el) => el.getBoundingClientRect().width / ((el as HTMLImageElement).naturalWidth || 1))).toBeCloseTo(title.scaleX, 5);
     }
     await page.screenshot({ path: `playtest/a04-a06/stages/final-title-${viewport.height}.png` });
 

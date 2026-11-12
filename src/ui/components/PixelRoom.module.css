@@ -35,6 +35,8 @@
 /* Somebody with a name: the same pixels, and a bubble. */
 .person { position: absolute; }
 .personArt { display: block; width: 100%; height: 100%; image-rendering: pixelated; user-select: none; }
+/* Something small laid on a named sprite, in its pixels. */
+.over { position: absolute; image-rendering: pixelated; user-select: none; pointer-events: none; }
 /* `span.` so the ring outranks the global `[tabindex='0']` one: amber disappears on the lobby's floor. */
 span.person:focus-visible { outline: 3px solid var(--ink-primary); outline-offset: 2px; box-shadow: 0 0 0 5px var(--surface-1); }
 
@@ -71,6 +73,26 @@ span.person:focus-visible { outline: 3px solid var(--ink-primary); outline-offse
 /* The keyboard's cue, on top of the lit shape: an ink ring with a cream halo round the plate, which shows on the
    Mart's blue tiles as on the store's floor (a blue ring disappears on blue). */
 .spot:focus-visible .plate { outline: 3px solid var(--ink-primary); outline-offset: 2px; box-shadow: 0 0 0 7px var(--surface-1); }
+
+/* §8.4.6 — something that has just arrived in the room (D12: it lands once, in the game's own stepped frames, and
+   rests; a screen that fades the room in first sets --room-arrive-delay): a sprite steps in, the silhouette of a thing just earned lifts off it, and a new door's plate pulses once. */
+.sprite[data-state='fresh'], .person[data-state='fresh'] { animation: roomArrive var(--motion-slow) steps(4, end) var(--room-arrive-delay, 0ms) both; }
+.sprite[data-state='lifting'] { animation: roomLift var(--motion-slow) steps(4, end) var(--room-arrive-delay, 0ms) both; }
+.spot[data-fresh] .plate { animation: roomPlate var(--motion-slow) var(--ease-step) calc(var(--motion-slow) + var(--room-arrive-delay, 0ms)) both; }
+@keyframes roomArrive {
+  from { opacity: 0; transform: translateY(-12%); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes roomLift {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+/* `scale`, not `transform`: a plate's place is its transform, and differs by plate. */
+@keyframes roomPlate {
+  0% { scale: 1; }
+  50% { scale: 1.18; }
+  100% { scale: 1; }
+}
 
 /* A shelf's name, hanging under its first piece. */
 .plate {

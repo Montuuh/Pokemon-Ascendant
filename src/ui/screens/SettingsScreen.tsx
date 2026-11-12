@@ -2,7 +2,8 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { TEXT_SCALES, useSettingsStore, VOLUMES, type MotionMode, type TextScale, type Volume } from '@/app/settingsStore';
 import { playSfx } from '@/ui/audio/sfx';
-import { SOUND_TEXT } from '@/ui/strings';
+import { useGpuStore } from '@/app/gpuStore';
+import { GPU_TEXT, SOUND_TEXT } from '@/ui/strings';
 import { soundTip } from '@/ui/tips';
 import { InfoDot } from '@/ui/tooltip';
 import styles from './SettingsScreen.module.css';
@@ -33,6 +34,8 @@ export function SettingsScreen() {
   const volumes = { musicVolume, sfxVolume };
   const setSetting = useSettingsStore((s) => s.set);
   const reset = useSettingsStore((s) => s.reset);
+  const gpu = useGpuStore((s) => s.verdict);
+  const gpuBrowser = useGpuStore((s) => s.browser);
 
   return (
     <main className={styles.root} data-testid="settings-screen">
@@ -120,6 +123,14 @@ export function SettingsScreen() {
         ))}
       </section>
 
+      {/* §9.6.2 — the same fact the notice states, always findable here. */}
+      <section className={styles.group}>
+        <h2 className={styles.groupTitle}>{GPU_TEXT.rowLabel}</h2>
+        <p className={styles.gpuRow} data-testid="settings-gpu" data-verdict={gpu ?? 'pending'}>
+          {GPU_TEXT.row[gpu ?? 'unknown']}
+          {gpu === 'software' && <span className={styles.gpuPath}>{GPU_TEXT.path[gpuBrowser]}</span>}
+        </p>
+      </section>
     </main>
   );
 }

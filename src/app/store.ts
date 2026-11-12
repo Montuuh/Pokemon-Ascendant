@@ -1,3 +1,4 @@
+import './loadedSearch'; // first, so the dev `?gpu=` flag is read before cleanUrl() strips the query (§9.6.2)
 import { create } from 'zustand';
 
 // App-level screen router. Game-flow states will grow into the §10.5 state tree; for now a flat screen id.

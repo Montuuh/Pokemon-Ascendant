@@ -7,6 +7,8 @@ import { parcelOffer, VAULT } from '../meta/vault';
 import { parcelChoicesFor } from '../meta/rank';
 import { accountContextFor, runPerksFor } from '../meta/unlocks';
 import { shopTotal } from '../meta/mart';
+import { hubEarned } from '../meta/lobby';
+import { BOND_TIER, bondRank } from '../meta/bond';
 
 // §8.3 / v0.9.2 — the account's pace, measured as a career: one account, many runs in a row, every run's account
 // events folded in as the app's store folds them, the account's perks playing into each run. It answers the
@@ -29,6 +31,8 @@ describe.skipIf(!ON)('Account career — §8.3', () => {
     const xpPerRun: number[] = [];
     const parcels: number[] = [];
     const opened: number[] = [];
+    // §8.4 — the run after which each place and feature of the Hub arrives, and how many Hub visits a place is lived in.
+    const hubAt = new Map<string, number[]>();
     const total = shopTotal(ctx.content);
     for (const starter of STARTER_IDS) {
       for (let c = 0; c < CAREERS; c++) {
@@ -37,6 +41,7 @@ describe.skipIf(!ON)('Account career — §8.3', () => {
         let track = 0;
         let money = 0;
         let paid: number | null = null;
+        const hubSeen = new Set<string>();
         for (let i = 0; i < RUNS; i++) {
           const r = autoRun(90_000 + c * 1000 + i, starter, ctx, DEFAULT_RUN_POLICY, 3, undefined, runPerksFor(account, ctx.content));
           const xp0 = account.xp;
@@ -49,6 +54,18 @@ describe.skipIf(!ON)('Account career — §8.3', () => {
           track += delta.rewards.reduce((a, x) => a + x.reward.tokens, 0);
           money += delta.moneyTokens.reduce((a, x) => a + x.tokens, 0);
           const lvl = levelFor(account.xp);
+          // The stops' candidate conditions and the facts a prop could read, beside what the Hub is built on.
+          const probes: Record<string, boolean> = {
+            '4 Badges': account.badges.length >= 4, '4 Badges or Elite': account.badges.length >= 4 || lvl >= 8,
+            '3 Badges': account.badges.length >= 3, '3 Badges or Elite': account.badges.length >= 3 || lvl >= 8,
+            'aide 10': account.aides.includes(10), 'aide 25': account.aides.includes(25), 'aide 50': account.aides.includes(50), 'aide 110': account.aides.includes(110),
+            'a Partner line': Object.values(account.bond).some((pts) => bondRank(pts) >= BOND_TIER.partner),
+          };
+          for (const key of [...hubEarned(account), ...Object.keys(probes).filter((k) => probes[k]).map((k) => `probe: ${k}`)]) {
+            if (hubSeen.has(key)) continue;
+            hubSeen.add(key);
+            hubAt.set(key, [...(hubAt.get(key) ?? []), i + 1]);
+          }
           for (const L of LEVELS) {
             if (lvl < L || seen.has(L)) continue;
             seen.add(L);
@@ -73,6 +90,10 @@ describe.skipIf(!ON)('Account career — §8.3', () => {
     const show = (n: number) => (n === Infinity ? `>${RUNS}` : String(n));
     console.log(`careers ${STARTER_IDS.length * CAREERS} × ${RUNS} runs · XP a run: mean ${mean(xpPerRun)} · parcels a run: ${(parcels.reduce((a, b) => a + b, 0) / parcels.length).toFixed(2)} · vault opened by the end: ${mean(opened)} of ${VAULT.length}`);
     console.log(`rank reached after run (median): ${LEVELS.map((L) => `R${L} ${show(med(reach.get(L)!))}`).join(' · ')}`);
+    const careers = STARTER_IDS.length * CAREERS;
+    const whole = (v: number[]) => [...v, ...Array.from({ length: careers - v.length }, () => Infinity)];
+    console.log(`the Hub (§8.4) — arrives after run, median / latest (careers that got there of ${careers}):
+${[...hubAt].map(([k, v]) => `  ${k}: ${show(med(whole(v)))} / ${show(Math.max(...whole(v)))} (${v.length})`).join('\n')}`);
     console.log(`shelves: ${(Object.keys(SHELVES) as ShelfId[]).map((s) => `${s} L${SHELVES[s].level}`).join(' · ')}`);
     console.log(`Tokens earned by run (mean · track / medals / ₽): ${[...tokensAt].map(([n, t]) => `${n}: ${mean(t.track)} / ${mean(t.medals)} / ${mean(t.money)}`).join(' · ')}`);
     console.log(`the whole shop (${total} Tokens) earned by run: median ${show(med(paidOff))}`);

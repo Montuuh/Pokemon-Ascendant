@@ -1,0 +1,6 @@
+[
+  { "lines": [["bulbasaur", "ivysaur", "venusaur"], ["charmander", "charmeleon", "charizard"], ["squirtle", "wartortle", "blastoise"]], "flyer": "moltres" },
+  { "lines": [["machop", "machoke", "machamp"], ["abra", "kadabra", "alakazam"], ["pidgey", "pidgeotto", "pidgeot"]], "flyer": "articuno" },
+  { "lines": [["geodude", "graveler", "golem"], ["gastly", "haunter", "gengar"], ["dratini", "dragonair", "dragonite"]], "flyer": "zapdos" },
+  { "lines": [["oddish", "gloom", "vileplume"], ["nidoran-m", "nidorino", "nidoking"], ["poliwag", "poliwhirl", "poliwrath"]], "flyer": "butterfree" }
+]

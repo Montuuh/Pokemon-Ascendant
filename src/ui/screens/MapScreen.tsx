@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IconMenu2, IconBackpack, IconCrown, IconSparkles } from '@tabler/icons-react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { getContent } from '@/content/registry';
-import { ballsIn, boxCapacity, gymById, isServiceNode, noReturnLayer, regionName, stepOpen, supplyLabel, type MapNode, type PartyMon } from '@/sim';
+import { ballsIn, boxCapacity, gymById, isServiceNode, noReturnLayer, regionName, routeHabitats, stepOpen, supplyLabel, type MapNode, type PartyMon } from '@/sim';
 import { BoxPanel } from '@/ui/components/BoxPanel';
 import { InventoryDrawer } from '@/ui/components/InventoryDrawer';
 import { Money } from '@/ui/components/Money';
@@ -51,6 +51,8 @@ export function MapScreen() {
     return () => window.clearTimeout(t);
   }, [lastFind]);
 
+  // §2.6.1 — each Gym's lane habitats, for the fork banner's bubbles.
+  const habitats = useMemo(() => (run && !run.zone ? routeHabitats(run, getContent()) : []), [run]);
   const phase = run?.phase;
   const outcome = run?.outcome;
 
@@ -167,7 +169,7 @@ export function MapScreen() {
               return (
                 <Tipped
                   key={id}
-                  tip={forkGymTip(gym, shut, forkFooter((run.map.yLayer ?? run.map.forkLayer) + 1, noReturnLayer(run.map) + 1), guest)}
+                  tip={forkGymTip(gym, shut, forkFooter((run.map.yLayer ?? run.map.forkLayer) + 1, noReturnLayer(run.map) + 1), guest, habitats.find((h) => h.lane === lane))}
                   className={`${styles.forkGym} ${shut ? styles.forkShut : ''}`}
                   data-type={gym.type}
                   data-lane={lane}
@@ -249,7 +251,7 @@ export function MapScreen() {
           {run.zone === 'league' ? (
             <LeagueHall run={run} onEnter={(nodeId) => dispatch({ type: 'enter-node', nodeId })} />
           ) : (
-            <RouteView run={run} statusOf={statusOf} onEnter={(nodeId) => dispatch({ type: 'enter-node', nodeId })} />
+            <RouteView run={run} habitats={habitats} statusOf={statusOf} onEnter={(nodeId) => dispatch({ type: 'enter-node', nodeId })} />
           )}
           <p className="sr-only">
             {run.zone === 'league' ? LEAGUE_TEXT.srHint : `${run.position ? 'Choose where to go next.' : 'Pick where the route begins.'} Press Escape for the menu. Tab moves between the nodes you can reach.`}

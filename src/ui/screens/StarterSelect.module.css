@@ -1,6 +1,6 @@
-/* §9.13 — the new-run steps in the stage theme, over the title's battle (fixed, so it never scrolls with a step) and a
-   dusk that keeps the battle seen but quiet behind the panels: near-opaque behind the header and the step's heading,
-   whose words sit on it, lighter below, where the cards bring their own ground (D5, measured over all ten backdrops). */
+/* §9.13.3 — the new-run steps in the stage theme, over the title's summit (fixed, so it never scrolls with a step) and a
+   dusk that keeps the summit seen but quiet behind the panels: near-opaque behind the header and the step's heading,
+   whose words sit on it, lighter below, where the cards bring their own ground (D5). */
 .root {
   position: relative;
   height: 100%;
@@ -9,7 +9,7 @@
   background: var(--surface-0);
   color: var(--ink-primary);
 }
-.root > .battle {
+.root > .scene {
   position: fixed;
 }
 .veil {
@@ -22,7 +22,7 @@
     color-mix(in srgb, var(--surface-0) 93%, transparent) 36%,
     color-mix(in srgb, var(--surface-0) 76%, transparent) 54%
   );
-  /* No blur: re-blurring the whole screen on every frame of the battle's GIFs cost a slow machine its frame rate. */
+  /* No blur: re-blurring the whole screen every time the scene behind it moves costs a slow machine its frame rate. */
 }
 .chrome,
 .body,

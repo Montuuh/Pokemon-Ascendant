@@ -103,3 +103,14 @@
   border-radius: var(--radius-lg);
   background: var(--surface-1);
 }
+
+/* §9.6.2 — one line: what the browser draws with, and the way to the switch when it is software. */
+.gpuRow {
+  margin: 0;
+  font-size: var(--type-body);
+}
+.gpuPath {
+  display: block;
+  font-size: var(--type-caption);
+  color: var(--ink-secondary);
+}

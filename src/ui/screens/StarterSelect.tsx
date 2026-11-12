@@ -9,7 +9,7 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { moveArt, spriteOf } from '@/ui/art';
 import { ArenaSprite } from '@/ui/components/ArenaSprite';
 import card from '@/ui/components/UnitCard.module.css';
-import { TitleBattle } from '@/ui/title/TitleBattle';
+import { TitleScene } from '@/ui/title/TitleScene';
 import { ItemCard } from '@/ui/components/ItemCard';
 import { DifficultyShelf } from './DifficultyShelf';
 import { TypeBadge, TypeLabel } from '@/ui/components/TypeBadge';
@@ -208,8 +208,8 @@ export function StarterSelect() {
 
   return (
     <main className={`${styles.root} theme-stage`} data-testid="starter-select">
-      {/* §9.13 — the title's battle carries on behind the new-run steps, under a dusk the panels read on. */}
-      <TitleBattle className={styles.battle} />
+      {/* §9.13.3 — the title's summit stays behind the new-run steps, without its party: the panels stand where it does. */}
+      <TitleScene className={styles.scene} party={false} />
       <div className={styles.veil} aria-hidden="true" />
       <header className={styles.chrome}>
         <h1 className={`${styles.title} display`}>New run</h1>

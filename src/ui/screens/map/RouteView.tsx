@@ -1,13 +1,14 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, partyClears, stepOpen, wildFor, type FieldId, type GateKind, type MapNode, type RunState } from '@/sim';
+import { battlefields, gymById, laneField as laneBattlefield, nodesAhead, partyClears, stepOpen, wildFor, type FieldId, type HabitatSection, type GateKind, type MapNode, type RunState } from '@/sim';
 import { getContent } from '@/content/registry';
-import { IconTag } from '@tabler/icons-react';
+import { IconMap2, IconTag } from '@tabler/icons-react';
 import { useSettingsStore } from '@/app/settingsStore';
+import { HabitatLegend } from '@/ui/components/HabitatLegend';
 import { NodeMarker, type NodeStatus } from '@/ui/components/NodeMarker';
 import { landmarkName, nodeArt, nodeLabel } from '@/ui/components/nodeArt';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { FIELD_LABEL, GATE_TEXT, ROUTE_TEXT } from '@/ui/strings';
-import { gateTip, ledgeTip, mapLabelsTip } from '@/ui/tips';
+import { gateTip, ledgeTip, mapHabitatsTip, mapLabelsTip } from '@/ui/tips';
 import { Tipped, useTip } from '@/ui/tooltip';
 import { asset } from '@/content/paths';
 import { BUILDINGS, COL_TILES, mapTerrain, naturalHeight, type MapTerrain } from './terrain';
@@ -24,6 +25,8 @@ interface Props {
   run: RunState;
   statusOf: (node: MapNode) => NodeStatus;
   onEnter: (nodeId: string) => void;
+  /** §2.6.1 — the Wild Areas ahead by stretch and habitat (`routeHabitats`), computed once by the screen. */
+  habitats: HabitatSection[];
 }
 
 /** §2.5.4 / §4.3.14 — the field a lane's fights stand on (its Gym's own), for the weather drawn over it. */
@@ -64,6 +67,9 @@ const WEATHER_IMG: Partial<Record<FieldId, string>> = {
  */
 const MAX_DENSITY = 3;
 
+/** §9.3 — where in the window the view puts the node it follows, as a share of its width from the left. */
+const FOCUS_AT = 0.35;
+
 /**
  * §9.3 (v0.9.109) — the route's people stand a third larger than the tiles: the largest half step of their pixel at most
  * four thirds of the density (2.5 at 720 p, 4 at 1080 p). At the tiles' own they read small on a board the height of the
@@ -99,7 +105,7 @@ function fieldMask(terrain: MapTerrain, side: number): { x0: number; x1: number;
 /** §9.3 — an edge's look: the road walked, the steps you can take now, the routes still open, and the rest. */
 const EDGE_CLASS = { walked: styles.edgeWalked, live: styles.edgeLive, open: styles.edge, gone: styles.edgeGone } as const;
 
-export function RouteView({ run, statusOf, onEnter }: Props) {
+export function RouteView({ run, statusOf, onEnter, habitats }: Props) {
   const content = getContent();
   const canvas = useRef<HTMLCanvasElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
@@ -121,16 +127,50 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
   // §9.3 — the Labels toggle (the user, 2026-10-20): a name under every node, kept between sessions; L flips it.
   const labels = useSettingsStore((s) => s.mapLabels);
   const labelsTip = useTip(mapLabelsTip(labels));
+  // §2.6.1 — the habitat legend (H): opened by the player, never drawn on the route; the nodes it points at are marked.
+  const [legend, setLegend] = useState(false);
+  const [marked, setMarked] = useState<ReadonlySet<string>>(new Set());
+  const habitatsTip = useTip(mapHabitatsTip(legend));
+  const habitatsBtn = useRef<HTMLButtonElement>(null);
+  const legendEl = useRef<HTMLElement>(null);
+  const zoned = !!run.zone;
+  const toggleLegend = () => {
+    setLegend((on) => !on);
+    setMarked(new Set());
+  };
+  // Escape closes the legend first; only with it shut does the key reach the pause menu (the screen's own listener, which
+  // this one, on the capture phase, stops).
+  useEffect(() => {
+    if (!legend) return;
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopImmediatePropagation();
+      // The row that held focus unmounts with the panel: focus goes back to the button that opened it.
+      if (legendEl.current?.contains(document.activeElement)) habitatsBtn.current?.focus();
+      setLegend(false);
+      setMarked(new Set());
+    };
+    window.addEventListener('keydown', onEsc, true);
+    return () => window.removeEventListener('keydown', onEsc, true);
+  }, [legend]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.key !== 'l' && e.key !== 'L') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+      const key = e.key.toLowerCase();
+      if ((key !== 'l' && key !== 'h') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
       if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+      if (key === 'h') {
+        if (!zoned) {
+          setLegend((on) => !on);
+          setMarked(new Set());
+        }
+        return;
+      }
       const s = useSettingsStore.getState();
       s.set({ mapLabels: !s.mapLabels });
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [zoned]);
 
   // Paint once per map: load the tiles, then draw the terrain.
   useEffect(() => {
@@ -233,7 +273,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
     const el = scroller.current;
     if (!el) return;
     const at = focusId ? terrain.at[focusId] : { x: 0, y: 0 };
-    const target = (at?.x ?? 0) * px - el.clientWidth * 0.35;
+    const target = (at?.x ?? 0) * px - el.clientWidth * FOCUS_AT;
     el.scrollTo({ left: Math.max(0, target), behavior: focusId ? behavior : 'auto' });
   }, [focusId, px, terrain, behavior]);
 
@@ -328,6 +368,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
 
   return (
     <div className={styles.root}>
+      <div className={styles.stage}>
       <div ref={scroller} className={styles.scroller} tabIndex={0} onKeyDown={onKey} aria-label={ROUTE_TEXT.scroller} data-testid="route-scroller">
         <div ref={board} className={styles.board} style={{ width: boardW, height: viewH, '--tile': `${px}px`, '--node-scale': nodeScale, '--person-k': personScale(scale) / scale, '--node-label-size': `${Math.min(16, 12 + scale)}px`, '--column-reach': `${Math.floor((COL_TILES * px) / 2) - 8}px`, '--reach': `${(Math.floor((COL_TILES * px) / 2) - 8) / nodeScale}px` } as CSSProperties} data-painted={painted || undefined} data-testid="route-board">
           <canvas ref={canvas} className={styles.terrain} style={{ width: boardW, height: terrain.h * px }} aria-hidden="true" />
@@ -390,6 +431,7 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
                 status={statusOf(node)}
                 art={nodeArt(node, run.map, wildFor(node, run, content))}
                 ahead={ahead.has(node.id)}
+                marked={marked.has(node.id)}
                 caption={labels ? nodeLabel(node, run.map) : (landmarkName(node, run.map) ?? (statusOf(node) === 'reachable' ? nodeLabel(node, run.map) : null))}
                 style={{ left: at.x * px, top: at.y * px, '--node-top': `${at.y * px}px` } as CSSProperties}
                 onClick={() => onEnter(node.id)}
@@ -411,17 +453,41 @@ export function RouteView({ run, statusOf, onEnter }: Props) {
         </div>
       </div>
 
-        <button
-          type="button"
-          className={styles.labelsToggle}
-          aria-pressed={labels}
-          onClick={() => useSettingsStore.getState().set({ mapLabels: !labels })}
-          data-testid="map-labels"
-          {...labelsTip}
-        >
-          <IconTag size={16} stroke={2.4} aria-hidden="true" />
-          {ROUTE_TEXT.labels}
-        </button>
+        <div className={styles.corner}>
+          <button
+            type="button"
+            className={styles.labelsToggle}
+            aria-pressed={labels}
+            onClick={() => useSettingsStore.getState().set({ mapLabels: !labels })}
+            data-testid="map-labels"
+            {...labelsTip}
+          >
+            <IconTag size={16} stroke={2.4} aria-hidden="true" />
+            {ROUTE_TEXT.labels}
+          </button>
+          {!run.zone && (
+            <button ref={habitatsBtn} type="button" className={styles.labelsToggle} aria-pressed={legend} onClick={toggleLegend} data-testid="map-habitats" {...habitatsTip}>
+              <IconMap2 size={16} stroke={2.4} aria-hidden="true" />
+              {ROUTE_TEXT.habitats}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* §2.6.1 — after its button in the order of focus, so Tab from Habitats walks into it. */}
+      {legend && !run.zone && (
+        <HabitatLegend
+          ref={legendEl}
+          run={run}
+          sections={habitats}
+          onMark={(ids) => setMarked(new Set(ids))}
+          onGo={(id) => {
+            const at = terrain.at[id];
+            const el = scroller.current;
+            if (at && el) el.scrollTo({ left: Math.max(0, at.x * px - el.clientWidth * FOCUS_AT), behavior });
+          }}
+        />
+      )}
     </div>
   );
 }

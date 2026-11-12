@@ -4,16 +4,39 @@ import { useCombatStore } from '@/app/combatStore';
 import { useRunStore } from '@/app/runStore';
 import { useSettingsStore } from '@/app/settingsStore';
 import { getContent } from '@/content/registry';
-import type { CombatState } from '@/sim';
+import { POKEMON_TYPES, PRIMARY_STATUSES, type CombatState } from '@/sim';
 import { catchTimeline, FX_MS, type CatchFx } from '@/ui/hooks/useCombatFx';
-import { inTension, trackFor } from './director';
+import { inTension, trackFor, tracksAhead } from './director';
 import { music } from './music';
-import { playSfx, sfxForEvent, type SfxId } from './sfx';
+import { playSfx, sfxForEvent, sfxIds, warmSfx, type SfxId } from './sfx';
 import { synth } from './synth';
 
 // §9.5 — where the sound meets the app. Three hooks: the first gesture wakes the context and every button ticks; the
 // music follows the screen and the run; a fight's new events become its sounds. Nothing here decides anything about
 // the game: it reads the stores and plays.
+
+/** What a button says when it names its own sound in `data-sfx`: nothing (`own`, `none`), or one of these. */
+const BUTTON_SFX: Record<string, SfxId | null> = { own: null, none: null, select: 'ui-select', back: 'ui-back', purchase: 'purchase', save: 'save' };
+/** The words in a button's test id that say it goes back, and the ones that say it goes on. */
+const BACK_WORDS = new Set(['back', 'close', 'cancel', 'stay', 'later', 'decline', 'prev', 'exit', 'retreat']);
+const SELECT_WORDS = new Set(['confirm', 'continue', 'claim', 'depart', 'enter', 'start', 'resume', 'take', 'next', 'evolve', 'fight']);
+
+/**
+ * §9.5.3 — the sound a pressed button makes, read in one place for the whole game: what it asks for in `data-sfx`,
+ * else what its test id says it does — the save, a purchase at a shop slot, a step back, a confirm — else the tick.
+ * Pure. Null is silence (a control that plays its own sound).
+ */
+export function buttonSfx(dataSfx: string | undefined, testId: string | undefined): SfxId | null {
+  if (dataSfx !== undefined && dataSfx in BUTTON_SFX) return BUTTON_SFX[dataSfx]!;
+  if (testId) {
+    if (testId === 'btn-save-quit') return 'save';
+    if (testId.startsWith('shop-slot-')) return 'purchase';
+    const words = testId.split('-');
+    if (words.some((w) => BACK_WORDS.has(w))) return 'ui-back';
+    if (words.some((w) => SELECT_WORDS.has(w))) return 'ui-select';
+  }
+  return 'ui-click';
+}
 
 /** The first pointer or key wakes the context (browsers start no sound without one); a button ticks when pressed. */
 export function useAudioUnlock(): void {
@@ -24,11 +47,19 @@ export function useAudioUnlock(): void {
     synth.setVolume('music', musicVolume);
   }, [sfx, musicVolume]);
   useEffect(() => {
-    const wake = () => synth.unlock();
+    let warmed = false;
+    const wake = () => {
+      synth.unlock();
+      if (warmed) return;
+      warmed = true;
+      warmSfx(sfxIds(POKEMON_TYPES, [...PRIMARY_STATUSES, 'confusion']));
+    };
     const tick = (e: MouseEvent) => {
       const b = (e.target as HTMLElement | null)?.closest('button');
+      if (!b || b.disabled || b.getAttribute('aria-disabled') === 'true') return;
       // A control that plays its own sample (the Effects volume) is not ticked over it.
-      if (b && !b.disabled && b.getAttribute('aria-disabled') !== 'true' && b.dataset.sfx !== 'own') playSfx('ui-click');
+      const id = buttonSfx(b.dataset.sfx, b.dataset.testid);
+      if (id) playSfx(id);
     };
     window.addEventListener('pointerdown', wake);
     window.addEventListener('keydown', wake);
@@ -48,11 +79,17 @@ export function useMusicDirector(): void {
   const combat = useCombatStore((s) => s.state);
   const id = trackFor(screen, run, combat);
   const tension = screen === 'combat' && inTension(combat);
+  const ahead = tracksAhead(screen, run, combat).join(' ');
   useEffect(() => {
     music.play(id);
   }, [id]);
   useEffect(() => {
+    if (ahead) music.prewarm(ahead.split(' ') as Parameters<typeof music.prewarm>[0]);
+  }, [ahead]);
+  useEffect(() => {
     music.setTension(tension);
+    // §9.5.2 — the alarm, once, as the team drops under the line; the stem carries it from there.
+    if (tension) playSfx('low-hp');
   }, [tension]);
 }
 

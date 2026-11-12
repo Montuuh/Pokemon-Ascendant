@@ -48,11 +48,15 @@ test.describe('The Trainer Hub — §8.4', () => {
     await expect(page.getByTestId('track-detail')).toContainText("Professor Oak's aide");
     await expect(page.getByTestId('track-detail')).toContainText('+5');
 
-    // §8.4.6 — the first day's lobby: the nurse (the Trainer Card), the PC, the Item Guide, the door to a run, the
-    // doormat out. The aide, the Mart's clerk and the Kit table are not there yet.
+    // §8.4, §8.4.6 — the first day's Hub is the room a trainer leaves: the Trainer Card, the PC, the stairs to a run,
+    // the bed out. The aide and his Item Guide, the Mart's clerk and the Kit table are silhouettes, not doors.
     await page.getByTestId('btn-hub-lobby').click();
-    for (const id of ['card', 'pc', 'guide', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
-    for (const id of ['aide', 'mart', 'kit']) await expect(page.getByTestId(`kiosk-${id}`)).toHaveCount(0);
+    await expect(page.getByTestId('hub-screen')).toHaveAttribute('data-place', 'bedroom');
+    for (const id of ['card', 'pc', 'run']) await expect(page.getByTestId(`kiosk-${id}`)).toBeVisible();
+    for (const id of ['aide', 'guide', 'mart', 'kit']) {
+      await expect(page.getByTestId(`kiosk-${id}`)).toHaveCount(0);
+      await expect(page.getByTestId(`locked-${id}`)).toBeVisible();
+    }
     await expect(page.getByTestId('hub-exit')).toBeVisible();
     await page.screenshot({ path: 'playtest/hub-lobby.png' });
 
@@ -113,10 +117,8 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('pc-sheet')).toHaveCount(0);
 
-    // §8.15 — the Hall of Fame is the PC's second tab, and empty.
-    await page.getByTestId('pc-tab-hall').click();
-    await expect(page.getByTestId('hall-empty')).toBeVisible();
-    await page.getByTestId('pc-tab-dex').click();
+    // §8.15 — the Hall of Fame is a room of its own; until a run has beaten the Champion the PC has no link to it.
+    await expect(page.getByTestId('pc-link-hall')).toHaveCount(0);
 
     await openKiosk(page, 'card');
     // The road staggers its stops in over ~0.6 s; the screenshot is of the finished picture.
@@ -124,8 +126,10 @@ test.describe('The Trainer Hub — §8.4', () => {
     await page.screenshot({ path: 'playtest/hub.png' });
   });
 
-  test('the Item Guide on the lobby table opens every item, whole — §8.4, v0.9.9', async ({ page }) => {
+  test('the Item Guide opens every item, whole — §8.4, v0.9.9', async ({ page }) => {
     await menu(page);
+    // §8.4.1 — the Item Guide arrives with Oak's aide, at Rookie.
+    await page.evaluate(() => window.__ascendant!.meta.rank(2));
     await page.getByTestId('btn-hub').click();
     await openKiosk(page, 'guide');
     const guide = page.getByTestId('item-guide');
@@ -508,7 +512,8 @@ test.describe('The lobby — §8.4', () => {
 test.describe('The lobby fills — §8.4.6', () => {
   test('a Leader you have beaten stands in the room, and says which Badge it was', async ({ page }) => {
     await menu(page);
-    await page.evaluate(() => window.__ascendant!.meta.patch((d) => { d.badges = ['cascade-badge']; }));
+    // The room a trainer leaves has no floor for visitors; the Lab is the first place a Leader comes to.
+    await page.evaluate(() => { window.__ascendant!.meta.rank(2); window.__ascendant!.meta.patch((d) => { d.badges = ['cascade-badge']; }); });
     await page.goto('/?screen=hub');
     const misty = page.getByTestId('hub-lobby').getByRole('img', { name: 'Leader Misty' });
     await expect(misty).toBeVisible();
@@ -609,7 +614,7 @@ test('an account from before the rework starts again, and the settings it carrie
     oldAch: localStorage.getItem('evoline.achievements.v1'),
     newSet: localStorage.getItem('ascendant.settings.v1'),
   }));
-  expect(keys.account.version).toBe(4);
+  expect(keys.account.version).toBe(5);
   expect(keys.account.xp).toBe(0);
   expect(keys.account.hub).toEqual([]);
   expect(keys.account.salt).toBeGreaterThan(0);

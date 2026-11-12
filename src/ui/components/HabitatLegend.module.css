@@ -1,0 +1,96 @@
+/* §2.6.1 — the habitat legend: a column beside the board (the board gives up its width), so no node ahead is under it. */
+.panel {
+  --cell: calc(var(--sp-6) + var(--sp-1));
+  box-sizing: border-box;
+  width: 22rem;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-0);
+  color: var(--ink-primary);
+}
+.title {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--type-body);
+}
+.empty {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: var(--type-caption);
+}
+.section + .section {
+  margin-top: var(--sp-3);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-1);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+.rows {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* The columns are fixed, so every row's name, count and types line up with the next row's. */
+.row {
+  display: grid;
+  grid-template-columns: var(--cell) minmax(0, 1fr) var(--sp-5) calc(var(--sp-6) * 3 + var(--sp-1));
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: 1px var(--sp-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--type-caption);
+  text-align: left;
+  cursor: pointer;
+}
+.row:hover,
+.row:focus-visible {
+  background: var(--surface-sunken);
+  outline: none;
+}
+.row:focus-visible {
+  box-shadow: 0 0 0 2px var(--brand-blue);
+}
+/* The landmark at half its pixel, every one the same (the board draws habitats at its own steps): a fixed cell, the
+   picture centred in it, so no thumbnail is stretched to a fraction of its size. */
+.thumb {
+  position: relative;
+  width: var(--cell);
+  height: var(--sp-6);
+}
+.thumb img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  image-rendering: pixelated;
+}
+.name {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.count {
+  color: var(--ink-secondary);
+  text-align: right;
+}
+.lean {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}

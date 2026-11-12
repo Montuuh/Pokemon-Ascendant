@@ -91,5 +91,15 @@ export const routeArt = (terrain: string, piece: string) => asset(`art/route/${t
 export const gameCornerArt = (name: 'room' | 'room-open' | 'room-shut' | 'roulette' | 'hatch') => asset(`art/game-corner/${name}.png`);
 /** §2.11.2 — the Poké Mart and the Department Store's five floors, the real FRLG maps (`npm run art:mart`). */
 export const martArt = (name: 'mart' | 'floor-1' | 'floor-2' | 'floor-3' | 'floor-4' | 'floor-5' | 'clerk') => asset(`art/mart/${name}.png`);
-/** §8.4 — the Trainer Hub: the Indigo Plateau's Pokémon Center lobby and the people in it (`npm run art:hub`). */
-export const hubArt = (name: 'lobby' | 'nurse' | 'player' | 'heal-machine' | 'heal-ball') => asset(`art/hub/${name}.png`);
+/** §2.8 — the nurse, the player and the healing machine the Pokémon Center's screens stand in their rooms (`npm run art:people`). */
+export const hubArt = (name: 'nurse' | 'player' | 'heal-machine' | 'heal-ball') => asset(`art/hub/${name}.png`);
+/** §8.4 — a place on the Road to the Plateau, or the Hall of Fame: the real FRLG room (`npm run art:hub`). */
+export const hubRoom = (place: 'bedroom' | 'lab' | 'center' | 'plateau' | 'hall') => asset(`art/hub/${place}/room.png`);
+/** §8.4.6 — the silhouette of a feature or a career prop the account has not earned, in that place's own floor tone. */
+export const hubLock = (place: string, feature: string) => asset(`art/hub/${place}/${feature}-locked.png`);
+/** §8.4.6 — a career prop (the Badge Case, the trophy, the award, the banner, the Ladder board), a later form, or a Badge's pip (`node scripts/build-hub-props.mjs`). */
+export const hubProp = (name: string) => asset(`art/hub/props/${name}.png`);
+/** §9.13.1 — the title's summit: the dawn vista, its two drifting cloud strips and its night side (`node scripts/build-title-art.mjs`). */
+export const titleArt = (name: 'summit' | 'clouds-far' | 'clouds-near' | 'dusk') => asset(`art/title/${name}.png`);
+/** §9.13.1 — a Pokémon of the title's party: its still back sprite on its shadow, its shape as an evolution's light, or that shape in white, the flash. */
+export const titleForm = (speciesId: string, as: 'colour' | 'light' | 'flash' = 'colour') => asset(`art/title/forms/${speciesId}${as === 'colour' ? '' : `-${as}`}.png`);

@@ -11,8 +11,10 @@ import { GATES, type GateKind } from '@/sim';
 import { itemIcon, statusGlyph, tmIcon, typeGlyph } from '@/ui/art';
 import { describeMoveDef, disruptRule } from '@/ui/moveText';
 import { evolveSentence, evolvesByFriendship, friendshipWords } from '@/ui/evolutionText';
-import { JOURNEY_TEXT, COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, ARMOUR_LABEL, SHIELD_LABEL, UNIT_CHIPS_TEXT, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import { HUB_TEXT, JOURNEY_TEXT, COMBO_TEXT, DISRUPT_TEXT, frac, DEX_EVO_TEXT, GUIDE_TEXT, STARTER_TEXT, WILD_TEXT, WILD_TIER_HINT, WILD_TIER_LABEL, ARCHETYPE_HINT, ARCHETYPE_LABEL, RHYTHM_TEXT, STAT_LONG, CITY_DOOR_HINT, FIELD_LABEL, GROUP_HINT, DOUBLE_ACTOR_HINT, DOUBLE_ACTOR_LABEL, groupLabel, homeFieldLabel, HABITAT_TEXT, ARMOUR_LABEL, SHIELD_LABEL, UNIT_CHIPS_TEXT, GYM_RULE_LABEL, gymRuleText, ARENA_RULE_LABEL, arenaRuleText, METRONOME_LABEL, INTENT_LABEL, LEAVE_WARNING, MARKET_TEXT, OBJECTIVE_TEXT, SHELF_HINT, TRADER_TEXT, TRAINING_TEXT, SHELF_LABEL, SLOT_FACE_LABEL, REJECT_TEXT, STATUS_HINT, STATUS_LABEL, PHASE_TEXT, PREVIEW_TEXT, type CityDoor, NODE_LABEL, VICTORY_TEXT, LEAGUE_TEXT, fmtMult, TEAM_TEXT } from '@/ui/strings';
+import type { HabitatEntry, HabitatSection } from '@/sim';
 import { Tip } from '@/ui/tooltip';
+import wildStyles from './tipsWilds.module.css';
 import { TypeChart } from '@/ui/components/TypeChart';
 
 // Every explanation the game offers on hover, in one file.
@@ -473,12 +475,30 @@ export function gymRuleTip(rule: GymRuleId): ReactNode {
  * §2.5 / §5.9.5 — one of the route's two Gyms on the fork banner: its type, its telegraph and its Leader's rule — or,
  * once the other lane is taken, that it is not yours any more.
  */
-export function forkGymTip(gym: GymDef, shut: boolean, footer: string, guest?: { name: string; types: readonly PokemonType[] }): ReactNode {
+export function forkGymTip(gym: GymDef, shut: boolean, footer: string, guest?: { name: string; types: readonly PokemonType[] }, wilds?: HabitatSection): ReactNode {
   const meta = [`${typeName(gym.type)} Gym`, shut ? 'Not on your lane' : `Rule: ${GYM_RULE_LABEL[gym.rule]}`];
   // §2.7.3 — the lane's telegraph names the Gym's one off-type guest, as its preview does.
   if (guest && !shut) meta.push(`Guest: ${guest.name} (${guest.types.map(typeName).join('/')})`);
   if (shut) return <Tip title={gym.name} meta={meta} body={`${gym.name} is on the lane you did not take.`} />;
-  return <Tip title={gym.name} meta={meta} body={`${gym.telegraph} ${gymRuleText(gym.rule, DEFAULT_BATTLE_CONFIG.gymRules)}`} footer={footer} />;
+  // §2.6.1 — what the lane's Wild Areas are, so the fork can be chosen by what a team can recruit on the way.
+  // It comes first, under the name: the lane's habitats and the types they lean on are the fork's own question.
+  const wild = wilds && wilds.habitats.length > 0 ? (
+    <div className={wildStyles.wilds}>
+      <span>{HABITAT_TEXT.wilds(wilds.habitats.map((h) => h.name))}</span>
+      <span className={wildStyles.lean}>{wilds.lean.map((t) => <span key={t}>{glyphIcon(t)}</span>)}</span>
+    </div>
+  ) : null;
+  return <Tip title={gym.name} meta={meta} body={<>{wild}{`${gym.telegraph} ${gymRuleText(gym.rule, DEFAULT_BATTLE_CONFIG.gymRules)}`}</>} footer={footer} />;
+}
+
+/** §2.6.1 — one habitat in the map's legend: its Wild Areas ahead and its whole pool by rarity. */
+export function habitatRowTip(h: HabitatEntry): ReactNode {
+  return <Tip title={h.name} meta={[HABITAT_TEXT.species(h.species)]} body={wildPoolBody(h.pool)} />;
+}
+
+/** §2.6.1 — the Habitats button in the board's corner. */
+export function mapHabitatsTip(on: boolean): ReactNode {
+  return <Tip title={on ? 'Hide the habitats' : 'Show the habitats'} meta={['H']} />;
 }
 
 /** §5.9.5 Ice Armour — the shield on an enemy: what it takes before HP, and how it goes. */
@@ -903,14 +923,14 @@ export function dexCardTip(name: string, dex: number, types: readonly string[], 
 }
 
 /** §8.4 — the Trainer Hub's doors, in the lobby. */
-export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aide' | 'kit', tokens: number, extra?: { parcels?: number; slots?: number }): ReactNode {
+export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aide' | 'kit' | 'hall', tokens: number, extra?: { parcels?: number; slots?: number; wins?: number }): ReactNode {
   switch (spot) {
     case 'mart':
       return <Tip title="Poké Mart" meta={[`${tokens} Tokens`]} body="Spend Tokens on starters, services, Kit perks and things for your Trainer Card." />;
     case 'card':
-      return <Tip title="Trainer Card" body="The nurse keeps the League's register: your rank, the road ahead, your stars, your Badge Case and your record." />;
+      return <Tip title="Trainer Card" body="Your rank, the road ahead, your stars, your Badge Case and your record." />;
     case 'pc':
-      return <Tip title="PC Terminal" body="The Pokédex, with every line's Bond and Ribbons, and the Hall of Fame." />;
+      return <Tip title="PC Terminal" body="The Pokédex, with every line's Bond and Ribbons." />;
     case 'guide':
       return <Tip title="Item Guide" body="Every relic, item, held item, Evolution Item and TM in the game: what it does, what it costs and where it turns up — and what you have yet to open." />;
     case 'run':
@@ -919,7 +939,24 @@ export function hubSpotTip(spot: 'mart' | 'card' | 'pc' | 'guide' | 'run' | 'aid
       return <Tip title={JOURNEY_TEXT.aide} meta={extra?.parcels ? [`${extra.parcels} parcel${extra.parcels === 1 ? '' : 's'} waiting`] : undefined} body="Oak's Parcels unlock new relics, items, TMs and Mysteries, one of three each. The Trainer Journal holds your deeds and their prizes." />;
     case 'kit':
       return <Tip title="Trainer Kit" meta={[`${extra?.slots ?? 0} slot${extra?.slots === 1 ? '' : 's'}`]} body="Pack the perks you own before a run." />;
+    case 'hall':
+      return <Tip title={HUB_TEXT.feature.hall} meta={[`${extra?.wins ?? 0} run${extra?.wins === 1 ? '' : 's'}`]} body="Every run that beat the Champion, with the team that won it." />;
   }
+}
+
+/** §8.4.6 — a feature of the Hub the account has not earned: its name, and the one thing that brings it. */
+export function hubLockedTip(name: string, need: string): ReactNode {
+  return <Tip title={name} meta={[HUB_TEXT.locked]} body={`${need}.`} />;
+}
+
+/** §8.4.6 — the career on the Hub's floor: the Badge Case, the trophy, the banner, the Ladder board. */
+export function hubPropTip(name: string, fact: string): ReactNode {
+  return <Tip title={name} body={fact} />;
+}
+
+/** §8.4 — where the Hub is on the Road to the Plateau, and what moves it on. */
+export function hubPlaceTip(place: string, next: { name: string; needs: readonly string[] } | null): ReactNode {
+  return <Tip title={place} body={next ? HUB_TEXT.nextStop(next.name) : HUB_TEXT.lastStop} footer={next ? `${next.needs.join(', or ')}.` : undefined} />;
 }
 
 /** §8.4.6 — somebody standing in the lobby: a Leader you have beaten, a Partner line. */

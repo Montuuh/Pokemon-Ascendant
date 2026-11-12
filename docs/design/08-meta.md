@@ -170,17 +170,17 @@ into each — by `balance/accountCareer.test.ts`.
 
 ## §8.3.3 The Trainer Rank
 
-Nine ranks, each with a face. A rank is a milestone: somebody arrives in the lobby (§8.4.6), a Kit slot opens, a
-parcel shows one more card — and a purse of Tokens comes with it.
+Nine ranks, each with a face. A rank is a milestone: somebody arrives in the Hub (§8.4.6), the Hub itself moves on
+(§8.4), a Kit slot opens, a parcel shows one more card — and a purse of Tokens comes with it.
 
 | Rank | Name | Cumulative XP | Purse | Brings |
 |---|---|---|---|---|
-| 1 | Newcomer | 0 | — | The nurse (Trainer Card), the PC, the Item Guide, the League door |
-| 2 | Rookie | 300 | 🎟 5 | **Professor Oak's aide** — Oak's Parcels and the Trainer Journal |
+| 1 | Newcomer | 0 | — | Your room: the Trainer Card, the PC, the way into a run |
+| 2 | Rookie | 300 | 🎟 5 | **Professor Oak's Lab and his aide** — Oak's Parcels, the Trainer Journal and the Item Guide |
 | 3 | Trainer | 1 000 | 🎟 10 | **The Poké Mart clerk** — Starters, Services, the Trainer's Corner |
 | 4 | Challenger | 2 200 | 🎟 10 | **The Trainer Kit** — the first slot, and the Kit shelf at the Mart |
-| 5 | Ace | 3 800 | 🎟 15 | A second Kit slot |
-| 6 | Veteran | 6 000 | 🎟 15 | Fuller parcels: four cards instead of three |
+| 5 | Ace | 3 800 | 🎟 15 | **Viridian City**, and a second Kit slot |
+| 6 | Veteran | 6 000 | 🎟 15 | Fuller parcels: four cards instead of three; the League banner (§8.4.6) |
 | 7 | Expert | 9 500 | 🎟 20 | A third Kit slot |
 | 8 | Elite | 14 500 | 🎟 30 | The Elite purse |
 | 9 | Master | 22 000 | 🎟 50 | The last rank; XP past it still fills parcels and still becomes Tokens |
@@ -188,8 +188,8 @@ parcel shows one more card — and a purse of Tokens comes with it.
 *Why nine and not thirty.* Until v0.9.110 the account had thirty Trainer Levels on `floor(330 × N^1.6)`, and
 twenty-four of them paid three Tokens and nothing else: a level-up had no face, and the player learned that the
 Hub's dial was a counter. Nine milestones with a consequence are worth more than thirty without one, and the first
-four are inside the first handful of runs — Rookie after the first, by design, so the first run ends with the
-aide walking in. The table is the rule; `meta/rank.ts` holds it.
+four are inside the first handful of runs — Rookie after the first, by design, so the first run ends with leaving
+home for the Lab. The table is the rule; `meta/rank.ts` holds it.
 
 ## §8.3.4 Tokens
 
@@ -254,23 +254,75 @@ Box) stay one door away, in the run record.
 
 # §8.4 The Trainer Hub
 
-The pre-run and post-run place. **A room, not a menu** (v0.9.2, the user's call): the **Indigo Plateau's Pokémon
-Center lobby** as FireRed / LeafGreen drew it — the League's front room, where a run is meant to end — shown at a
-whole-pixel scale with its people in it, every door of the Hub a piece of its furniture (`ui/screens/hub/lobby.ts`,
-drawn by the same `PixelRoom` as the shops, §2.11.2). The rank dial and the Token count sit above the room.
+The pre-run and post-run place. **A room, not a menu** (v0.9.2, the user's call) — and **a different room as the
+career advances**: the Hub is where the trainer has got to on the **Road to the Plateau** (the user's call,
+2026-11-12, replacing one lobby that filled). Each place is the real FireRed / LeafGreen interior, shown at a whole
+or half-step pixel scale with its people in it, every feature of the Hub a piece of its furniture
+(`ui/screens/hub/lobby.ts`, drawn by the same `PixelRoom` as the shops, §2.11.2). The rank dial, the place and the
+Token count sit above the room; the place's chip names the next stop and what opens it.
+
+| Place | The room | Opens with | Auto-player arrives after run (median · latest) |
+|---|---|---|---|
+| **Your room** | The bedroom in Pallet Town | The first day | — (run 0 only) |
+| **Professor Oak's Lab** | The Lab, the Professor at his table | Rookie (rank 2) | 1 · 1 |
+| **Viridian City** | The Pokémon Center | Ace (rank 5) | 5 · 7 |
+| **Indigo Plateau** | The League's Pokémon Center | Three different Badges in the Case (§8.14) — or Elite (rank 8) — or a Champion | 10 · 27, every career |
+
+The **Hall of Fame** (§8.15) is not a stop on the road: it is a room of the Plateau, up the stairs from its lobby,
+open from the first run that beats the Champion.
+
+*Why these stops.* The rank moves the first two because it is the one thing every run pays. Ranks 2, 3 and 4
+arrive on consecutive runs, so a move at each would change the room on every visit: Viridian waits for **Ace**, the
+Lab is lived in for about four runs, and the Mart's corner and the Kit table arrive *in* it (§8.4.1). The Plateau
+asks for Badges — a quarter of the Case — because it is the League's own door and the games open it to Badges; it
+also opens to an **Elite**, so a career that plays long without winning Gyms is not left in Viridian, and to a
+Champion, so the Hall of Fame always has its stairs. The place is **derived** (`hubPlace`, `meta/lobby.ts`): the
+furthest stop whose condition holds, never a stored value, so the room cannot disagree with the career, and a stop
+a strong run skips is not walked through afterwards.
+
+*Measured 2026-11-12* — `ACCOUNT_REPORT=1 CAREERS=3 CAREER_RUNS=40 npx vitest run
+src/sim/balance/accountCareer.test.ts`: nine careers, three a starter, forty runs each. (With the default two
+careers a starter the tail reads a few runs earlier; quote the setting with the number.) The Plateau's condition
+was chosen from four, median · latest run · careers that got there:
+
+| Plateau opens with | Median | Latest | Careers |
+|---|---|---|---|
+| 4 Badges | 28 | > 40 | 7 of 9 |
+| 4 Badges or Elite | 24 | 27 | 9 of 9 |
+| 3 Badges | 10 | 32 | 9 of 9 |
+| **3 Badges or Elite** (built) | **10** | **27** | **9 of 9** |
+
+Four Badges left two careers in Viridian for good and the rest there for about twenty-three runs with one thing
+arriving; adding Elite alone fixes the tail but then the rank, not the Case, opens the door for almost everyone.
+Three Badges or Elite puts the Badge-winners there first (the median career after run 10) and nobody later than
+Elite. Between Viridian and the Plateau the room gains the League banner (run 9 · 10) and, for a career still there,
+the Pokédex award (run 16 · 27) — §8.4.6.
+
+The Hub gives nothing and costs nothing (§8.1): every place and every thing in it reads a fact the account already
+keeps, and each feature does what it did in the one lobby.
 
 ## §8.4.1 Kiosks
 
-| In the lobby | Opens | There from |
-|---|---|---|
-| **The door to the Elite Four**, between the statues | **New run** — the difficulty step, the starter and the Starting Relic (the run's start screen; the Region Modifier step is off, §2.11.3). Its header names the Kit that is packed and the Journal entries pinned | Always |
-| **The nurse** and her counter — she keeps the League's register | **Trainer Card** — the rank, the stars, the rank road, the Badge Case, the services (§8.4.3) | Always |
-| **The PC** | **PC Terminal** — the Pokédex and every line's Bond and Ribbons (§5.13, §6.8, §8.9), and the Hall of Fame (§8.15) | Always |
-| **The table** in the left-hand corner | **Item Guide** — every relic, item, held item, Evolution Item and TM: what it does, how rare, its price, where it turns up, and whether your account has opened it (§8.6.1) | Always |
-| **The research terminal**, and Professor Oak's aide at it | **Oak's aide** — the parcels waiting and the Research bar (§8.6.2); the Trainer Journal (§8.7). The door's plate counts the parcels waiting | Rookie (rank 2) |
-| **The Poké Mart counter** and its clerk | **Poké Mart** — four shelves, paid in Tokens (below) | Trainer (rank 3) |
-| **The table by the east wall** | **Trainer Kit** — the slots and the perks to pack (§8.4.5) | Challenger (rank 4) |
-| **The doormat** | Back to the title menu | Always |
+Every feature has its place in every room, in the room's own logic — the way into a run is the room's way out,
+somebody who keeps records keeps the Trainer Card, the PC is a PC — so a move changes the picture and not the
+habit.
+
+| Feature | Opens | There from | Your room | Oak's Lab | Viridian City | Indigo Plateau |
+|---|---|---|---|---|---|---|
+| **New run** | The difficulty step, the starter and the Starting Relic (the run's start screen; the Region Modifier step is off, §2.11.3). Its header names the Kit that is packed and the Journal entries pinned | Always | The stairs | The table with the three Poké Balls | The stairs | The door to the Elite Four |
+| **Trainer Card** | The rank, the stars, the rank road, the Badge Case, the services (§8.4.3) | Always | The notice pinned to the wall | Professor Oak | The nurse | The nurse |
+| **PC Terminal** | The Pokédex and every line's Bond and Ribbons (§5.13, §6.8, §8.9); a link to the Hall of Fame once it is open (§8.15) | Always | The PC | The Lab's computer | The PC | The PC |
+| **Oak's aide** | The parcels waiting and the Research bar (§8.6.2); the Trainer Journal (§8.7). The door's plate counts the parcels waiting | Rookie (rank 2) | — | The aide, by the machine | The aide, under the town map | The aide, by the east wall |
+| **Item Guide** | Every relic, item, held item, Evolution Item and TM: what it does, how rare, its price, where it turns up, and whether your account has opened it (§8.6.1) | Rookie (rank 2) | — | The Professor's bookshelves | The magazine shelf | The shelf on the east wall |
+| **Poké Mart** | Four shelves, paid in Tokens (below) | Trainer (rank 3) | — | A clerk at a Mart counter | A clerk at a Mart counter | The Mart's counter |
+| **Trainer Kit** | The slots and the perks to pack (§8.4.5) | Challenger (rank 4) | — | A glass table | The lounge's glass table | The table by the east wall |
+| **Hall of Fame** | The Hall's own room (§8.15) | A Champion | — | — | — | The stairs in the south-west corner |
+| **The way out** | Back to the title menu | Always | The bed | The doormat | The doormat | The doormat |
+
+*The Item Guide arrives with Oak's aide rather than on the first day* (the user's call, 2026-11-12): a catalogue
+of sixty relics before the first fight is a wall of things with no meaning yet, and after one run it is a book
+about what was just seen. *The Hall of Fame left the PC* for the same decision: a win is the one thing the account
+does that deserves a room.
 
 A door opens its kiosk in place of the room; **Lobby** (or Escape) closes it and puts the keyboard back on the door.
 
@@ -372,18 +424,44 @@ covers the species you have not learned yet, once per run each, first meeting on
 
 ## §8.4.6 The lobby fills
 
-The room is the account's progress, drawn. On the first day it holds the nurse, the PC, the Item Guide's table and
-the door. Then:
+The room is the account's progress, drawn — and it shows what is still to come.
 
-- **The rank brings people** (§8.3.3): Professor Oak's aide at his terminal, the Mart's clerk behind her counter,
-  the Kit's table.
-- **Every Leader beaten comes to stand in it** (§8.14), in the order their Badges were first won, from the door
-  inward — twelve places.
+- **Everything not earned yet stands in the room as a silhouette** (the user's call, 2026-11-12): the feature's own
+  shape in one flat slate with nothing inside it — a place kept for something, as the Pokédex keeps an unmet
+  species, never a darker piece of furniture — where the thing will stand, with a bubble on hover or focus that
+  names it and the one thing that brings it ("Poké Mart — Locked — Reach Trainer rank"). A silhouette is honest in both directions: it never opens
+  anything, and it never hides its condition. *This replaces "a door that is not there yet is not shown locked":
+  an empty first room read as a small game, and a player could not want a Mart they had never seen. The cost — a
+  first room with shadows in it — is paid on purpose; each stands where the thing will, not in a row of its own.*
+  What does not exist yet (the Mystery Door, the Leaders' challenges) has no silhouette: a shadow is a promise.
+- **The rank brings people** (§8.3.3): Professor Oak's aide and the Item Guide, the Mart's clerk, the Kit's table.
+- **The career stands on the floor.** Five things, each one tile wide and two tall like a person, each reading a
+  fact the account already keeps and opening nothing:
+
+  | Prop | Stands from | Says |
+  |---|---|---|
+  | **Badge Case** — an open case on a stand, twelve pips in the Leaders' colours | The first Badge ever won (§8.14) | How many of the twelve are won |
+  | **Journal trophy** — a cup on a plinth | The first gold medal (§8.7.0); it turns platinum with the first platinum one | Which it is |
+  | **Pokédex award** — the Pokédex on a League plinth | Fifty species owned, the aide's milestone (§8.9.3) | How many species are owned |
+  | **League banner** | Veteran (rank 6); it is red for an Elite and gold for a Master | The rank it flies for |
+  | **Ladder board** | The first League Ladder rung won (§8.8.5) | The highest rung won |
+
+- **Every Leader beaten comes to stand in it** (§8.14), in the order their Badges were first won, as far as the
+  room has floor: none in the bedroom, six in the Lab, eight in Viridian, twelve at the Plateau.
 - **A Partner line walks it** (§6.8.2): up to four, the highest Bond first, beside the player.
 
-Nothing in the lobby is a number; a door that is not there yet is not shown locked, because the room is meant to
-feel emptier on the first day than on the fortieth. *(Until v0.9.110 the lobby was the same picture on run 1 and
-run 60. The Mystery Door — daily seeds, leaderboards — still opens nothing and stays hidden until it does.)*
+**An arrival plays once.** The account keeps what the player has watched arrive (`hubSeen`), and nothing else about
+the Hub. *A move* is the road's big beat: the new room comes out of black in steps, as the games warp between
+places; the series' text box names it where the screen's title was ("You arrive at Professor Oak's Lab."), clear of
+the room, with a jingle; and once the room is there, what the move brought — the aide and the Item Guide, in the
+Lab — lifts its silhouette and pulses its plate. It takes no press: any key or click ends all of it and still does
+what it was pressed for. *A new feature* in a room already known lifts its silhouette off once, its plate pulses
+once, and the keyboard lands on it; a prop steps in. With motion reduced both are instant. The room is drawn at
+between two and four screen pixels a map pixel in every place, so the pixels stay near one size along the road. An account from before the road is kept, and has already seen everything it has earned (§8.10), so
+updating the game is not a parade.
+
+Nothing in the Hub is a number, a currency or a power. *(Until v0.9.110 the lobby was the same picture on run 1
+and run 60; until the Road to the Plateau it was one room that filled.)*
 
 ---
 
@@ -729,7 +807,8 @@ The account-level save holds: Trainer XP · the run in progress' XP · Research,
 opened · the account's salt · the vault entries opened · Tokens and the ranks paid · starters, services and perks
 owned · the Kit that is packed · cosmetics owned and worn · the Pokédex · Bond and Ribbons per line · the Badge
 Case · the League Ladder rung · the Hall of Fame · Journal progress, Field Notes written and pins · the aide's
-milestones paid · lifetime statistics and the Field Notes' counters.
+milestones paid · what has been seen to arrive in the Hub (§8.4.6) · lifetime statistics and the Field Notes'
+counters. Where the Hub is and what stands in it are not saved: they are read from the rest.
 
 It is written at run end and on every Poké Mart purchase — and, in the browser build, after every fold, because
 a tab closes without ceremony and a rank earned mid-run must not depend on reaching the Field Report. The fold is
@@ -778,7 +857,7 @@ again as a Newcomer.
 two-zone curve of §6.2.1.
 **Effective Max HP** — the Trauma-adjusted ceiling every heal and every damage-over-time tick uses.
 **Trainer XP** — persistent account XP; never spent; drives the Rank, fills Research and becomes Tokens at a run's end.
-**Trainer Rank** — one of nine account milestones; each brings someone or something to the lobby.
+**Trainer Rank** — one of nine account milestones; each brings someone or something to the Hub, and two of them move it (§8.4).
 **Field Report** — the run's end as six panels: the tally, Research, the Rank, Bond, what was earned, what to chase next.
 **Research** — the bar Trainer XP fills toward the next Oak's Parcel.
 **Oak's Parcel** — three cards from the vault (four from Veteran); keep one.
@@ -793,7 +872,7 @@ two-zone curve of §6.2.1.
 **Cosmetic** — a title, avatar or frame the Trainer Card wears; no effect (§8.4.4).
 **Badge Case** — every Badge ever won, across all runs; a Leader's first Badge opens their TM.
 **League Ladder** — ten rungs of stacked difficulty modifiers, opened by the first Champion.
-**Hall of Fame** — the record of every run that beat the Champion.
+**Hall of Fame** — the record of every run that beat the Champion, and the room at the Plateau that keeps it (§8.15).
 **Star** — one of the Trainer Card's four feats.
 **Legendary relic** — a 4th rarity class above Rare: choice-only, never dropped, max 2 per run (§7.3.7).
 **Difficulty modifier** — an opt-in run-start challenge that multiplies the run's Trainer XP.
@@ -837,8 +916,12 @@ in-run effect (§5.10); the Case only remembers that it was won.
 
 **The Hall of Fame** keeps every run that beat the Champion — the fifty most recent: the account's run number, the
 seed, the starter, the Active Team with its levels and its shinies, the Badges, the relics, and the League Ladder
-rung it was won on. It is a tab of the PC Terminal. *(The backlog's shared Hall of Fame — other players', with a
-replay — still waits on accounts and a server; this is the local book it will read.)*
+rung it was won on. **It is a room of its own** (the user's call, 2026-11-12; until then a tab of the PC Terminal):
+the League's Hall as the games drew it, up the stairs from the Indigo Plateau's lobby, open from the first entry —
+and a Champion's Hub is always at the Plateau (§8.4), so the stairs are always there to climb. The room stands one
+winning team before the machine, the newest until another run is picked from the book beside it; the PC keeps a
+link to it. *(The backlog's shared Hall of Fame — other players', with a replay — still waits on accounts and a
+server; this is the local book it will read.)*
 
 **The Trainer Card wears four stars**, a feat each, derived from the account and never stored, so a star cannot
 disagree with its feat:

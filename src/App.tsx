@@ -34,6 +34,7 @@ import { StarterSelect } from '@/ui/screens/StarterSelect';
 import { SwapOrSkip } from '@/ui/components/SwapOrSkip';
 import { TooltipLayer } from '@/ui/tooltip';
 import { ProgressToasts } from '@/ui/components/ProgressToasts';
+import { GpuNotice } from '@/ui/components/GpuNotice';
 
 function Screens() {
   const screen = useAppStore((s) => s.screen);
@@ -140,6 +141,7 @@ export function App() {
       <Screens />
       <TooltipLayer />
       <ProgressToasts />
+      <GpuNotice />
       {/* The secret playtest menu: typed, never shown. */}
       <CheatMenu />
     </>

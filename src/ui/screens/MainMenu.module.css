@@ -1,36 +1,32 @@
-/* §9.13 — the title screen (v0.9.17): the battle across the whole screen, a dusk over its left side, and on it the
-   title mark and the menu in one column. The stage theme: cream on dark, the battle's colour left to the battle. */
+/* §9.13 — the title screen: the summit at dawn across the whole screen, and on its night side the title mark and the
+   menu in one column. The stage theme: cream on dark, the colour left to the sky. */
 .root {
-  /* Where the column starts and ends: the dusk is held dark to its right edge, whatever the screen's width. */
+  /* Where the column starts and ends, whatever the screen's width. */
   --column-left: clamp(var(--sp-6), 6vw, 112px);
   --column-right: calc(var(--column-left) + 440px);
   position: relative;
   height: 100%;
   display: grid;
   align-items: center;
-  /* The battle is a fixed backdrop, so the horizontal axis never scrolls; the vertical one has to, because the column
+  /* The summit is a fixed backdrop, so the horizontal axis never scrolls; the vertical one has to, because the column
      can outgrow the viewport at 150 % text on a 720p window — and the line it pushes off the bottom is the one that
      says this is an unaffiliated fan project. That line is not optional. */
   overflow-x: hidden;
   overflow-y: auto;
   background: var(--surface-0);
 }
-/* Fixed, so a column that scrolls (150 % text at 720 p) scrolls over a battle that stays put. */
-.root > .battle {
+/* Fixed, so a column that scrolls (150 % text at 720 p) scrolls over a summit that stays put. */
+.root > .scene {
   position: fixed;
 }
-/* The dusk: dark under the whole column (the fan-project line included, D5 on every backdrop), then gone within a
-   short fade, so the fight on the right is seen whole. */
+/* The dusk: the night is painted into the scene, in its own banded pixels (§9.13.1). This is only the column's own
+   ground, for a window whose shape crops the scene's night side away: it ends at the column's right edge. */
 .dusk {
   position: fixed;
-  inset: 0;
+  inset: 0 auto 0 0;
+  width: var(--column-right);
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--tip-surface) 92%, transparent) 0,
-    color-mix(in srgb, var(--tip-surface) 84%, transparent) var(--column-right),
-    transparent calc(var(--column-right) + 12vw)
-  );
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tip-surface) 55%, transparent) 0, color-mix(in srgb, var(--tip-surface) 40%, transparent) 60%, transparent 100%);
 }
 .column {
   position: relative;
@@ -53,6 +49,7 @@
 }
 .primary,
 .secondary {
+  position: relative;
   border-radius: var(--radius-md);
   padding: var(--sp-3) var(--sp-5);
   font-family: var(--font-display);
@@ -82,9 +79,27 @@
   transform: translateX(3px);
   border-color: var(--border-strong);
 }
-.secondary:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+/* The series' menu cursor, on the entry under the pointer or the keys: it stands in the entry's own left padding, so
+   nothing moves to make room for it. */
+.primary::before,
+.secondary::before {
+  content: '';
+  position: absolute;
+  left: var(--sp-2);
+  top: 50%;
+  width: 0;
+  height: 0;
+  translate: 0 -50%;
+  border: var(--sp-1) solid transparent;
+  border-right-width: 0;
+  border-left: calc(var(--sp-1) * 1.5) solid currentColor;
+  opacity: 0;
+}
+.primary:hover::before,
+.primary:focus-visible::before,
+.secondary:hover::before,
+.secondary:focus-visible::before {
+  opacity: 1;
 }
 .subLabel {
   display: block;

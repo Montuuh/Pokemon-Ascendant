@@ -673,6 +673,13 @@ place of three names; 2026-10-20: "more kinds of Wild Area, with more pools".)* 
 habitat; across Regions only Hypno and Scyther repeat (Regions 2 and 3), so Region 3 fields species the first two never
 do.
 
+**Reading the habitats on the map** (v0.9.120, the user: "mejorar la UX de los biomas"). The habitat of a node was one hover away and
+nowhere else, so a lane could not be compared with the trunk or with the other lane. The map now has a **habitat legend**
+(`routeHabitats` in `run/habitats.ts`: the Wild Areas still ahead by stretch — trunk, then each Gym's lane — and habitat, with
+each pool and the three types it leans on) and each Gym's bubble in the header names its lane's habitats and lean. Ahead
+only: after the fork the lane you left is gone from the list, as from the map. The legend shows pools the card already
+shows in full (§2.6.2), so it hides nothing and tells nothing new about any single roll; it is read-only.
+
 **A lane carries its Gym's field** (§4.3.14 — until v0.8.7 it was its biome's, and five Gyms stood on open ground),
 so the ground you fight on is part of what a lane telegraphs (§2.5.0).
 

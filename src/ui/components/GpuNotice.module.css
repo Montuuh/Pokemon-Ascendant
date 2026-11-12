@@ -1,0 +1,64 @@
+/* §9.6.2 — the acceleration notice. Dark like a tooltip so it reads on every screen; no blur, filter or
+   animation, because it shows precisely on the machines that cannot afford them. */
+
+.notice {
+  position: fixed;
+  right: var(--sp-4);
+  bottom: var(--sp-4);
+  z-index: var(--z-toast);
+  display: grid;
+  gap: var(--sp-2);
+  width: min(380px, calc(100vw - 2 * var(--sp-4)));
+  padding: var(--sp-3) var(--sp-6) var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--tip-surface);
+  color: var(--brand-cream);
+  font-size: var(--type-small);
+}
+.body {
+  margin: 0;
+  font-weight: 700;
+}
+.path {
+  margin: 0;
+  font-size: var(--type-caption);
+  opacity: 0.85;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.action {
+  min-height: 44px;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--brand-cream);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--brand-cream);
+  font-size: var(--type-caption);
+  cursor: pointer;
+}
+.action:hover {
+  background: var(--brand-cream);
+  color: var(--tip-surface);
+}
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--brand-cream);
+  cursor: pointer;
+}
+.action:focus-visible,
+.close:focus-visible {
+  outline: 3px solid var(--accent-action);
+  outline-offset: 2px;
+}

@@ -7,6 +7,7 @@ import { MAX_RANK, rankFor, rankProgress, rankRow, xpForRank, kitSlotsFor } from
 import { PARCEL, parcelCost, parcelPool, vaultEntry, vaultEntryFor, VAULT } from './vault';
 import { journalReward, type JournalReward } from './journal';
 import { LADDER_PRIZE, LADDER_TOP } from './ladder';
+import { hubEarned } from './lobby';
 
 // §8.3–§8.10, §8.14, §8.15 — the account: everything that outlives a run.
 //
@@ -23,8 +24,14 @@ import { LADDER_PRIZE, LADDER_TOP } from './ladder';
  * 4 since v0.9.110, the meta-progression rework: **an older account is reset** (the user's call, 2026-11-10 — "yo
  * haría reset"). The game is a Beta, the vault changes what a first run holds, and a save that kept everything open
  * would never see the new road.
+ *
+ * 5 since the Road to the Plateau (§8.4): the account keeps what it has seen arrive in the Hub (`hubSeen`). **A v4
+ * account is kept** — `upgradeAccount` marks everything it has already earned as seen, so a player who updates walks
+ * into the place their career has reached without a parade of arrivals for things they have had for weeks.
  */
-export const ACCOUNT_VERSION = 4;
+export const ACCOUNT_VERSION = 5;
+/** The oldest account that is brought forward rather than reset. */
+export const ACCOUNT_KEPT_FROM = 4;
 
 export interface LifetimeStats {
   runs: number;
@@ -104,6 +111,8 @@ export interface AccountState {
   pins: string[];
   /** §8.9.3 — the Pokédex milestones Oak's aide has paid, by their species count. */
   aides: number[];
+  /** §8.4.6 — the places and features the player has watched arrive in the Hub (`meta/lobby.ts` keys). */
+  hubSeen: string[];
   stats: LifetimeStats;
   /** Running tallies the Field Notes read (§8.7.1). Keyed by the criterion id, flat so adding one is a data row. */
   counters: Record<string, number>;
@@ -137,6 +146,7 @@ export const emptyAccount = (salt = 1): AccountState => ({
   notes: [],
   pins: [],
   aides: [],
+  hubSeen: [],
   stats: { runs: 0, wins: 0, losses: 0, combatsWon: 0, recruits: 0, evolutions: 0, catches: 0, leadTurns: {}, hardestWin: 0 },
   counters: {},
 });
@@ -812,10 +822,15 @@ export function pinEntry(state: AccountState, id: string, on: boolean): AccountS
  * Bring a save from an earlier account version up to this one. Pure; the app layer calls it on load.
  *
  * v4 (v0.9.110) is a reset: an account from before the rework starts again, with a salt of its own.
+ * v4 → v5 (§8.4, the Road to the Plateau) keeps the account and seeds `hubSeen` with everything it has already
+ * earned: the Hub opens on the place the career has reached, and nothing the player has had for weeks arrives again.
  */
 export function upgradeAccount(state: Partial<AccountState> & { version?: number }, salt = 1): AccountState {
-  if ((state.version ?? 0) < ACCOUNT_VERSION) return emptyAccount(salt);
-  return state as AccountState;
+  const version = state.version ?? 0;
+  if (version < ACCOUNT_KEPT_FROM) return emptyAccount(salt);
+  if (version >= ACCOUNT_VERSION) return state as AccountState;
+  const kept = { ...emptyAccount(salt), ...state, version: ACCOUNT_VERSION } as AccountState;
+  return { ...kept, hubSeen: hubEarned(kept) };
 }
 
 /** The number of Journal medals complete, for the card. */

@@ -1,0 +1,11 @@
+16-bit pixel art background for a Game Boy Advance era monster-collecting RPG title screen, in the exact style, palette family and pixel size of the attached reference image: chunky hand-placed pixels, limited palette, flat banded shading, no gradients, no anti-aliasing, no blur.
+
+Scene: the view from a mountain summit above a sea of clouds at dawn. Wide 16:9 landscape.
+- Sky: horizontal bands of colour, deep indigo and violet at the top left, warming through rose to orange and pale gold near the horizon on the right.
+- A large pale-gold rising sun sits low on the horizon in the RIGHT third of the picture, half risen out of the clouds.
+- A few distant jagged mountain peaks rise out of the cloud sea as dark violet silhouettes near the horizon, small and far away, mostly in the middle and right.
+- The lower half of the picture is a calm, thick sea of white and peach clouds seen from above, receding to the horizon in layered bands.
+- The LEFT third of the picture is calm and darker: only dusky sky and cloud sea, no sun, no peaks, nothing detailed.
+- In the bottom RIGHT corner, a foreground rocky summit ledge in grey-brown stone with a little alpine grass and a few small flowers juts in from the right edge and bottom edge, with a flat top to stand on. It takes no more than a third of the width and a third of the height.
+
+No characters, no creatures, no people, no buildings, no text, no logo, no UI, no border, no arena, no platform circle.

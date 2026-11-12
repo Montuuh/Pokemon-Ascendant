@@ -1540,6 +1540,22 @@ cooldown; the Phase-2 filter stops at Phase 3. Master's Challenge's promoted ace
 waiver/fog/paralysis/sleep/immunity/KO, every authored ace valid); the Golem golden regenerated; e2e
 `boss-phases.spec.ts` at 1080p and 720p/150 %; `npm run check`, the full browser suite and the UI review.
 
+### v0.9.120 — Road to the Plateau  ✅ 2026-11-12
+
+**Shipped.** The user (2026-11-12) asked for five things, built by implementer agents and each reviewed by an Opus
+reviewer before the fixes went in. **The Trainer Hub is a road** (§8.4; the user chose the form, silhouettes for every
+locked thing, rooms from FRLG tiles, the Hall of Fame in its own room, the Item Guide with the aide): your room → Oak's
+Lab (Rookie) → Viridian Pokémon Center (Ace) → Indigo Plateau (3 Badges, Elite rank or a Champion) → the Hall of Fame up
+the stairs; career props (Badge Case, trophy, banner, Ladder board, Pokédex award); one-time arrival beats; account v5
+with a v4 → v5 migration that keeps the account. The Plateau's trigger was 4 Badges and moved on the career harness
+(`CAREERS=3`: median run 10, latest 27, 9 of 9) — **the user has not confirmed it.** **The title screen** (§9.13) is a
+summit at dawn with a party of three that evolves; the attract battle is gone. **Audio** (§9.5) is a software GB/GBA
+chip, an MML tracker and 26 original tracks rendered in a Worker, with the effects rewritten; nobody has heard it yet.
+**The map** has a Habitats column and each Gym's bubble names its lane's Wild Areas (§2.6.1). **A notice** says when
+the browser draws without hardware acceleration (§9.6.2); not tried on a real browser with it off. `npm run check`;
+full e2e 497 of 511 — 13 failures are older than the package (Training result, Gym Badge ground, targeting, rewards)
+and one passes on a fresh dev server.
+
 ### v0.9.119 — Clear skies, closed  ✅ 2026-11-12
 
 **Shipped.** The user (2026-11-12): "arregla también los dos detalles abiertos". A fainted Pokémon's result card dimmed as a

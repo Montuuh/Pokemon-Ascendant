@@ -1,0 +1,149 @@
+{
+  "foot": 2,
+  "sizes": {
+    "bulbasaur": [
+      32,
+      32
+    ],
+    "ivysaur": [
+      57,
+      47
+    ],
+    "venusaur": [
+      81,
+      65
+    ],
+    "charmander": [
+      40,
+      43
+    ],
+    "charmeleon": [
+      49,
+      60
+    ],
+    "charizard": [
+      84,
+      82
+    ],
+    "squirtle": [
+      38,
+      41
+    ],
+    "wartortle": [
+      52,
+      63
+    ],
+    "blastoise": [
+      63,
+      63
+    ],
+    "machop": [
+      51,
+      53
+    ],
+    "machoke": [
+      57,
+      70
+    ],
+    "machamp": [
+      67,
+      71
+    ],
+    "abra": [
+      58,
+      45
+    ],
+    "kadabra": [
+      65,
+      59
+    ],
+    "alakazam": [
+      76,
+      68
+    ],
+    "pidgey": [
+      40,
+      42
+    ],
+    "pidgeotto": [
+      75,
+      79
+    ],
+    "pidgeot": [
+      63,
+      68
+    ],
+    "geodude": [
+      57,
+      30
+    ],
+    "graveler": [
+      65,
+      44
+    ],
+    "golem": [
+      66,
+      57
+    ],
+    "gastly": [
+      60,
+      58
+    ],
+    "haunter": [
+      65,
+      48
+    ],
+    "gengar": [
+      54,
+      56
+    ],
+    "dratini": [
+      40,
+      48
+    ],
+    "dragonair": [
+      58,
+      69
+    ],
+    "dragonite": [
+      68,
+      82
+    ],
+    "oddish": [
+      38,
+      38
+    ],
+    "gloom": [
+      48,
+      47
+    ],
+    "vileplume": [
+      56,
+      50
+    ],
+    "nidoran-m": [
+      37,
+      42
+    ],
+    "nidorino": [
+      54,
+      54
+    ],
+    "nidoking": [
+      80,
+      65
+    ],
+    "poliwag": [
+      50,
+      36
+    ],
+    "poliwhirl": [
+      67,
+      49
+    ],
+    "poliwrath": [
+      71,
+      58
+    ]
+  }
+}

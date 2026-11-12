@@ -1,0 +1,319 @@
+/* §9.13.1 — the summit behind the title: one 640×360 pixel scene (the stages' grid) at a whole or half multiple of its
+   pixels (D9, `--k`), held to the screen's bottom-right corner, where the ledge and the party are, so a narrower or
+   wider window crops sky and the night side, never them. Everything inside is placed in the scene's own pixels.
+   Motion is cheap on purpose: only `transform` and `opacity` move, nothing is blurred, filtered or masked, the party
+   is still pictures, and the clouds advance one scene pixel at a time (`steps`). */
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--tip-surface);
+}
+.scene {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--k) * 640px);
+  height: calc(var(--k) * 360px);
+}
+/* The vista under everything, and the night side over everything: both the scene's size, pixel for pixel. */
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  image-rendering: pixelated;
+}
+
+/* ── The clouds: two seamless strips, each two widths long, sliding one width and starting again ─────────────── */
+.clouds {
+  position: absolute;
+  left: 0;
+  width: calc(var(--k) * 1280px);
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: calc(var(--k) * 640px) auto;
+  image-rendering: pixelated;
+}
+.far {
+  top: calc(var(--k) * 168px);
+  height: calc(var(--k) * 96px);
+  background-image: var(--far);
+}
+.near {
+  top: calc(var(--k) * 300px);
+  height: calc(var(--k) * 60px);
+  background-image: var(--near);
+}
+.live .far {
+  /* motion-ok: ambient drift — a scene pixel at a time, the whole strip in --t-far */
+  animation: titleDrift var(--t-far) steps(640) infinite;
+}
+.live .near {
+  /* motion-ok: ambient drift — the nearer bank goes by three times as fast */
+  animation: titleDrift var(--t-near) steps(640) infinite;
+}
+
+/* ── The Pokémon that crosses the sky: in from the right, out past the left, once for each party ─────────────── */
+.flyer {
+  position: absolute;
+  left: 100%;
+  top: calc(var(--k) * 18px);
+  width: calc(var(--n-w, 0) * var(--k) * 1px);
+  max-width: none;
+  height: auto;
+  /* motion-ok: ambient crossing — two scene pixels a step, across the whole sky */
+  animation: titleFly var(--t-fly) steps(400) 4s both;
+}
+
+/* ── The party: three on the ledge, their backs to you ───────────────────────────────────────────────────────── */
+.party {
+  position: absolute;
+  inset: 0;
+}
+.live .party {
+  animation: titleIn var(--t-leave) var(--ease-step) both;
+}
+.live .party.leaving {
+  /* motion-ok: scene leaves — the party fades out to the next */
+  animation: titleOut var(--t-leave) var(--ease-step) both;
+}
+/* A member is a point: where the middle of its feet is (`--x`, `--y`, the scene's pixels). The nearer one is drawn
+   over the further (z-index is its `--y`, set inline). */
+.member {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(calc(var(--x) * var(--k) * 1px), calc(var(--y) * var(--k) * 1px));
+}
+/* Before an evolution the three step apart, to where the forms they are about to be have room. Only then: a member
+   that slid whenever the window changed size would slide on every load. */
+.member.shifting {
+  /* motion-ok: the party makes room — one short step, before the first evolution begins */
+  transition: transform var(--t-shift) var(--ease-step);
+}
+/* A form stands on the point by the middle of its feet, its shadow reaching `--foot` rows below them. */
+.form {
+  position: absolute;
+  left: calc(round(down, var(--w) / 2, 1) * var(--k) * -1px);
+  bottom: calc(var(--foot) * var(--k) * -1px);
+  width: calc(var(--w) * var(--k) * 1px);
+  max-width: none;
+  height: auto;
+}
+/* Evolution, as the series plays it, one member at a time (`--delay`): it turns to light, the old shape and the new
+   take turns faster and faster, a flash, and the light falls away from the new form. Motion off never mounts these. */
+.form[data-role='old'] {
+  animation: titleOldColour var(--t-evolve) linear var(--delay) both;
+}
+.form[data-role='old-light'] {
+  animation: titleOldLight var(--t-evolve) linear var(--delay) both;
+}
+.form[data-role='new-light'] {
+  animation: titleNewLight var(--t-evolve) linear var(--delay) both;
+}
+.form[data-role='new'] {
+  animation: titleNewColour var(--t-evolve) linear var(--delay) both;
+}
+.form[data-role='new-flash'] {
+  animation: titleFlash var(--t-evolve) step-end var(--delay) both;
+}
+/* The flash, once, as the new shape holds: the shape goes pure white for a tenth of a second, and eight cream pixels,
+   each four of the scene's pixels with a dark edge so they read on the dawn sky, are flung out from its middle. */
+.spark {
+  --dot: calc(var(--k) * 4px);
+  --edge: calc(var(--k) * 1px);
+  --reach: calc(var(--k) * 30px);
+  --diag: calc(var(--k) * 21px);
+  position: absolute;
+  left: calc(var(--k) * -2px);
+  bottom: calc(var(--h) * var(--k) * 0.5px);
+  width: var(--dot);
+  height: var(--dot);
+  opacity: 0;
+  box-shadow:
+    var(--reach) 0 var(--brand-cream),
+    var(--reach) 0 0 var(--edge) var(--tip-surface),
+    calc(var(--reach) * -1) 0 var(--brand-cream),
+    calc(var(--reach) * -1) 0 0 var(--edge) var(--tip-surface),
+    0 var(--reach) var(--brand-cream),
+    0 var(--reach) 0 var(--edge) var(--tip-surface),
+    0 calc(var(--reach) * -1) var(--brand-cream),
+    0 calc(var(--reach) * -1) 0 var(--edge) var(--tip-surface),
+    var(--diag) var(--diag) var(--brand-cream),
+    var(--diag) var(--diag) 0 var(--edge) var(--tip-surface),
+    calc(var(--diag) * -1) var(--diag) var(--brand-cream),
+    calc(var(--diag) * -1) var(--diag) 0 var(--edge) var(--tip-surface),
+    var(--diag) calc(var(--diag) * -1) var(--brand-cream),
+    var(--diag) calc(var(--diag) * -1) 0 var(--edge) var(--tip-surface),
+    calc(var(--diag) * -1) calc(var(--diag) * -1) var(--brand-cream),
+    calc(var(--diag) * -1) calc(var(--diag) * -1) 0 var(--edge) var(--tip-surface);
+  animation: titleSpark var(--t-evolve) linear var(--delay) both;
+}
+
+/* Nobody is watching a hidden tab: everything holds where it is. */
+.root[data-paused] * {
+  animation-play-state: paused;
+}
+
+@keyframes titleIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes titleOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes titleDrift {
+  to {
+    transform: translateX(calc(var(--k) * -640px));
+  }
+}
+@keyframes titleFly {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(var(--k) * -800px));
+  }
+}
+/* One evolution, in shares of --t-evolve (2.4 s). 0–8 % the Pokémon turns to light; from 18 % the two shapes take
+   turns, each turn shorter than the last (410, 340, 270, 220, 170, 120 ms); at 82 % the new shape holds, white for a
+   tenth of a second — the one flash — and the sparks go out; from 90 % the light falls away. The two shapes are the
+   same cream, so a turn changes an outline, not the screen's brightness (§9.6). */
+@keyframes titleOldColour {
+  0% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  8%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes titleOldLight {
+  0% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  18.3% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  35.4% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  49.6% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  60.8% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  70% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  77.1% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  82.1%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes titleNewLight {
+  0% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  18.3% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  35.4% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  49.6% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  60.8% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  70% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  77.1% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  82.1% {
+    opacity: 1;
+    animation-timing-function: step-end;
+  }
+  89.6% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes titleFlash {
+  0% {
+    opacity: 0;
+  }
+  82.1% {
+    opacity: 1;
+  }
+  86.3%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes titleNewColour {
+  0% {
+    opacity: 0;
+    animation-timing-function: step-end;
+  }
+  89.6%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes titleSpark {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    animation-timing-function: step-end;
+  }
+  82.1% {
+    opacity: 1;
+    transform: scale(0.5);
+    animation-timing-function: steps(6);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}

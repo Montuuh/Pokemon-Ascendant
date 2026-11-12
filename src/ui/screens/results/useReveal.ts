@@ -48,6 +48,8 @@ export function useReveal(plan: RevealPlan, animate: boolean): { t: number; done
   const stop = animate ? holds[released] : undefined;
   const held = stop !== undefined && now >= stop;
   const advance = useCallback(() => {
+    // §9.5.3 — the result is read a beat at a time: each press that moves it on blips, as a text box does.
+    playSfx('text-advance');
     if (held) {
       setReleased((r) => r + 1);
       return;

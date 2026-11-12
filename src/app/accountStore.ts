@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import {
-  ACCOUNT_VERSION,
+  ACCOUNT_KEPT_FROM,
   accountContextFor,
   applyAccountEvents,
   buy as buyItem,
   emptyAccount,
   emptyDelta,
+  hubEarned,
   levelFor,
+  markHubSeen,
   mergeDelta,
   packKit,
   pinEntry,
@@ -29,6 +31,7 @@ import {
   type MartItem,
   type MetaEvent,
   type RunState,
+  upgradeAccount,
 } from '@/sim';
 import { getContent } from '@/content/registry';
 import { ACCOUNT_KEY, ACHIEVEMENTS_KEY, claimLegacyKey } from './storageKeys';
@@ -85,12 +88,13 @@ function load(): Persisted {
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<Persisted>;
       const a = (parsed.account ?? {}) as Partial<AccountState>;
-      // §8.10 — v0.9.110 is a reset (the user's call): an account from before the rework starts again.
-      if (typeof a.version === 'number' && a.version >= ACCOUNT_VERSION) {
+      // §8.10 — v0.9.110 is a reset (the user's call): an account from before the rework starts again. One from
+      // since then is kept, and brought forward by `upgradeAccount` below.
+      if (typeof a.version === 'number' && a.version >= ACCOUNT_KEPT_FROM) {
         // Defensive rather than schema-validated on purpose: a corrupt field should cost you that field, not
         // the ability to start the game. Every top-level field falls back to its empty value on its own.
         const base = emptyAccount(typeof a.salt === 'number' && a.salt > 0 ? a.salt : newSalt());
-        const account: AccountState = {
+        const filled: AccountState = {
           ...base,
           ...a,
           salt: base.salt,
@@ -113,8 +117,16 @@ function load(): Persisted {
           notes: list(a.notes, []),
           pins: list(a.pins, []),
           aides: list(a.aides, []),
+          hubSeen: list(a.hubSeen, []),
         };
+        // §8.4.6 — a seen-list that is missing or broken costs that field, not a parade: everything the account has
+        // earned counts as seen, as it does for an account from before the list existed.
+        const whole = Array.isArray(a.hubSeen) ? filled : { ...filled, hubSeen: hubEarned(filled) };
+        // §8.4 — a v4 account has no seen-list: the upgrade writes one holding all it has earned, so the Hub opens
+        // on the place the career has reached and nothing arrives twice. Written back at once, so it happens once.
+        const account = upgradeAccount(whole, base.salt);
         const ledger = parsed.ledger && typeof parsed.ledger === 'object' ? { ...emptyLedger(account), ...parsed.ledger } : emptyLedger(account);
+        if (account !== filled) persist({ account, ledger });
         return { account, ledger };
       }
     }
@@ -164,6 +176,8 @@ interface AccountStore {
   openParcel: (entryId: string) => void;
   /** §8.4.5 — pack or unpack a Kit perk. */
   pack: (perk: HubUpgrade, on: boolean) => void;
+  /** §8.4.6 — the player has watched the Hub's arrivals: none of them plays again. */
+  seeHub: () => void;
   /** §8.7.2 — pin or unpin a Journal entry. */
   pin: (id: string, on: boolean) => void;
   /** Replace the account outright — the dev hook and the tests set a rank or a wallet this way. */
@@ -234,6 +248,7 @@ export const useAccountStore = create<AccountStore>((set, get) => {
     openParcel: (entryId) => commit(takeParcel(get().account, entryId)),
     pack: (perk, on) => commit(packKit(get().account, perk, on)),
     pin: (id, on) => commit(pinEntry(get().account, id, on)),
+    seeHub: () => commit(markHubSeen(get().account)),
     replace: (account) => commit(account),
 
     beginRun: () => {

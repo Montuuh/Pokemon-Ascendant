@@ -89,3 +89,43 @@
   font-family: var(--font-display);
   font-size: var(--type-body);
 }
+
+/* §8.4.6 — the arrival at a new place (D12: the world's beat — it lands once, in the games' stepped frames, and
+   rests). The room comes out of black as the games warp; the series' text box names the place where the title was,
+   clear of the room; what the move brought lifts and pulses once the room is there (PixelRoom reads the delay). Any
+   key or press ends all of it and still does what it was pressed for. Everything rides the motion tokens, so reduced
+   motion shows the room at once. */
+.arriving {
+  --hub-warp: calc(var(--motion-slow) * 2);
+  --room-arrive-delay: var(--hub-warp);
+}
+.warp {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--ink-primary);
+  mask-size: 100% 100%;
+  pointer-events: none;
+  /* motion-ok: D12 world beat, 700 ms — a warp between two places, stepped like the games', played once per move */
+  animation: warpIn var(--hub-warp) steps(6, end) both;
+}
+@keyframes warpIn {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.arrival {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border: 3px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+  white-space: nowrap;
+  animation: arrivalIn var(--motion-base) var(--ease-step) both;
+}
+@keyframes arrivalIn {
+  from { opacity: 0; transform: translateY(calc(-1 * var(--sp-2))); }
+  to { opacity: 1; transform: none; }
+}

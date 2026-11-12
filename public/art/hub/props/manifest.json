@@ -1,0 +1,349 @@
+{
+  "rights": "Original props, generated (Gemini image model via scripts/gen-image.mjs) and redrawn onto the rooms' palette; no Nintendo asset.",
+  "script": "scripts/build-hub-props.mjs",
+  "cell": [
+    16,
+    32
+  ],
+  "palette": "100 colours of the four Hub rooms",
+  "sources": [
+    {
+      "prop": "ladder",
+      "file": "docs/art/sources/hub/ladder-board-2.png",
+      "prompt": "docs/art/prompts/hub-ladder-board.txt",
+      "sha256": "9cbbce0ba84eb7fb52971501757f7eca84a225f53b46697c60d8883632399920"
+    },
+    {
+      "prop": "trophies",
+      "file": "docs/art/sources/hub/trophy-2.png",
+      "prompt": "docs/art/prompts/hub-trophy.txt",
+      "sha256": "8bef47e969d075a0264c912f1ccca95a7d5ec438d7a6ea61582d7d9fb1ccac9b"
+    },
+    {
+      "prop": "banner",
+      "file": "docs/art/sources/hub/banner-2.png",
+      "prompt": "docs/art/prompts/hub-banner.txt",
+      "sha256": "e7ddb3e6a0c194fdf3d35758283f8b2759a444e0fe1a9c368162d9a58041c801"
+    }
+  ],
+  "drawn": {
+    "badges": {
+      "how": "drawn by this script; the pips are the strongest colour of each Leader's Gym icon (public/art/icons/map)",
+      "pips": [
+        {
+          "badge": "boulder-badge",
+          "colour": [
+            200,
+            168,
+            105
+          ],
+          "at": [
+            2,
+            6
+          ]
+        },
+        {
+          "badge": "cascade-badge",
+          "colour": [
+            0,
+            111,
+            255
+          ],
+          "at": [
+            5,
+            6
+          ]
+        },
+        {
+          "badge": "hive-badge",
+          "colour": [
+            217,
+            116,
+            88
+          ],
+          "at": [
+            8,
+            6
+          ]
+        },
+        {
+          "badge": "plain-badge",
+          "colour": [
+            208,
+            201,
+            47
+          ],
+          "at": [
+            11,
+            6
+          ]
+        },
+        {
+          "badge": "volcano-badge",
+          "colour": [
+            240,
+            0,
+            69
+          ],
+          "at": [
+            2,
+            10
+          ]
+        },
+        {
+          "badge": "rainbow-badge",
+          "colour": [
+            255,
+            0,
+            148
+          ],
+          "at": [
+            5,
+            10
+          ]
+        },
+        {
+          "badge": "thunder-badge",
+          "colour": [
+            255,
+            99,
+            0
+          ],
+          "at": [
+            8,
+            10
+          ]
+        },
+        {
+          "badge": "soul-badge",
+          "colour": [
+            251,
+            58,
+            239
+          ],
+          "at": [
+            11,
+            10
+          ]
+        },
+        {
+          "badge": "marsh-badge",
+          "colour": [
+            255,
+            207,
+            41
+          ],
+          "at": [
+            2,
+            14
+          ]
+        },
+        {
+          "badge": "earth-badge",
+          "colour": [
+            1,
+            184,
+            73
+          ],
+          "at": [
+            5,
+            14
+          ]
+        },
+        {
+          "badge": "knuckle-badge",
+          "colour": [
+            255,
+            152,
+            31
+          ],
+          "at": [
+            8,
+            14
+          ]
+        },
+        {
+          "badge": "glacier-badge",
+          "colour": [
+            38,
+            116,
+            183
+          ],
+          "at": [
+            11,
+            14
+          ]
+        }
+      ],
+      "rejected": [
+        "docs/art/sources/hub/badge-case-1.png",
+        "docs/art/sources/hub/badge-case-2.png"
+      ]
+    }
+  },
+  "real": "dex.png is pret pixels (its black outline repainted slate), written by scripts/lib/hub-places.mjs",
+  "outputs": [
+    {
+      "file": "ladder.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "0cc03d68e66944c68e3e8f3140f4c1b35403b8e2a7247e2ca96f3cf9991311be"
+    },
+    {
+      "file": "trophies.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "2e28663aa590ed5fa434d0244d6c021ee0e4c577ce34c51087dbd3675a150c4e"
+    },
+    {
+      "file": "trophies-2.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "b74bafc607b8c6d643302ff67ba77538bc0637bbbc2f639de6aadc55ed1fc453"
+    },
+    {
+      "file": "banner.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "2d9632e7e5cb5952deb0141b4e769ff798eeabb6695265433e37ec8889f07321"
+    },
+    {
+      "file": "banner-2.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "154b234a79221a653e691da3d178de3d781615c03cfa7875480305429be8c2a4"
+    },
+    {
+      "file": "banner-3.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "3aa52150172f94b009f8285ffdd0b7c8d3baf8cece0bc1155d6a6eb8d91e0620"
+    },
+    {
+      "file": "badges.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "b763663ef8590974c8ceaa12ebf84d7795dbb5d46ff7320cd9932e8a9696aab2"
+    },
+    {
+      "file": "../bedroom/ladder-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "dad397af45cd204273e21c7cc16c911905ab566b77b7d70e3afb7c5e3447fe10"
+    },
+    {
+      "file": "../bedroom/trophies-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "9db4849881208d5538b1019886c4b26513df5e70f75b7497214e53d3d43e8ab4"
+    },
+    {
+      "file": "../bedroom/banner-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "6bbe60ff17aed667a12244a56d11927c438762e5c3ecff49f179111c3789b3f6"
+    },
+    {
+      "file": "../bedroom/badges-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "e767fb16e5e6b61aacf433bd9d13917b3626c99f99b1e387fe8b4450a3c6aced"
+    },
+    {
+      "file": "../bedroom/dex-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "ba08cad19e56ed019950721f54cb136b66ed78ce6ca054a833624b9adf8720d9"
+    },
+    {
+      "file": "../lab/ladder-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "37907a71116edd44ae040454090c52396485da7663384219974b00283a7ef93d"
+    },
+    {
+      "file": "../lab/trophies-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "6e2df8549d9c2a591016062f91de0e0c5940223bc240d10154be6f1762d93313"
+    },
+    {
+      "file": "../lab/banner-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "275ce6c5d47ba45d6f3f5de5aaa556bf9b624ef528fcd6b9460891bf7a70128c"
+    },
+    {
+      "file": "../lab/badges-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "cba0d17f67625114b5e219bac23c9c200542e6f8060775d0aa3902dc20c5b6a6"
+    },
+    {
+      "file": "../lab/dex-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "02a842f3a333184693b86d2206e74f08a13c39becc5d0a61b3d23147cb603037"
+    },
+    {
+      "file": "../center/ladder-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "f5384bd48a14407e79a5dd3d8089f447dba555fbaa75faac3ba534a9af0f23d3"
+    },
+    {
+      "file": "../center/trophies-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "c4d8467a7d40c09442105f27d0662333f2e588a49648d91266a9470f3e5d8c88"
+    },
+    {
+      "file": "../center/banner-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "9ab107fe644bf161eeb87a41c26815d5fa51e89d5d0a79b80384763741c0e084"
+    },
+    {
+      "file": "../center/badges-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "4a26dd920347e77dfc70049be15302e480c7098357a46a7dd13af51d14a24ec3"
+    },
+    {
+      "file": "../center/dex-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "0a67e99cfe43b0b66d122dc15ec1eebea8340ed15540e0c446ff110276d468b2"
+    },
+    {
+      "file": "../plateau/ladder-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "f5384bd48a14407e79a5dd3d8089f447dba555fbaa75faac3ba534a9af0f23d3"
+    },
+    {
+      "file": "../plateau/trophies-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "c4d8467a7d40c09442105f27d0662333f2e588a49648d91266a9470f3e5d8c88"
+    },
+    {
+      "file": "../plateau/banner-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "9ab107fe644bf161eeb87a41c26815d5fa51e89d5d0a79b80384763741c0e084"
+    },
+    {
+      "file": "../plateau/badges-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "4a26dd920347e77dfc70049be15302e480c7098357a46a7dd13af51d14a24ec3"
+    },
+    {
+      "file": "../plateau/dex-locked.png",
+      "width": 16,
+      "height": 32,
+      "sha256": "0a67e99cfe43b0b66d122dc15ec1eebea8340ed15540e0c446ff110276d468b2"
+    }
+  ]
+}

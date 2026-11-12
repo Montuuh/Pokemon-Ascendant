@@ -100,10 +100,12 @@ Pokémon.
   Gen IV moves borrow the script of the move they move like; since v0.9.105 a move's sprites are drawn at twice the
   Pokémon's pixel scale, what lands on a Pokémon capped to its box and what flies across the field to half again; since v0.9.106 the
   script's tasks on a Pokémon play on its own sprite (Agility's afterimages, Harden's shine, Growth's swelling).
-- **Sound** (✅ v0.9.23, §9.5): every sound synthesised as it plays (Web Audio, no files) — a swish per type for every
-  card, impacts by effectiveness, a sting per status, the ball's wobbles and click, level-up and evolution — and music
-  composed in code per Region, City, Victory Road, League, fight, boss and Champion, with a tension layer under 30 % HP.
-  Music and Effects volumes in Settings.
+- **Sound** (✅ v0.9.23, rebuilt 2026-11-12, §9.5): a software sound chip modelled on the handheld series' own — two
+  pulse channels, a 4-bit wave bass, a noise-register drum kit, and wavetable strings, brass, flute and bell — rendering
+  an original songbook (no official recording or melody): 26 tracks with an intro and an A/B loop, one per place and
+  per kind of fight, a victory fanfare-and-loop through the result, a tension stem under 30 % HP; effects in the same
+  vocabulary (a swish per type, three hits by effectiveness, a sting per status, the ball) and fanfares the music
+  stops for. Every track at one measured loudness under a compressor and a clip guard. Music and Effects volumes in Settings.
 - **League** (✅ v0.9.22): five doors where the map was — Bruno (Fighting), Agatha (Ghost), Will (Psychic), Lance
   (Dragon), then Champion Blue (five over many types, his ace the starter that beats yours, the last two together, Full
   Team Synergy +5 % a fallen ally to +20 %); each Elite on its Home Field and one Battlefield; no running; a 30 %
@@ -463,10 +465,14 @@ the vault (four from Veteran), keep one. Also from Silver+ Journal entries, Ladd
 Challenges and Milestones (50 medals in the catalogue). No entry pays only a number: Bronze an avatar, Silver and
 Gold a parcel or a trophy, Platinum two. Up to three pinned; the pinned lead the Field Report's "Next time".
 
-**Hub** — the Indigo Plateau lobby, a FRLG room that **fills** (§8.4.6): the nurse (Trainer Card: rank, four stars,
-rank road, Badge Case), the PC (Pokédex with Bond and Ribbons; Hall of Fame), the Item Guide (locks shown) and the
-League door from day one; Oak's aide at Rookie, the Mart at Trainer, the Trainer Kit at Challenger; every Leader
-beaten stands in the room, and Partner lines walk it.
+**Hub** — the **Road to the Plateau** (§8.4): a different FRLG room as the career advances — your bedroom (run 0),
+Professor Oak's Lab (Rookie), Viridian City's Pokémon Center (Ace), the Indigo Plateau (three Badges, Elite, or a Champion),
+and the Hall of Fame up its stairs (a Champion). The Trainer Card (rank, four stars, rank road, Badge Case), the PC
+(Pokédex with Bond and Ribbons) and the way into a run from day one; Oak's aide and the Item Guide (locks shown)
+at Rookie, the Mart at Trainer, the Trainer Kit at Challenger. **What is not earned stands in the room as a
+silhouette that names what brings it** (§8.4.6); the career stands on the floor (Badge Case, Journal trophy,
+Pokédex award, League banner, Ladder board); a move and a new feature each arrive once; every Leader beaten stands in the room,
+and Partner lines walk it.
 **Poké Mart** — Starters (Magikarp 25, Eevee 35, Pikachu 35) · Services (Expanded Box 40, Modifier Slot 50, Twin
 Run 70) · Trainer Kit (seven perks, 15–25) · Trainer's Corner (titles 6, avatars 8). About 480 Tokens.
 **Trainer Kit** (§8.4.5) — perks packed into 1–3 slots: Mom's Allowance, First-Aid Pouch, TM Case, Curated
@@ -474,7 +480,7 @@ Starting Relic, Pokédex Insight, Salve Cache, Apex Reveal (Mart); Ball Case, Ex
 25 / 50 / 110 species owned). Slots, not stacks; never the fight's maths; a full Kit ≤ +8 points of run win rate.
 **Starters** — 3 default + 3 at the Mart; any Soulbound line (Bond rank 5) for free; a Soulbound starter line always starts shiny.
 **Badge Case** (§8.14) — twelve Leaders; a first Badge goes on the card, opens the Leader's TM, pays +100 XP and
-brings the Leader to the lobby.
+brings the Leader to the Hub.
 **Difficulty** — 10 modifiers multiplying run XP; **no easier mode**. **League Ladder** (§8.8.5): ten rungs opened
 by the first Champion, rung N stacks the first N modifiers; a rung won opens the next, frees its modifier for
 custom runs and pays 15 Tokens and a parcel. One ladder for the account.
@@ -505,9 +511,13 @@ lands on the target when it hits. Unplayable cards are **never hidden and keep t
 band means position. The tray is one row — the hand and the Bag, End Turn — with the AP capsule docked over the hand at the screen's centre; the log is a ticker in the
 top bar; the squad's portraits are the battle sprites at a whole-pixel scale.
 
-**The title is a battle** (§9.13, v0.9.17): behind the menu and the new-run steps, two battle sprites trade their own
-moves on a battle backdrop — the move's picture lands, a bar drains, one faints, the next famous matchup comes in —
-still when motion is off; the name is a mark of its own (cream lettering, a ball whose top is a peak).
+**The title is a summit at dawn** (§9.13, 2026-11-12): behind the menu, one pixel scene on the stages' grid — a party
+of three on a ledge, its backs to you, facing the sunrise over a sea of clouds, the night side painted in bands. The
+clouds drift a pixel at a time, a Pokémon crosses the sky, and the party evolves twice, one member at a time, through
+light, before the next takes its place; only transform and opacity move, the party is still pictures, it pauses in a
+hidden tab, and with motion off it is one still frame. The new-run steps keep the summit without the party. The name
+is a mark of its own, a ball whose upper half is a peak; the menu is one column on the vista's night side, walked with the
+arrows.
 
 **Accessibility is staged**: reduced motion and text size at v0.5 because they are expensive to retrofit; the
 rest at v1.1. Information never waits on an animation.

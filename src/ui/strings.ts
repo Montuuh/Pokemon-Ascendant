@@ -1,5 +1,5 @@
 import type { Volume } from '@/app/settingsStore';
-import { BOND_RANK_NAME, BOND_TIER } from '@/sim';
+import { BOND_RANK_NAME, BOND_TIER, rankRow, type HubNeed } from '@/sim';
 import type { DamageCause, GymRuleConfig, GymRuleId, RejectReason, RuleCounter, ArenaRuleId, ArenaRuleConfig, ArenaCounter } from '@/sim';
 
 // User-facing strings for the combat screen, gathered for the v0.9 localisation pass.
@@ -362,8 +362,19 @@ export const GATE_TEXT = {
 /** §9.3 — the route board's own words. */
 export const ROUTE_TEXT = {
   labels: 'Labels',
+  habitats: 'Habitats',
   scroller: 'The route. Arrow keys, Home and End scroll it.',
   found: (what: string) => `You picked up ${what}.`,
+};
+
+/** §2.6.1 — the habitat legend on the map. */
+export const HABITAT_TEXT = {
+  title: 'Habitats ahead',
+  none: 'No Wild Areas left ahead.',
+  trunk: 'Before the fork',
+  lane: (leader: string) => `${leader}'s lane`,
+  species: (n: number) => `${n} species`,
+  wilds: (names: string[]) => `Wild Areas: ${names.join(', ')}`,
 };
 
 /** §2.12.2.1 — the Legendaries' arena rules, by name. */
@@ -1635,5 +1646,75 @@ export const JOURNEY_TEXT = {
     kitTitle: 'Your Trainer Kit',
     kitEmpty: 'No perk is packed. Pack one at the Kit table in the Hub.',
     goalsTitle: 'Pinned in your Journal',
+  },
+} as const;
+
+/** §9.6.2 — the graphics-acceleration notice and the Settings row that mirrors it. */
+export const GPU_TEXT = {
+  title: 'No hardware acceleration',
+  body: 'The game is running without hardware acceleration and may stutter.',
+  path: {
+    chrome: 'Chrome: Settings → System → "Use graphics acceleration when available", then relaunch.',
+    edge: 'Edge: Settings → System and performance → "Use graphics acceleration when available", then restart.',
+    firefox: 'Firefox: Settings → General → Performance → turn off "Use recommended performance settings", then turn on "Use hardware acceleration when available".',
+    other: 'In your browser settings, turn on hardware or graphics acceleration, then restart it.',
+  },
+  reduceMotion: 'Reduce motion',
+  dismiss: "Don't show again",
+  close: 'Close',
+  rowLabel: 'Graphics',
+  row: { hardware: 'Hardware accelerated', software: 'Software rendering', unknown: "Couldn't check" },
+} as const;
+
+/** §8.4, §8.4.1, §8.4.6 — the Road to the Plateau: the Hub's places, what stands in them and what brings it. */
+export const HUB_TEXT = {
+  feature: {
+    run: 'New run', card: 'Trainer Card', pc: 'PC Terminal', aide: "Oak's aide", guide: 'Item Guide', mart: 'Poké Mart', kit: 'Trainer Kit',
+    badges: 'Badge Case', trophies: 'Journal trophy', dex: 'Pokédex award', banner: 'League banner', ladder: 'Ladder board', hall: 'Hall of Fame',
+  },
+  place: { bedroom: 'Your room', lab: "Professor Oak's Lab", center: 'Viridian City', plateau: 'Indigo Plateau' },
+  room: {
+    bedroom: 'The Trainer Hub: your room in Pallet Town',
+    lab: "The Trainer Hub: Professor Oak's Lab",
+    center: "The Trainer Hub: Viridian City's Pokémon Center",
+    plateau: "The Trainer Hub: the Indigo Plateau's Pokémon Center",
+  },
+  arrive: {
+    bedroom: '',
+    lab: "You arrive at Professor Oak's Lab.",
+    center: "You arrive at Viridian City's Pokémon Center.",
+    plateau: 'You arrive at the Indigo Plateau.',
+  },
+  locked: 'Locked',
+  lockedLabel: (name: string, need: string) => `${name}, locked. ${need}.`,
+  /** `inline`: after "or", in the middle of a sentence. */
+  need: (need: HubNeed, inline = false): string => {
+    const s = HUB_TEXT.needText(need);
+    return inline ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+  },
+  needText: (need: HubNeed): string => {
+    switch (need.kind) {
+      case 'start': return '';
+      case 'rank': return `Reach ${rankRow(need.rank).name} rank`;
+      case 'badges': return need.count === 1 ? 'Win a Badge' : `Win ${need.count} different Badges`;
+      case 'medal': return `Earn a ${need.tier} Journal medal`;
+      case 'owned': return `Own ${need.count} species`;
+      case 'ladder': return 'Win a League Ladder rung';
+      case 'champion': return 'Beat the Champion';
+    }
+  },
+  nextStop: (place: string) => `Next stop: ${place}`,
+  lastStop: 'The end of the road.',
+  prop: {
+    badges: (won: number, total: number) => `${won} of ${total} Badges won.`,
+    trophies: (tier: number) => (tier > 1 ? 'A platinum Journal medal.' : 'A gold Journal medal.'),
+    dex: (owned: number) => `${owned} species owned.`,
+    banner: (rank: string) => `The League flies it for ${/^[AEIOU]/.test(rank) ? 'an' : 'a'} ${rank}.`,
+    ladder: (rung: number) => `League Ladder rung ${rung} won.`,
+  },
+  hall: {
+    link: 'Hall of Fame',
+    room: 'The Hall of Fame',
+    mon: (name: string, level: number) => `${name}, Lv ${level}`,
   },
 } as const;

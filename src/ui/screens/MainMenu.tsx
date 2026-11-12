@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { useAppStore } from '@/app/store';
 import { useRunStore } from '@/app/runStore';
 import { changelogUnread } from '@/app/changelogSeen';
 import { APP_STAGE } from '@/content/roadmap';
-import { TitleBattle } from '@/ui/title/TitleBattle';
+import { TitleScene } from '@/ui/title/TitleScene';
 import { TitleMark } from '@/ui/title/TitleMark';
 import styles from './MainMenu.module.css';
 
-// §9.13 — the title screen (v0.9.17): the battle behind, the mark and the menu in one column on its left.
+// §9.13 — the title screen: the summit at dawn behind, the mark and the menu in one column on its left.
 //
 // Four entries, and no more on purpose (2026-09-21). Quick fight and Practice fights were developer doors —
 // fixtures reachable by deep link (`?scenario=`) that had leaked onto the player's menu — and How to play
@@ -31,14 +31,24 @@ export function MainMenu() {
     goTo(result.run.phase === 'reward' || result.run.phase === 'swap-or-skip' ? 'map' : 'map');
   }
 
+  // §9.13.3 — the menu is a list, and a list is walked with the arrows, as the series' menus are; Tab still works.
+  function walk(e: KeyboardEvent<HTMLElement>) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const items = [...e.currentTarget.querySelectorAll('button')];
+    const here = items.indexOf(document.activeElement as HTMLButtonElement);
+    const next = e.key === 'ArrowDown' ? here + 1 : here < 0 ? items.length - 1 : here - 1;
+    items[(next + items.length) % items.length]?.focus();
+    e.preventDefault();
+  }
+
   return (
     <main className={`${styles.root} theme-stage`} data-testid="main-menu">
-      <TitleBattle className={styles.battle} />
+      <TitleScene className={styles.scene} />
       <div className={styles.dusk} aria-hidden="true" />
       <section className={styles.column}>
         <TitleMark />
         <p className={styles.tagline}>Your party is your deck.</p>
-        <nav className={styles.menu}>
+        <nav className={styles.menu} onKeyDown={walk}>
           {resumable && (
             <button type="button" className={styles.primary} onClick={resume} data-testid="btn-continue-run">
               Continue

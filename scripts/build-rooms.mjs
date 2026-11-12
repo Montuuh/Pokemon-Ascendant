@@ -4,6 +4,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { colours, gridPiece, piece, pretTree, room, sprite } from './lib/frlg-room.mjs';
+import { buildHub } from './lib/hub-places.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const src = pretTree(resolve(root, 'public/art/black-market/sources/pret'), process.argv.includes('--fetch'));
@@ -318,44 +319,12 @@ manifests['game-corner'] = async () => {
 };
 
 // ── The Trainer Hub ─────────────────────────────────────────────────────────────────────────────────────────────
-// The Indigo Plateau's Pokémon Center from pret — the League's own front room — with its regulars where the map puts
-// them (the screen places the clerk, the nurse and the player), the Item Guide open on its table as a Pokédex, the
-// League's register on the nurse's counter, and more plants. Two transparent columns on the left keep the screen's
-// outline round the Mart's counter, as before.
+// §8.4, the Road to the Plateau: the player's bedroom, Professor Oak's Lab, Viridian City's Pokémon Center, the Indigo
+// Plateau's Pokémon Center and the Hall of Fame, each from pret, with the silhouette of every feature a career has yet
+// to earn and the layout table the screen reads (scripts/lib/hub-places.mjs).
 manifests.hub = async () => {
-  const sharp = (await import('sharp')).default;
-  const r = await room(src, { base: 'IndigoPlateau_PokemonCenter_1F', keyBlack: true });
-  for (const [name, x, y, frame, east] of [
-    ['cooltrainer_f', 5, 3, 0],
-    ['gym_guy', 7, 14, 2, true],
-    ['black_belt', 23, 13, 2],
-    ['cooltrainer_m', 16, 15, 0],
-  ]) {
-    const img = await people(name, frame);
-    r.put(east ? await flop(img) : img, x * 16, y * 16 - 16, name);
-  }
-  r.put(await misc('pokedex'), 24, 158, 'pokedex');
-  r.put(await misc('clipboard'), 232, 152, 'clipboard');
-  for (const [c, g] of [
-    [23, 15],
-    [9, 15],
-  ])
-    r.paste([[768], [769]], c, g);
-  const out = resolve(root, 'public/art/hub');
-  const tmp = resolve(out, '.lobby.png');
-  const record = await r.write(tmp, { x: 0, y: 0, w: 400, h: 276 });
-  const fs = await import('node:fs/promises');
-  const keyed = await fs.readFile(tmp);
-  await fs.rm(tmp);
-  await sharp(keyed)
-    .extend({ left: 2, background: { r: 0, g: 0, b: 0, alpha: 0 } })
-    .png({ palette: true, colours: 256, dither: 0 })
-    .toFile(resolve(out, 'lobby.png'));
-  await manifest(out, {
-    room: 'hub',
-    output: { ...record, file: 'lobby.png', note: '+2 transparent columns on the left' },
-    used: r.used,
-  });
+  const misc = (name) => sprite(src, `graphics/object_events/pics/misc/${name}.png`);
+  await buildHub({ src, root, people, misc, manifest });
 };
 
 for (const [name, build] of Object.entries(manifests))

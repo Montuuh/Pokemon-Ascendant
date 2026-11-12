@@ -71,6 +71,7 @@ export function NodeMarker({
   status,
   art,
   ahead,
+  marked,
   caption,
   onClick,
   style,
@@ -82,6 +83,8 @@ export function NodeMarker({
   art: NodeArt;
   /** Still on a route you can take from where you stand. */
   ahead: boolean;
+  /** §2.6.1 — the habitat legend is pointing at this node. */
+  marked?: boolean;
   /** A landmark's name (the Leader, the Elite), or any node's short name while the map's labels are on; else null. */
   caption: string | null;
   onClick?: () => void;
@@ -120,6 +123,7 @@ export function NodeMarker({
       data-kind={node.kind}
       data-status={status}
       data-ahead={ahead || undefined}
+      data-marked={marked || undefined}
       data-art={art.kind}
       data-building={buildingOf(node) ?? undefined}
     >

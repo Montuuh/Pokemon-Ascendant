@@ -143,6 +143,8 @@
   border-color: var(--accent-action);
   background: var(--surface-2);
 }
+/* The way to the Hall of Fame (§8.15): a link among the tabs, at their far end. */
+.tabLink { margin-left: auto; }
 .tab:focus-visible {
   outline: 3px solid var(--brand-blue);
   outline-offset: 2px;

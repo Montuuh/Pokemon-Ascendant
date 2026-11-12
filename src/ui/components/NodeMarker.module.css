@@ -253,3 +253,15 @@
 .node[data-art='habitat'] .caption {
   top: calc(100% + var(--sp-1) * var(--habitat-scale) + 2px);
 }
+
+/* §2.6.1 — a node the habitat legend points at: its ground ringed in blue (wider than the gold ring, so both can show) and
+   a blue frame round its picture, since a Wild Area's grass hides most of its ground. No filter: a frame is one paint. */
+.node[data-marked] .ground {
+  box-shadow: 0 0 0 3px var(--brand-blue), 0 0 0 5px var(--surface-sunken);
+  background: color-mix(in srgb, var(--brand-blue) 38%, transparent);
+}
+.node[data-marked] .art {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { IconPokeball } from '@tabler/icons-react';
+import { IconArrowRight, IconPokeball } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import { Tabs } from 'radix-ui';
 import { useAccountStore } from '@/app/accountStore';
@@ -9,17 +9,16 @@ import { MonIcon } from '@/ui/components/MonIcon';
 import { TypeLabel } from '@/ui/components/TypeBadge';
 import { useMotionPref } from '@/ui/hooks/useMotionPref';
 import { InfoDot, Tip, Tipped } from '@/ui/tooltip';
-import { dexCardTip, hallRunTip } from '@/ui/tips';
-import { JOURNEY_TEXT } from '@/ui/strings';
-import journey from './Journey.module.css';
+import { dexCardTip } from '@/ui/tips';
+import { HUB_TEXT } from '@/ui/strings';
 import { ShinyMark } from '@/ui/components/ShinyMark';
 import { PcSheet } from './PcSheet';
 import { usePcSheet } from './usePcSheet';
 import styles from './Hub.module.css';
 
-// §8.4.1 — the PC Terminal: what the account *knows*, and the runs it has won. Two tabs — the Pokédex (§5.13,
-// §8.9, and the Bond of every line inside it, §6.8) and the Hall of Fame (§8.15). The medals and the relic
-// discoveries that used to live here are the Trainer Journal now, with Professor Oak's aide (§8.7).
+// §8.4.1 — the PC Terminal: what the account *knows* — the Pokédex (§5.13, §8.9) and the Bond of every line inside
+// it (§6.8). The Hall of Fame is a room of its own (§8.15, `HallRoom`); once it is open the PC keeps a link to it.
+// The medals and the relic discoveries that used to live here are the Trainer Journal, with Oak's aide (§8.7).
 //
 // The Pokédex is a *picture*: a card per species with number, sprite, name, type label and the line's rank as
 // six pips — nothing else. Every card is a button that opens a sheet (PcSheet) where the reading is: the
@@ -27,7 +26,7 @@ import styles from './Hub.module.css';
 // on the grid, the paragraph one click away). The Bond is per line and a line is a page of the Pokédex, so it
 // lives here; "By Bond" orders the book by the lines you have played.
 
-export function PcTerminal() {
+export function PcTerminal({ onHall }: { /** §8.15 — go to the Hall of Fame; absent until the Hall is open. */ onHall?: (() => void) | undefined }) {
   const account = useAccountStore((s) => s.account);
   const content = getContent();
   const animate = useMotionPref();
@@ -59,9 +58,11 @@ export function PcTerminal() {
         <Tabs.Trigger className={styles.tab} value="dex" data-testid="pc-tab-dex">
           Pokédex <span className={`${styles.muted} tabular`}>{met} / {species.length}</span>
         </Tabs.Trigger>
-        <Tabs.Trigger className={styles.tab} value="hall" data-testid="pc-tab-hall">
-          {JOURNEY_TEXT.hall.tab} <span className={`${styles.muted} tabular`}>{account.hall.length}</span>
-        </Tabs.Trigger>
+        {onHall && (
+          <button type="button" className={`${styles.tab} ${styles.tabLink}`} onClick={onHall} data-testid="pc-link-hall">
+            {HUB_TEXT.hall.link} <span className={`${styles.muted} tabular`}>{account.hall.length}</span> <IconArrowRight size={16} aria-hidden="true" />
+          </button>
+        )}
       </Tabs.List>
 
       {/* ── Pokédex (§5.13, §8.9) ─────────────────────────────────────────────────────────────────────── */}
@@ -118,33 +119,6 @@ export function PcTerminal() {
             );
           })}
         </ul>
-      </Tabs.Content>
-
-      {/* ── Hall of Fame (§8.15) ─────────────────────────────────────────────────────────────────────── */}
-      <Tabs.Content value="hall" className={styles.tabPanel}>
-        {account.hall.length === 0 ? (
-          <p className={journey.empty} data-testid="hall-empty">{JOURNEY_TEXT.hall.empty}</p>
-        ) : (
-          <ol className={journey.hall}>
-            {[...account.hall].reverse().map((h) => (
-              <Tipped as="li" key={h.run} tip={hallRunTip(h.run, h.seed)} className={journey.hallRow} tabIndex={0} data-testid={`hall-${h.run}`}>
-                <span className={`${journey.hallRun} display tabular`}>{JOURNEY_TEXT.hall.run(h.run)}</span>
-                <span className={journey.hallTeam}>
-                  {h.team.map((m, i) => (
-                    <span key={i} className={journey.hallMon}>
-                      <MonIcon speciesId={m.speciesId} size={48} {...(m.shiny ? { shiny: true } : {})} />
-                      <span className="tabular">Lv {m.level}</span>
-                    </span>
-                  ))}
-                </span>
-                <span className={`${journey.hallFacts} tabular`}>
-                  <span>{JOURNEY_TEXT.hall.rung(h.rung)}</span>
-                  <span>{JOURNEY_TEXT.hall.badges(h.badges.length)} · {JOURNEY_TEXT.hall.relics(h.relics.length)}</span>
-                </span>
-              </Tipped>
-            ))}
-          </ol>
-        )}
       </Tabs.Content>
     </Tabs.Root>
     </>

@@ -1,90 +1,78 @@
-// §9.5 — the game's whole sound, made in code: a Web Audio synthesiser with two voices (a tone and a filtered noise)
-// on two buses (effects and music) under one master. No files, nothing of Nintendo's: every sound is a recipe of
-// these two primitives (`sfx.ts`), every song a pattern over them (`music.ts`).
-//
-// The context is made on the first gesture (a browser will not start sound without one) and is the only state here.
-// Everything that plays asks `ready()` first and does nothing without a context, so a page that never got a gesture —
-// a test, a screenshot — stays silent and stays fast.
+import type { Pcm } from './chip';
 
-export type Wave = 'sine' | 'square' | 'triangle' | 'sawtooth';
+// §9.5.5 — the desk the chip's renderings are played through: one Web Audio context, an effects bus and a music bus
+// under a master with a compressor and a clip guard on it, and a duck on the music for the fanfares. Nothing here makes a sound — the
+// samples come from `chip.ts` — it only plays them: a buffer, a bus, a time.
+//
+// The context is made on the first gesture (a browser will not start sound without one) and sleeps while the tab is
+// hidden. Everything that plays asks `ready()` first and does nothing without a running context, so a page that never
+// got a gesture — a test, a screenshot — stays silent and stays fast.
+
 export type Bus = 'sfx' | 'music';
 
-/** A tone: one oscillator, a pitch glide, an envelope. Times in seconds from `at`. */
-export interface ToneSpec {
-  wave: Wave;
-  /** Hz at the start, and at the end of the glide (the same for a steady note). */
-  from: number;
-  to?: number;
-  dur: number;
-  gain: number;
-  attack?: number;
-  delay?: number;
-  /** A lowpass over the tone, for a softer edge. */
-  cutoff?: number;
-}
-
-/** A noise burst through a filter whose centre sweeps — a whoosh, a splash, a crackle, a thud. */
-export interface NoiseSpec {
-  filter: BiquadFilterType;
-  from: number;
-  to?: number;
-  q?: number;
-  dur: number;
-  gain: number;
-  attack?: number;
-  delay?: number;
-}
-
-const MASTER = 0.8;
+const MASTER = 0.9;
 
 export class Synth {
-  private ctx: BaseAudioContext | null = null;
-  /** An offline context renders to a buffer and is always ready (`renderOffline`). */
-  private offline = false;
-  private master: GainNode | null = null;
+  private ctx: AudioContext | null = null;
   private buses: Partial<Record<Bus, GainNode>> = {};
-  private noiseBuffer: AudioBuffer | null = null;
+  private ducker: GainNode | null = null;
   private volumes: Record<Bus, number> = { sfx: 0.66, music: 0.33 };
-
-  /** A synthesiser on an offline context, for measuring a sound without playing it (the tests' ears). */
-  static offline(ctx: OfflineAudioContext, volumes: Partial<Record<Bus, number>> = {}): Synth {
-    const s = new Synth();
-    s.offline = true;
-    s.ctx = ctx;
-    s.master = ctx.createGain();
-    s.master.gain.value = MASTER;
-    s.master.connect(ctx.destination);
-    for (const bus of ['sfx', 'music'] as const) {
-      const g = ctx.createGain();
-      g.gain.value = volumes[bus] ?? 1;
-      g.connect(s.master);
-      s.buses[bus] = g;
-    }
-    return s;
-  }
+  private running: (() => void)[] = [];
+  /** §9.5.5 — told when a fanfare starts on the effects bus, so the music can stop for it (`music.ts`). */
+  onFanfare: ((at: number, seconds: number) => void) | null = null;
 
   /** Make (or wake) the context. Called from a gesture; harmless to call again. */
   unlock(): void {
     if (typeof window === 'undefined' || !('AudioContext' in window)) return;
     if (!this.ctx) {
-      const ctx = new AudioContext();
+      // Nothing here is played live against the player's hands: a larger output buffer is cheaper and never crackles.
+      const ctx = new AudioContext({ latencyHint: 'balanced' });
       this.ctx = ctx;
-      this.master = ctx.createGain();
-      this.master.gain.value = MASTER;
-      this.master.connect(ctx.destination);
+      // Two stages. A bus compressor (12:1 over -9 dBFS, 3 ms attack) holds a turn's pile of effects over the music
+      // together; what its attack lets through meets the clip guard, a soft knee that is a straight line below
+      // CLIP_KNEE and bends towards full scale above it, so the sum can never leave the converter's range.
+      const guard = ctx.createWaveShaper();
+      guard.curve = clipCurve();
+      guard.oversample = '2x';
+      guard.connect(ctx.destination);
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -9;
+      comp.knee.value = 6;
+      comp.ratio.value = 12;
+      comp.attack.value = 0.003;
+      comp.release.value = 0.2;
+      comp.connect(guard);
+      const master = ctx.createGain();
+      master.gain.value = MASTER;
+      master.connect(comp);
       for (const bus of ['sfx', 'music'] as const) {
         const g = ctx.createGain();
         g.gain.value = this.volumes[bus];
-        g.connect(this.master);
+        g.connect(master);
         this.buses[bus] = g;
       }
+      this.ducker = ctx.createGain();
+      this.ducker.connect(this.buses.music!);
+      ctx.addEventListener('statechange', () => {
+        if (ctx.state === 'running') for (const cb of this.running) cb();
+      });
+      // A hidden tab plays nothing: the context's clock stops, so every scheduled note waits where it was.
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) void ctx.suspend();
+        else void ctx.resume();
+      });
     }
-    if (this.ctx instanceof AudioContext && this.ctx.state === 'suspended') void this.ctx.resume();
+    if (this.ctx.state === 'suspended' && !document.hidden) void this.ctx.resume();
   }
 
-  /** The running context, or null while there is none (no gesture yet, or no Web Audio). */
-  ready(): BaseAudioContext | null {
-    return this.ctx && (this.offline || this.ctx.state === 'running') ? this.ctx : null;
+  /** The running context, or null while there is none (no gesture yet, a hidden tab, or no Web Audio). */
+  ready(): AudioContext | null {
+    return this.ctx && this.ctx.state === 'running' ? this.ctx : null;
+  }
+
+  /** Called whenever the context starts running (the first gesture, the tab shown again). */
+  onRunning(cb: () => void): void {
+    this.running.push(cb);
   }
 
   now(): number {
@@ -101,82 +89,60 @@ export class Synth {
     return this.volumes[bus];
   }
 
-  /** A gain node on a bus, for a voice that wants its own level (the music's layers). */
-  channel(bus: Bus, level = 1): GainNode | null {
-    const ctx = this.ready();
-    const out = this.buses[bus];
-    if (!ctx || !out) return null;
-    const g = ctx.createGain();
-    g.gain.value = level;
-    g.connect(out);
-    return g;
-  }
-
-  tone(spec: ToneSpec, at: number, out: AudioNode | Bus = 'sfx'): void {
-    const ctx = this.ready();
-    const dest = typeof out === 'string' ? this.buses[out] : out;
-    if (!ctx || !dest || spec.gain <= 0) return;
-    const t0 = at + (spec.delay ?? 0);
-    const osc = ctx.createOscillator();
-    osc.type = spec.wave;
-    osc.frequency.setValueAtTime(spec.from, t0);
-    if (spec.to && spec.to !== spec.from) osc.frequency.exponentialRampToValueAtTime(Math.max(1, spec.to), t0 + spec.dur);
-    const env = envelope(ctx, t0, spec.dur, spec.gain, spec.attack ?? 0.005);
-    let node: AudioNode = osc;
-    if (spec.cutoff) {
-      const lp = ctx.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.value = spec.cutoff;
-      node.connect(lp);
-      node = lp;
-    }
-    node.connect(env);
-    env.connect(dest);
-    osc.start(t0);
-    osc.stop(t0 + spec.dur + 0.05);
-  }
-
-  noise(spec: NoiseSpec, at: number, out: AudioNode | Bus = 'sfx'): void {
-    const ctx = this.ready();
-    const dest = typeof out === 'string' ? this.buses[out] : out;
-    if (!ctx || !dest || spec.gain <= 0) return;
-    const t0 = at + (spec.delay ?? 0);
-    const src = ctx.createBufferSource();
-    src.buffer = this.noiseOf(ctx);
-    const f = ctx.createBiquadFilter();
-    f.type = spec.filter;
-    f.Q.value = spec.q ?? 1;
-    f.frequency.setValueAtTime(spec.from, t0);
-    if (spec.to && spec.to !== spec.from) f.frequency.exponentialRampToValueAtTime(Math.max(1, spec.to), t0 + spec.dur);
-    const env = envelope(ctx, t0, spec.dur, spec.gain, spec.attack ?? 0.005);
-    src.connect(f);
-    f.connect(env);
-    env.connect(dest);
-    src.start(t0);
-    src.stop(t0 + spec.dur + 0.05);
-  }
-
-  private noiseOf(ctx: BaseAudioContext): AudioBuffer {
-    if (this.noiseBuffer) return this.noiseBuffer;
-    const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    // Presentation only: the sim's RNG rule (§10.7) is for the game's outcomes, and hiss decides none.
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    this.noiseBuffer = buf;
+  /** A rendering as a buffer the context can play. A mono rendering (`l === r`) is kept as one channel. */
+  bufferOf(pcm: Pcm): AudioBuffer | null {
+    if (!this.ctx) return null;
+    const mono = pcm.l === pcm.r;
+    const buf = this.ctx.createBuffer(mono ? 1 : 2, pcm.l.length, pcm.rate);
+    buf.getChannelData(0).set(pcm.l);
+    if (!mono) buf.getChannelData(1).set(pcm.r);
     return buf;
+  }
+
+  /** Where a bus takes its sound: the music's goes through the duck. */
+  input(bus: Bus): AudioNode | null {
+    return (bus === 'music' ? this.ducker : this.buses.sfx) ?? null;
+  }
+
+  /** Play a buffer on a bus at a time on the context's clock. */
+  play(buffer: AudioBuffer, bus: Bus, at: number): void {
+    const ctx = this.ready();
+    const out = this.input(bus);
+    if (!ctx || !out) return;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(out);
+    src.start(Math.max(at, ctx.currentTime));
+  }
+
+  /** §9.5.5 — turn the music down to `depth` for `seconds` from `at`, and bring it back. */
+  duck(at: number, seconds: number, depth = 0.3): void {
+    const ctx = this.ready();
+    const g = this.ducker?.gain;
+    if (!ctx || !g) return;
+    const t = Math.max(at, ctx.currentTime);
+    g.cancelScheduledValues(t);
+    g.setTargetAtTime(depth, t, 0.02);
+    g.setTargetAtTime(1, t + seconds, 0.12);
   }
 }
 
-/** An attack-then-decay envelope: up in `attack`, down to silence by the end. */
-function envelope(ctx: BaseAudioContext, t0: number, dur: number, peak: number, attack: number): GainNode {
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, t0);
-  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), t0 + Math.min(attack, dur * 0.5));
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  return g;
+/** Where the clip guard starts to bend, 0-1. */
+export const CLIP_KNEE = 0.8;
+
+/** The clip guard's response: the input itself up to the knee, then a curve that closes on full scale and never passes it. Pure. */
+export function clipAt(x: number): number {
+  const a = Math.abs(x);
+  if (a <= CLIP_KNEE) return x;
+  return Math.sign(x) * (CLIP_KNEE + (1 - CLIP_KNEE) * Math.tanh((a - CLIP_KNEE) / (1 - CLIP_KNEE)));
+}
+
+function clipCurve(): Float32Array<ArrayBuffer> {
+  // A WaveShaper's curve spans an input of -1 to 1, and an input beyond that takes the curve's last value: the ceiling.
+  const n = 2049;
+  const curve = new Float32Array(n);
+  for (let i = 0; i < n; i++) curve[i] = clipAt((i / (n - 1)) * 2 - 1);
+  return curve;
 }
 
 export const synth = new Synth();
-
-/** A MIDI note number as Hz (A4 = 69 = 440 Hz). */
-export const hz = (midi: number): number => 440 * Math.pow(2, (midi - 69) / 12);

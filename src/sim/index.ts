@@ -50,6 +50,7 @@ export { GYM_FIELD, laneField, fieldsFor, applyFields } from './run/battlefields
 export { FIELD_CATEGORY, battlefields, fieldsSuppressed, isGrounded, type FieldId, type FieldState } from './combat/fields';
 export { SHINY, shinyChance, applyShiny } from './run/shiny';
 export { rollWild, wildChances, wildChancesFor, wildFor, teamHasOwnTypeHit, type WildRoll } from './run/wild';
+export { routeHabitats, habitatIdOf, HABITAT_LEAN, type HabitatEntry, type HabitatSection } from './run/habitats';
 export { forgottenMoves, kitPaths, learnInto, MOVE_CAP, reminderOptions } from './combat/kit';
 export { branchPayload, type BranchPayload } from './run/xp';
 export { listPrice, type PricedKind } from './run/economy';
@@ -75,12 +76,17 @@ export {
 // Pokédex, the Bond, the Journal, the Badge Case, the League Ladder and the Hall of Fame.
 // Pure state and a pure fold; persistence is the app layer's (accountStore).
 export {
-  ACCOUNT_VERSION, MAX_LEVEL, REWARD_TRACK, TOKENS, tokensForMoney, SHELVES, SHELF_ORDER, HUB_UPGRADE_LABEL, KIT, XP, AIDES, REPORT_LINES, STARS, HALL_SIZE, PIN_LIMIT,
+  ACCOUNT_VERSION, ACCOUNT_KEPT_FROM, MAX_LEVEL, REWARD_TRACK, TOKENS, tokensForMoney, SHELVES, SHELF_ORDER, HUB_UPGRADE_LABEL, KIT, XP, AIDES, REPORT_LINES, STARS, HALL_SIZE, PIN_LIMIT,
   emptyAccount, emptyDelta, mergeDelta, xpForLevel, levelFor, levelProgress, trackTokensBetween, applyAccountEvent, applyAccountEvents,
   upgradeAccount, hasHubUpgrade, isKitPerk, kitSlots, packKit, takeParcel, pinEntry, medalCount, lineOf, speciesOwned, starsOf, speciesMet,
   type AccountState, type AccountDelta, type AccountContext, type TrackReward, type ShelfId, type HubUpgrade, type HubUpgradeRow, type LifetimeStats,
   type ReportLine, type AideRow, type HallEntry, type StarId,
 } from './meta/account';
+// §8.4 — the Road to the Plateau: where the Hub is, what stands in it, what is new.
+export {
+  HUB_PLACES, HUB_FEATURES, HUB_DOORS, hubState, hubPlace, hubPlaceRow, hubNeedMet, hubEarned, hubPlaceKey, hubFeatureKey, markHubSeen,
+  type HubPlace, type HubFeature, type HubNeed, type HubState, type HubFeatureState, type HubPlaceRow, type HubFeatureRow,
+} from './meta/lobby';
 export { RANKS, MAX_RANK, rankRow, rankFor, rankProgress, xpForRank, kitSlotsFor, parcelChoicesFor, KIT_SLOT_RANKS, ARRIVAL_RANK, type RankRow } from './meta/rank';
 // §8.6 — the vault and Oak's Parcels.
 export {

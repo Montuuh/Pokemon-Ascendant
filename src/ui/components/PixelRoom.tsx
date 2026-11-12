@@ -32,6 +32,8 @@ export interface RoomSpot<Id extends string> {
   /** The bubble on hover and focus. */
   tip: ReactNode;
   testId?: string;
+  /** §8.4.6 — it has just arrived: its plate pulses once. */
+  fresh?: boolean;
   /** Where the plate hangs: under its piece, centred; `raised` lifts it into the bottom of its piece; `start` hangs it from the piece's left edge. */
   plate?: 'raised' | 'raised-right' | 'start';
 }
@@ -45,6 +47,14 @@ export interface RoomSprite {
   /** Somebody with a name: the bubble on hover and focus, and the name a screen reader says. A sprite without one is scenery. */
   tip?: ReactNode;
   label?: string;
+  testId?: string;
+  /** Small pictures laid on a named sprite, in that sprite's own pixels (`cell`: its size): the Badges in the Hub's Badge Case. */
+  over?: readonly { src: string; at: Box; cell: readonly [number, number]; testId?: string }[];
+  /**
+   * §8.4.6 — `locked`: a silhouette of something not earned yet. `fresh`: it has just arrived, and steps in once.
+   * `lifting`: the silhouette of something just earned, fading off it once.
+   */
+  state?: 'locked' | 'fresh' | 'lifting';
 }
 
 /** The way out: a doormat, the stairs down. It lights like a spot, never gold: it is never chosen. */
@@ -65,7 +75,7 @@ const PLATE = { raised: styles.plateRaised, 'raised-right': styles.plateRaisedRi
 /** The frame's border, outside the map's pixels. */
 const FRAME = 3;
 
-export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], exit, chosen = null, onChoose, label, testId, maxScale = 4, frame = 'box', scaleStep }: {
+export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], exit, chosen = null, onChoose, label, testId, maxScale = 4, frame = 'box', scaleStep, devicePixels = false, children }: {
   art: string;
   w: number;
   h: number;
@@ -79,12 +89,16 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
   maxScale?: number;
   /** D9 — constrain a compact service room to a whole or half-step grid, including below 2×. */
   scaleStep?: 0.5 | 1;
+  /** D9 — keep a step only where it lands on whole device pixels (×2.5 on a 1× screen draws 2- and 3-pixel pixels); else the whole scale under it. */
+  devicePixels?: boolean;
   /**
    * `box`: a bordered rectangle round the map (the shops). `silhouette`: no box — an ink outline drawn round the
    * map's own shape, for a room that is not a rectangle (the Hub's L-shaped lobby), so the frame never draws a shape
    * the games did not.
    */
   frame?: 'box' | 'silhouette';
+  /** Something the screen lays over the room, in the room's own frame (the Hub's arrival box). */
+  children?: ReactNode;
 }) {
   const box = useRef<HTMLElement>(null);
   const spotButtons = useRef(new Map<Id, HTMLButtonElement>());
@@ -99,15 +113,17 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
     if (!el) return;
     const fit = () => {
       const fitIn = Math.min((el.clientWidth - FRAME * 2) / w, (el.clientHeight - FRAME * 2) / h);
-      setScale(scaleStep
+      const stepped = scaleStep
         ? Math.max(1, Math.min(maxScale, Math.floor(fitIn / scaleStep) * scaleStep))
-        : fitIn >= 2 ? Math.min(maxScale, Math.floor(fitIn)) : Math.max(1, fitIn));
+        : fitIn >= 2 ? Math.min(maxScale, Math.floor(fitIn)) : Math.max(1, fitIn);
+      const dpr = window.devicePixelRatio || 1;
+      setScale(devicePixels && !Number.isInteger(stepped * dpr) ? Math.max(1, Math.floor(stepped)) : stepped);
     };
     fit();
     const watch = new ResizeObserver(fit);
     watch.observe(el);
     return () => watch.disconnect();
-  }, [w, h, maxScale, scaleStep]);
+  }, [w, h, maxScale, scaleStep, devicePixels]);
 
   const place = ([x, y, bw, bh]: Box): CSSProperties => ({
     left: `${(x / w) * 100}%`,
@@ -128,7 +144,7 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
       <div className={`${styles.floor} ${frame === 'silhouette' ? styles.silhouette : ''}`} style={{ width: w * scale + FRAME * 2, height: h * scale + FRAME * 2 }}>
         <img className={styles.art} src={art} alt="" draggable={false} />
         {sprites.map((s, i) => !s.tip && (
-          <img key={i} className={styles.sprite} style={place(s.at)} src={s.src} alt="" draggable={false} onLoad={s.onLoad} />
+          <img key={s.testId ?? i} className={styles.sprite} style={place(s.at)} src={s.src} alt="" draggable={false} onLoad={s.onLoad} data-testid={s.testId} data-state={s.state} />
         ))}
 
         {/* Each spot's pieces as one shape, outlined together while it is chosen or the pointer is on it. */}
@@ -174,10 +190,14 @@ export function PixelRoom<Id extends string>({ art, w, h, spots, sprites = [], e
         {exit && <ExitSpot<Id> exit={exit} style={place(exit.box)} onHover={setHovered} onFocus={setFocused} />}
         {/* The people with names come after the doors, so Tab reaches the doors first. */}
         {sprites.map((s, i) => s.tip && (
-          <Tipped key={i} tip={s.tip} className={styles.person} style={place(s.at)} role="img" aria-label={s.label}>
+          <Tipped key={s.testId ?? i} tip={s.tip} className={styles.person} style={place(s.at)} role="img" aria-label={s.label} data-testid={s.testId} data-state={s.state}>
             <img className={styles.personArt} src={s.src} alt="" draggable={false} onLoad={s.onLoad} />
+            {s.over?.map((o, k) => (
+              <img key={o.testId ?? k} className={styles.over} src={o.src} alt="" draggable={false} data-testid={o.testId} style={{ left: `${(o.at[0] / o.cell[0]) * 100}%`, top: `${(o.at[1] / o.cell[1]) * 100}%`, width: `${(o.at[2] / o.cell[0]) * 100}%`, height: `${(o.at[3] / o.cell[1]) * 100}%` }} />
+            ))}
           </Tipped>
         ))}
+        {children}
       </div>
     </section>
   );
@@ -202,6 +222,7 @@ function Spot<Id extends string>({ spot, first, buttonRef, style, chosen, onChoo
       tabIndex={first ? undefined : -1}
       aria-hidden={first ? undefined : true}
       data-testid={first ? spot.testId : undefined}
+      data-fresh={first && spot.fresh ? true : undefined}
       {...tip}
       {...lightOn(tip, spot.id, onHover, onFocus)}
     >

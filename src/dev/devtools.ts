@@ -1,5 +1,6 @@
-import { music, renderBar, type TrackId } from '@/ui/audio/music';
-import { recentSfx, renderSfx, SFX, type SfxId } from '@/ui/audio/sfx';
+import { wavOf } from '@/ui/audio/chip';
+import { measureTrack, music, renderTrack, TRACK_IDS, type TrackId } from '@/ui/audio/music';
+import { playSfx, recentSfx, renderSfx, sampleOf, sfxIds, type SfxId } from '@/ui/audio/sfx';
 import { useAccountStore } from '@/app/accountStore';
 import { useAppStore, type Screen } from '@/app/store';
 import { useCombatStore } from '@/app/combatStore';
@@ -43,10 +44,17 @@ export interface AscendantDevTools {
   audio: {
     recent: () => readonly string[];
     track: () => string | null;
-    /** §9.5.5 — every sound id the game has, and one rendered offline and measured. */
+    /** Whether the track is sounding (a context, a rendering, a source), and where in its buffer. */
+    playing: () => { track: string | null; sounding: boolean; position: number; kept: string[] };
+    /** §9.5.5 — every sound id and every track the game has; one of them rendered and measured; one as a WAV file. */
     ids: () => string[];
+    tracks: () => string[];
     render: (id: string) => Promise<{ peak: number; rms: number }>;
-    renderBar: (track: string, tension?: boolean) => Promise<{ peak: number; rms: number }>;
+    renderTrack: (track: string) => { peak: number; rms: number; seconds: number; introSeconds: number; loopSeconds: number; tensionRms: number };
+    wav: (id: string) => Uint8Array;
+    /** Play an effect or a fanfare by id; put a track on as a scene (null takes it off again). */
+    play: (id: string) => void;
+    scene: (track: string | null) => void;
   };
   start: (scenarioId: string, seed?: number) => void;
   dispatch: (action: sim.CombatAction) => boolean;
@@ -79,6 +87,13 @@ export interface AscendantDevTools {
     grantHub: (...ids: sim.HubUpgrade[]) => void;
     /** §8.3.3 — put the account at a Trainer Rank (its purses settle on the fold). */
     rank: (rank: number) => void;
+    /**
+     * §8.4 — put the career at a place on the Road to the Plateau: the least account that stands there (`hall`: a
+     * Champion's, with one run in the Hall of Fame). Everything it holds counts as already seen, so the room opens at
+     * rest; `{ fresh: true }` leaves it unseen, to watch the arrival. It only ever raises the account: one already
+     * further along stays where it is, so `meta.reset()` first to go back (to the bedroom, say).
+     */
+    hub: (place: sim.HubPlace | 'hall', opts?: { fresh?: boolean }) => void;
     /** §8.6.2 — hand over Oak's Parcels to open. */
     parcels: (n: number) => void;
     /** §8.6.1 — open the whole vault, so a run draws the full catalogue as a fixture does. */
@@ -183,6 +198,22 @@ export function installDevTools(): void {
         useAccountStore.setState({ account: { ...useAccountStore.getState().account, xp: sim.xpForRank(rank) } });
         useAccountStore.getState().record([{ t: 'relic-acquired', relicId: 'dev', heldCount: 0 }]);
       },
+      hub: (place, opts) => {
+        const account = structuredClone(useAccountStore.getState().account);
+        const row = sim.HUB_PLACES.find((p) => p.id === (place === 'hall' ? 'plateau' : place))!;
+        const need = row.needs[0]!;
+        if (need.kind === 'rank') account.xp = Math.max(account.xp, sim.xpForRank(need.rank));
+        if (need.kind === 'badges') {
+          account.xp = Math.max(account.xp, sim.xpForRank(sim.ARRIVAL_RANK.center));
+          account.badges = [...new Set([...account.badges, ...sim.ALL_GYMS.map((g) => g.badgeId)])].slice(0, Math.max(need.count, account.badges.length));
+        }
+        if (place === 'hall') {
+          account.stats.wins = Math.max(1, account.stats.wins);
+          if (!account.hall.length) account.hall = [{ run: 12, rung: 0, seed: 7, starter: 'charmander', team: [{ speciesId: 'charizard', level: 52 }, { speciesId: 'pidgeot', level: 50, shiny: true }, { speciesId: 'gyarados', level: 49 }], badges: account.badges.slice(0, 3), relics: [] }];
+        }
+        useAccountStore.setState({ account: opts?.fresh ? account : sim.markHubSeen(account) });
+        useAccountStore.getState().record([]);
+      },
       parcels: (n) => {
         const account = useAccountStore.getState().account;
         useAccountStore.setState({ account: { ...account, parcels: account.parcels + n } });
@@ -211,9 +242,14 @@ export function installDevTools(): void {
     audio: {
       recent: () => recentSfx(),
       track: () => music.track,
-      ids: () => [...Object.keys(SFX), ...sim.POKEMON_TYPES.map((t) => `card-${t}`), ...[...sim.PRIMARY_STATUSES, 'confusion'].map((s) => `status-${s}`)],
+      playing: () => ({ track: music.track, sounding: music.sounding, position: music.position, kept: music.kept }),
+      ids: () => sfxIds(sim.POKEMON_TYPES, [...sim.PRIMARY_STATUSES, 'confusion']),
+      tracks: () => [...TRACK_IDS],
       render: (id) => renderSfx(id as SfxId),
-      renderBar: (track, tension) => renderBar(track as TrackId, tension),
+      renderTrack: (track) => measureTrack(track as TrackId),
+      play: (id) => playSfx(id as SfxId),
+      scene: (track) => music.setScene(track as TrackId | null),
+      wav: (id) => wavOf((TRACK_IDS as readonly string[]).includes(id) ? renderTrack(id as TrackId).pcm : sampleOf(id as SfxId)),
     },
     start: (id, seed) => combat().start(id, seed),
     dispatch: (action) => combat().dispatch(action),

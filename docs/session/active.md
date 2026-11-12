@@ -1,6 +1,7 @@
 # Session State — Pokémon Ascendant
 
-**Date:** 2026-11-12 · **Version:** v0.9.119 (*Clear skies*).
+**Date:** 2026-11-12 · **Version:** v0.9.120 (*Road to the Plateau*).
+**Shipped 2026-11-12 (v0.9.120):** Hub as a road of five places (§8.4, account v5 keeps v4), title summit (§9.13), chip audio with 26 tracks in a Worker (§9.5), Habitats column (§2.6.1), GPU notice (§9.6.2); each part Opus-reviewed. Open: Plateau trigger (3 Badges or Elite) unconfirmed by the user; audio unheard; 13 older e2e failures (Training result, Gym Badge ground, targeting, rewards). **Waiting on the user's look and ear.**
 **Shipped 2026-11-12 (v0.9.118–119):** Defog clears a move-set field's timer; a fainted result card dims only its sprite (D5); §3.1.2 lists the League and the Ring as un-runnable.
 **Shipped 2026-11-12 (v0.9.117):** the last text package (results, run end, Hub, menus); the text pass v0.9.111–117 has covered every surface. **Waiting on the user's look.**
 **Shipped 2026-11-12 (v0.9.116):** team, bag and item texts; Speed, One Path, Gym pick, Defog lines fixed. **Waiting on the user's look.**

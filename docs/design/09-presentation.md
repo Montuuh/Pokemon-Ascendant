@@ -563,63 +563,125 @@ while a fight or its result is up (v0.9.6).
 
 # §9.5 Audio
 
-> ✅ **v0.9.23** — built 2026-10-16 (the user's note 12, pulled forward from v1.1). Code: `src/ui/audio/` — `synth.ts`
-> (the Web Audio synthesiser: a tone and a filtered noise, two buses under a master), `sfx.ts` (the recipes and
-> `sfxForEvent`), `music.ts` (the tracks and `notesForBar`), `director.ts` (`trackFor`, `inTension`), `useAudio.ts`
-> (the hooks); the volumes in `settingsStore`; `e2e/audio` renders every sound offline and measures it.
+> ✅ **v0.9.23**, rebuilt 2026-11-12 (the user's note: the sound should be far closer to the series). Code:
+> `src/ui/audio/` — `chip.ts` (the software sound chip: notes in, samples out), `instruments.ts` (its voices and the drum
+> kit), `score.ts` (the tracker: a song's notation and `expand`), `songs.ts` (the songbook, `TRACKS` and `JINGLES`),
+> `render.ts` and `render.worker.ts` (a song as samples, off the main thread), `sfx.ts` (the effect recipes,
+> `sfxForEvent`, `playSfx`), `music.ts` (the player and its cache), `director.ts` (`trackFor`, `battleTrack`,
+> `victoryTrack`, `inTension`), `synth.ts` (the Web Audio desk: buses, compressor, clip guard, duck), `useAudio.ts` (the
+> hooks, `buttonSfx`); the volumes in `settingsStore`. `ui/audio/audio.test` renders every sound and every track and measures it.
 
 ## §9.5.1 Direction
-**Every sound is made as it plays** — a Web Audio synthesiser with two voices, a tone (an oscillator with a pitch glide
-and an envelope) and a filtered noise burst, and no recorded files at all: nothing to license, nothing of Nintendo's,
-and the whole of it a few kilobytes. *Why (the fan-game study's cheap path, 2026-10-14):* a game that plays in a
-browser tab and ships as a portfolio piece gains more from a coherent, small, chip-flavoured voice than from stems it
-could not author. Themed per Region; combat follows the fight's tension; every player action has feedback, every
-status has a motif, and the bosses and the Champion get their own tracks. Sound starts on the first click or key press
-(the browser's rule), and is silent until then.
+**The sound of the handheld series, made by the game itself** — a sound chip written in software, modelled on the two
+machines the series grew up on, and a songbook and an effect set composed for it. No recorded files, nothing of
+Nintendo's: no official recording is shipped and **no official melody is transcribed** — every tune is the game's own,
+written in the idiom. *Why (the user's note, 2026-11-12, and the orchestrator's call on it):* the first build (two
+generic voices, four-bar loops) read as "a synthesiser", not as the series; what makes the series' sound is its
+*instrument* and its *forms*, and both can be built without taking anything.
+
+**The chip** (`chip.ts`, `instruments.ts`): two **pulse** channels with the four duty cycles (12.5 / 25 / 50 / 75 %),
+band-limited so high notes do not buzz, with a lead whose duty opens over its first frames and whose vibrato arrives
+late; a **wave** channel — the 4-bit, 32-step triangle that is the series' bass; a **noise** channel — a 15-bit or 7-bit
+shift register whose clock is the pitch — played as a drum kit (kick, snare, hats, crash, toms); and the successor
+handheld's sampled feel as small wavetables: strings with a chorus, a trumpet with a scoop, a flute, a bell, an electric
+piano, an organ, timpani. Envelopes, pitch slides, chord arpeggios and a short cross-fed echo complete it. It renders
+notes to samples in plain arithmetic at 32 kHz — deterministic (nothing random: the same notes are always the same
+samples), so a unit test measures exactly what the speaker plays. A minute of music renders in 0.1–0.35 s, **in a
+worker** that hands the samples back as transferred buffers, so a change of music never holds a frame (the main thread
+renders only where there is no worker); once rendered a track costs one buffer source to play.
+
+Sound starts on the first click or key press (the browser's rule), is silent until then, and stops while the tab is
+hidden.
 
 ## §9.5.2 Combat stems
 
 | Stem | Trigger | Built as |
 |---|---|---|
-| `combat_base` | Always playing | The fight's track: **combat**, or **boss** for a Gym, an Elite, a League door or a Legendary's arena, or **champion** |
-| `combat_low_hp` | Team total HP below 30 % | The **tension layer**: the bass doubled an octave up, the hats doubled, the kick pushing on the off-beats |
-| `combat_setup` | The first two turns of a boss fight | — (the boss track carries it) |
+| `combat_base` | Always playing | The fight's track, by what is across the field (`battleTrack`): **wild**, **trainer**, **elite** (an Elite or an Elite Wild), **Gym**, **League** (a League door), **Champion**, **legendary** (an arena) |
+| `combat_low_hp` | Team total HP below 30 % | The **tension stem**: a second rendering on the track's own clock — double-time hats, the kick pushing on the off-beats — faded in over 250 ms; a two-beep alarm as it comes in |
+| `combat_setup` | The first two turns of a boss fight | — (the track's intro riff carries it) |
 | `combat_phase` | Boss Phase 2 or 3 | A **sting** on the phase change: rising, then a hit and a low chord |
-| `combat_victory` / `combat_defeat` | Outcome stings | Two short arpeggios, up and down |
+| `combat_victory` / `combat_defeat` | The outcome | **The music's, as in the series:** the fight's track gives way to a victory fanfare-and-loop from the last faint through the result screen (**wild** — a catch too — **trainer**, **Gym**), or to the defeat's fall, played once |
 
-A new track cross-fades over the old one in 250 ms; the tension layer is read at every bar.
+A new track cross-fades over the old one in 300 ms. A fight's track opens with a riff played once, then loops.
 
 ## §9.5.3 SFX
-Type-coded card whooshes — a swish under each of the fifteen types' own colour (Fire crackles, Water splashes,
-Electric zaps, Ground rumbles) · a soft chime for consumables · a confident step plus chord for a manual swap ·
-directional whooshes for Step-Forward and Step-Backward · a soft fall for a faint · a status sting each (Burn, Poison,
-Paralysis, Sleep, Freeze, Confusion) · a crystalline ping for a crit · a heavy layered impact for super-effective · a
-muted thud for resisted · a rising or falling triplet for a stat stage · paper shuffle for draws · a solid bell for End
-Turn · rising tension then a hit for a boss's new phase · **the catch, each sound on its frame of the ball's animation**
-(`catchSounds`, the user's report of 2026-10-19 that it drifted): the throw as the ball leaves the hand on screen, the
-beam as it opens on the Pokémon, a tap and a smaller one as it lands and bounces, each wobble as the ball rocks (after
-the still moment that opens its cycle), and the click or the burst as the ball shows it — started by the ball itself, not
-counted from the fight's events · a level-up run · the evolution's rise as the sprite whitens and a fanfare as the new
-Pokémon stands in its colours · a soft tick for every button. A turn's sounds play a beat apart, in the order they
-happened.
+In the chip's vocabulary — a pulse with a duty and a sweep, a wavetable tone, a noise burst with its clock sliding.
+Type-coded card whooshes — a swish under each of the seventeen types' own colour (Fire crackles, Water splashes,
+Electric zaps, Ground rumbles) · a soft chime for consumables · the whoosh and the pop of the ball for a manual swap ·
+directional whooshes for Step-Forward and Step-Backward · a falling cry for a faint · a status sting each (Burn, Poison,
+Paralysis, Sleep, Freeze, Confusion) · a ping for a crit · **three hits, three timbres**: a noise burst whose clock falls
+over a thump, the same twice as hard with a rising zap for super-effective, the short register's dull knock for resisted
+· an eight-step ladder up or down for a stat stage · two ticks for a draw and two bright notes as the Action Points come
+back · a bell for End Turn · rising tension then a hit for a boss's new phase · **the catch, each sound on its frame of
+the ball's animation** (`catchSounds`, the user's report of 2026-10-19 that it drifted): the throw as the ball leaves
+the hand on screen, the beam as it opens on the Pokémon, a tap and a smaller one as it lands and bounces, each wobble as
+the ball rocks (after the still moment that opens its cycle), and the click or the burst as the ball shows it — started
+by the ball itself, not counted from the fight's events · the XP bar's rising whistle and a coin for the prize money ·
+the evolution's rise as the sprite whitens · a blip as each press moves the fight's result on. A turn's sounds play a
+beat apart, in the order they happened.
+
+**Every button speaks, decided in one place** (`buttonSfx`, on the app's one click listener — no screen wires its
+own): a button that goes back (its test id says back, close, cancel, stay, later, decline) plays a falling pair; one
+that goes on (confirm, continue, claim, enter, start, take, next, depart) a rising pair; a Mart slot bought the coins and
+the till; Save and quit the save's three notes; every other button a tick. A button can name its own with `data-sfx`
+(`select`, `back`, `purchase`, `save`, or `none`); a disabled one is silent.
+
+**The fanfares** are short songs (`JINGLES`) played as effects: a level, an item for the bag, a Badge, the evolved
+Pokémon, the Center's machine, the Hub reaching a new place (`hub-arrive`) and a Hub door opening (`hub-unlock`). The
+music makes room for them (§9.5.5).
 
 ## §9.5.4 Music
-Each track is a key, a tempo, a four-bar progression and the patterns its voices play — a lead, a bass, a held pad and
-a little kick, snare and hat — composed in code (`TRACKS`). Region 1 a light flute-like lead over strings, ~110 BPM
-major · Region 2 brass-like and tense, ~115 BPM minor · Region 3 percussion and sub-bass, ~125 BPM modal (dorian) minor
-· Cities and the Hub a warm looped jingle · Victory Road sparse, ~85 BPM · the League a steady minor march, ~130 BPM ·
-a fight ~140 BPM minor · a boss ~150 BPM phrygian · the Champion ~156 BPM dorian · the title a hopeful march · **the
-evolution** (the user's note, 2026-10-19), a scene's own loop over the screen's (`music.setScene`): a hushed pulse of
-eighths under a circling figure, the chord climbing a step a bar so it never settles, ~144 BPM — ours, as every track
-is — hushed for the fanfare, the screen's music back when the scene ends. *Divergence
-(2026-10-16):* one League track, not one per member, and the Champion's is one composition with the tension layer
-rather than three phases; a track per member is for the music pass after v1.0.
+A song (`score.ts`) is a tempo, a key, a set of channels and named sections written in a small music macro language,
+with an **intro played once and a loop played for ever**; a loop is two eight-bar ideas — A, A again with more of the
+band, B, A — so a track runs half a minute to over a minute before it comes round. The idiom is the series': a pulse
+lead answered by its own echo on the second channel, sixteenth-note arpeggios, the triangle bass walking between root
+and fifth, the noise channel as the kit, strings and brass from the wavetables. **A tune is a tune, not a broken
+chord:** A is a question and its answer on one rhythmic cell, moving by step between the chord's notes; B contrasts and
+closes on the tonic in its eighth bar, the loop's one full cadence; the lead sits an octave over the arpeggio and the
+pad (all three are unit tests; the evolution's circling figure is the one deliberate exception). `expand` turns a song into timed notes
+(pure; the form of every song is a unit test), the chip renders them, and the buffer wraps a second and a half *into*
+the loop so the last notes' tails ring over the first exactly as they do on every later pass — the seam is the same
+samples on both sides.
+
+| Track | Where | Key · tempo |
+|---|---|---|
+| title | The title and its menus | D major · 132 — a fanfare, then a march |
+| hub | The Hub and the starter choice | F major · 116 |
+| route-1 / route-2 / route-3 | The three Regions' routes | G major · 128 / E minor · 134 / D dorian · 142 |
+| city | A City's streets, the Dojo, the Ring, the Safari | F major · 108 |
+| center | The Pokémon Center and the field nurse | D major · 104 |
+| mart | The Mart and the travelling merchant | E♭ major · 132 |
+| game-corner | The Game Corner | F major · 152 |
+| mystery | A Mystery Event, the roadside trader | A minor · 92 |
+| hideout | The Black Market | E minor · 120 |
+| victory-road / league | Victory Road and the Summit; the League's lobby | D minor · 100 / C minor · 116 |
+| battle-wild / -trainer / -elite / -gym / -league / -champion / -legendary | §9.5.2 | G minor · 172 / E minor · 166 / F♯ minor · 178 / D minor · 168 / B minor · 176 / C minor · 186 / G minor · 150 |
+| victory-wild / -trainer / -gym | §9.5.2 | D major · 140 / F major · 144 / D major · 132 |
+| hall-of-fame | The run won | D major · 92 |
+| defeat | A fight or the run lost — played once | A minor · 76 |
+| evolution | The evolution scene | D major · 144 |
+
+The director (`trackFor`) picks the track from the screen, where the run stands and what the fight is; the same track
+across two screens is never restarted. A place's track **comes back where it left off** after a fight; a fight's and a
+fanfare's always start from the top. Four renderings are kept, the least recently used dropped first and never the one
+sounding, the one wanted or the place a fight returns to; the director names what is likely next (a fight's fanfare, a
+route's fights) so it is rendered before it is needed. **The evolution** (the user's note, 2026-10-19) is a scene's own loop over the
+screen's (`music.setScene`): a hushed pulse of eighths under a circling figure, the chord climbing a step a bar so it
+never settles — hushed for the fanfare, the screen's music back when the scene ends. *Divergence:* one League track and
+one League fight track, not one per member, and the Champion's is one composition with the tension stem rather than
+three phases; a track per member is for the music pass after v1.0.
 
 ## §9.5.5 Mix
 Two volumes the player sets — **Music** and **Effects**, each Off / Low / Medium / High (defaults Low and Medium) — over
-a master at 0.8: the music a bed under the effects. Every recipe and every track's bar is **rendered offline and
-measured** (`e2e/audio`): audible (an effect's peak over 1 %, a bar's RMS over 0.5 %) and never clipping (peak ≤ 1).
-The LUFS targets wait for a real mix pass; the synthesiser's levels are the authoring-time normalisation for now.
+a master at 0.9 with two stages on it: a **bus compressor** (12:1 over −9 dBFS, 3 ms attack) that holds a turn's pile
+of effects over the music together, and a **clip guard** after it (a soft knee, a straight line below 0.8 and never
+past full scale), so the sum cannot clip. Every rendering passes a DC blocker, so no track carries a standing offset. **Every track is rendered to one loudness** — an RMS of −16 dBFS over what loops, no sample
+past −1 dBFS — and every fanfare to the same, so no track is louder than the one before it; each effect peaks at its own
+set level. **The music makes room for a fanfare:** it stops for a long one (an item, a Badge, the evolved Pokémon, the
+Center's machine) and starts again where it stopped, and ducks under a short one (a level). All of it is measured by
+`ui/audio/audio.test` from the samples themselves: audible, below clipping, at the songbook's level, the loop seam
+exact. The LUFS targets wait for a real mix pass by ear.
 
 ---
 
@@ -652,6 +714,31 @@ photosensitivity-safe frequencies and disabled entirely under reduced motion.
 A tutorial mode with longer telegraphs and slower pacing; an optional hint overlay suggesting a strong play,
 off by default and with no penalty for using it; and a Pokédex study mode that previews an enemy's intent pool
 against your current team's type matchups.
+
+## §9.6.2 Graphics acceleration notice
+
+A browser drawing without the graphics card stutters, and most players do not know the setting exists, so the
+game says so **once**: a dismissible, non-modal card in the bottom-right corner of the **main menu and the Hub**
+(`GpuNotice`, mounted in `App`; on the map and in fights it would sit over controls) with one line on what is
+wrong and the path to the switch for the player's browser (Chrome, Edge, Firefox by user agent; any other gets a
+generic line). It offers **Reduce motion** (the existing §9.6 override, never applied by itself) and **Don't show
+again** (`ascendant.gpu-notice-dismissed`); the ✕ or Escape closes it for the visit. It uses no blur, filter or
+animation, because it shows on the machines that cannot afford them. Settings carries a **Graphics** row with
+the same state, always ("Couldn't check" when the browser gave no answer).
+
+Detection (`src/app/gpu.ts`, once, in an idle moment after first paint): a WebGL context created with
+`failIfMajorPerformanceCaveat: true` that the browser refuses while an ordinary one works, or whose unmasked
+renderer names a software rasteriser (SwiftShader, llvmpipe, Basic Render Driver, WARP), is **software**. **No
+WebGL context at all** is also **software** on a desktop Chrome, Edge or Firefox: Chromium removed its automatic
+SwiftShader WebGL fallback (warned in M130, gone on desktop in 137-139), so acceleration off now means no context.
+WebGPU is a second signal where it exists: a fallback adapter, or none beside a WebGL that could not vouch for the
+card, is software; it only ever raises the verdict. **Unknown** (shown as nothing) is a browser that threw, or one
+the code does not know (Safari, Opera, a phone). A false alarm tells a healthy machine to change a setting; a
+missed one costs a hint. An automated browser (`navigator.webdriver`) is not probed, since it renders in software
+by design. A dev build forces a state with `?gpu=software|hardware|unknown`.
+
+**Known limit.** Firefox's switch mostly governs compositing; WebGL can stay on the GPU with it off, so that
+Firefox reads as hardware and gets no notice.
 
 ---
 
@@ -943,30 +1030,53 @@ flowchart TD
 
 # §9.13 The title screen
 
-The front door and the run's first steps, redrawn in v0.9.17 on the user's note 8 ("mejora el arte del main menu y
-las primeras pantallas — un fondo animado, que sea de lucha pokemon, usando un arte parecido al del juego"). The
-warm-light front end it replaces (a generated town vista and a still mascot) read as a different game from the
-fights; the title is now made of the fights' own pictures.
+The front door and the run's first steps. It is **a summit at dawn, and a party of three on it** — the game's name and
+its premise in one picture. It replaces v0.9.17's battle that played by itself behind the menu (the user, 2026-11-12:
+"la animación cutre de combate de fondo"): a fight with nobody playing it is a fight with its timing, its HP plates and
+its choices faked, and next to the real ones it read as a cheap copy; and before that a generated town vista with a
+still mascot, which read as a different game. A title screen in the series is a painted place with one thing alive in
+it, so that is what this is.
 
-## §9.13.1 The battle behind the title
+## §9.13.1 The summit behind the title
 
-Across the whole screen, **a Pokémon battle that plays by itself**: one of the game's battle backdrops; the series'
-composition — the foe far and high on its battle base, the near Pokémon low with its back to you — set right of
-centre, so the menu's column on the left keeps its ground. The sprites are the battle sprites the fights use, at
-the whole or half multiple nearest the screen's height (D9), the near one half a step larger. Each wears a small plate,
-its name and its HP bar.
+Across the whole screen, **one pixel scene on the stages' 640×360 grid**, at the smallest whole or half multiple of its
+pixels that covers the screen (D9: 2× at 720p, 3× at 1080p), held to the bottom-right corner so a narrower or wider
+window crops sky, never the party. The vista is an invented place and so a generated one (§9.1.1, `docs/art/pipeline.md`): a banded dawn
+sky, night still on its left where the menu stands, the sun half risen on the right over a sea of clouds, far peaks,
+and a rock ledge in the bottom-right corner. Everything that lives in it is the games' own.
 
-**A fight is five hits**: the winner strikes first and lands three, the third the knock-out; the other lands two
-between them. A hit is the series' beat — the attacker lunges, **the move's own picture** (§9.2.3) lands on the target,
-it flinches and its bar drains — then a breath. The loser faints as a Pokémon faints in a fight (§9.9.1), the scene
-fades, and **the next matchup** comes in on its own backdrop: the far one steps in, the near one out of its ball. About
-eleven seconds a fight.
+**The party** stands on the ledge with its backs to you, looking at the sun — three Pokémon, as a run's active three
+are, drawn from the back sprites a fight gives your side, at the scene's own pixel size: still pictures, each on a
+flat contact shadow. They stand **side by side, by their own widths** — a party of final forms is three times as wide
+as one of first forms, and fixed spots piled it up — and none stands over another, at any form of any party.
 
-**The matchups** are pairs the series is known for (Charizard and Venusaur, Pikachu and Gyarados, Machamp and Snorlax…),
-each Pokémon with moves it learns there, never a move its target is immune to, and the winner the one its types favour —
-so a fan reading the fight finds nothing off (`src/ui/title/matchups.ts`; no two fights in a row share a backdrop or a
-Pokémon). It is decoration: no rule reads it, it takes no input, a screen reader skips it. **With motion off it is one
-still frame**, both standing, both bars full (§9.6).
+**It evolves twice while the title is up** (Pillar 4), one member at a time, as the series plays it: the three step
+apart to where their next forms have room; then each in turn becomes light (its own shape in cream), the old shape and
+the new take turns faster and faster, one white flash with eight sparks flung out, and the light falls away from the new form — 2.4 s a member, the next
+one only after it. Two coloured sprites swapping read as a glitch; the light is what says *evolution*. Both shapes
+are the same cream, so a turn changes an outline, not the screen's brightness (§9.6). After the last form the party
+fades and **the next party** arrives. A form stands twelve seconds and a party lasts about fifty-four, so something is
+evolving under a third of the time: **ambient decoration on a chrome screen moves less than a third of the time**, or
+it is the screen's subject and the menu its caption (`titleEvolvingShare`, tested). Four parties, each three real three-stage lines, no
+Pokémon in two of them (`src/ui/title/parties.json`). The first is Bulbasaur, Charmander and Squirtle.
+
+**The night side is part of the picture**: twelve flat bands of the night sky's indigo, stepping down in rings around
+the sun the way the vista bands its own sky, laid over the vista and everything that moves in it — so the clouds that
+drift into the night are in shadow, and the menu stands on pixels, not on a smooth gradient over pixel art (which
+turned the white cloud bank to fog).
+
+**The sky moves a pixel at a time.** Two cloud strips in the vista's own colours drift left: streaks over the cloud
+sea, one pixel every 750 ms, and a white bank along the bottom edge and past the ledge's foot, one every 250 ms. Once
+for each party a Pokémon in flight crosses the sky (Moltres, Articuno, Zapdos, Butterfree): the one sprite that moves
+by itself, its wings its own animated picture, stepping two pixels every 65 ms for the twenty-six seconds it is up.
+Stepped motion is what the hardware the picture imitates did, and it keeps the scene cheap for a browser without
+hardware acceleration: only `transform` and `opacity` are animated, nothing is blurred, filtered or masked, the party
+is still pictures, and what repaints is a cloud strip four times a second at most and, while it is crossing, the
+flyer's own small box. A form is fetched one step before it is needed, off the page.
+
+It is decoration: no rule reads it, it takes no input, a screen reader skips it. **With motion off it is one still
+frame** — the vista, the clouds where they are, the first party's first forms, no flyer (§9.6) — and **while the tab
+is hidden it is paused**, timers and animations both.
 
 ## §9.13.2 The title mark
 
@@ -976,11 +1086,14 @@ climb a run is. Drawn in code (SVG and the display face), so it is sharp at ever
 
 ## §9.13.3 The menu and the new-run steps
 
-**The menu** is one column on the left over a dusk held dark to the column's edge, then gone within a short fade: the mark, the line *Your
-party is your deck.*, the buttons (the next step gold, the rest dark glass), the version as the door to What's new,
-and the fan-project line, never pushed off the screen (§9.6). The stage theme, cream on dark: the colour is the battle's.
+**The menu** is one column on the left, on the scene's night side (§9.13.1); under the column alone, a faint ground of
+its own for a window whose shape crops the night away. In the column: the mark, the line *Your party is your deck.*,
+the buttons (the next step gold, the rest dark glass), the version as the door to What's new, and the fan-project
+line, never pushed off the screen (§9.6). The entry under the pointer or the keys wears the series' menu cursor, inside
+its own padding so nothing moves, and **the arrow keys walk the list** as well as Tab. The stage theme, cream on dark:
+the colour is the sky's.
 
-**The new-run steps** (difficulty, starter, Starting Relic) are the same battle carried on — the matchup it was on,
-from its entrance — under a dusk the panels read on, in the stage theme: near-opaque behind the header and the step's
+**The new-run steps** (difficulty, starter, Starting Relic) are the same summit **without its party** — the panels stand where the party
+does, and a Pokémon half behind a panel is litter — under a dusk the panels read on, in the stage theme: near-opaque behind the header and the step's
 heading, lighter below, where the cards bring their own ground. **Each starter is drawn as the fights draw it**: its
 battle sprite in the window a combat card gives a Pokémon (§9.2.1), lit in its type, the one chosen breathing.

@@ -1,0 +1,12 @@
+/* §2.6.1 — the fork bubble's line of a lane's habitats and the types they lean on, set off from the Gym's text below. */
+.wilds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.lean {
+  display: inline-flex;
+  gap: var(--sp-1);
+}

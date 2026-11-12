@@ -1,0 +1,46 @@
+/* §8.15 — the Hall of Fame: the League's room on the left, the book of every win beside it. */
+
+.hall {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  /* The room and its book stand together in the middle, however few runs the book holds. */
+  grid-template-columns: auto minmax(0, 36rem);
+  justify-content: center;
+  gap: var(--sp-6);
+  align-items: start;
+}
+/* The room's box: as tall as the window allows and shaped like the Hall, so the room picks its pixel scale from it. */
+.stage {
+  height: calc(100vh - 11rem);
+  aspect-ratio: 176 / 208;
+  min-width: 0;
+}
+.book {
+  align-content: start;
+  overflow-y: auto;
+  padding: var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-1);
+}
+/* A won run is a button: pressing it stands that team in the room. */
+.row {
+  width: 100%;
+  color: var(--ink-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.row[aria-pressed='true'] {
+  border-color: var(--accent-action);
+  background: var(--surface-2);
+}
+.row:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .hall {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+}

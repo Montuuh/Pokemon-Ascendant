@@ -19,6 +19,15 @@
 
 The Beta's long stretch: the account, the road to the Champion, a FireRed look.
 
+### v0.9.120 — Road to the Plateau · 2026-11-12
+
+The Trainer Hub is a road of five places; a new title screen and new music.
+
+- **Trainer Hub.** Five places that open as your career grows.
+- **Title screen.** A summit at dawn, where a party of three evolves.
+- **Music and sound.** 26 new tracks and every effect redone.
+- **Map and graphics.** A Habitats column; a hardware acceleration notice.
+
 ### v0.9.119 — Clear skies · 2026-11-12
 
 Defog holds, a fainted card stays readable, and running is written down.
