@@ -223,7 +223,7 @@ for (const viewport of [
         const centre = (b: { x: number; width: number }) => b.x + b.width / 2;
         await page.getByTestId('btn-train').click();
         // The result stands where Train stood, with the choices frozen; the road is not taken yet.
-        await expect(page.getByTestId('train-result')).toHaveText('Attack +6');
+        await expect(page.getByTestId('train-result')).toHaveText('Attack +3');
         const told = await box(page, 'btn-train');
         expect([told.y, told.height]).toEqual([trainBefore.y, trainBefore.height]);
         expect(Math.abs(centre(told) - centre(trainBefore))).toBeLessThan(2);
@@ -237,7 +237,7 @@ for (const viewport of [
         await page.getByTestId('btn-train').click();
         await expect(page.getByTestId('map-screen')).toBeVisible();
         const after = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.boosts?.attack ?? 0);
-        expect(after).toBe(attack + 6);
+        expect(after).toBe(attack + 3);
         expect(scene.height).toBeGreaterThan(0);
       });
 
@@ -317,7 +317,7 @@ test('Training_BackArrowDuringTheBeat_StillTrains_AndTheTraineeStaysOnTheMat', a
   // The hop is under way (a click on the foot would skip it), and the title's line has gone quiet without moving.
   await expect(page.getByTestId('training-trainee')).toHaveCSS('animation-name', /hop/i);
   await expect(page.locator('main p').first()).toHaveCSS('visibility', 'hidden');
-  await expect(page.getByTestId('train-result')).toHaveText('Attack +6');
+  await expect(page.getByTestId('train-result')).toHaveText('Attack +3');
   // The result lands with the trainee on the mat, not after it blinked out and back.
   const trainee = page.getByTestId('training-trainee');
   await expect(trainee).toHaveCSS('opacity', '1');
@@ -326,7 +326,7 @@ test('Training_BackArrowDuringTheBeat_StillTrains_AndTheTraineeStaysOnTheMat', a
   await page.getByTestId('btn-leave-training').click();
   await expect(page.getByTestId('map-screen')).toBeVisible();
   const after = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!.boosts?.attack ?? 0);
-  expect(after).toBe(attack + 6);
+  expect(after).toBe(attack + 3);
 });
 
 test('Training_ClickDuringTheHop_SkipsStraightToTheRoad', async ({ page }) => {
@@ -353,11 +353,11 @@ for (const motion of ['no-preference', 'reduce'] as const)
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.emulateMedia({ reducedMotion: motion });
     await atStop(page, 'training');
-    // Squirtle learns Water Gun at Lv 11: one level short of it, the push teaches it.
+    // Squirtle learns Water Gun at Lv 13: one level short of it, the push teaches it.
     await page.evaluate(() =>
       window.__ascendant!.run.patch((d) => {
         const m = d.box[0]!;
-        m.level = 10;
+        m.level = 12;
         m.xp = 0;
         m.pool = ['tackle', 'tail-whip', 'bubble'];
         m.moveIds = ['tackle', 'tail-whip', 'bubble'];
@@ -370,8 +370,8 @@ for (const motion of ['no-preference', 'reduce'] as const)
     await page.getByTestId('btn-train').click();
     const panel = page.getByTestId(`levelup-panel-${uid}`);
     await expect(panel).toBeVisible();
-    await expect(page.getByTestId('train-result')).toHaveText('Lv 10 → 11');
-    await expect(panel).toContainText('Squirtle grew to Lv 11!');
+    await expect(page.getByTestId('train-result')).toHaveText('Lv 12 → 13');
+    await expect(panel).toContainText('Squirtle grew to Lv 13!');
     await expect(panel).toContainText('Water Gun');
     // Said aloud too, since the window itself is silent on this screen.
     await expect(page.getByTestId('training-screen').locator('p.sr-only')).toContainText('New: Water Gun');
@@ -389,7 +389,7 @@ for (const motion of ['no-preference', 'reduce'] as const)
     await page.getByTestId('btn-train').click();
     await expect(page.getByTestId('map-screen')).toBeVisible();
     const after = await page.evaluate(() => window.__ascendant!.run.state()!.box[0]!);
-    expect(after.level).toBe(11);
+    expect(after.level).toBe(13);
     expect(after.pool).toContain('water-gun');
   });
 

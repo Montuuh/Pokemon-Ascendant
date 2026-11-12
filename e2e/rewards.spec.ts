@@ -37,6 +37,14 @@ test('a move type reads attacking, a Pokémon type defending (§4.1.2)', async (
 
 test('the result names what the levels gave and, behind its door, what the fight moved on the account (§9.4.5, §8.7)', async ({ page }) => {
   await intoAWildFight(page);
+  // One XP short of its next level (§6.2.3), so this fight is the one that levels it whatever the curve pays.
+  await page.evaluate(() => {
+    const a = window.__ascendant!;
+    a.run.patch((d) => {
+      const m = d.box[0]!;
+      m.xp = a.sim.xpToNext(m.level) - 1;
+    });
+  });
   // The fight itself moves medals; nothing is said while it lasts.
   await page.evaluate(() => window.__ascendant!.auto(400));
   await expect(page.getByTestId('progress-toast')).toHaveCount(0);
@@ -48,7 +56,7 @@ test('the result names what the levels gave and, behind its door, what the fight
   await expect(page.getByTestId('reward-progress')).toContainText('First Blood');
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('reward-progress')).toHaveCount(0);
-  // Squirtle came in at level 5: one fight levels it, its level tag lit, and its door names the stats.
+  // Squirtle levels on this fight: its level tag lit, and its door names the stats.
   await page.getByTestId('levelup-squirtle').hover();
   await expect(page.getByTestId('tooltip')).toContainText('HP');
   await expect(page.getByTestId('tooltip')).toContainText('→');

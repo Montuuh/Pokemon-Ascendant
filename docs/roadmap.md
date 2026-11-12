@@ -1548,7 +1548,7 @@ locked thing, rooms from FRLG tiles, the Hall of Fame in its own room, the Item 
 Lab (Rookie) → Viridian Pokémon Center (Ace) → Indigo Plateau (3 Badges, Elite rank or a Champion) → the Hall of Fame up
 the stairs; career props (Badge Case, trophy, banner, Ladder board, Pokédex award); one-time arrival beats; account v5
 with a v4 → v5 migration that keeps the account. The Plateau's trigger was 4 Badges and moved on the career harness
-(`CAREERS=3`: median run 10, latest 27, 9 of 9) — **the user has not confirmed it.** **The title screen** (§9.13) is a
+(`CAREERS=3`: median run 10, latest 27, 9 of 9); the user confirmed it the same day. **The title screen** (§9.13) is a
 summit at dawn with a party of three that evolves; the attract battle is gone. **Audio** (§9.5) is a software GB/GBA
 chip, an MML tracker and 26 original tracks rendered in a Worker, with the effects rewritten; nobody has heard it yet.
 **The map** has a Habitats column and each Gym's bubble names its lane's Wild Areas (§2.6.1). **A notice** says when

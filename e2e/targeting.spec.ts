@@ -24,6 +24,8 @@ test.describe('Playing a card onto its target — §5.6', () => {
     await expect(page.getByTestId('combat-screen')).toBeVisible();
     await page.waitForTimeout(500);
     const start = await ap(page);
+    // The opening hand is the seed's; the card under test is dealt into it.
+    await deal(page, 'vine-whip');
     const card = page.getByTestId('card-vine-whip');
     // The AP capsule shows what it would spend while the pointer rests on it.
     await card.hover();
